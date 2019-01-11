@@ -8,7 +8,6 @@ from .utils.chat_formatting import *
 from .hook import RosterUserConverter
 
 
-COLLECTOR_ICON='https://raw.githubusercontent.com/CollectorDevTeam/assets/master/data/cdt_icon.png'
 
 class Account:
     """The CollectorVerse Account Cog"""
@@ -17,6 +16,7 @@ class Account:
         self.bot = bot
         self.profile = "data/account/accounts.json"
         self.nerdie = dataIO.load_json(self.profile)
+        self.COLLECTOR_ICON='https://raw.githubusercontent.com/CollectorDevTeam/assets/master/data/cdt_icon.png'
 
     @commands.command(name="signup", pass_context=True, invoke_without_command=True, no_pm=True)
     async def _reg(self, ctx):
