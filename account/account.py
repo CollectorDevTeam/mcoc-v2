@@ -30,7 +30,7 @@ class Account:
             data.add_field(name="Error:warning:",value="Opps, it seems like you already have an account, {}.".format(user.mention))
         await self.bot.say(embed=data)
 
-    @commands.command(name="account", pass_context=True, invoke_without_command=True, no_pm=True)
+    @commands.command(name="account", aliases=('profile',), pass_context=True, invoke_without_command=True, no_pm=True)
     async def _acc(self, ctx, user : discord.Member=None):
         """Your/Others Account"""
 
@@ -39,7 +39,7 @@ class Account:
 
         if user.id in self.nerdie:
             data = discord.Embed(description="CollectorVerse Profile", colour=user.colour)
-            for i in ['In-Game Name', 'Age', 'Gender', 'Timezone', 'Website', 'About', 'Other']:
+            for i in ['In-Game Name', 'Age', 'Gender', 'Timezone', 'Website', 'About', 'Other', 'Alliance']:
                 if i in self.nerdie[user.id]:
                     data.add_field(name=i+":", value=self.nerdie[user.id][i])
                 else:
@@ -57,7 +57,7 @@ class Account:
                 data.add_field(name='Prestige', value=roster.prestige, inline=False)
                 data.add_field(name='Top 5 Champs', value='\n'.join(roster.top5), inline=False)
             else:
-                data.add_field(name='Prestige', value='User has no registerd CollectorVerse roster.')
+                data.add_field(name='Prestige', value='User has no registerd CollectorVerse roster.\nUse the ``/roster`` command to get started.')
 
         elif user == ctx.message.author:
             data = self._unknownuser(ctx, user)
