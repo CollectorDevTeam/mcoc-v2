@@ -98,11 +98,17 @@ class Account:
         key = "Recruiting"
         user = ctx.message.author
         valid = {'lfa':'Looking for Alliance', 'lfm': 'Looking for Members', 'merge':'Looking for Merger'}
-        if value in valid:
+        if value in valid.keys():
             if user.id not in self.nerdie:
                 data = self._unknownuser(ctx, user)
             else:
-                data = self._updated(ctx, key, value)
+                if value in ('lfa','Looking for Alliance'):
+                    account = self.nerdie[user.id]
+                    account.pop('Alliance':None)
+                if value in ('lfa','lfm','merge'):
+                    data = self._updated(ctx, key, valid[value])
+                else:
+                    data = self._updated(ctx, key, value)
         else:
             data = discord.Embed(colour=user.colour)
             data.add_field(name="Error:warning:",value='Use one of the valid codes: lfa, lfm, merge.')
