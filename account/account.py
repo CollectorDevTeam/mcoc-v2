@@ -28,6 +28,9 @@ class Account:
         else:
             data = discord.Embed(colour=user.colour)
             data.add_field(name="Error:warning:",value="Opps, it seems like you already have an account, {}.".format(user.mention))
+
+        data.set_footer(text='CollectorDevTeam',
+                icon_url=self.COLLECTOR_ICON)
         await self.bot.say(embed=data)
 
     @commands.command(name="account", aliases=('profile',), pass_context=True, invoke_without_command=True, no_pm=True)
@@ -65,7 +68,7 @@ class Account:
             data = discord.Embed(colour=user.colour)
             data.add_field(name="Error:warning:",value="{} doesn't have an account at the moment, sorry.".format(user.mention))
 
-        em.set_footer(text='CollectorDevTeam',
+        data.set_footer(text='CollectorDevTeam',
                 icon_url=self.COLLECTOR_ICON)
         await self.bot.say(embed=data)
 
@@ -199,11 +202,15 @@ class Account:
         dataIO.save_json(self.profile, self.nerdie)
         data = discord.Embed(colour=user.colour)
         data.add_field(name="Congrats!:sparkles:", value="You have officaly created your CollectorVerse account, {}.".format(user.mention))
+        data.set_footer(text='CollectorDevTeam',
+                icon_url=self.COLLECTOR_ICON)
         return data
 
     def _unknownuser(self, ctx, user):
         data = discord.Embed(colour=user.colour)
         data.add_field(name="Error:warning:",value="Sadly, this feature is only available for people who had registered for an account. \n\nYou can register for a account today for free. All you have to do is say `{}signup` and you'll be all set.".format(ctx.prefix))
+        data.set_footer(text='CollectorDevTeam',
+                icon_url=self.COLLECTOR_ICON)
         return data
 
     def _updated(self, ctx, key, value):
@@ -212,6 +219,8 @@ class Account:
         dataIO.save_json(self.profile, self.nerdie)
         data = discord.Embed(colour=user.colour)
         data.add_field(name="Congrats!:sparkles:",value="You have set your {} to {}".format(key, value))
+        data.set_footer(text='CollectorDevTeam',
+                icon_url=self.COLLECTOR_ICON)
         return data
 
 def check_folder():
