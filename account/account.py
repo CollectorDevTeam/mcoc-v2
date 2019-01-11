@@ -42,7 +42,7 @@ class Account:
 
         if user.id in self.nerdie:
             data = discord.Embed(description="CollectorVerse Profile", colour=user.colour)
-            for i in ['In-Game Name', 'Age', 'Gender', 'Timezone', 'Website', 'About', 'Other', 'Alliance']:
+            for i in ['In-Game Name', 'Alliance', 'Recruiting', 'Age', 'Gender', 'Timezone', 'About', 'Other', 'Website']:
                 if i in self.nerdie[user.id]:
                     data.add_field(name=i+":", value=self.nerdie[user.id][i])
                 else:
@@ -87,6 +87,27 @@ class Account:
             data = self._unknownuser(ctx, user)
         else:
             data = self._updated(ctx, key, value)
+        await self.bot.say(embed=data)
+
+    @update.command(pass_context=True, no_pm=True)
+    async def recruiting(self, ctx, *, value):
+        """Are you Looking for Alliance or Members?
+        lfa   = Looking for Alliance
+        lfm   = Looking for members
+        merge = Looking for Merger"""
+        key = "Recruiting"
+        user = ctx.message.author
+        valid = {'lfa':'Looking for Alliance', 'lfm': 'Looking for Members', 'merge':'Looking for Merger'}
+        if value in valid:
+            if user.id not in self.nerdie:
+                data = self._unknownuser(ctx, user)
+            else:
+                data = self._updated(ctx, key, value)
+        else:
+            data = discord.Embed(colour=user.colour)
+            data.add_field(name="Error:warning:",value='Use one of the valid codes: lfa, lfm, merge.')
+            data.set_footer(text='CollectorDevTeam',
+                    icon_url=self.COLLECTOR_ICON)
         await self.bot.say(embed=data)
 
     @update.command(pass_context=True, no_pm=True)
