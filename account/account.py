@@ -36,7 +36,7 @@ class Account:
 
         if user.id in self.nerdie:
             data = discord.Embed(description="CollectorVerse Profile", colour=user.colour)
-            for i in ['In-Game','Timezone', 'Age', 'Website', 'About', 'Gender', 'Other']:
+            for i in ['In-Game Name', 'Age', 'Gender', 'Timezone', 'Website', 'About', 'Other']:
                 if i in self.nerdie[user.id]:
                     data.add_field(name=i+":", value=self.nerdie[user.id][i])
                 else:
