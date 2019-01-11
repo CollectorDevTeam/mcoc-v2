@@ -1,0 +1,7 @@
+{
+    "AUTHOR" : "JJW",
+    "INSTALL_MSG" : "Thanks for installing CollectorVerse Account",
+    "NAME" : "account",
+    "SHORT" : "Account integration for Marvel Contest of Champions",
+    "DESCRIPTION" : "Hook integration for Marvel Contest of Champions. Derived from Neko-Cogs/account by NerdiTony"
+}
