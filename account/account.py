@@ -49,7 +49,7 @@ class Account:
             else:
                 data.set_author(name=user.name)
 
-        elif user = ctx.message.author:
+        elif user == ctx.message.author:
             data = self._unknownuser(ctx, user)
         else:
             data = discord.Embed(colour=user.colour)
