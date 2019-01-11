@@ -53,6 +53,8 @@ class Account:
             if roster:
                 data.add_field(name='Prestige', value=roster.prestige, inline=False)
                 data.add_field(name='Top 5 Champs', value='\n'.join(roster.top5), inline=False)
+            else:
+                data.add_field(name='Prestige', value='User has no registerd CollectorVerse roster.')
 
 
 
