@@ -90,6 +90,19 @@ class Account:
         await self.bot.say(embed=data)
 
     @update.command(pass_context=True, no_pm=True)
+    async def ingame(self, ctx, *, value=None):
+        """What's your Alliance name?"""
+        key = "Alliance"
+        user = ctx.message.author
+
+        if user.id not in self.nerdie:
+            data = self._unknownuser(ctx, user)
+        else:
+            data = self._updated(ctx, key, value)
+        await self.bot.say(embed=data)
+
+
+    @update.command(pass_context=True, no_pm=True)
     async def recruiting(self, ctx, *, value):
         """Are you Looking for Alliance or Members?
         lfa   = Looking for Alliance
@@ -248,10 +261,14 @@ class Account:
 
     def _updated(self, ctx, key, value):
         user = ctx.message.author
-        self.nerdie[user.id].update({key : value})
-        dataIO.save_json(self.profile, self.nerdie)
         data = discord.Embed(colour=user.colour)
-        data.add_field(name="Congrats!:sparkles:",value="You have set your {} to {}".format(key, value))
+        if value = None:
+            data.pop(key, None)
+            data.add_field(name="Congrats!:sparkles:", value="You have deleted {} from your account.".format(key))
+        else:
+            self.nerdie[user.id].update({key : value})
+            data.add_field(name="Congrats!:sparkles:",value="You have set your {} to {}".format(key, value))
+        dataIO.save_json(self.profile, self.nerdie)
         data.set_footer(text='CollectorDevTeam',
                 icon_url=self.COLLECTOR_ICON)
         return data
