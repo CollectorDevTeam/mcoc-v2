@@ -94,11 +94,12 @@ class Account:
         """What's your Alliance name?"""
         key = "Alliance"
         user = ctx.message.author
-
         if user.id not in self.nerdie:
             data = self._unknownuser(ctx, user)
         else:
             data = self._updated(ctx, key, value)
+            if self.nerdie[user.id]["Recruiting"] in ('Looking For Alliance',)
+            self._updated(ctx, "Recruiting":None)
         await self.bot.say(embed=data)
 
 
@@ -116,8 +117,7 @@ class Account:
                 data = self._unknownuser(ctx, user)
             else:
                 if value in ('lfa','Looking for Alliance'):
-                    account = self.nerdie[user.id]
-                    account.pop('Alliance':None)
+                    data = self._updated("Alliance":None)
                 if value in ('lfa','lfm','merge'):
                     data = self._updated(ctx, key, valid[value])
                 else:
