@@ -7,6 +7,9 @@ import os
 from .utils.chat_formatting import *
 from .hook import RosterUserConverter
 
+
+COLLECTOR_ICON='https://raw.githubusercontent.com/CollectorDevTeam/assets/master/data/cdt_icon.png'
+
 class Account:
     """The CollectorVerse Account Cog"""
 
@@ -56,13 +59,14 @@ class Account:
             else:
                 data.add_field(name='Prestige', value='User has no registerd CollectorVerse roster.')
 
-
-
         elif user == ctx.message.author:
             data = self._unknownuser(ctx, user)
         else:
             data = discord.Embed(colour=user.colour)
             data.add_field(name="Error:warning:",value="{} doesn't have an account at the moment, sorry.".format(user.mention))
+
+        em.set_footer(text='CollectorDevTeam',
+                icon_url=self.COLLECTOR_ICON)
         await self.bot.say(embed=data)
 
     @commands.group(name="update", pass_context=True, invoke_without_command=True, no_pm=True)
