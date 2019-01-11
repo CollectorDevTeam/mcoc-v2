@@ -49,7 +49,7 @@ class Account:
             else:
                 data.set_author(name=user.name)
 
-            roster = await RosterUserConverter(ctx, user).convert()
+            roster = await RosterUserConverter(ctx, user.mention).convert()
             if roster:
                 data.add_field(name='Prestige', value=user.prestige, inline=False)
                 data.add_field(name='Top 5 Champs', value='\n'.join(roster.top5), inline=False)
