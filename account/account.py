@@ -5,6 +5,7 @@ from .utils import checks
 from __main__ import send_cmd_help
 import os
 from .utils.chat_formatting import *
+from .hook import RosterUserConverter
 
 class Account:
     """The CollectorVerse Account Cog"""
@@ -35,12 +36,11 @@ class Account:
 
         if user.id in self.nerdie:
             data = discord.Embed(description="CollectorVerse Profile", colour=user.colour)
-            for i in ['In-Game','Timezone', 'Age', 'Site', 'About', 'Gender', 'Other']:
+            for i in ['In-Game','Timezone', 'Age', 'Website', 'About', 'Gender', 'Other']:
                 if i in self.nerdie[user.id]:
-                    data.add_field(name=i+":", value=self.nerdie[user.id][i])
+                    data.add_field(name=i+":", value=self.nerdie[user.id][i], inline=False)
                 else:
                     pass
-
             if user.avatar_url:
                 name = str(user)
                 name = " ~ ".join((name, user.nick)) if user.nick else name
@@ -48,6 +48,13 @@ class Account:
                 data.set_thumbnail(url=user.avatar_url)
             else:
                 data.set_author(name=user.name)
+
+            roster = await RosterUserConverter(ctx, user).convert()
+            if roster:
+                data.add_field(name='Prestige', value=user.prestige, inline=False)
+                data.add_field(name='Top 5 Champs', value='\n'.join(roster.top5), inline=False)
+
+
 
         elif user == ctx.message.author:
             data = self._unknownuser(ctx, user)
@@ -120,7 +127,6 @@ class Account:
     @update.command(pass_context=True, no_pm=True)
     async def gender(self, ctx, *, gender):
         """What's your gender?"""
-
         key = "Gender"
         value = gender
         user = ctx.message.author
@@ -133,10 +139,10 @@ class Account:
 
 
     @update.command(pass_context=True, no_pm=True)
-    async def email(self, ctx, *, email):
-        """What's your email address?"""
-        key = "Email"
-        value = email
+    async def email(self, ctx, *, timezone):
+        """What's your timezone?"""
+        key = "Timezone"
+        value = timezone
         user = ctx.message.author
 
         if ctx.message.author.id not in self.nerdie:
