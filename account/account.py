@@ -38,7 +38,7 @@ class Account:
             data = discord.Embed(description="CollectorVerse Profile", colour=user.colour)
             for i in ['In-Game','Timezone', 'Age', 'Website', 'About', 'Gender', 'Other']:
                 if i in self.nerdie[user.id]:
-                    data.add_field(name=i+":", value=self.nerdie[user.id][i], inline=False)
+                    data.add_field(name=i+":", value=self.nerdie[user.id][i])
                 else:
                     pass
             if user.avatar_url:
@@ -69,6 +69,30 @@ class Account:
         await send_cmd_help(ctx)
 
     @update.command(pass_context=True, no_pm=True)
+    async def ingame(self, ctx, *, value):
+        """What's your in-game MCOC username?"""
+        key = "MCOC username"
+        user = ctx.message.author
+
+        if user.id not in self.nerdie:
+            data = self._unknownuser(ctx, user)
+        else:
+            data = self._updated(ctx, key, value)
+        await self.bot.say(embed=data)
+
+    @update.command(pass_context=True, no_pm=True)
+    async def timezone(self, ctx, *, value):
+        """What's your timezone?"""
+        key = "Timezone"
+        user = ctx.message.author
+
+        if user.id not in self.nerdie:
+            data = self._unknownuser(ctx, user)
+        else:
+            data = self._updated(ctx, key, value)
+        await self.bot.say(embed=data)
+
+    @update.command(pass_context=True, no_pm=True)
     async def about(self, ctx, *, about):
         """Tell us about yourself"""
         key = "About"
@@ -80,7 +104,6 @@ class Account:
         else:
             data = self._updated(ctx, key, value)
         await self.bot.say(embed=data)
-
 
     @update.command(pass_context=True, no_pm=True)
     async def website(self, ctx, *, site):
