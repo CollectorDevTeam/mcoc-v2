@@ -7,7 +7,7 @@ import os
 from .utils.chat_formatting import *
 
 class Account:
-    """The Account Cog"""
+    """The CollectorVerse Account Cog"""
 
     def __init__(self, bot):
         self.bot = bot
@@ -17,143 +17,44 @@ class Account:
     @commands.command(name="signup", pass_context=True, invoke_without_command=True, no_pm=True)
     async def _reg(self, ctx):
         """Sign up to get your own account today!"""
-
-        server = ctx.message.server
         user = ctx.message.author
-        
-        if server.id not in self.nerdie:
-            self.nerdie[server.id] = {}
-        else:
-            pass
 
-        if user.id not in self.nerdie[server.id]:
-            self.nerdie[server.id][user.id] = {}
-            dataIO.save_json(self.profile, self.nerdie)
-            data = discord.Embed(colour=user.colour)
-            data.add_field(name="Congrats!:sparkles:", value="You have officaly created your acconut for **{}**, {}.".format(server, user.mention))
-            await self.bot.say(embed=data)
+        if user.id not in self.nerdie:
+            data = self._createuser(user)
         else:
             data = discord.Embed(colour=user.colour)
             data.add_field(name="Error:warning:",value="Opps, it seems like you already have an account, {}.".format(user.mention))
-            await self.bot.say(embed=data)
-
+        await self.bot.say(embed=data)
 
     @commands.command(name="account", pass_context=True, invoke_without_command=True, no_pm=True)
     async def _acc(self, ctx, user : discord.Member=None):
         """Your/Others Account"""
 
-        server = ctx.message.server
-
-        if server.id not in self.nerdie:
-            self.nerdie[server.id] = {}
-        else:
-            pass
-
         if not user:
             user = ctx.message.author
-            if user.id in self.nerdie[server.id]:
-                data = discord.Embed(description="{}".format(server), colour=user.colour)
-                if "Age" in self.nerdie[server.id][user.id]:
-                    age = self.nerdie[server.id][user.id]["Age"]
-                    data.add_field(name="Age:", value=age)
-                else:
-                    pass
-                if "Site" in self.nerdie[server.id][user.id]:
-                    site = self.nerdie[server.id][user.id]["Site"]
-                    data.add_field(name="Website:", value=site)
-                else:
-                    pass
-                if "About" in self.nerdie[server.id][user.id]:
-                    about = self.nerdie[server.id][user.id]["About"]
-                    data.add_field(name="About:", value=about)
-                else:
-                    pass
-                if "Gender" in self.nerdie[server.id][user.id]:
-                    gender = self.nerdie[server.id][user.id]["Gender"]
-                    data.add_field(name="Gender:", value=gender)
-                else:
-                    pass
-                if "Job" in self.nerdie[server.id][user.id]:
-                    job = self.nerdie[server.id][user.id]["Job"]
-                    data.add_field(name="Profession:", value=job)
-                else:
-                    pass
-                if "Email" in self.nerdie[server.id][user.id]:
-                    email = self.nerdie[server.id][user.id]["Email"]
-                    data.add_field(name="Email Address:", value=email)
-                else:
-                    pass
-                if "Other" in self.nerdie[server.id][user.id]:
-                    other = self.nerdie[server.id][user.id]["Other"]
-                    data.add_field(name="Other:", value=other)
-                else:
-                    pass
-                if user.avatar_url:
-                    name = str(user)
-                    name = " ~ ".join((name, user.nick)) if user.nick else name
-                    data.set_author(name=name, url=user.avatar_url)
-                    data.set_thumbnail(url=user.avatar_url)
-                else:
-                    data.set_author(name=user.name)
 
-                await self.bot.say(embed=data)
+        if user.id in self.nerdie:
+            data = discord.Embed(description="CollectorVerse Profile", colour=user.colour)
+            for i in ['In-Game','Timezone', 'Age', 'Site', 'About', 'Gender', 'Other']:
+                if i in self.nerdie[user.id]:
+                    data.add_field(name=i+":", value=self.nerdie[user.id][i])
+                else:
+                    pass
+
+            if user.avatar_url:
+                name = str(user)
+                name = " ~ ".join((name, user.nick)) if user.nick else name
+                data.set_author(name=name, url=user.avatar_url)
+                data.set_thumbnail(url=user.avatar_url)
             else:
-                prefix = ctx.prefix
-                data = discord.Embed(colour=user.colour)
-                data.add_field(name="Error:warning:",value="Sadly, this feature is only available for people who had registered for an account. \n\nYou can register for a account today for free. All you have to do is say `{}signup` and you'll be all set.".format(prefix))
-                await self.bot.say(embed=data)
+                data.set_author(name=user.name)
+
+        elif user = ctx.message.author:
+            data = self._unknownuser(ctx, user)
         else:
-            server = ctx.message.server
-            if user.id in self.nerdie[server.id]:
-                data = discord.Embed(description="{}".format(server), colour=user.colour)
-                if "Age" in self.nerdie[server.id][user.id]:
-                    town = self.nerdie[server.id][user.id]["Age"]
-                    data.add_field(name="Age", value=town)
-                else:
-                    pass
-                if "Site" in self.nerdie[server.id][user.id]:
-                    site = self.nerdie[server.id][user.id]["Site"]
-                    data.add_field(name="Website:", value=site)
-                else:
-                    pass
-                if "About" in self.nerdie[server.id][user.id]:
-                    about = self.nerdie[server.id][user.id]["About"]
-                    data.add_field(name="About:", value=about)
-                else:
-                    pass
-                if "Gender" in self.nerdie[server.id][user.id]:
-                    gender = self.nerdie[server.id][user.id]["Gender"]
-                    data.add_field(name="Gender:", value=gender)
-                else:
-                    pass
-                if "Job" in self.nerdie[server.id][user.id]:
-                    job = self.nerdie[server.id][user.id]["Job"]
-                    data.add_field(name="Profession:", value=job)
-                else:
-                    pass
-                if "Email" in self.nerdie[server.id][user.id]:
-                    email = self.nerdie[server.id][user.id]["Email"]
-                    data.add_field(name="Email Address:", value=email)
-                else:
-                    pass
-                if "Other" in self.nerdie[server.id][user.id]:
-                    other = self.nerdie[server.id][user.id]["Other"]
-                    data.add_field(name="Other:", value=other)
-                else:
-                    pass
-                if user.avatar_url:
-                    name = str(user)
-                    name = " ~ ".join((name, user.nick)) if user.nick else name
-                    data.set_author(name=name, url=user.avatar_url)
-                    data.set_thumbnail(url=user.avatar_url)
-                else:
-                    data.set_author(name=user.name)
-
-                await self.bot.say(embed=data)
-            else:
-                data = discord.Embed(colour=user.colour)
-                data.add_field(name="Error:warning:",value="{} doesn't have an account at the moment, sorry.".format(user.mention))
-                await self.bot.say(embed=data)
+            data = discord.Embed(colour=user.colour)
+            data.add_field(name="Error:warning:",value="{} doesn't have an account at the moment, sorry.".format(user.mention))
+        await self.bot.say(embed=data)
 
     @commands.group(name="update", pass_context=True, invoke_without_command=True, no_pm=True)
     async def update(self, ctx):
@@ -163,171 +64,120 @@ class Account:
     @update.command(pass_context=True, no_pm=True)
     async def about(self, ctx, *, about):
         """Tell us about yourself"""
-
-        server = ctx.message.server
+        key = "About"
+        value = about
         user = ctx.message.author
-        prefix = ctx.prefix
 
-        if server.id not in self.nerdie:
-            self.nerdie[server.id] = {}
+        if user.id not in self.nerdie:
+            data = self._unknownuser(ctx, user)
         else:
-            pass
+            data = self._updated(ctx, key, value)
+        await self.bot.say(embed=data)
 
-        if user.id not in self.nerdie[server.id]:
-            data = discord.Embed(colour=user.colour)
-            data.add_field(name="Error:warning:",value="Sadly, this feature is only available for people who had registered for an account. \n\nYou can register for a account today for free. All you have to do is say `{}signup` and you'll be all set.".format(prefix))
-            await self.bot.say(embed=data)
-        else:
-            self.nerdie[server.id][user.id].update({"About" : about})
-            dataIO.save_json(self.profile, self.nerdie)
-            data = discord.Embed(colour=user.colour)
-            data.add_field(name="Congrats!:sparkles:",value="You have updated your About Me to{}".format(about))
-            await self.bot.say(embed=data)
 
     @update.command(pass_context=True, no_pm=True)
     async def website(self, ctx, *, site):
         """Do you have a website?"""
-
-        server = ctx.message.server
+        key = "Website"
+        value = site
         user = ctx.message.author
-        prefix = ctx.prefix
 
-        if server.id not in self.nerdie:
-            self.nerdie[server.id] = {}
+        if ctx.message.author.id not in self.nerdie:
+            data = self._unknownuser(ctx, user)
         else:
-            pass
+            data = self._updated(ctx, key, value)
+        await self.bot.say(embed=data)
 
-        if user.id not in self.nerdie[server.id]:
-            data = discord.Embed(colour=user.colour)
-            data.add_field(name="Error:warning:",value="Sadly, this feature is only available for people who had registered for an account. \n\nYou can register for a account today for free. All you have to do is say `{}signup` and you'll be all set.".format(prefix))
-            await self.bot.say(embed=data)
-        else:
-            self.nerdie[server.id][user.id].update({"Site" : site})
-            dataIO.save_json(self.profile, self.nerdie)
-            data = discord.Embed(colour=user.colour)
-            data.add_field(name="Congrats!:sparkles:",value="You have set your Website to {}".format(site))
-            await self.bot.say(embed=data)
 
     @update.command(pass_context=True, no_pm=True)
     async def age(self, ctx, *, age):
         """How old are you?"""
-
-        server = ctx.message.server
+        key = "Age"
+        value = age
         user = ctx.message.author
-        prefix = ctx.prefix
 
-        if server.id not in self.nerdie:
-            self.nerdie[server.id] = {}
+        if ctx.message.author.id not in self.nerdie:
+            data = self._unknownuser(ctx, user)
         else:
-            pass
+            data = self._updated(ctx, key, value)
+        await self.bot.say(embed=data)
 
-        if user.id not in self.nerdie[server.id]:
-            data = discord.Embed(colour=user.colour)
-            data.add_field(name="Error:warning:",value="Sadly, this feature is only available for people who had registered for an account. \n\nYou can register for a account today for free. All you have to do is say `{}signup` and you'll be all set.".format(prefix))
-            await self.bot.say(embed=data)
-        else:
-            self.nerdie[server.id][user.id].update({"Age" : age})
-            dataIO.save_json(self.profile, self.nerdie)
-            data = discord.Embed(colour=user.colour)
-            data.add_field(name="Congrats!:sparkles:",value="You have set your age to {}".format(age))
-            await self.bot.say(embed=data)
 
     @update.command(pass_context=True, no_pm=True)
     async def job(self, ctx, *, job):
         """Do you have a job?"""
-
-        server = ctx.message.server
+        key = "Job"
+        value = job
         user = ctx.message.author
-        prefix = ctx.prefix
 
-        if server.id not in self.nerdie:
-            self.nerdie[server.id] = {}
+        if ctx.message.author.id not in self.nerdie:
+            data = self._unknownuser(ctx, user)
         else:
-            pass
+            data = self._updated(ctx, key, value)
+        await self.bot.say(embed=data)
 
-        if user.id not in self.nerdie[server.id]:
-            data = discord.Embed(colour=user.colour)
-            data.add_field(name="Error:warning:",value="Sadly, this feature is only available for people who had registered for an account. \n\nYou can register for a account today for free. All you have to do is say `{}signup` and you'll be all set.".format(prefix))
-            await self.bot.say(embed=data)
-        else:
-            self.nerdie[server.id][user.id].update({"Job" : job})
-            dataIO.save_json(self.profile, self.nerdie)
-            data = discord.Embed(colour=user.colour)
-            data.add_field(name="Congrats!:sparkles:",value="You have set your Job to {}".format(job))
-            await self.bot.say(embed=data)
 
     @update.command(pass_context=True, no_pm=True)
     async def gender(self, ctx, *, gender):
         """What's your gender?"""
 
-        server = ctx.message.server
+        key = "Gender"
+        value = gender
         user = ctx.message.author
-        prefix = ctx.prefix
 
-        if server.id not in self.nerdie:
-            self.nerdie[server.id] = {}
+        if ctx.message.author.id not in self.nerdie:
+            data = self._unknownuser(ctx, user)
         else:
-            pass
+            data = self._updated(ctx, key, value)
+        await self.bot.say(embed=data)
 
-        if user.id not in self.nerdie[server.id]:
-            data = discord.Embed(colour=user.colour)
-            data.add_field(name="Error:warning:",value="Sadly, this feature is only available for people who had registered for an account. \n\nYou can register for a account today for free. All you have to do is say `{}signup` and you'll be all set.".format(prefix))
-            await self.bot.say(embed=data)
-        else:
-            self.nerdie[server.id][user.id].update({"Gender" : gender})
-            dataIO.save_json(self.profile, self.nerdie)
-            data = discord.Embed(colour=user.colour)
-            data.add_field(name="Congrats!:sparkles:",value="You have set your Gender to {}".format(gender))
-            await self.bot.say(embed=data)
 
     @update.command(pass_context=True, no_pm=True)
     async def email(self, ctx, *, email):
         """What's your email address?"""
-
-
-        server = ctx.message.server
+        key = "Email"
+        value = email
         user = ctx.message.author
-        prefix = ctx.prefix
 
-        if server.id not in self.nerdie:
-            self.nerdie[server.id] = {}
+        if ctx.message.author.id not in self.nerdie:
+            data = self._unknownuser(ctx, user)
         else:
-            pass
+            data = self._updated(ctx, key, value)
+        await self.bot.say(embed=data)
 
-        if user.id not in self.nerdie[server.id]:
-            data = discord.Embed(colour=user.colour)
-            data.add_field(name="Error:warning:",value="Sadly, this feature is only available for people who had registered for an account. \n\nYou can register for a account today for free. All you have to do is say `{}signup` and you'll be all set.".format(prefix))
-            await self.bot.say(embed=data)
-        else:
-            self.nerdie[server.id][user.id].update({"email" : email})
-            dataIO.save_json(self.profile, self.nerdie)
-            data = discord.Embed(colour=user.colour)
-            data.add_field(name="Congrats!:sparkles:",value="You have set your Email to {}".format(email))
-            await self.bot.say(embed=data)
 
     @update.command(pass_context=True, no_pm=True)
     async def other(self, ctx, *, other):
         """Incase you want to add anything else..."""
-
-        server = ctx.message.server
+        key = "Other"
+        value = other
         user = ctx.message.author
-        prefix = ctx.prefix
 
-        if server.id not in self.nerdie:
-            self.nerdie[server.id] = {}
+        if ctx.message.author.id not in self.nerdie:
+            data = self._unknownuser(ctx, user)
         else:
-            pass
+            data = self._updated(ctx, key, value)
+        await self.bot.say(embed=data)
 
-        if user.id not in self.nerdie[server.id]:
-            data = discord.Embed(colour=user.colour)
-            data.add_field(name="Error:warning:",value="Sadly, this feature is only available for people who had registered for an account. \n\nYou can register for a account today for free. All you have to do is say `{}signup` and you'll be all set.".format(prefix))
-            await self.bot.say(embed=data)
-        else:
-            self.nerdie[server.id][user.id].update({"Other" : other})
-            dataIO.save_json(self.profile, self.nerdie)
-            data = discord.Embed(colour=user.colour)
-            data.add_field(name="Congrats!:sparkles:",value="You have set your Other to {}".format(other))
-            await self.bot.say(embed=data)
+    def _createuser(self, user):
+        self.nerdie[user.id] = {}
+        dataIO.save_json(self.profile, self.nerdie)
+        data = discord.Embed(colour=user.colour)
+        data.add_field(name="Congrats!:sparkles:", value="You have officaly created your CollectorVerse account, {}.".format(user.mention))
+        return data
+
+    def _unknownuser(self, ctx, user):
+        data = discord.Embed(colour=user.colour)
+        data.add_field(name="Error:warning:",value="Sadly, this feature is only available for people who had registered for an account. \n\nYou can register for a account today for free. All you have to do is say `{}signup` and you'll be all set.".format(ctx.prefix))
+        return data
+
+    def _updated(self, ctx, key, value):
+        user = ctx.message.author
+        self.nerdie[user.id].update({key : value})
+        dataIO.save_json(self.profile, self.nerdie)
+        data = discord.Embed(colour=user.colour)
+        data.add_field(name="Congrats!:sparkles:",value="You have set your {} to {}".format(key, value))
+        return data
 
 def check_folder():
     if not os.path.exists("data/account"):
