@@ -94,12 +94,18 @@ class Account:
         """What's your timezone?"""
         key = "Timezone"
         user = ctx.message.author
-
-        if user.id not in self.nerdie:
-            data = self._unknownuser(ctx, user)
+        if 'UTC+' in value or 'UTC-' in value:
+            if user.id not in self.nerdie:
+                data = self._unknownuser(ctx, user)
+            else:
+                data = self._updated(ctx, key, value)
         else:
-            data = self._updated(ctx, key, value)
+            data = discord.Embed(colour=user.colour)
+            data.add_field(name="Error:warning:",value='Timezone value must be recorded in UTC+ or UTC- format.')
+            data.set_footer(text='CollectorDevTeam',
+                    icon_url=self.COLLECTOR_ICON)
         await self.bot.say(embed=data)
+
 
     @update.command(pass_context=True, no_pm=True)
     async def about(self, ctx, *, about):
