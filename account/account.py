@@ -42,6 +42,12 @@ class Account:
 
         if user.id in self.nerdie:
             data = discord.Embed(description="CollectorVerse Profile", colour=user.colour)
+            roster = await RosterUserConverter(ctx, user.mention).convert()
+            if roster:
+                data.add_field(name='Prestige', value=roster.prestige, inline=False)
+                data.add_field(name='Top 5 Champs', value='\n'.join(roster.top5), inline=False)
+            else:
+                data.add_field(name='Prestige', value='User has no registerd CollectorVerse roster.\nUse the ``/roster`` command to get started.')
             for i in ['MCOC username', 'Alliance', 'Recruiting', 'Age', 'Gender', 'Timezone', 'About', 'Other', 'Website']:
                 if i in self.nerdie[user.id]:
                     data.add_field(name=i+":", value=self.nerdie[user.id][i])
@@ -55,12 +61,6 @@ class Account:
             else:
                 data.set_author(name=user.name)
 
-            roster = await RosterUserConverter(ctx, user.mention).convert()
-            if roster:
-                data.add_field(name='Prestige', value=roster.prestige, inline=False)
-                data.add_field(name='Top 5 Champs', value='\n'.join(roster.top5), inline=False)
-            else:
-                data.add_field(name='Prestige', value='User has no registerd CollectorVerse roster.\nUse the ``/roster`` command to get started.')
 
         elif user == ctx.message.author:
             data = self._unknownuser(ctx, user)
@@ -98,7 +98,7 @@ class Account:
             data = self._unknownuser(ctx, user)
         else:
             if "Recruiting" in self.nerdie[user.id].keys():
-                if self.nerdie[user.id]["Recruiting"] == 'Looking For Alliance':
+                if 'Looking for Alliance' in self.nerdie[user.id]["Recruiting"]:
                     self.nerdie[user.id].pop("Recruiting",None)
                     dataIO.save_json(self.profile, self.nerdie)
             data = self._updated(ctx, key, value)
