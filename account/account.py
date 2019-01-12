@@ -33,48 +33,50 @@ class Account:
                 icon_url=self.COLLECTOR_ICON)
         await self.bot.say(embed=data)
 
-    @commands.command(name="account", aliases=('profile',), pass_context=True, invoke_without_command=True, no_pm=True)
+    # @commands.command(name="account", aliases=('profile',), pass_context=True, invoke_without_command=True, no_pm=True)
+    @commands.group(name="account", aliases=('profile',), pass_context=True, invoke_without_command=True, no_pm=True)
     async def _acc(self, ctx, user : discord.Member=None):
         """Your/Others Account"""
+        if ctx.invoked_subcommand is None:
+            if not user:
+                user = ctx.message.author
 
-        if not user:
-            user = ctx.message.author
-
-        if user.id in self.nerdie:
-            data = discord.Embed(description="CollectorVerse Profile", colour=user.colour)
-            roster = await RosterUserConverter(ctx, user.mention).convert()
-            if roster:
-                data.add_field(name='Prestige', value=roster.prestige, inline=False)
-                data.add_field(name='Top 5 Champs', value='\n'.join(roster.top5), inline=False)
-            else:
-                data.add_field(name='Prestige', value='User has no registerd CollectorVerse roster.\nUse the ``/roster`` command to get started.')
-            for i in ['MCOC username', 'Alliance', 'Job', 'Recruiting', 'Age', 'Gender', 'Timezone', 'About', 'Other', 'Website']:
-                if i in self.nerdie[user.id]:
-                    data.add_field(name=i+":", value=self.nerdie[user.id][i])
+            if user.id in self.nerdie:
+                data = discord.Embed(description="CollectorVerse Profile", colour=user.colour)
+                roster = await RosterUserConverter(ctx, user.mention).convert()
+                if roster:
+                    data.add_field(name='Prestige', value=roster.prestige, inline=False)
+                    data.add_field(name='Top 5 Champs', value='\n'.join(roster.top5), inline=False)
                 else:
-                    pass
-            if user.avatar_url:
-                name = str(user)
-                name = " ~ ".join((name, user.nick)) if user.nick else name
-                data.set_author(name=name, url=user.avatar_url)
-                data.set_thumbnail(url=user.avatar_url)
+                    data.add_field(name='Prestige', value='User has no registerd CollectorVerse roster.\nUse the ``/roster`` command to get started.')
+                for i in ['MCOC username', 'Alliance', 'Job', 'Recruiting', 'Age', 'Gender', 'Timezone', 'About', 'Other', 'Website']:
+                    if i in self.nerdie[user.id]:
+                        data.add_field(name=i+":", value=self.nerdie[user.id][i])
+                    else:
+                        pass
+                if user.avatar_url:
+                    name = str(user)
+                    name = " ~ ".join((name, user.nick)) if user.nick else name
+                    data.set_author(name=name, url=user.avatar_url)
+                    data.set_thumbnail(url=user.avatar_url)
+                else:
+                    data.set_author(name=user.name)
+
+
+            elif user == ctx.message.author:
+                data = self._unknownuser(ctx, user)
             else:
-                data.set_author(name=user.name)
+                data = discord.Embed(colour=user.colour)
+                data.add_field(name="Error:warning:",value="{} doesn't have an account at the moment, sorry.".format(user.mention))
 
+            data.set_footer(text='CollectorDevTeam',
+                    icon_url=self.COLLECTOR_ICON)
+            await self.bot.say(embed=data)
 
-        elif user == ctx.message.author:
-            data = self._unknownuser(ctx, user)
-        else:
-            data = discord.Embed(colour=user.colour)
-            data.add_field(name="Error:warning:",value="{} doesn't have an account at the moment, sorry.".format(user.mention))
-
-        data.set_footer(text='CollectorDevTeam',
-                icon_url=self.COLLECTOR_ICON)
-        await self.bot.say(embed=data)
-
-    @commands.group(name="update", pass_context=True, invoke_without_command=True, no_pm=True)
+    # @commands.group(name="update", pass_context=True, invoke_without_command=True, no_pm=True)
+    @_acc.group(name="update", pass_context=True, invoke_without_command=True, no_pm=True)
     async def update(self, ctx):
-        """Update your CollectorVerse account`"""
+        """Update your CollectorVerse account"""
         await send_cmd_help(ctx)
 
     @update.command(pass_context=True, no_pm=True)
