@@ -117,7 +117,7 @@ class Account:
                 data = self._unknownuser(ctx, user)
             else:
                 if value in ('lfa','Looking for Alliance'):
-                    data = self._updated("Alliance":None)
+                    self._updated(ctx, "Alliance", None)
                 if value in ('lfa','lfm','merge'):
                     data = self._updated(ctx, key, valid[value])
                 else:
