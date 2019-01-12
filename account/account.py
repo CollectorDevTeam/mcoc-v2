@@ -99,7 +99,7 @@ class Account:
         else:
             data = self._updated(ctx, key, value)
             if self.nerdie[user.id]["Recruiting"] in ('Looking For Alliance',):
-                self._updated(ctx, "Recruiting":None)
+                self._updated(ctx, "Recruiting", None)
         await self.bot.say(embed=data)
 
 
