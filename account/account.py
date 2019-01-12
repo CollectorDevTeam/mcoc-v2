@@ -42,7 +42,7 @@ class Account:
 
         if user.id in self.nerdie:
             data = discord.Embed(description="CollectorVerse Profile", colour=user.colour)
-            for i in ['In-Game Name', 'Alliance', 'Recruiting', 'Age', 'Gender', 'Timezone', 'About', 'Other', 'Website']:
+            for i in ['MCOC username', 'Alliance', 'Recruiting', 'Age', 'Gender', 'Timezone', 'About', 'Other', 'Website']:
                 if i in self.nerdie[user.id]:
                     data.add_field(name=i+":", value=self.nerdie[user.id][i])
                 else:
@@ -262,7 +262,7 @@ class Account:
     def _updated(self, ctx, key, value):
         user = ctx.message.author
         data = discord.Embed(colour=user.colour)
-        if value == None:
+        if value in ('""',"''"," ","None","none","-",):
             data.pop(key, None)
             data.add_field(name="Congrats!:sparkles:", value="You have deleted {} from your account.".format(key))
         else:
