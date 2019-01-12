@@ -74,7 +74,7 @@ class Account:
 
     @commands.group(name="update", pass_context=True, invoke_without_command=True, no_pm=True)
     async def update(self, ctx):
-        """Update your TPC"""
+        """Update your CollectorVerse account`"""
         await send_cmd_help(ctx)
 
     @update.command(pass_context=True, no_pm=True)
@@ -135,7 +135,7 @@ class Account:
 
     @update.command(pass_context=True, no_pm=True)
     async def timezone(self, ctx, *, value):
-        """What's your timezone?"""
+        """What's your UTC timezone?"""
         key = "Timezone"
         user = ctx.message.author
         if 'UTC+' in value or 'UTC-' in value:
@@ -194,7 +194,7 @@ class Account:
 
     @update.command(pass_context=True, no_pm=True)
     async def job(self, ctx, *, job):
-        """Do you have a job?"""
+        """Do you have an alliance job?"""
         key = "Job"
         value = job
         user = ctx.message.author
