@@ -119,7 +119,7 @@ class Account:
                 data = self._unknownuser(ctx, user)
             else:
                 if value in ('lfa','Looking for Alliance'):
-                    self._updated(ctx, "Alliance", None)
+                    self.nerdie[user.id].pop("Alliance",None)
                 if value in ('lfa','lfm','merge'):
                     data = self._updated(ctx, key, valid[value])
                 else:
