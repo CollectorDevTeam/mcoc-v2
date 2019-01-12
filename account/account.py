@@ -100,6 +100,7 @@ class Account:
             if "Recruiting" in self.nerdie[user.id].keys():
                 if self.nerdie[user.id]["Recruiting"] == 'Looking For Alliance':
                     self.nerdie[user.id].pop("Recruiting",None)
+                    dataIO.save_json(self.profile, self.nerdie)
             data = self._updated(ctx, key, value)
             pass
         await self.bot.say(embed=data)
@@ -120,6 +121,7 @@ class Account:
             else:
                 if value in ('lfa','Looking for Alliance'):
                     self.nerdie[user.id].pop("Alliance",None)
+                    dataIO.save_json(self.profile, self.nerdie)
                 if value in ('lfa','lfm','merge'):
                     data = self._updated(ctx, key, valid[value])
                 else:
