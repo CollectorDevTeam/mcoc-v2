@@ -90,7 +90,7 @@ class Account:
         await self.bot.say(embed=data)
 
     @update.command(pass_context=True, no_pm=True)
-    async def ingame(self, ctx, *, value=None):
+    async def alliance(self, ctx, *, value=None):
         """What's your Alliance name?"""
         key = "Alliance"
         user = ctx.message.author
