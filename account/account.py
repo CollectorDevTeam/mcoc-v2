@@ -98,7 +98,7 @@ class Account:
             data = self._unknownuser(ctx, user)
         else:
             data = self._updated(ctx, key, value)
-            if self.nerdie[user.id]["Recruiting"]:
+            if "Recruiting" in self.nerdie[user.id]:
                 if self.nerdie[user.id]["Recruiting"] == 'Looking For Alliance':
                     self._updated(ctx, "Recruiting", None)
             pass
