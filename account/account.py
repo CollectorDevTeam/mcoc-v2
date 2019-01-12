@@ -98,9 +98,9 @@ class Account:
             data = self._unknownuser(ctx, user)
         else:
             data = self._updated(ctx, key, value)
-            if "Recruiting" in self.nerdie[user.id]:
-                if self.nerdie[user.id]["Recruiting"] == 'Looking For Alliance':
-                    self._updated(ctx, "Recruiting", None)
+            if "Recruiting" in self.nerdie[user.id].keys():
+                if self.nerdie[user.id]["Recruiting"] is 'Looking For Alliance':
+                    self.nerdie[user.id].pop("Recruiting",None)
             pass
         await self.bot.say(embed=data)
 
