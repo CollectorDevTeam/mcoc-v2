@@ -262,7 +262,7 @@ class Account:
     def _updated(self, ctx, key, value):
         user = ctx.message.author
         data = discord.Embed(colour=user.colour)
-        if value = None:
+        if value == None:
             data.pop(key, None)
             data.add_field(name="Congrats!:sparkles:", value="You have deleted {} from your account.".format(key))
         else:
