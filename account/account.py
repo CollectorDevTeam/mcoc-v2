@@ -97,7 +97,7 @@ class Account:
         if user.id not in self.nerdie:
             data = self._unknownuser(ctx, user)
         else:
-            if "Recruiting" in self.nerdie[user.id].keys():
+            if "Recruiting" in self.nerdie[user.id]:
                 if 'Looking for Alliance' in self.nerdie[user.id]["Recruiting"]:
                     self.nerdie[user.id].pop("Recruiting",None)
                     dataIO.save_json(self.profile, self.nerdie)
