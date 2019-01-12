@@ -69,7 +69,7 @@ class Account:
                 data = discord.Embed(colour=user.colour)
                 data.add_field(name="Error:warning:",value="{} doesn't have an account at the moment, sorry.".format(user.mention))
 
-            data.set_footer(text='CollectorDevTeam',
+            data.set_footer(text='CollectorDevTeam - use ``/account update`` to update.',
                     icon_url=self.COLLECTOR_ICON)
             await self.bot.say(embed=data)
 
