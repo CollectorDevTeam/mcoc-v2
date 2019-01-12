@@ -8,7 +8,6 @@ from .utils.chat_formatting import *
 from .hook import RosterUserConverter
 
 
-COLLECTOR_ICON = 'https://raw.githubusercontent.com/CollectorDevTeam/assets/master/data/cdt_icon.png'
 
 class Account:
     """The CollectorVerse Account Cog"""
@@ -17,6 +16,7 @@ class Account:
         self.bot = bot
         self.profile = "data/account/accounts.json"
         self.nerdie = dataIO.load_json(self.profile)
+        self.COLLECTOR_ICON='https://raw.githubusercontent.com/CollectorDevTeam/assets/master/data/cdt_icon.png'
 
     @commands.command(name="signup", pass_context=True, invoke_without_command=True, no_pm=True)
     async def _reg(self, ctx):
@@ -30,7 +30,7 @@ class Account:
             data.add_field(name="Error:warning:",value="Opps, it seems like you already have an account, {}.".format(user.mention))
 
         data.set_footer(text='CollectorDevTeam',
-                icon_url=COLLECTOR_ICON)
+                icon_url=self.COLLECTOR_ICON)
         await self.bot.say(embed=data)
 
     @commands.command(name="account", aliases=('profile',), pass_context=True, invoke_without_command=True, no_pm=True)
@@ -69,7 +69,7 @@ class Account:
             data.add_field(name="Error:warning:",value="{} doesn't have an account at the moment, sorry.".format(user.mention))
 
         data.set_footer(text='CollectorDevTeam',
-                icon_url=COLLECTOR_ICON)
+                icon_url=self.COLLECTOR_ICON)
         await self.bot.say(embed=data)
 
     @commands.group(name="update", pass_context=True, invoke_without_command=True, no_pm=True)
@@ -98,8 +98,8 @@ class Account:
             data = self._unknownuser(ctx, user)
         else:
             data = self._updated(ctx, key, value)
-            if self.nerdie[user.id]["Recruiting"] in ('Looking For Alliance',)
-            self._updated(ctx, "Recruiting":None)
+            if self.nerdie[user.id]["Recruiting"] in ('Looking For Alliance',):
+                self._updated(ctx, "Recruiting":None)
         await self.bot.say(embed=data)
 
 
@@ -126,7 +126,7 @@ class Account:
             data = discord.Embed(colour=user.colour)
             data.add_field(name="Error:warning:",value='Use one of the valid codes: lfa, lfm, merge.')
             data.set_footer(text='CollectorDevTeam',
-                    icon_url=COLLECTOR_ICON)
+                    icon_url=self.COLLECTOR_ICON)
         await self.bot.say(embed=data)
 
     @update.command(pass_context=True, no_pm=True)
@@ -143,7 +143,7 @@ class Account:
             data = discord.Embed(colour=user.colour)
             data.add_field(name="Error:warning:",value='Timezone value must be recorded in UTC+ or UTC- format.')
             data.set_footer(text='CollectorDevTeam',
-                    icon_url=COLLECTOR_ICON)
+                    icon_url=self.COLLECTOR_ICON)
         await self.bot.say(embed=data)
 
 
@@ -249,14 +249,14 @@ class Account:
         data = discord.Embed(colour=user.colour)
         data.add_field(name="Congrats!:sparkles:", value="You have officaly created your CollectorVerse account, {}.".format(user.mention))
         data.set_footer(text='CollectorDevTeam',
-                icon_url=COLLECTOR_ICON)
+                icon_url=self.COLLECTOR_ICON)
         return data
 
     def _unknownuser(self, ctx, user):
         data = discord.Embed(colour=user.colour)
         data.add_field(name="Error:warning:",value="Sadly, this feature is only available for people who had registered for an account. \n\nYou can register for a account today for free. All you have to do is say `{}signup` and you'll be all set.".format(ctx.prefix))
         data.set_footer(text='CollectorDevTeam',
-                icon_url=COLLECTOR_ICON)
+                icon_url=self.COLLECTOR_ICON)
         return data
 
     def _updated(self, ctx, key, value):
@@ -270,7 +270,7 @@ class Account:
             data.add_field(name="Congrats!:sparkles:",value="You have set your {} to {}".format(key, value))
         dataIO.save_json(self.profile, self.nerdie)
         data.set_footer(text='CollectorDevTeam',
-                icon_url=COLLECTOR_ICON)
+                icon_url=self.COLLECTOR_ICON)
         return data
 
 def check_folder():
