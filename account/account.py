@@ -98,8 +98,10 @@ class Account:
             data = self._unknownuser(ctx, user)
         else:
             data = self._updated(ctx, key, value)
-            if self.nerdie[user.id]["Recruiting"] in ('Looking For Alliance',):
-                self._updated(ctx, "Recruiting", None)
+            if self.nerdie[user.id]["Recruiting"]:
+                if self.nerdie[user.id]["Recruiting"] == 'Looking For Alliance':
+                    self._updated(ctx, "Recruiting", None)
+            pass
         await self.bot.say(embed=data)
 
 
