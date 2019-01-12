@@ -263,7 +263,7 @@ class Account:
         user = ctx.message.author
         data = discord.Embed(colour=user.colour)
         if value in ('""',"''"," ","None","none","-",):
-            data.pop(key, None)
+            self.nerdie[user.id].pop(key, None)
             data.add_field(name="Congrats!:sparkles:", value="You have deleted {} from your account.".format(key))
         else:
             self.nerdie[user.id].update({key : value})
