@@ -48,7 +48,7 @@ class Account:
                 data.add_field(name='Top 5 Champs', value='\n'.join(roster.top5), inline=False)
             else:
                 data.add_field(name='Prestige', value='User has no registerd CollectorVerse roster.\nUse the ``/roster`` command to get started.')
-            for i in ['MCOC username', 'Alliance', 'Recruiting', 'Age', 'Gender', 'Timezone', 'About', 'Other', 'Website']:
+            for i in ['MCOC username', 'Alliance', 'Job', 'Recruiting', 'Age', 'Gender', 'Timezone', 'About', 'Other', 'Website']:
                 if i in self.nerdie[user.id]:
                     data.add_field(name=i+":", value=self.nerdie[user.id][i])
                 else:
