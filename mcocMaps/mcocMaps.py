@@ -361,8 +361,8 @@ class MCOCMaps:
         if tier in rows:
             pages=[]
             for r in (1, 2, 3, ''):
-                if tier+r in cdt_sr['unique']:
-                    em=discord.embed(color=discord.Color.gold(),title='{} {}'.format(tier.title(), rank), description=cdt_sr[tier+r]['rewards'])
+                if '{}{}'.format(tier,r) in cdt_sr['unique']:
+                    em=discord.embed(color=discord.Color.gold(),title='{} {}'.format(tier.title(), rank), description=cdt_sr['{}{}'.format(tier,r)]['rewards'])
 
         else:
             await self.bot.say('Valid tiers: Master\nPlatinum\nGold\nSilver\nBronze\nStone\nParticipation')
