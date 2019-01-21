@@ -521,7 +521,7 @@ class MCOCMaps:
             if tier is 'expert' or tier <= 3 :
                 pathdata = aw_expert
             elif tier is 'hard' or tier == 6 or tier == 7 or tier == 8 or tier == 9:
-                pathdata = aw_hard :
+                pathdata = aw_hard 
             elif tier is 'challenger' or tier == 4 or tier == 5:
                 pathdata = aw_challenger
             elif tier is 'advanced':
