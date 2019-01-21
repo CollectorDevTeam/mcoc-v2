@@ -355,7 +355,7 @@ class MCOCMaps:
     async def _season_rewards(self, ctx, tier, rank=''):
         sgd = StaticGameData()
         cdt_sr = await sgd.get_gsheets_data('aw_season_rewards')
-        col = set(cdt_season_rewards.keys()) - {'_headers'}
+        col = set(cdt_sr.keys()) - {'_headers'}
         rows = sgd.tiers
         tier = tier.lower()
         if tier in rows:
