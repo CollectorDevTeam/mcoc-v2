@@ -347,7 +347,7 @@ class MCOCMaps:
             em.set_footer(icon_url=JPAGS+'/aw/images/app_icon.jpg',text='AllianceWar.com')
             await self.bot.say(embed=em)
 
-    @commands.group(pass_context=False, aliases=['aw',])
+    @commands.group(pass_context=True, aliases=['aw',])
     async def alliancewar(self, ctx):
         '''Alliancewar.com Commands [WIP]'''
 
