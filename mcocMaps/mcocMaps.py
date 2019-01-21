@@ -494,7 +494,8 @@ class MCOCMaps:
         await self.pages_menu(ctx=ctx, embed_list=page_list, timeout=60, page=tracks[track]-1)
 
     @alliancewar.command(pass_context=True, hidden=False, name="tiers", aliases=('tier'))
-    async def _tiers(self, ctx):
+    async def _tiers(self, ctx, *):
+        '''List Alliance War Tiers'''
         desc =  '''Tier   | Mult  | Difficulty
                 ```1      | 8.0   | Expert
                 2      | 7.0   | Expert
@@ -519,6 +520,7 @@ class MCOCMaps:
                 21     | 1.1   | Easy
                 22     | 1.0   | Easy```'''
         em = discord.Embed(color=discord.Color.gold(), title='Alliance War Tiers', descritpion=desc, url=JPAGS)
+        em.set_footer(text='CollectorDevTeam',icon_url=self.COLLECTOR_ICON)
         # em.set_image(url='https://us.v-cdn.net/6029252/uploads/editor/ok/zqyh48pgmptc.png') ## from Kabam_mike ~ Jan 2018
         await self.bot.say(embed=em)
 
