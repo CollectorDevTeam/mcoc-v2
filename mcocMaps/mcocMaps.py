@@ -545,11 +545,6 @@ class MCOCMaps:
         #                         | (?:(?P<star>[1-6])(?:star|s|★|☆|\\?\*))
         #                         ''',re.X)
 
-        if tier isinstance(int):
-
-
-
-
         tiers = {
             'expert':{ 'color' :discord.Color.gold()},
             'hard':{ 'color' :discord.Color.red()},
