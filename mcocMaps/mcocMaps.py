@@ -375,7 +375,7 @@ class MCOCMaps:
         season = 2
         if tier in {'expert','hard','challenger','intermediate','normal','easy'}:
             print('aw_node req: {} {}'.format(node, tier))
-            em = await self.get_awnode_details(ctx = ctx, nodeNumber=node,tier=tier)
+            em = await self.get_awnode_details(ctx = ctx, nodeNumber=int(node),tier=tier)
             await self.bot.say(embed=em)
         else:
             await self.bot.say('Valid tiers include: advanced, intermediate, challenger, hard, expert')
