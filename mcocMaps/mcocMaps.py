@@ -5,7 +5,7 @@ import os
 import requests
 from .utils.dataIO import dataIO
 from discord.ext import commands
-# from .mcocTools import StaticGameData
+from .mcocTools import StaticGameData
 
 JPAGS = 'http://www.alliancewar.com'
 PATREON = 'https://patreon.com/collectorbot'
@@ -353,7 +353,7 @@ class MCOCMaps:
 
     @alliancewar.command(pass_context=True, hidden=False, name='seasons', aliases=['rewards'])
     async def _season_rewards(self, ctx, tier, rank=''):
-        sgd = cogs.mcocTools.StaticGameData()
+        sgd = StaticGameData()
         cdt_sr = await sgd.get_gsheets_data('aw_season_rewards')
         col = set(cdt_season_rewards.keys()) - {'_headers'}
         rows = sgd.tiers
