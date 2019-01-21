@@ -356,18 +356,16 @@ class MCOCMaps:
         sgd = StaticGameData()
         cdt_sr = await sgd.get_gsheets_data('aw_season_rewards')
         col = set(cdt_sr.keys()) - {'_headers'}
-        rows = sgd.tiers
+        rows = ('master','platinum','gold','silver','bronze','stone','participation')
         tier = tier.lower()
         if tier in rows:
             pages=[]
             for r in (1, 2, 3, ''):
                 if tier+r in cdt_sr['unique']:
-                    em=discord.embed(color=discord.Color.gold(),)
+                    em=discord.embed(color=discord.Color.gold(),title='{} {}'.format(tier.title(), rank), description=cdt_sr[tier+r]['rewards'])
 
         else:
             await self.bot.say('Valid tiers: Master\nPlatinum\nGold\nSilver\nBronze\nStone\nParticipation')
-
-
 
     @alliancewar.command(pass_context=True, hidden=False, name="node")
     async def _node_info(self, ctx, node, tier = 'expert'):
