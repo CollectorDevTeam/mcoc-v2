@@ -493,8 +493,8 @@ class MCOCMaps:
 
         await self.pages_menu(ctx=ctx, embed_list=page_list, timeout=60, page=tracks[track]-1)
 
-    @alliancewar.command(pass_context=True, hidden=False, name="tiers", aliases=('tier'))
-    async def _tiers(self, ctx, *):
+    @alliancewar.command(pass_context=False, hidden=False, name="tiers", aliases=('tier'))
+    async def _tiers(self):
         '''List Alliance War Tiers'''
         desc =  '''Tier   | Mult  | Difficulty
                 ```1      | 8.0   | Expert
