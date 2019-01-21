@@ -351,7 +351,7 @@ class MCOCMaps:
     async def alliancewar(self, ctx):
         '''Alliancewar.com Commands [WIP]'''
 
-    @alliancewar.command(pass_context=True, hidden=True, name='seasons', aliases=['rewards'])
+    @alliancewar.command(pass_context=True, hidden=False, name='seasons', aliases=['rewards'])
     async def _season_rewards(self, ctx, tier, rank=''):
         sgd = cogs.mcocTools.StaticGameData()
         cdt_sr = await sgd.get_gsheets_data('aw_season_rewards')
