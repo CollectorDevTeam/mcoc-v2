@@ -346,12 +346,12 @@ class MCOCMaps:
 
 
     @alliancewar.command(pass_context=True, hidden=False, name="node")
-    async def _node_info(self, ctx, nodeNumber, tier = 'expert'):
+    async def _node_info(self, ctx, node, tier = 'expert'):
         '''Report Node information.'''
         season = 2
         if tier in {'expert','hard','challenger','intermediate','normal','easy'}:
-            print('aw_node req: '+nodenumber+' '+tier)
-            em = await self.get_awnode_details(ctx = ctx, nodeNumber=nodeNumber,tier=tier)
+            print('aw_node req: '+node+' '+tier)
+            em = await self.get_awnode_details(ctx = ctx, nodeNumber=node,tier=tier)
             await self.bot.say(embed=em)
         else:
             await self.bot.say('Valid tiers include: advanced, intermediate, challenger, hard, expert')
@@ -363,10 +363,10 @@ class MCOCMaps:
         season = 2
         page_list = []
         if tier in {'expert','hard','challenger','intermediate','normal','easy'}:
-            nodeNumbers = nodes.split(' ')
-            for nodeNumber in nodeNumbers:
-                print('aw_nodes req: '+nodenumber+' '+tier)
-                em = await self.get_awnode_details(ctx = ctx, nodeNumber=nodeNumber,tier=tier)
+            # nodeNumbers = nodes.split(' ')
+            for node in nodes.split(' '):
+                print('aw_nodes req: '+node+' '+tier)
+                em = await self.get_awnode_details(ctx = ctx, nodeNumber=node,tier=tier)
                 mapurl = '{}warmap_3_{}.png'.format(self.basepath,tier.lower())
                 em.set_image(url=mapurl)
                 page_list.append(em)
