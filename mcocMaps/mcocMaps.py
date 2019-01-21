@@ -345,7 +345,7 @@ class MCOCMaps:
 
 
 
-    @alliancewar.command(pass_context=True, hidden=True, name="node")
+    @alliancewar.command(pass_context=True, hidden=False, name="node")
     async def _node_info(self, ctx, nodeNumber, tier = 'expert'):
         '''Report Node information.'''
         season = 2
@@ -358,7 +358,8 @@ class MCOCMaps:
 
     @alliancewar.command(pass_context=True, hidden=True, name="nodes")
     async def _nodes_info(self, ctx, tier: str, *, nodes):
-        '''Report Node information.'''
+        '''Report Node information.
+        This command has a reported defect and it is being investigatedself.'''
         season = 2
         page_list = []
         if tier in {'expert','hard','challenger','intermediate','normal','easy'}:
@@ -438,7 +439,7 @@ class MCOCMaps:
         em.set_footer(icon_url=JPAGS+'/aw/images/app_icon.jpg',text='AllianceWar.com')
         return em
 
-    @alliancewar.command(pass_context=True, hidden=True, name="map")
+    @alliancewar.command(pass_context=True, hidden=False, name="map")
     async def _map(self, ctx, tier = 'expert'):
         '''Report AW track information.'''
         season = 2
@@ -458,7 +459,7 @@ class MCOCMaps:
 
 
 
-    @alliancewar.command(pass_context=True, hidden=True, name="path", aliases=('tracks','track','paths'))
+    @alliancewar.command(pass_context=True, hidden=False, name="path", aliases=('tracks','track','paths'))
     async def _path_info(self, ctx, track='A', tier = 'expert'):
         '''Report AW track information.'''
         season = 2
@@ -521,7 +522,7 @@ class MCOCMaps:
             if tier is 'expert' or tier <= 3 :
                 pathdata = aw_expert
             elif tier is 'hard' or tier == 6 or tier == 7 or tier == 8 or tier == 9:
-                pathdata = aw_hard 
+                pathdata = aw_hard
             elif tier is 'challenger' or tier == 4 or tier == 5:
                 pathdata = aw_challenger
             elif tier is 'advanced':
