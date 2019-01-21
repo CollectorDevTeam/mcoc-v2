@@ -493,14 +493,37 @@ class MCOCMaps:
 
         await self.pages_menu(ctx=ctx, embed_list=page_list, timeout=60, page=tracks[track]-1)
 
-    @alliancewar.command(pass_context=True, hidden=True, name="tiers", aliases=('tier'))
+    @alliancewar.command(pass_context=True, hidden=False, name="tiers", aliases=('tier'))
     async def _tiers(self, ctx):
-        em = discord.Embed(color=discord.Color.gold(), title='Alliance War Tiers', descritpion='', url=JPAGS)
-        em.set_image(url='https://us.v-cdn.net/6029252/uploads/editor/ok/zqyh48pgmptc.png') ## from Kabam_mike ~ Jan 2018
+        desc =  '''Tier   | Mult  | Difficulty
+                ```1      | 8.0   | Expert
+                2      | 7.0   | Expert
+                3      | 6.0   | Expert
+                4      | 4.5   | Challenger
+                5      | 4.0   | Challenger
+                6      | 3.4   | Hard
+                7      | 3.2   | Hard
+                8      | 3.0   | Hard
+                9      | 2.8   | Hard
+                10     | 2.4   | Intermediate
+                11     | 2.3   | Intermediate
+                12     | 2.2   | Intermediate
+                13     | 2.0   | Normal
+                14     | 1.9   | Normal
+                15     | 1.8   | Normal
+                16     | 1.6   | Easy
+                17     | 1.5   | Easy
+                18     | 1.4   | Easy
+                19     | 1.3   | Easy
+                20     | 1.2   | Easy
+                21     | 1.1   | Easy
+                22     | 1.0   | Easy```'''
+        em = discord.Embed(color=discord.Color.gold(), title='Alliance War Tiers', descritpion=desc, url=JPAGS)
+        # em.set_image(url='https://us.v-cdn.net/6029252/uploads/editor/ok/zqyh48pgmptc.png') ## from Kabam_mike ~ Jan 2018
         await self.bot.say(embed=em)
 
     @alliancewar.command(pass_context=True, hidden=True, name="scout")
-    async def _scout(self, ctx, tier, node, hp: int, attack: int, *, hargs):
+    async def _scout(self, ctx, tier, node, hp, attack, *, hargs):
         '''
         JM's Scouter Lens inspection tool.
         The Scouter Lens Mastery must contain at least 1 point.
@@ -508,16 +531,24 @@ class MCOCMaps:
         Valid Options:
         <tier>  : T1 - T22, expert, challenger, hard, inter, normal, easy
         <node>  : 1 - 55
+        <hp>    : hp12345, h12345, 12345
+        <attack>: a1234, atk1234, 1234
         [class] : science, skill, mutant, tech, cosmic, mystic
         [star]  : 4, 5, 6
 
         '''
-        # default = {'hp': 0, 'atk': 0, 'node' : 0, 'class' : '', 'star': ''}
-        # pares_re = re.compile(r'''(?:(h,hp)(?P<hp>[0-9]{1,6}))
+        # default = {'tier': 0, 'difficulty' : 'expert', 'hp': 0, 'atk': 0, 'node' : 0, 'class' : '', 'star': ''}
+        # parse_re = re.compile(r'''(?:(h,hp)(?P<hp>[0-9]{1,6}))
+        #                         | (?:(t,tier)(?P<tier>[0-9]{1,2}))
         #                         | (?:(a,atk)(?P<atk>[0-9]{1,5}))
         #                         | (?:(n,node)(?P<node>[0-9]{1,2}))
         #                         | (?:(?P<star>[1-6])(?:star|s|★|☆|\\?\*))
         #                         ''',re.X)
+
+        if tier isinstance(int):
+
+
+
 
         tiers = {
             'expert':{ 'color' :discord.Color.gold()},
