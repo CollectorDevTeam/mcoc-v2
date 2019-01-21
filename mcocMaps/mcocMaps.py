@@ -119,6 +119,30 @@ class MCOCMaps:
 
     }
 
+    aw_tiers = {1 : {'mult': 8.0, 'diff': 'Expert','color' :discord.Color.gold()},
+                2 : {'mult': 7.0, 'diff': 'Expert','color' :discord.Color.gold()},
+                3 : {'mult': 6.0, 'diff': 'Expert','color' :discord.Color.gold()},
+                4 : {'mult': 4.5, 'diff': 'Challenger','color' :discord.Color.red()},
+                5 : {'mult': 4.0, 'diff': 'Challenger','color' :discord.Color.red()},
+                6 : {'mult': 3.4, 'diff': 'Hard','color' :discord.Color.orange()},
+                7 : {'mult': 3.2, 'diff': 'Hard','color' :discord.Color.orange()},
+                8 : {'mult': 3.0, 'diff': 'Hard','color' :discord.Color.orange()},
+                9 : {'mult': 2.8, 'diff': 'Hard','color' :discord.Color.orange()},
+                10 : {'mult': 2.4, 'diff': 'Intermediate','color' :discord.Color.blue()},
+                11 : {'mult': 2.3, 'diff': 'Intermediate','color' :discord.Color.blue()},
+                12 : {'mult': 2.2, 'diff': 'Intermediate','color' :discord.Color.blue()},
+                13 : {'mult': 2.0, 'diff': 'Normal','color' :discord.Color.green()},
+                14 : {'mult': 1.9, 'diff': 'Normal','color' :discord.Color.green()},
+                15 : {'mult': 1.8, 'diff': 'Normal','color' :discord.Color.green()},
+                16 : {'mult': 1.6, 'diff': 'Easy','color' :discord.Color.green()},
+                17 : {'mult': 1.5, 'diff': 'Easy','color' :discord.Color.green()},
+                18 : {'mult': 1.4, 'diff': 'Easy','color' :discord.Color.green()},
+                19 : {'mult': 1.3, 'diff': 'Easy','color' :discord.Color.green()},
+                20 : {'mult': 1.2, 'diff': 'Easy','color' :discord.Color.green()},
+                21 : {'mult': 1.1, 'diff': 'Easy','color' :discord.Color.green()},
+                22 : {'mult': 1.0, 'diff': 'Easy','color' :discord.Color.green()},
+    }
+
     enigmatics = {
         'maestro':['Maestro','At the start of the fight, Maestro changes his class abilities depending on his Opponent.' \
                     '\n**vs. MYSTIC** Applies different Debuffs depending on specific actions taken by Maestro and his Opponents' \
@@ -350,31 +374,31 @@ class MCOCMaps:
         '''Report Node information.'''
         season = 2
         if tier in {'expert','hard','challenger','intermediate','normal','easy'}:
-            print('aw_node req: '+node+' '+tier)
+            print('aw_node req: {} {}'.format(node, tier))
             em = await self.get_awnode_details(ctx = ctx, nodeNumber=node,tier=tier)
             await self.bot.say(embed=em)
         else:
             await self.bot.say('Valid tiers include: advanced, intermediate, challenger, hard, expert')
 
-    @alliancewar.command(pass_context=True, hidden=True, name="nodes")
-    async def _nodes_info(self, ctx, tier: str, *, nodes):
-        '''Report Node information.
-        This command has a reported defect and it is being investigatedself.'''
-        season = 2
-        page_list = []
-        if tier in {'expert','hard','challenger','intermediate','normal','easy'}:
-            # nodeNumbers = nodes.split(' ')
-            for node in nodes.split(' '):
-                print('aw_nodes req: '+node+' '+tier)
-                em = await self.get_awnode_details(ctx = ctx, nodeNumber=node,tier=tier)
-                mapurl = '{}warmap_3_{}.png'.format(self.basepath,tier.lower())
-                em.set_image(url=mapurl)
-                page_list.append(em)
-                # await self.bot.say(embed=em)
-            if len(page_list) > 0:
-                await self.pages_menu(ctx=ctx, embed_list=page_list, timeout=60, page=0)
-        else:
-            await self.bot.say('Valid tiers include: advanced, intermediate, challenger, hard, expert')
+    # @alliancewar.command(pass_context=True, hidden=True, name="nodes")
+    # async def _nodes_info(self, ctx, tier: str, *, nodes):
+    #     '''Report Node information.
+    #     This command has a reported defect and it is being investigatedself.'''
+    #     season = 2
+    #     page_list = []
+    #     if tier in {'expert','hard','challenger','intermediate','normal','easy'}:
+    #         # nodeNumbers = nodes.split(' ')
+    #         for node in nodes.split(' '):
+    #             print('aw_nodes req: '+node+' '+tier)
+    #             em = await self.get_awnode_details(ctx = ctx, nodeNumber=node,tier=tier)
+    #             mapurl = '{}warmap_3_{}.png'.format(self.basepath,tier.lower())
+    #             em.set_image(url=mapurl)
+    #             page_list.append(em)
+    #             # await self.bot.say(embed=em)
+    #         if len(page_list) > 0:
+    #             await self.pages_menu(ctx=ctx, embed_list=page_list, timeout=60, page=0)
+    #     else:
+    #         await self.bot.say('Valid tiers include: advanced, intermediate, challenger, hard, expert')
 
 
     async def get_awnode_details(self, ctx, nodeNumber, tier):
@@ -496,30 +520,10 @@ class MCOCMaps:
     @alliancewar.command(pass_context=False, hidden=False, name="tiers", aliases=('tier'))
     async def _tiers(self):
         '''List Alliance War Tiers'''
-        desc =  '''Tier   | Mult  | Difficulty
-                ```1      | 8.0   | Expert
-                2      | 7.0   | Expert
-                3      | 6.0   | Expert
-                4      | 4.5   | Challenger
-                5      | 4.0   | Challenger
-                6      | 3.4   | Hard
-                7      | 3.2   | Hard
-                8      | 3.0   | Hard
-                9      | 2.8   | Hard
-                10     | 2.4   | Intermediate
-                11     | 2.3   | Intermediate
-                12     | 2.2   | Intermediate
-                13     | 2.0   | Normal
-                14     | 1.9   | Normal
-                15     | 1.8   | Normal
-                16     | 1.6   | Easy
-                17     | 1.5   | Easy
-                18     | 1.4   | Easy
-                19     | 1.3   | Easy
-                20     | 1.2   | Easy
-                21     | 1.1   | Easy
-                22     | 1.0   | Easy```'''
+        name =  '''Tier   | Mult  | Difficulty'''
+        value = '\n'.join(str(m)+'   | '+aw_tiers[m]['mult']+'   | ' + aw_tiers[m]['diff'] for m in aw_tiers.keys())
         em = discord.Embed(color=discord.Color.gold(), title='Alliance War Tiers', descritpion=desc, url=JPAGS)
+        add_field(name=name, value=value)
         em.set_footer(text='CollectorDevTeam',icon_url=self.COLLECTOR_ICON)
         # em.set_image(url='https://us.v-cdn.net/6029252/uploads/editor/ok/zqyh48pgmptc.png') ## from Kabam_mike ~ Jan 2018
         await self.bot.say(embed=em)
