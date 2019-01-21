@@ -272,7 +272,7 @@ class MCOCMaps:
     async def alliance(self, ctx):
         '''Alliance Commands'''
 
-    @alliance.command(pass_context=True, name='setalliancerole', hidden=True)
+    @alliance.command(pass_context=True, name='setalliancerole', hidden=False)
     async def _set_alliance_role(self, ctx, role : discord.Role):
         '''Alliance Set subcommands'''
         server = ctx.message.server
@@ -323,7 +323,7 @@ class MCOCMaps:
             em.set_footer(icon_url=JPAGS+'/aw/images/app_icon.jpg',text='AllianceWar.com')
             await self.bot.say(embed=em)
 
-    @commands.group(pass_context=True, aliases=['aw',])
+    @commands.group(pass_context=False, aliases=['aw',])
     async def alliancewar(self, ctx):
         '''Alliancewar.com Commands [WIP]'''
 
@@ -350,7 +350,7 @@ class MCOCMaps:
         '''Report Node information.'''
         season = 2
         if tier in {'expert','hard','challenger','intermediate','normal','easy'}:
-
+            print('aw_node req: '+nodenumber+' '+tier)
             em = await self.get_awnode_details(ctx = ctx, nodeNumber=nodeNumber,tier=tier)
             await self.bot.say(embed=em)
         else:
@@ -365,6 +365,7 @@ class MCOCMaps:
         if tier in {'expert','hard','challenger','intermediate','normal','easy'}:
             nodeNumbers = nodes.split(' ')
             for nodeNumber in nodeNumbers:
+                print('aw_nodes req: '+nodenumber+' '+tier)
                 em = await self.get_awnode_details(ctx = ctx, nodeNumber=nodeNumber,tier=tier)
                 mapurl = '{}warmap_3_{}.png'.format(self.basepath,tier.lower())
                 em.set_image(url=mapurl)
@@ -499,7 +500,18 @@ class MCOCMaps:
         await self.bot.say(embed=em)
 
     @alliancewar.command(pass_context=True, hidden=True, name="scout")
-    async def _scout(self, ctx, tier, node: int, hp: int, attack: int, *, hargs):
+    async def _scout(self, ctx, tier, node, hp: int, attack: int, *, hargs):
+        '''
+        JM's Scouter Lens inspection tool.
+        The Scouter Lens Mastery must contain at least 1 point.
+
+        Valid Options:
+        <tier>  : T1 - T22, expert, challenger, hard, inter, normal, easy
+        <node>  : 1 - 55
+        [class] : science, skill, mutant, tech, cosmic, mystic
+        [star]  : 4, 5, 6
+
+        '''
         # default = {'hp': 0, 'atk': 0, 'node' : 0, 'class' : '', 'star': ''}
         # pares_re = re.compile(r'''(?:(h,hp)(?P<hp>[0-9]{1,6}))
         #                         | (?:(a,atk)(?P<atk>[0-9]{1,5}))
@@ -535,8 +547,7 @@ class MCOCMaps:
         em.add_field(name='nodedetails', value=nodedetails)
         em.add_field(name='observed hp', value='{}'.format(hp))
         em.add_field(name='observed attack', value='{}'.format(attack))
-
-
+        em.set_footer(text='CollectorDevTeam + JM\'s Scouter Lens Bot',icon_url=self.COLLECTOR_ICON)
 
 
         tiers = {'expert':discord.Color.gold(),'hard':discord.Color.red(),'challenger':discord.Color.orange(),'intermediate':discord.Color.blue(),'advanced':discord.Color.green()}
@@ -549,6 +560,29 @@ class MCOCMaps:
             if c in hargs:
                 champ_class = c
 
+
+    async def jm_send_request(self, url, data):
+        ''' Send request to service'''
+        response = requests.post(url, json=data)
+        if response.status_code == 200 or response.status_code == 400:
+            return response.json()
+        else:
+            return {'error': 'unknown response'}
+
+
+    async def jm_format_champ(self, champ, champ_class):
+        ''' Format champ name for display '''
+        return '{0} {1}★ {2} r{3}'.format(
+            self.class_emoji[champ_class],
+            champ[0],
+            champ[2:-2],
+            champ[-1]
+        )
+
+    async def jm_parse_champ_filter(self, champ_filter):
+        star_filter = ''.join(ch for ch in champ_filter if ch.isdigit())
+        champ_filter = ''.join(ch for ch in champ_filter if ch.isalpha())
+        return star_filter, champ_filter
 
 
     async def pages_menu(self, ctx, embed_list: list, category: str='', message: discord.Message=None, page=0, timeout: int=30, choice=False):
