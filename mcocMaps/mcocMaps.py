@@ -21,6 +21,12 @@ aw_intermediate = json.loads(requests.get('https://raw.githubusercontent.com/Col
 
 class MCOCMaps:
     '''Maps for Marvel Contest of Champions'''
+    aw_maps = {'advanced': aw_advanced,
+        'challenger': aw_challenger,
+        'expert': aw_expert,
+        'hard' : aw_hard,
+        'intermediate': aw_intermediate
+        }
 
     aq_map = {
         'cheatsheet':{'map':'cheatsheetv2', 'maptitle':'Season 5 Cheat Sheet'},
@@ -371,12 +377,13 @@ class MCOCMaps:
     async def _node_info(self, ctx, node, tier = 'expert'):
         '''Report Node information.'''
         season = 2
-        if tier in {'expert','hard','challenger','intermediate','normal','easy'}:
+        tier = tier.lower()
+        if tier in self.aw_maps.keys():
             print('aw_node req: {} {}'.format(node, tier))
             em = await self.get_awnode_details(ctx = ctx, nodeNumber=int(node),tier=tier)
             await self.bot.say(embed=em)
         else:
-            await self.bot.say('Valid tiers include: advanced, intermediate, challenger, hard, expert')
+            await self.bot.say('Valid tiers include: {}'.format(', '.join(self.aw_maps.keys())))
 
     # @alliancewar.command(pass_context=True, hidden=True, name="nodes")
     # async def _nodes_info(self, ctx, tier: str, *, nodes):
@@ -406,32 +413,35 @@ class MCOCMaps:
             'hard':{ 'color' :discord.Color.red(), 'minis': [48,51,52,53,55], 'boss':[54]},
             'challenger':{ 'color' :discord.Color.orange(), 'minis': [27,28,29,30,31,48,51,52,53,55], 'boss':[54]},
             'intermediate':{ 'color' :discord.Color.blue(), 'minis': [48,51,52,53,55], 'boss':[54]},
-            'advanced':{ 'color' :discord.Color.green(), 'minis': [], 'boss':[]}}
+            'advanced':{ 'color' :discord.Color.green(), 'minis': [], 'boss':[]},
+            }
         if tier not in tiers:
-            jpagstier = 'advanced'
-        else:
-            jpagstier = tier
-        if tier in tiers:
-            # pathurl = 'http://www.alliancewar.com/aw/js/aw_s{}_{}_9path.json'.format(tier)
-            if tier is 'expert':
-                pathdata = aw_expert
-            elif tier is 'hard':
-                pathdata = aw_hard
-            elif tier is 'challenger':
-                pathdata = aw_challenger
-            elif tier is 'advanced':
-                pathdata = aw_advanced
-            else:
-                pathdata = aw_intermediate
+            tier = 'advanced'
+        #     jpagstier = 'advanced'
+        # else:
+        #     jpagstier = tier
+        # if tier in tiers:
+        #     # pathurl = 'http://www.alliancewar.com/aw/js/aw_s{}_{}_9path.json'.format(tier)
+        #     if tier is 'expert':
+        #         pathdata = aw_expert
+        #     elif tier is 'hard':
+        #         pathdata = aw_hard
+        #     elif tier is 'challenger':
+        #         pathdata = aw_challenger
+        #     elif tier is 'advanced':
+        #         pathdata = aw_advanced
+        #     else:
+        #         pathdata = aw_intermediate
+        pathdata= self.aw_maps[tier]
         # if paths is not None:
             # await self.bot.say('DEBUG: 9path.json loaded from alliancewar.com')
-        if int(nodeNumber) in tiers[jpagstier]['minis']:
+        if int(nodeNumber) in tiers[tier]['minis']:
             title='{} MINIBOSS Node {} Boosts'.format(tier.title(),nodeNumber)
-        elif int(nodeNumber) in tiers[jpagstier]['boss']:
+        elif int(nodeNumber) in tiers[tier]['boss']:
             title='{} BOSS Node {} Boosts'.format(tier.title(),nodeNumber)
         else:
             title='{} Node {} Boosts'.format(tier.title(),nodeNumber)
-        em = discord.Embed(color=tiers[jpagstier]['color'], title=title, descritpion='', url=JPAGS)
+        em = discord.Embed(color=tiers[tier]['color'], title=title, descritpion='', url=JPAGS)
         nodedetails = pathdata['boosts'][str(nodeNumber)]
         for n in nodedetails:
             title, text = '','No description. Report to @jpags#5202'
@@ -452,7 +462,7 @@ class MCOCMaps:
                             text = text.replace('}%}','}%').format(bump)  #wrote specifically for limber_percent
                         print('nodename: {}\ntitle: {}\nbump: {}\ntext: {}'.format(nodename, boosts[nodename]['title'], bump, boosts[nodename]['text']))
                 else:
-                    text = 'Description text is missing from alliancwar.com.  Report to @jpags#5202.'
+                    text = 'Description text is missing from alliancewar.com.  Report to @jpags#5202.'
             else:
                 title = 'Error: {}'.format(nodename)
                 value = 'Boost details for {} missing from alliancewar.com.  Report to @jpags#5202.'.format(nodename)
