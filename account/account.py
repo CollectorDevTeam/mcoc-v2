@@ -45,14 +45,18 @@ class Account:
                 data = self._createuser(user)
 
             if user.id in self.nerdie:
-                data = discord.Embed(description="CollectorVerse Profile", colour=user.colour)
+                if 'MCOC username' in self.nerdie[user.id]:
+                    desc = 'MCOC in-game id: {}'.format(self.nerdie[user.id]['MCOC username'])
+                else:
+                    desc = 'No MCOC in-game id registered.'
+                data = discord.Embed(title="CollectorVerse Profile", colour=user.colour, description=desc)
                 roster = await RosterUserConverter(ctx, user.mention).convert()
                 if roster:
                     data.add_field(name='Prestige', value=roster.prestige, inline=False)
                     data.add_field(name='Top 5 Champs', value='\n'.join(roster.top5), inline=False)
                 else:
                     data.add_field(name='Prestige', value='User has no registerd CollectorVerse roster.\nUse the ``/roster`` command to get started.')
-                for i in ['MCOC username', 'Alliance', 'Job', 'Recruiting', 'Age', 'Gender', 'Timezone', 'About', 'Other', 'Website']:
+                for i in ['Alliance', 'Job', 'Recruiting', 'Age', 'Gender', 'Timezone', 'About', 'Other', 'Website']:
                     if i in self.nerdie[user.id]:
                         data.add_field(name=i+":", value=self.nerdie[user.id][i])
                     else:
@@ -75,7 +79,7 @@ class Account:
                     data = discord.Embed(colour=discord.Color.gold())
                 data.add_field(name="Error:warning:",value="{} doesn't have an account at the moment, sorry.".format(user.mention))
 
-            data.set_footer(text='CollectorDevTeam - use ``/account update`` to update.',
+            data.set_footer(text='CollectorDevTeam - customize with /account update',
                     icon_url=self.COLLECTOR_ICON)
             await self.bot.say(embed=data)
 
