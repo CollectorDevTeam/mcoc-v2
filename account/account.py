@@ -80,7 +80,7 @@ class Account:
     async def _delete(self,ctx):
         '''Delete your CollectorVerse account'''
         user = ctx.message.author
-        if user.id is in self.nerdie:
+        if user.id in self.nerdie:
             self.nerdie.pop(user.id, None)
             dataIO.save_json(self.profile, self.nerdie)
         data.add_field(name="Congrats!:sparkles:", value="You have deleted your CollectorVerse account.")
