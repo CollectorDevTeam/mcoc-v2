@@ -36,7 +36,12 @@ class Account:
     # @commands.command(name="account", aliases=('profile',), pass_context=True, invoke_without_command=True, no_pm=True)
     @commands.group(name="account", aliases=('profile',), pass_context=True, invoke_without_command=True)
     async def _acc(self, ctx, user : discord.Member=None):
-        """Your/Others Account"""
+        """CollectorVerse Account
+
+        In-Game username
+        CollectorVerse Roster Top 5 + Prestige
+        Alliance, Job, Age, Gender, Timezone, About, Website
+        """
 
         if ctx.invoked_subcommand is None:
             if not user:
@@ -53,7 +58,7 @@ class Account:
                     color = user.colour
                 except:
                     color = discord.Color.gold()
-                data = discord.Embed(title="CollectorVerse Profile", colour=color, description=desc)
+                data = discord.Embed(title="CollectorVerse Profile", colour=color, description=desc, url='https://discord.gg/umcoc')
                 roster = await RosterUserConverter(ctx, user.mention).convert()
                 if roster:
                     data.add_field(name='Prestige', value=roster.prestige, inline=False)
