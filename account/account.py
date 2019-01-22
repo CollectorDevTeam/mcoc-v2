@@ -34,7 +34,7 @@ class Account:
     #             icon_url=self.COLLECTOR_ICON)
     #     await self.bot.say(embed=data)
 
-    @commands.command(name="account", aliases=('profile',), pass_context=True, invoke_without_command=True, no_pm=True)
+    @commands.group(name="account", aliases=('profile',), pass_context=True, invoke_without_command=True, no_pm=True)
     # @commands.group(name="account", aliases=('profile',), pass_context=True, invoke_without_command=True)
     async def _acc(self, ctx, user : discord.Member=None):
         """CollectorVerse Account
