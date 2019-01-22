@@ -18,28 +18,31 @@ class Account:
         self.nerdie = dataIO.load_json(self.profile)
         self.COLLECTOR_ICON='https://raw.githubusercontent.com/CollectorDevTeam/assets/master/data/cdt_icon.png'
 
-    @commands.command(name="signup", pass_context=True, invoke_without_command=True, no_pm=True)
-    async def _reg(self, ctx):
-        """Sign up to get your own account today!"""
-        user = ctx.message.author
-
-        if user.id not in self.nerdie:
-            data = self._createuser(user)
-        else:
-            data = discord.Embed(colour=user.colour)
-            data.add_field(name="Error:warning:",value="Opps, it seems like you already have an account, {}.".format(user.mention))
-
-        data.set_footer(text='CollectorDevTeam',
-                icon_url=self.COLLECTOR_ICON)
-        await self.bot.say(embed=data)
+    # @commands.command(name="signup", pass_context=True, invoke_without_command=True, no_pm=True)
+    # async def _reg(self, ctx):
+    #     """Sign up to get your own account today!"""
+    #     user = ctx.message.author
+    #
+    #     if user.id not in self.nerdie:
+    #         data = self._createuser(user)
+    #     else:
+    #         data = discord.Embed(colour=user.colour)
+    #         data.add_field(name="Error:warning:",value="Opps, it seems like you already have an account, {}.".format(user.mention))
+    #
+    #     data.set_footer(text='CollectorDevTeam',
+    #             icon_url=self.COLLECTOR_ICON)
+    #     await self.bot.say(embed=data)
 
     # @commands.command(name="account", aliases=('profile',), pass_context=True, invoke_without_command=True, no_pm=True)
     @commands.group(name="account", aliases=('profile',), pass_context=True, invoke_without_command=True)
     async def _acc(self, ctx, user : discord.Member=None):
         """Your/Others Account"""
+
         if ctx.invoked_subcommand is None:
             if not user:
                 user = ctx.message.author
+            if user.id not in self.nerdie:
+                data = self._createuser(user)
 
             if user.id in self.nerdie:
                 data = discord.Embed(description="CollectorVerse Profile", colour=user.colour)
