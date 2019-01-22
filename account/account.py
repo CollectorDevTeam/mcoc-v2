@@ -51,7 +51,7 @@ class Account:
 
             if user.id in self.nerdie:
                 if 'MCOC username' in self.nerdie[user.id]:
-                    desc = 'MCOC in-game id: {}'.format(self.nerdie[user.id]['MCOC username'])
+                    desc = 'MCOC in-game id: **{}**'.format(self.nerdie[user.id]['MCOC username'])
                 else:
                     desc = 'No MCOC in-game id registered.'
                 try:
