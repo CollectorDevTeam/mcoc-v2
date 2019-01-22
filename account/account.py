@@ -76,14 +76,14 @@ class Account:
                     icon_url=self.COLLECTOR_ICON)
             await self.bot.say(embed=data)
 
-    @_acc.commands(pass_context=True, name="delete")
-    async def _delete(self,ctx):
-        '''Delete your CollectorVerse account'''
-        user = ctx.message.author
-        if user.id in self.nerdie:
-            self.nerdie.pop(user.id, None)
-            dataIO.save_json(self.profile, self.nerdie)
-        data.add_field(name="Congrats!:sparkles:", value="You have deleted your CollectorVerse account.")
+    # @_acc.commands(pass_context=True, name="delete")
+    # async def _delete(self,ctx):
+    #     '''Delete your CollectorVerse account'''
+    #     user = ctx.message.author
+    #     if user.id in self.nerdie:
+    #         self.nerdie.pop(user.id, None)
+    #         dataIO.save_json(self.profile, self.nerdie)
+    #     data.add_field(name="Congrats!:sparkles:", value="You have deleted your CollectorVerse account.")
 
 
     # @commands.group(name="update", pass_context=True, invoke_without_command=True, no_pm=True)
