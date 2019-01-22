@@ -76,7 +76,7 @@ class Account:
                     icon_url=self.COLLECTOR_ICON)
             await self.bot.say(embed=data)
 
-    @acc.commands(pass_context=True, name="delete")
+    @_acc.commands(pass_context=True, name="delete")
     async def _delete(self,ctx):
         '''Delete your CollectorVerse account'''
         if ctx.message.author.id in self.nerdie:
