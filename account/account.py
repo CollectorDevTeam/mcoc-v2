@@ -66,13 +66,17 @@ class Account:
             elif user == ctx.message.author:
                 data = self._unknownuser(ctx, user)
             else:
-                data = discord.Embed(colour=user.colour)
+                try:
+                    data = discord.Embed(colour=user.colour)
+                except:
+                    data = discord.Embed(colour=discord.Color.gold())
                 data.add_field(name="Error:warning:",value="{} doesn't have an account at the moment, sorry.".format(user.mention))
 
             data.set_footer(text='CollectorDevTeam - use ``/account update`` to update.',
                     icon_url=self.COLLECTOR_ICON)
             await self.bot.say(embed=data)
 
+    @acc.commands(pass_context=True, name="delete")
     # @commands.group(name="update", pass_context=True, invoke_without_command=True, no_pm=True)
     @_acc.group(name="update", pass_context=True, invoke_without_command=True, no_pm=True)
     async def update(self, ctx):
