@@ -50,9 +50,9 @@ class Account:
                 else:
                     desc = 'No MCOC in-game id registered.'
                 try:
-                    color = discord.Embed(colour=user.colour)
+                    color = user.colour
                 except:
-                    color = discord.Embed(colour=discord.Color.gold())
+                    color = discord.Color.gold()
                 data = discord.Embed(title="CollectorVerse Profile", colour=color, description=desc)
                 roster = await RosterUserConverter(ctx, user.mention).convert()
                 if roster:
