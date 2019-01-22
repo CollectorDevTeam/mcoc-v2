@@ -1,4 +1,5 @@
 import discord
+import datetime
 from discord.ext import commands
 from .utils.dataIO import dataIO
 from .utils import checks
@@ -40,7 +41,7 @@ class Account:
 
         In-Game username
         CollectorVerse Roster Top 5 + Prestige
-        Alliance, Job, Age, Gender, Timezone, About, Website
+        Alliance, Job, Age, Gender, Timezone, About, Website, Playing Sinc
         """
 
         if ctx.invoked_subcommand is None:
@@ -70,6 +71,10 @@ class Account:
                         data.add_field(name=i+":", value=self.nerdie[user.id][i])
                     else:
                         pass
+                if 'Started' in self.nerdie[user.id]:
+                    since = datetime.datetime(self.nerdie[user.id]['Started'])
+                    days_since = (datetime.datetime.utcnow() - since).days
+                    data.add_field(name='Entered the Contest {}'.format(since.date()) value="Playing for {} days!".format(days_since))
                 if user.avatar_url:
                     name = str(user)
                     name = " ~ ".join((name, user.nick)) if user.nick else name
@@ -252,18 +257,20 @@ class Account:
         await self.bot.say(embed=data)
 
 
-    # @update.command(pass_context=True, no_pm=True)
-    # async def zone(self, ctx, *, timezone):
-    #     """What's your timezone?"""
-    #     key = "Timezone"
-    #     value = timezone
-    #     user = ctx.message.author
-    #
-    #     if ctx.message.author.id not in self.nerdie:
-    #         data = self._unknownuser(ctx, user)
-    #     else:
-    #         data = self._updated(ctx, key, value)
-    #     await self.bot.say(embed=data)
+    @update.command(pass_context=True, no_pm=True)
+    async def started(self, ctx, *, started):
+        """When did you start playing Contest of Champions?"""
+        key = "Started"
+        try:
+            value = datetime.datetime(started)
+            user = ctx.message.author
+                if ctx.message.author.id not in self.nerdie:
+                    data = self._unknownuser(ctx, user)
+                else:
+                    data = self._updated(ctx, key, value)
+                await self.bot.say(embed=data)
+        except:
+            await self.bot.say('Please enter a date.')
 
 
     @update.command(pass_context=True, no_pm=True)

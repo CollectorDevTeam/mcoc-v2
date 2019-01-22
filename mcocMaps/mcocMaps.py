@@ -3,6 +3,7 @@ import asyncio
 import urllib, json #For fetching JSON from alliancewar.com
 import os
 import requests
+import re
 from .utils.dataIO import dataIO
 from discord.ext import commands
 from .mcocTools import StaticGameData
