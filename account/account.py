@@ -77,6 +77,13 @@ class Account:
             await self.bot.say(embed=data)
 
     @acc.commands(pass_context=True, name="delete")
+    async def _delete(self,ctx):
+        '''Delete your CollectorVerse account'''
+        if ctx.message.author.id in self.nerdie:
+            self.nerdie.pop(ctx.message.author.id, None)
+        data.add_field(name="Congrats!:sparkles:", value="You have deleted your CollectorVerse account.")
+
+
     # @commands.group(name="update", pass_context=True, invoke_without_command=True, no_pm=True)
     @_acc.group(name="update", pass_context=True, invoke_without_command=True, no_pm=True)
     async def update(self, ctx):
