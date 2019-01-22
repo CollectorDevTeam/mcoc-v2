@@ -79,8 +79,10 @@ class Account:
     @_acc.commands(pass_context=True, name="delete")
     async def _delete(self,ctx):
         '''Delete your CollectorVerse account'''
-        if ctx.message.author.id in self.nerdie:
-            self.nerdie.pop(ctx.message.author.id, None)
+        user = ctx.message.author
+        if user.id is in self.nerdie:
+            self.nerdie.pop(user.id, None)
+            dataIO.save_json(self.profile, self.nerdie)
         data.add_field(name="Congrats!:sparkles:", value="You have deleted your CollectorVerse account.")
 
 
