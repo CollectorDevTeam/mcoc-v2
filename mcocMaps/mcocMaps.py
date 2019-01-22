@@ -385,25 +385,26 @@ class MCOCMaps:
         else:
             await self.bot.say('Valid tiers include: {}'.format(', '.join(self.aw_maps.keys())))
 
-    # @alliancewar.command(pass_context=True, hidden=True, name="nodes")
-    # async def _nodes_info(self, ctx, tier: str, *, nodes):
-    #     '''Report Node information.
-    #     This command has a reported defect and it is being investigatedself.'''
-    #     season = 2
-    #     page_list = []
-    #     if tier in {'expert','hard','challenger','intermediate','normal','easy'}:
-    #         # nodeNumbers = nodes.split(' ')
-    #         for node in nodes.split(' '):
-    #             print('aw_nodes req: '+node+' '+tier)
-    #             em = await self.get_awnode_details(ctx = ctx, nodeNumber=node,tier=tier)
-    #             mapurl = '{}warmap_3_{}.png'.format(self.basepath,tier.lower())
-    #             em.set_image(url=mapurl)
-    #             page_list.append(em)
-    #             # await self.bot.say(embed=em)
-    #         if len(page_list) > 0:
-    #             await self.pages_menu(ctx=ctx, embed_list=page_list, timeout=60, page=0)
-    #     else:
-    #         await self.bot.say('Valid tiers include: advanced, intermediate, challenger, hard, expert')
+    @alliancewar.command(pass_context=True, hidden=True, name="nodes")
+    async def _nodes_info(self, ctx, tier: str, *, nodes):
+        '''Report Node information.
+        This command has a reported defect and it is being investigatedself.'''
+        season = 2
+        tier = tier.lower()
+        page_list = []
+        if tier in self.aw_maps.keys():
+            # nodeNumbers = nodes.split(' ')
+            for node in nodes.split(' '):
+                print('aw_nodes req: '+node+' '+tier)
+                em = await self.get_awnode_details(ctx = ctx, nodeNumber=node,tier=tier)
+                mapurl = '{}warmap_3_{}.png'.format(self.basepath,tier.lower())
+                em.set_image(url=mapurl)
+                page_list.append(em)
+                # await self.bot.say(embed=em)
+            if len(page_list) > 0:
+                await self.pages_menu(ctx=ctx, embed_list=page_list, timeout=60, page=0)
+        else:
+            await self.bot.say('Valid tiers include: {}'.format(', '.join(self.aw_maps.keys())))
 
 
     async def get_awnode_details(self, ctx, nodeNumber, tier):
