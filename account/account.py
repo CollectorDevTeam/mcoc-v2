@@ -88,7 +88,8 @@ class Account:
                     data = discord.Embed(colour=discord.Color.gold())
                 data.add_field(name="Error:warning:",value="{} doesn't have an account at the moment, sorry.".format(user.mention))
 
-            data.set_footer(text='CollectorDevTeam - customize with /account update\nJoin the UMCOC Community: https://discord.gg/umcoc',
+            data.add_field(name='Join the UMCOC community',value='https://discord.gg/umcoc')
+            data.set_footer(text='CollectorDevTeam - customize with /account update',
                     icon_url=self.COLLECTOR_ICON)
             await self.bot.say(embed=data)
 
