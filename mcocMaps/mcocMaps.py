@@ -549,12 +549,23 @@ class MCOCMaps:
         #                         | (?:(?P<star>[1-6])(?:star|s|★|☆|\\?\*))
         #                         ''',re.X)
 
-        tiers = {
-            'expert':{ 'color' :discord.Color.gold()},
-            'hard':{ 'color' :discord.Color.red()},
-            'challenger':{ 'color' :discord.Color.orange()},
-            'intermediate':{ 'color' :discord.Color.blue()},
-            'advanced':{ 'color' :discord.Color.green()}}
+        tier_re = re.compile(r'(?:(t,tier)(?P<tier>[0-9]{1,2}))', re.X)
+
+        if tier.lower() in aw_tiers:
+            difficulty=tier.lower()
+        elif isinstance(tier, int) and tier <= 22:
+            difficulty=aw_tiers[tier]
+        else:
+            tier = int(tier_re.sub('',tier))
+            difficulty=aw_tiers[tier]
+        print(difficulty)
+
+        # tiers = {
+        #     'expert':{ 'color' :discord.Color.gold()},
+        #     'hard':{ 'color' :discord.Color.red()},
+        #     'challenger':{ 'color' :discord.Color.orange()},
+        #     'intermediate':{ 'color' :discord.Color.blue()},
+        #     'advanced':{ 'color' :discord.Color.green()}}
         if tier not in tiers:
             jpagstier = 'advanced'
         else:
