@@ -6,8 +6,8 @@ from __main__ import send_cmd_help
 import os
 from .utils.chat_formatting import *
 from .hook import RosterUserConverter
-from .mcocTools import MenuPages
-
+import cogs.mcocTools
+from .mcocTools import (KABAM_ICON, COLLECTOR_ICON, PagesMenu)
 
 class Account:
     """The CollectorVerse Account Cog"""
