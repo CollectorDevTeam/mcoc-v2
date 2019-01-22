@@ -265,11 +265,11 @@ class Account:
         try:
             value = datetime.datetime(started)
             user = ctx.message.author
-                if ctx.message.author.id not in self.nerdie:
-                    data = self._unknownuser(ctx, user)
-                else:
-                    data = self._updated(ctx, key, value)
-                await self.bot.say(embed=data)
+            if ctx.message.author.id not in self.nerdie:
+                data = self._unknownuser(ctx, user)
+            else:
+                data = self._updated(ctx, key, value)
+            await self.bot.say(embed=data)
         except:
             await self.bot.say('Please enter a date.')
 
