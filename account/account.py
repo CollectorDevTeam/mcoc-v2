@@ -34,14 +34,14 @@ class Account:
     #             icon_url=self.COLLECTOR_ICON)
     #     await self.bot.say(embed=data)
 
-    # @commands.command(name="account", aliases=('profile',), pass_context=True, invoke_without_command=True, no_pm=True)
-    @commands.group(name="account", aliases=('profile',), pass_context=True, invoke_without_command=True)
+    @commands.command(name="account", aliases=('profile',), pass_context=True, invoke_without_command=True, no_pm=True)
+    # @commands.group(name="account", aliases=('profile',), pass_context=True, invoke_without_command=True)
     async def _acc(self, ctx, user : discord.Member=None):
         """CollectorVerse Account
 
         In-Game username
         CollectorVerse Roster Top 5 + Prestige
-        Alliance, Job, Age, Gender, Timezone, About, Website, Playing Sinc
+        Alliance, Job, Age, Gender, Timezone, About, Website, Playing Since
         """
 
         if ctx.invoked_subcommand is None:
@@ -50,48 +50,49 @@ class Account:
             if user.id not in self.nerdie:
                 data = self._createuser(user)
 
-            if user.id in self.nerdie:
-                if 'MCOC username' in self.nerdie[user.id]:
-                    desc = 'MCOC in-game id: **{}**'.format(self.nerdie[user.id]['MCOC username'])
-                else:
-                    desc = 'No MCOC in-game id registered.'
-                try:
-                    color = user.colour
-                except:
-                    color = discord.Color.gold()
-                data = discord.Embed(title="CollectorVerse Profile", colour=color, description=desc, url='https://discord.gg/umcoc')
-                roster = await RosterUserConverter(ctx, user.mention).convert()
-                if roster:
-                    data.add_field(name='Prestige', value=roster.prestige, inline=False)
-                    data.add_field(name='Top 5 Champs', value='\n'.join(roster.top5), inline=False)
-                else:
-                    data.add_field(name='Prestige', value='User has no registerd CollectorVerse roster.\nUse the ``/roster`` command to get started.')
-                for i in ['Alliance', 'Job', 'Recruiting', 'Age', 'Gender', 'Timezone', 'About', 'Other', 'Website']:
-                    if i in self.nerdie[user.id]:
-                        data.add_field(name=i+":", value=self.nerdie[user.id][i])
-                    else:
-                        pass
-                if 'Started' in self.nerdie[user.id]:
-                    since = datetime.datetime(self.nerdie[user.id]['Started'])
-                    days_since = (datetime.datetime.utcnow() - since).days
-                    data.add_field(name='Entered the Contest {}'.format(since.date()) value="Playing for {} days!".format(days_since))
-                if user.avatar_url:
-                    name = str(user)
-                    name = " ~ ".join((name, user.nick)) if user.nick else name
-                    data.set_author(name=name, url=user.avatar_url)
-                    data.set_thumbnail(url=user.avatar_url)
-                else:
-                    data.set_author(name=user.name)
-
-
-            elif user == ctx.message.author:
-                data = self._unknownuser(ctx, user)
+            if 'MCOC username' in self.nerdie[user.id]:
+                ingame = 'MCOC in-game id: **{}**'.format(self.nerdie[user.id]['MCOC username'])
             else:
-                try:
-                    data = discord.Embed(colour=user.colour)
-                except:
-                    data = discord.Embed(colour=discord.Color.gold())
-                data.add_field(name="Error:warning:",value="{} doesn't have an account at the moment, sorry.".format(user.mention))
+                ingame = 'No MCOC in-game id registered.'
+            try:
+                color = user.colour
+            except:
+                color = discord.Color.gold()
+            data = discord.Embed(title="CollectorVerse Profile", colour=color, description='Discord user: {}'.format(user.display_name), url='https://discord.gg/umcoc')
+            roster = await RosterUserConverter(ctx, user.mention).convert()
+            if roster:
+                data.add_field(name='Prestige', value=roster.prestige, inline=False)
+                data.add_field(name='Top 5 Champs', value='\n'.join(roster.top5), inline=False)
+            else:
+                data.add_field(name='Prestige', value='User has no registerd CollectorVerse roster.\nUse the ``/roster`` command to get started.')
+            for i in ['Alliance', 'Job', 'Recruiting', 'Age', 'Gender', 'Timezone', 'About', 'Other', 'Website']:
+                if i in self.nerdie[user.id]:
+                    data.add_field(name=i+":", value=self.nerdie[user.id][i])
+                else:
+                    pass
+            if 'Started' in self.nerdie[user.id]:
+                since = datetime.datetime(self.nerdie[user.id]['Started'])
+                days_since = (datetime.datetime.utcnow() - since).days
+                data.add_field(name='Entered the Contest {}'.format(since.date()) value="Playing for {} days!".format(days_since))
+
+            if user.avatar_url:
+                # name = str(user)
+                # name = user.n
+                # name = " ~ ".join((name, user.nick)) if user.nick else name
+                data.set_author(name=ingame, url=user.avatar_url)
+                data.set_thumbnail(url=user.avatar_url)
+            else:
+                data.set_author(name=ingame)
+
+
+            # elif user == ctx.message.author:
+            #     data = self._unknownuser(ctx, user)
+            # else:
+            #     try:
+            #         data = discord.Embed(colour=user.colour)
+            #     except:
+            #         data = discord.Embed(colour=discord.Color.gold())
+            #     data.add_field(name="Error:warning:",value="{} doesn't have an account at the moment, sorry.".format(user.mention))
 
             data.add_field(name='Join the UMCOC community',value='https://discord.gg/umcoc', inline=False)
             data.set_footer(text='CollectorDevTeam - customize with /account update',
