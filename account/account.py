@@ -6,7 +6,7 @@ from __main__ import send_cmd_help
 import os
 from .utils.chat_formatting import *
 from .hook import RosterUserConverter
-
+from .mcocTools import MenuPages
 
 
 class Account:
@@ -49,7 +49,11 @@ class Account:
                     desc = 'MCOC in-game id: {}'.format(self.nerdie[user.id]['MCOC username'])
                 else:
                     desc = 'No MCOC in-game id registered.'
-                data = discord.Embed(title="CollectorVerse Profile", colour=user.colour, description=desc)
+                try:
+                    color = discord.Embed(colour=user.colour)
+                except:
+                    color = discord.Embed(colour=discord.Color.gold())
+                data = discord.Embed(title="CollectorVerse Profile", colour=color, description=desc)
                 roster = await RosterUserConverter(ctx, user.mention).convert()
                 if roster:
                     data.add_field(name='Prestige', value=roster.prestige, inline=False)
