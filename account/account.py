@@ -51,14 +51,14 @@ class Account:
                 data = self._createuser(user)
 
             if 'MCOC username' in self.nerdie[user.id]:
-                ingame = 'MCOC in-game id: **{}**'.format(self.nerdie[user.id]['MCOC username'])
+                ingame = 'MCOC in-game id: {}'.format(self.nerdie[user.id]['MCOC username'])
             else:
                 ingame = 'No MCOC in-game id registered.'
             try:
                 color = user.colour
             except:
                 color = discord.Color.gold()
-            data = discord.Embed(title="CollectorVerse Profile", colour=color, description='Discord user: {}'.format(user.display_name), url='https://discord.gg/umcoc')
+            data = discord.Embed(title="CollectorVerse Profile", colour=color, description='Discord user: {}#{}'.format(user.name, user.discriminator), url='https://discord.gg/umcoc')
             roster = await RosterUserConverter(ctx, user.mention).convert()
             if roster:
                 data.add_field(name='Prestige', value=roster.prestige, inline=False)
