@@ -223,7 +223,7 @@ class Account:
 
 
     @update.command(pass_context=True, no_pm=True)
-    async def timezone(self, ctx, *, timezone):
+    async def zone(self, ctx, *, timezone):
         """What's your timezone?"""
         key = "Timezone"
         value = timezone
