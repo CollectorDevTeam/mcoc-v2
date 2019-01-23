@@ -583,7 +583,7 @@ class MCOCMaps:
                 default['class'] = c
                 continue
 
-        hpatkint
+        hpatkint = []
         if default['hp'] == 0 or default['atk'] == 0:
             print('looking for hp atk raw values')
             for a in args:
