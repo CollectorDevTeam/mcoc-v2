@@ -575,16 +575,13 @@ class MCOCMaps:
                     | (?P<star>[1-6](?=(?:star|s)\b|(?:★|☆|\*)\B)) ''', scoutargs)
         print('\n'.join(default))
 
-        # scoutargs = scoutargs.split(' ')
+        # keys = default.keys()
+        # package = []
+        # for key in keys:
+        #     package.append('{} : {}'.format(key, default[key]))
         #
-        # default = parse_re.findall(scoutargs)
-        keys = default.keys()
-        package = []
-        for key in keys:
-            package.append('{} : {}'.format(key, default[key]))
-
-        await self.bot.say('scoutlen testing')
-        await self.bot.say('\n'.join(package))
+        # await self.bot.say('scoutlen testing')
+        # await self.bot.say('\n'.join(package))
 
         # Disabled until Parser sorted
 
