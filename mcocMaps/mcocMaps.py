@@ -583,10 +583,10 @@ class MCOCMaps:
                 default['class'] = c
                 continue
 
-        hpatkint = scoutargs
+
         if default['hp'] == 0 or default['atk'] == 0:
             print('looking for hp atk raw values')
-            [int(s) for s in hpatkint.split() if s.isdigit()]
+            hptatkint = [int(s) for s in scoutargs.split() if s.isdigit()]
             print('hptatkt len: {}'.format(len(hpatkint)))
 
             if len(hpatkint) >= 2:
