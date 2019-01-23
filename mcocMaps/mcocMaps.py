@@ -550,7 +550,7 @@ class MCOCMaps:
         [star]  : 4, 5, 6
 
         '''
-        default = {'tier': 0, 'difficulty' : 'expert', 'hp': 0, 'atk': 0, 'node' : 0, 'class' : '', 'star': ''}
+        # default = {'tier': 0, 'difficulty' : 'expert', 'hp': 0, 'atk': 0, 'node' : 0, 'class' : '', 'star': ''}
         # parse_re = re.compile(r'''(?:(h,hp)(?P<hp>[0-9]{1,6}))
         #                         | (?:(t,tier)(?P<tier>[0-9]{1,2}))
         #                         | (?:(a,atk)(?P<atk>[0-9]{1,5}))
@@ -566,21 +566,22 @@ class MCOCMaps:
         # added class: as full class name or initial 2 letters
         # ~ Zlobber
 
-        parse_re = re.compile(r'''\b(?:t(?:ier)?(?P<tier>[0-9]{1,2})
+        default = re.findall(r'''\b(?:t(?:ier)?(?P<tier>[0-9]{1,2})
                     | hp?(?P<hp>[0-9]{2,6})
                     | a(?:tk)?(?P<atk>[0-9]{2,5})
                     | (?P<hpi>\d{2,6})\s(?:\s)*(?P<atki>\d{2,5})
                     | n(?:ode)?(?P<node>[0-9]{1,2})
                     | (?:(?P<class>sc(?:ience)?|sk(?:ill)?|mu(?:tant)?|my(?:stic)?|co(?:smic)?|te(?:ch)?)))\b
-                    | (?P<star>[1-6](?=(?:star|s)\b|(?:★|☆|\*)\B)) ''', re.X)
+                    | (?P<star>[1-6](?=(?:star|s)\b|(?:★|☆|\*)\B)) ''', scoutargs)
 
         # scoutargs = scoutargs.split(' ')
-
+        #
+        # default = parse_re.findall(scoutargs)
         keys = default.keys()
         package = []
         for key in keys:
-            default[key] = parse_re.sub('', scoutargs)
-            package.append('{} : {}'.format(key, default))
+            package.append('{} : {}'.format(key, default[key]))
+
         await self.bot.say('scoutlen testing')
         await self.bot.say('\n'.join(package))
 
