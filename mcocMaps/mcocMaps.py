@@ -550,63 +550,8 @@ class MCOCMaps:
         [star]  : 4, 5, 6
 
         '''
-        default = {'tier': 0, 'difficulty' : '', 'hp': 0, 'atk': 0, 'node' : 0, 'class' : '', 'star': ''}
-        # parse_re = re.compile(r'''(?:(h,hp)(?P<hp>[0-9]{1,6}))
-        #                         | (?:(t,tier)(?P<tier>[0-9]{1,2}))
-        #                         | (?:(a,atk)(?P<atk>[0-9]{1,5}))
-        #                         | (?:(n,node)(?P<node>[0-9]{1,2}))
-        #                         | (?:(?P<star>[1-6])(?:star|s|★|☆|\\?\*))
-        #                         ''',re.X)
 
-        # bounderies around all matches (N34T4 not allowed)
-        # starsigns '★|☆|\*' dont match bounderies (/b) that why its outside the main capturing group
-        # HP and ATK from dual int match will be returned in diffrent groups then when specified with h<int> or a<int>
-        # "hp12345 atk1234" will return hp:12345, atk:1234, and if entered as "... 54321 4321" hpi: 54321 atki: 4321 would be returned instead
-        # changed min digits from 1 to 2 for hp,hpi,atk,atki
-        # added class: as full class name or initial 2 letters
-        # ~ Zlobber
-
-        parse_re = re.compile(r'''\b(?:t(?:ier)?(?P<tier>[0-9]{1,2})
-                    | hp?(?P<hp>[0-9]{2,6})
-                    | a(?:tk)?(?P<atk>[0-9]{2,5})
-                    | (?P<hpi>\d{2,6})\s(?:\s)*(?P<atki>\d{2,5})
-                    | n(?:ode)?(?P<node>[0-9]{1,2}))\b
-                    | (?P<star>[1-6](?=(?:star|s)\b|(?:★|☆|\*)\B)) ''', re.X)
-
-        class_re = re.compile(r'''(?:(?P<class>sc(?:ience)?|sk(?:ill)?|mu(?:tant)?|my(?:stic)?|co(?:smic)?|te(?:ch)?))''',re.X)
-
-        for arg in scoutargs.lower().split(' '):
-            for m in parse_re.finditer(arg):
-                default[m.lastgroup] = int(m.group(m.lastgroup))
-        for c in ('science','skill','mutant','mystic','cosmic','tech'):
-            if c in scoutargs:
-                default['class'] = c
-                continue
-
-
-        if default['hp'] == 0 or default['atk'] == 0:
-            print('looking for hp atk raw values')
-            hpatkint = [int(s) for s in scoutargs.split() if s.isdigit()]
-            print('hptatkt len: {}'.format(len(hpatkint)))
-
-            if len(hpatkint) == 2:
-                print('found 2 integers')
-                default['hp'] = max(hpatkint)
-                default['atk'] = min(hpatkint)
-            elif len(hpatkint) > 2:
-                print('found at least 3 integers')
-                default['hp'] = hpatkint.pop(hpatkint.index(max(hpatkint)))
-                default['atk'] = hpatkint.pop(hpatkint.index(max(hpatkint)))
-            elif len(hpatkint) == 0:
-                print('found zero integers')
-            else:
-                print('found one integer')
-                if default['hp'] == 0 and default['atk'] > 0:
-                    default['hp'] = hpatkint[0]
-                elif default['hp'] > 0 and default['atk'] ==0:
-                    default['atk'] = hpatkint[0]
-                else:
-                    print('unable to determine whether value is hp or attack')
+        default = self.NodeParser(scoutargs)
 
         keys = default.keys()
         package = []
@@ -615,6 +560,7 @@ class MCOCMaps:
 
         await self.bot.say('scoutlen testing')
         await self.bot.say('\n'.join(package))
+
 
         # Disabled until Parser sorted
 
@@ -662,6 +608,59 @@ class MCOCMaps:
         #     if c in hargs:
         #         champ_class = c
 
+    def NodeParser(self, nargs):
+        # bounderies around all matches (N34T4 not allowed)
+        # starsigns '★|☆|\*' dont match bounderies (/b) that why its outside the main capturing group
+        # HP and ATK from dual int match will be returned in diffrent groups then when specified with h<int> or a<int>
+        # "hp12345 atk1234" will return hp:12345, atk:1234, and if entered as "... 54321 4321" hpi: 54321 atki: 4321 would be returned instead
+        # changed min digits from 1 to 2 for hp,hpi,atk,atki
+        # added class: as full class name or initial 2 letters
+        # ~ Zlobber
+
+        default = {'tier': 0, 'difficulty' : '', 'hp': 0, 'atk': 0, 'node' : 0, 'class' : None, 'star': ''}
+        parse_re = re.compile(r'''\b(?:t(?:ier)?(?P<tier>[0-9]{1,2})
+                    | hp?(?P<hp>[0-9]{2,6})
+                    | a(?:tk)?(?P<atk>[0-9]{2,5})
+                    | (?P<hpi>\d{2,6})\s(?:\s)*(?P<atki>\d{2,5})
+                    | n(?:ode)?(?P<node>[0-9]{1,2}))\b
+                    | (?P<star>[1-6](?=(?:star|s)\b|(?:★|☆|\*)\B)) ''', re.X)
+
+        class_re = re.compile(r'''(?:(?P<class>sc(?:ience)?|sk(?:ill)?|mu(?:tant)?|my(?:stic)?|co(?:smic)?|te(?:ch)?))''',re.X)
+
+        for arg in nargs.lower().split(' '):
+            for m in parse_re.finditer(arg):
+                default[m.lastgroup] = int(m.group(m.lastgroup))
+        for c in ('science','skill','mutant','mystic','cosmic','tech'):
+            if c in nargs:
+                default['class'] = c
+                continue
+
+
+        if default['hp'] == 0 or default['atk'] == 0:
+            print('looking for hp atk raw values')
+            hpatkint = [int(s) for s in nargs.split() if s.isdigit()]
+            print('hptatkt len: {}'.format(len(hpatkint)))
+
+            if len(hpatkint) == 2:
+                print('found 2 integers')
+                default['hp'] = max(hpatkint)
+                default['atk'] = min(hpatkint)
+            elif len(hpatkint) > 2:
+                print('found at least 3 integers')
+                default['hp'] = hpatkint.pop(hpatkint.index(max(hpatkint)))
+                default['atk'] = hpatkint.pop(hpatkint.index(max(hpatkint)))
+            elif len(hpatkint) == 0:
+                print('found zero integers')
+            else:
+                print('found one integer')
+                if default['hp'] == 0 and default['atk'] > 0:
+                    default['hp'] = hpatkint[0]
+                elif default['hp'] > 0 and default['atk'] ==0:
+                    default['atk'] = hpatkint[0]
+                else:
+                    print('unable to determine whether value is hp or attack')
+
+        return(default)
 
     async def jm_send_request(self, url, data):
         ''' Send request to service'''
