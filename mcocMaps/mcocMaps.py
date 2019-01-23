@@ -17,9 +17,6 @@ aw_expert = json.loads(requests.get('https://raw.githubusercontent.com/Collector
 aw_hard = json.loads(requests.get('https://raw.githubusercontent.com/CollectorDevTeam/assets/master/data/json/alliancewar/aw_hard.json').text)
 aw_intermediate = json.loads(requests.get('https://raw.githubusercontent.com/CollectorDevTeam/assets/master/data/json/alliancewar/aw_intermediate.json').text)
 
-
-
-
 class MCOCMaps:
     '''Maps for Marvel Contest of Champions'''
     aw_maps = {'advanced': aw_advanced,
@@ -539,7 +536,7 @@ class MCOCMaps:
         await self.bot.say(embed=em)
 
     @alliancewar.command(pass_context=True, hidden=True, name="scout")
-    async def _scout(self, ctx, tier, node, hp, attack, *, hargs):
+    async def _scout(self, ctx, *, scoutargs):
         '''
         JM's Scouter Lens inspection tool.
         The Scouter Lens Mastery must contain at least 1 point.
@@ -553,7 +550,7 @@ class MCOCMaps:
         [star]  : 4, 5, 6
 
         '''
-        # default = {'tier': 0, 'difficulty' : 'expert', 'hp': 0, 'atk': 0, 'node' : 0, 'class' : '', 'star': ''}
+        default = {'tier': 0, 'difficulty' : 'expert', 'hp': 0, 'atk': 0, 'node' : 0, 'class' : '', 'star': ''}
         # parse_re = re.compile(r'''(?:(h,hp)(?P<hp>[0-9]{1,6}))
         #                         | (?:(t,tier)(?P<tier>[0-9]{1,2}))
         #                         | (?:(a,atk)(?P<atk>[0-9]{1,5}))
@@ -561,55 +558,73 @@ class MCOCMaps:
         #                         | (?:(?P<star>[1-6])(?:star|s|★|☆|\\?\*))
         #                         ''',re.X)
 
-        if tier.lower() in aw_tiers:
-            difficulty=tier.lower()
-        elif isinstance(tier, int) and tier <= 22:
-            difficulty=aw_tiers[tier]
-        else:
-            tier = int(tier_re.sub('',tier))
-            difficulty=aw_tiers[tier]
-        print(difficulty)
+        # bounderies around all matches (N34T4 not allowed)
+        # starsigns '★|☆|\*' dont match bounderies (/b) that why its outside the main capturing group
+        # HP and ATK from dual int match will be returned in diffrent groups then when specified with h<int> or a<int>
+        # "hp12345 atk1234" will return hp:12345, atk:1234, and if entered as "... 54321 4321" hpi: 54321 atki: 4321 would be returned instead
+        # changed min digits from 1 to 2 for hp,hpi,atk,atki
+        # added class: as full class name or initial 2 letters
+        # ~ Zlobber
 
-        # tiers = {
-        #     'expert':{ 'color' :discord.Color.gold()},
-        #     'hard':{ 'color' :discord.Color.red()},
-        #     'challenger':{ 'color' :discord.Color.orange()},
-        #     'intermediate':{ 'color' :discord.Color.blue()},
-        #     'advanced':{ 'color' :discord.Color.green()}}
-        if tier not in tiers:
-            jpagstier = 'advanced'
-        else:
-            jpagstier = tier
-        if tier in tiers:
-            # pathurl = 'http://www.alliancewar.com/aw/js/aw_s{}_{}_9path.json'.format(tier)
-            if tier is 'expert' or tier <= 3 :
-                pathdata = aw_expert
-            elif tier is 'hard' or tier == 6 or tier == 7 or tier == 8 or tier == 9:
-                pathdata = aw_hard
-            elif tier is 'challenger' or tier == 4 or tier == 5:
-                pathdata = aw_challenger
-            elif tier is 'advanced':
-                pathdata = aw_advanced
-            else:
-                pathdata = aw_intermediate
-        title='Scout Test node {}'.format(node)
-        nodedetails = pathdata['boosts'][str(node)]
-        em = discord.Embed(color=tiers[jpagstier]['color'], title=title, descritpion='', url=JPAGS)
-        em.add_field(name='nodedetails', value=nodedetails)
-        em.add_field(name='observed hp', value='{}'.format(hp))
-        em.add_field(name='observed attack', value='{}'.format(attack))
-        em.set_footer(text='CollectorDevTeam + JM\'s Scouter Lens Bot',icon_url=self.COLLECTOR_ICON)
+        parse_re = re.compile(r'''\b(?:t(?:ier)?(?P<tier>[0-9]{1,2})
+                    | hp?(?P<hp>[0-9]{2,6})
+                    | a(?:tk)?(?P<atk>[0-9]{2,5})
+                    | (?P<hpi>\d{2,6})\s(?:\s)*(?P<atki>\d{2,5})
+                    | n(?:ode)?(?P<node>[0-9]{1,2})
+                    | (?:(?P<class>sc(?:ience)?|sk(?:ill)?|mu(?:tant)?|my(?:stic)?|co(?:smic)?|te(?:ch)?)))\b
+                    | (?P<star>[1-6](?=(?:star|s)\b|(?:★|☆|\*)\B)) ''', re.X)
 
+        for m in default.keys():
+            default[m] = parse_re.sub('', scoutargs)
 
-        tiers = {'expert':discord.Color.gold(),'hard':discord.Color.red(),'challenger':discord.Color.orange(),'intermediate':discord.Color.blue(),'advanced':discord.Color.green()}
-        if tier not in tiers:
-            await self.bot.say('Tier not recognized')
-            return
-        champ_class = None
-        champ_classes = ('Mystic', 'Science', 'Skill', 'Mutant', 'Tech', 'Cosmic')
-        for c in champ_classes:
-            if c in hargs:
-                champ_class = c
+        await self.bot.say('scoutlen testing')
+        await self.bot.say('\n'.join('{} : {}'.format(m, default[m] for m in default.keys())))
+
+        # Disabled until Parser sorted
+
+        # if tier.lower() in aw_tiers:
+        #     difficulty=tier.lower()
+        # elif isinstance(tier, int) and tier <= 22:
+        #     difficulty=aw_tiers[tier]
+        # else:
+        #     tier = int(tier_re.sub('',tier))
+        #     difficulty=aw_tiers[tier]
+        # print(difficulty)
+        #
+        # if tier not in tiers:
+        #     jpagstier = 'advanced'
+        # else:
+        #     jpagstier = tier
+        # if tier in tiers:
+        #     # pathurl = 'http://www.alliancewar.com/aw/js/aw_s{}_{}_9path.json'.format(tier)
+        #     if tier is 'expert' or tier <= 3 :
+        #         pathdata = aw_expert
+        #     elif tier is 'hard' or tier == 6 or tier == 7 or tier == 8 or tier == 9:
+        #         pathdata = aw_hard
+        #     elif tier is 'challenger' or tier == 4 or tier == 5:
+        #         pathdata = aw_challenger
+        #     elif tier is 'advanced':
+        #         pathdata = aw_advanced
+        #     else:
+        #         pathdata = aw_intermediate
+        # title='Scout Test node {}'.format(node)
+        # nodedetails = pathdata['boosts'][str(node)]
+        # em = discord.Embed(color=tiers[jpagstier]['color'], title=title, descritpion='', url=JPAGS)
+        # em.add_field(name='nodedetails', value=nodedetails)
+        # em.add_field(name='observed hp', value='{}'.format(hp))
+        # em.add_field(name='observed attack', value='{}'.format(attack))
+        # em.set_footer(text='CollectorDevTeam + JM\'s Scouter Lens Bot',icon_url=self.COLLECTOR_ICON)
+        #
+        #
+        # tiers = {'expert':discord.Color.gold(),'hard':discord.Color.red(),'challenger':discord.Color.orange(),'intermediate':discord.Color.blue(),'advanced':discord.Color.green()}
+        # if tier not in tiers:
+        #     await self.bot.say('Tier not recognized')
+        #     return
+        # champ_class = None
+        # champ_classes = ('Mystic', 'Science', 'Skill', 'Mutant', 'Tech', 'Cosmic')
+        # for c in champ_classes:
+        #     if c in hargs:
+        #         champ_class = c
 
 
     async def jm_send_request(self, url, data):
