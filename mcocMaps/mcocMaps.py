@@ -578,7 +578,7 @@ class MCOCMaps:
         for arg in scoutargs.lower().split(' '):
             for m in parse_re.finditer(arg):
                 default[m.lastgroup] = int(m.group(m.lastgroup))
-        for c in ('science','skill','mutant','mystic','cosmic','tech')
+        for c in ('science','skill','mutant','mystic','cosmic','tech'):
             if c in scoutargs:
                 default['class'] = c
                 continue
