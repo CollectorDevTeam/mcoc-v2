@@ -573,12 +573,13 @@ class MCOCMaps:
                     | n(?:ode)?(?P<node>[0-9]{1,2})
                     | (?:(?P<class>sc(?:ience)?|sk(?:ill)?|mu(?:tant)?|my(?:stic)?|co(?:smic)?|te(?:ch)?)))\b
                     | (?P<star>[1-6](?=(?:star|s)\b|(?:★|☆|\*)\B)) ''', re.X)
-
-        for m in default.keys():
-            default[m] = parse_re.sub('', scoutargs)
-
+        keys = default.keys()
+        package = []
+        for key in keys:
+            default[key] = parse_re.sub('', scoutargs)
+            package.append('{} : {}'.format(key, default[key]))
         await self.bot.say('scoutlen testing')
-        await self.bot.say('\n'.join('{} : {}'.format(m, default[m] for m in default.keys())))
+        await self.bot.say('\n'.join(package))
 
         # Disabled until Parser sorted
 
