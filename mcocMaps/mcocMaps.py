@@ -550,7 +550,7 @@ class MCOCMaps:
         [star]  : 4, 5, 6
 
         '''
-        default = {'tier': 0, 'difficulty' : 'expert', 'hp': 0, 'atk': 0, 'node' : 0, 'class' : '', 'star': ''}
+        default = {'tier': 0, 'difficulty' : '', 'hp': 0, 'atk': 0, 'node' : 0, 'class' : '', 'star': ''}
         # parse_re = re.compile(r'''(?:(h,hp)(?P<hp>[0-9]{1,6}))
         #                         | (?:(t,tier)(?P<tier>[0-9]{1,2}))
         #                         | (?:(a,atk)(?P<atk>[0-9]{1,5}))
@@ -570,13 +570,40 @@ class MCOCMaps:
                     | hp?(?P<hp>[0-9]{2,6})
                     | a(?:tk)?(?P<atk>[0-9]{2,5})
                     | (?P<hpi>\d{2,6})\s(?:\s)*(?P<atki>\d{2,5})
-                    | n(?:ode)?(?P<node>[0-9]{1,2})
-                    | (?:(?P<class>sc(?:ience)?|sk(?:ill)?|mu(?:tant)?|my(?:stic)?|co(?:smic)?|te(?:ch)?)))\b
+                    | n(?:ode)?(?P<node>[0-9]{1,2}))\b
                     | (?P<star>[1-6](?=(?:star|s)\b|(?:★|☆|\*)\B)) ''', re.X)
+
+        class_re = re.compile(r'''(?:(?P<class>sc(?:ience)?|sk(?:ill)?|mu(?:tant)?|my(?:stic)?|co(?:smic)?|te(?:ch)?))''',re.X)
 
         for arg in scoutargs.lower().split(' '):
             for m in parse_re.finditer(arg):
                 default[m.lastgroup] = int(m.group(m.lastgroup))
+        for c in ('science','skill','mutant','mystic','cosmic','tech')
+            if c in scoutargs:
+                default['class'] = c
+                continue
+
+        hpatkint
+        if default['hp'] == 0 or default['atk'] == 0:
+            print('looking for hp atk raw values')
+            for a in args:
+                if isinstance(int, a):
+                    hpatkint.append(a)
+
+            if len(hpatkint) >= 2:
+                print('found at least 2 integers')
+                default['hp'] = hpatkint.pop(hpatkint.index(max(hpatkint)))
+                default['atk'] = hpatkint.pop(hpatkint.index(max(hpatkint)))
+            elif len(hpatkint) == 0:
+                print('found zero integers')
+            else:
+                print('found one integer')
+                if default['hp'] == 0 and default['atk'] > 0:
+                    default['hp'] = hpatkint.pop(hpatkint.index(max(hpatkint)))
+                elif default['hp'] > 0 and default['atk'] ==0:
+                    default['atk'] = hpatkint.pop(hpatkint.index(max(hpatkint)))
+                else:
+                    print('unable to determine whether value is hp or attack')
 
         keys = default.keys()
         package = []
