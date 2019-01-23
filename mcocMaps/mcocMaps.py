@@ -588,7 +588,7 @@ class MCOCMaps:
             print('looking for hp atk raw values')
             for a in scoutargs.lower().split(' '):
                 if isinstance(a, int):
-                    hpatkint.append(a)
+                    hpatkint.append(int(a))
 
             if len(hpatkint) >= 2:
                 print('found at least 2 integers')
