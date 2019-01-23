@@ -566,22 +566,25 @@ class MCOCMaps:
         # added class: as full class name or initial 2 letters
         # ~ Zlobber
 
-        default = re.findall(r'''\b(?:t(?:ier)?(?P<tier>[0-9]{1,2})
+        parse_re = re.compile(r'''\b(?:t(?:ier)?(?P<tier>[0-9]{1,2})
                     | hp?(?P<hp>[0-9]{2,6})
                     | a(?:tk)?(?P<atk>[0-9]{2,5})
                     | (?P<hpi>\d{2,6})\s(?:\s)*(?P<atki>\d{2,5})
                     | n(?:ode)?(?P<node>[0-9]{1,2})
                     | (?:(?P<class>sc(?:ience)?|sk(?:ill)?|mu(?:tant)?|my(?:stic)?|co(?:smic)?|te(?:ch)?)))\b
-                    | (?P<star>[1-6](?=(?:star|s)\b|(?:★|☆|\*)\B)) ''', scoutargs)
-        print('\n'.join(default))
+                    | (?P<star>[1-6](?=(?:star|s)\b|(?:★|☆|\*)\B)) ''', re.X)
 
-        # keys = default.keys()
-        # package = []
-        # for key in keys:
-        #     package.append('{} : {}'.format(key, default[key]))
-        #
-        # await self.bot.say('scoutlen testing')
-        # await self.bot.say('\n'.join(package))
+        for arg in scoutargs.lower().split(' '):
+            for m in parse_re.finditer(arg):
+                default[m.lastgroup] = int(m.group(m.lastgroup))
+
+        keys = default.keys()
+        package = []
+        for key in keys:
+            package.append('{} : {}'.format(key, default[key]))
+
+        await self.bot.say('scoutlen testing')
+        await self.bot.say('\n'.join(package))
 
         # Disabled until Parser sorted
 
