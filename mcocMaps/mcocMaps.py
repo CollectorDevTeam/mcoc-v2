@@ -561,8 +561,6 @@ class MCOCMaps:
         #                         | (?:(?P<star>[1-6])(?:star|s|★|☆|\\?\*))
         #                         ''',re.X)
 
-        tier_re = re.compile(r'(?:(t,tier)(?P<tier>[0-9]{1,2}))', re.X)
-
         if tier.lower() in aw_tiers:
             difficulty=tier.lower()
         elif isinstance(tier, int) and tier <= 22:
