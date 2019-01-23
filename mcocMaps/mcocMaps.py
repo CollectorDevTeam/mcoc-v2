@@ -573,7 +573,7 @@ class MCOCMaps:
                     | n(?:ode)?(?P<node>[0-9]{1,2})
                     | (?:(?P<class>sc(?:ience)?|sk(?:ill)?|mu(?:tant)?|my(?:stic)?|co(?:smic)?|te(?:ch)?)))\b
                     | (?P<star>[1-6](?=(?:star|s)\b|(?:★|☆|\*)\B)) ''', scoutargs)
-        print(default)
+        print('\n'.join(default))
 
         # scoutargs = scoutargs.split(' ')
         #
