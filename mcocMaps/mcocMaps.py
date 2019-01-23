@@ -589,8 +589,12 @@ class MCOCMaps:
             hpatkint = [int(s) for s in scoutargs.split() if s.isdigit()]
             print('hptatkt len: {}'.format(len(hpatkint)))
 
-            if len(hpatkint) >= 2:
-                print('found at least 2 integers')
+            if len(hpatkint) == 2:
+                print('found 2 integers')
+                default['hp'] = max(hpatkint)
+                default['atk'] = min(hpatkint)
+            elif len(hpatkint) > 2:
+                print('found at least 3 integers')
                 default['hp'] = hpatkint.pop(hpatkint.index(max(hpatkint)))
                 default['atk'] = hpatkint.pop(hpatkint.index(max(hpatkint)))
             elif len(hpatkint) == 0:
@@ -598,9 +602,9 @@ class MCOCMaps:
             else:
                 print('found one integer')
                 if default['hp'] == 0 and default['atk'] > 0:
-                    default['hp'] = hpatkint.pop(hpatkint.index(max(hpatkint)))
+                    default['hp'] = hpatkint[0]
                 elif default['hp'] > 0 and default['atk'] ==0:
-                    default['atk'] = hpatkint.pop(hpatkint.index(max(hpatkint)))
+                    default['atk'] = hpatkint[0]
                 else:
                     print('unable to determine whether value is hp or attack')
 
