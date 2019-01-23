@@ -550,7 +550,7 @@ class MCOCMaps:
         [star]  : 4, 5, 6
 
         '''
-        # default = {'tier': 0, 'difficulty' : 'expert', 'hp': 0, 'atk': 0, 'node' : 0, 'class' : '', 'star': ''}
+        default = {'tier': 0, 'difficulty' : 'expert', 'hp': 0, 'atk': 0, 'node' : 0, 'class' : '', 'star': ''}
         # parse_re = re.compile(r'''(?:(h,hp)(?P<hp>[0-9]{1,6}))
         #                         | (?:(t,tier)(?P<tier>[0-9]{1,2}))
         #                         | (?:(a,atk)(?P<atk>[0-9]{1,5}))
