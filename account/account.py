@@ -263,7 +263,7 @@ class Account:
         """When did you start playing Contest of Champions?"""
         key = "Started"
         try:
-            value = datetime.datetime(started)
+            value = datetime.datetime.strptime(started)
             user = ctx.message.author
             if ctx.message.author.id not in self.nerdie:
                 data = self._unknownuser(ctx, user)
