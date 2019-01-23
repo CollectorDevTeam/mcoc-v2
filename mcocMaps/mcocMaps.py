@@ -586,7 +586,7 @@ class MCOCMaps:
         hpatkint = []
         if default['hp'] == 0 or default['atk'] == 0:
             print('looking for hp atk raw values')
-            for a in scoutargs.lower().split():
+            for a in scoutargs.lower().split(' '):
                 if isinstance(int, a):
                     hpatkint.append(a)
 
