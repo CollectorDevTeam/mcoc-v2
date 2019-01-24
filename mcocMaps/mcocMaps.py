@@ -7,6 +7,7 @@ import re
 from .utils.dataIO import dataIO
 from discord.ext import commands
 from .mcocTools import StaticGameData
+from .mcoc import ChampConverter
 
 JPAGS = 'http://www.alliancewar.com'
 PATREON = 'https://patreon.com/collectorbot'
@@ -16,6 +17,9 @@ aw_challenger = json.loads(requests.get('https://raw.githubusercontent.com/Colle
 aw_expert = json.loads(requests.get('https://raw.githubusercontent.com/CollectorDevTeam/assets/master/data/json/alliancewar/aw_expert.json').text)
 aw_hard = json.loads(requests.get('https://raw.githubusercontent.com/CollectorDevTeam/assets/master/data/json/alliancewar/aw_hard.json').text)
 aw_intermediate = json.loads(requests.get('https://raw.githubusercontent.com/CollectorDevTeam/assets/master/data/json/alliancewar/aw_intermediate.json').text)
+
+AWD_API_URL = '' #os.environ['SCOUTER_LENS_BOT_AWD_API_URL']
+MAS_API_URL = '' #os.environ['SCOUTER_LENS_BOT_MAS_API_URL']
 
 class MCOCMaps:
     '''Maps for Marvel Contest of Champions'''
@@ -551,7 +555,7 @@ class MCOCMaps:
 
         '''
 
-        default = self.NodeParser(scoutargs)
+        default, data = self.NodeParser(scoutargs)
 
         keys = default.keys()
         package = []
@@ -561,21 +565,47 @@ class MCOCMaps:
         await self.bot.say('scoutlen testing')
         await self.bot.say('\n'.join(package))
 
-
-
-
-
-        # Disabled until Parser sorted
-
         pathdata = self.aw_maps[default['difficulty']]
         title='Scout Test node {}'.format(default['node'])
         nodedetails = pathdata['boosts'][str(default['node'])]
         em = discord.Embed(color=default['color'], title=title, descritpion='', url='https://goo.gl/forms/ZgJG97KOpeSsQ2092')
+
+        test = [{'champ':'4-electro-5','class':'science','masteries':{'v':1, 'gv':1,'s':1, 'gs':1, 'gc':1, 'lcde':0}},]
+
+        # calls to jm service
+        # response = await self.send_request(AWD_API_URL, data=data)
+
+        respose = test
+
+        if 'error' in response:
+            result_em.add_field(name='Scout API Error', value=str(response['error']))
+        else:
+            # result_em = discord.Embed(color=discord.Color.green(), title='Scout Results')
+            for x in response:
+                # I'm probably going to override this champ thing
+                champ_name = await self.format_champ(x['champ'])
+
+                champ_name = x['champ']
+                em.add_field(
+                    name=champ_name,
+                    value='vit:{0} gvit:{1} str:{2} gstr:{3} gc:{4} lcde:{5}'.format(
+                        x["masteries"]["v"],
+                        x["masteries"]["gv"],
+                        x["masteries"]["s"],
+                        x["masteries"]["gs"],
+                        x["masteries"]["gc"],
+                        x["masteries"]["lcde"]
+                    )
+                )
+
+
+
         em.add_field(name='nodedetails', value=nodedetails)
         em.add_field(name='observed hp', value='{}'.format(default['hp']))
         em.add_field(name='observed attack', value='{}'.format(default['atk']))
         em.set_footer(text='CollectorDevTeam + JM\'s Scouter Lens Bot',icon_url=self.COLLECTOR_ICON)
 
+        await self.bot.say(embed=em)
         # champ_class = None
         # champ_classes = ('Mystic', 'Science', 'Skill', 'Mutant', 'Tech', 'Cosmic')
         # for c in champ_classes:
@@ -635,7 +665,14 @@ class MCOCMaps:
             default['difficulty'] = self.aw_tiers[default['tier']]['diff'].lower()
             default['color'] = self.aw_tiers[default['tier']]['color']
 
-        return(default)
+        if default['difficulty'] != '' and default['node'] > 0 and default['hp'] > 0 and default['atk'] > 0:
+            data = {'difficulty':default['difficulty'], 'node':default['node'], 'hp':default['hp'], 'atk':default['atk']}
+        if default['star'] >0:
+            data['star_filter'] = default['star']
+        if default['class'] is not None:
+            data['class_filter'] = default['class']
+
+        return(default, data)
 
     async def jm_send_request(self, url, data):
         ''' Send request to service'''
@@ -646,14 +683,16 @@ class MCOCMaps:
             return {'error': 'unknown response'}
 
 
-    async def jm_format_champ(self, champ, champ_class):
+    async def jm_format_champ(self, champ):
         ''' Format champ name for display '''
-        return '{0} {1}★ {2} r{3}'.format(
-            self.class_emoji[champ_class],
-            champ[0],
-            champ[2:-2],
-            champ[-1]
+        name = '{1}★{2}r{3}'.format(
+            # self.class_emoji[champ_class], // don't need this
+            champ[0], #star
+            champ[2:-2], #name
+            champ[-1] # rank
         )
+        champ = ChampConverter(name)
+        return champ
 
     async def jm_parse_champ_filter(self, champ_filter):
         star_filter = ''.join(ch for ch in champ_filter if ch.isdigit())
