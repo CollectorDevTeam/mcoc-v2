@@ -574,9 +574,9 @@ class MCOCMaps:
             title='JM\'s ScouterLens : AW Node {}'.format(default['node'])
             # nodedetails = pathdata['boosts'][str(default['node'])]
             if default['tier'] == 0:
-                desc = '{} Bracket'.format(default['difficulty'])
+                desc = '{} Bracket | Node {}'.format(default['difficulty'].title(),default['node'])
             else:
-                desc = 'Tier {} : {} Bracket'.format(default['tier'],default['difficulty'])
+                desc = 'Tier {} | {} Bracket | Node {}'.format(default['tier'],default['difficulty'].title()default['node'])
             em = discord.Embed(color=default['color'], title=title, description=desc, url='https://goo.gl/forms/ZgJG97KOpeSsQ2092')
             em.set_footer(text='CollectorDevTeam + JM\'s Scouter Lens Bot',icon_url=self.COLLECTOR_ICON)
             response = [{'champ':'4-electro-5','class':'science','masteries':{'v':1, 'gv':1,'s':1, 'gs':1, 'gc':1, 'lcde':0}},{'champ':'4-diablo-5','class':'mystic','masteries':{'v':1, 'gv':1,'s':1, 'gs':1, 'gc':1, 'lcde':0}}]
