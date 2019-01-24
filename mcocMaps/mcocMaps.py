@@ -7,7 +7,7 @@ import re
 from .utils.dataIO import dataIO
 from discord.ext import commands
 from .mcocTools import StaticGameData
-from .mcoc import ChampConverter, ChampConverterDebug, Champions
+from .mcoc import ChampConverter, ChampConverterDebug, Champion
 
 JPAGS = 'http://www.alliancewar.com'
 PATREON = 'https://patreon.com/collectorbot'
@@ -566,7 +566,7 @@ class MCOCMaps:
         # response = await self.jm_send_request(AWD_API_URL, data=default)
 
         if 'error' in response:
-            result_em.add_field(name='Scout API Error', value=str(response['error']))
+            em.add_field(name='Scout API Error', value=str(response['error']))
         else:
             # result_em = discord.Embed(color=discord.Color.green(), title='Scout Results')
             portrait = None
@@ -585,9 +585,6 @@ class MCOCMaps:
                         x["masteries"]["lcde"]
                     )
                 )
-
-
-
         em.add_field(name='nodedetails', value=nodedetails)
         em.add_field(name='observed hp', value='{}'.format(default['hp']))
         em.add_field(name='observed attack', value='{}'.format(default['atk']))
