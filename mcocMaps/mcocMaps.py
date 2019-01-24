@@ -679,14 +679,14 @@ class MCOCMaps:
 
     async def jm_format_champ(self, champ):
         ''' Format champ name for display '''
-        name = '{1}★{2}r{3}'.format(
+        name = '{}★{}r{}'.format(
             # self.class_emoji[champ_class], // don't need this
             champ[0], #star
             champ[2:-2], #name
             champ[-1] # rank
         )
-        champ = ChampConverter(name)
-        return champ
+        champion = ChampConverter(name)
+        return champion
 
     # async def jm_parse_champ_filter(self, champ_filter):
     #     star_filter = ''.join(ch for ch in champ_filter if ch.isdigit())
