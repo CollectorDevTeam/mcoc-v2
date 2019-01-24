@@ -577,10 +577,10 @@ class MCOCMaps:
             if 'error' in response:
                 em.add_field(name='Scout API Error', value=str(response['error']))
             else:
-                avatar_url = None
+                avatar_url = ''
                 for x in response:
                     champ = await self.jm_format_champ(x['champ'])
-                    if avatar_url is None:
+                    if avatar_url == '':
                         em.set_thumbnail(url=champ.get_avatar())
                     em.add_field(name=champ.verbose_str,
                         value='vit:{0} gvit:{1} str:{2} gstr:{3} gc:{4} lcde:{5}'.format(
