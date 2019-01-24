@@ -581,7 +581,11 @@ class MCOCMaps:
             # response = [{'champ':'4-electro-5','class':'science','masteries':{'v':1, 'gv':1,'s':1, 'gs':1, 'gc':1, 'lcde':0}},{'champ':'4-diablo-5','class':'mystic','masteries':{'v':1, 'gv':1,'s':1, 'gs':1, 'gc':1, 'lcde':0}}]
 
             # calls to jm service
-            response = await self.jm_send_request(AWD_API_URL, data=default)
+            # only send jm's keys & values
+            for d in {'difficulty', 'node', 'hp','atk','star_filter','class_filter'}:
+                if d in keys:
+                    data[d] = default[d]
+            response = await self.jm_send_request(AWD_API_URL, data=data)
 
             if 'error' in response:
                 em.add_field(name='Scout API Error', value=str(response['error']))
