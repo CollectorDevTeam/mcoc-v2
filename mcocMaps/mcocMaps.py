@@ -558,9 +558,6 @@ class MCOCMaps:
         default = self.NodeParser(scoutargs)
         keys = default.keys()
 
-        package = '\n'.join('{}: {}'.format(k, default[k] for k in keys))
-        await self.bot.say(package)
-
         package = []
         for key in keys:
             package.append('{} : {}'.format(key, default[key]))
