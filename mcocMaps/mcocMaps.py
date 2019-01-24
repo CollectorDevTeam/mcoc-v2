@@ -680,17 +680,17 @@ class MCOCMaps:
             return {'error': 'unknown response'}
 
 
-    async def jm_format_champ(self, champ):
+    async def jm_format_champ(self, champ: ChampConverter):
         ''' Format champ name for display '''
-        print('champ: '+champ)
-        name = '{0}★{1}r{2}'.format(
-            # self.class_emoji[champ_class], // don't need this
-            champ[0], #star
-            champ[2:-2], #name
-            champ[-1] # rank
-        )
-        champion = ChampionFactory.get_champion(self.bot, name)
-        return champion
+        print('champ: '+champ.verbose_str)
+        # name = '{0}★{1}r{2}'.format(
+        #     # self.class_emoji[champ_class], // don't need this
+        #     champ[0], #star
+        #     champ[2:-2], #name
+        #     champ[-1] # rank
+        # )
+        # champion = ChampionFactory.get_champion(self.bot, name)
+        return champ
 
     # async def jm_parse_champ_filter(self, champ_filter):
     #     star_filter = ''.join(ch for ch in champ_filter if ch.isdigit())
