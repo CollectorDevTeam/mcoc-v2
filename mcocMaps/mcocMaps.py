@@ -424,21 +424,6 @@ class MCOCMaps:
             }
         if tier not in tiers:
             tier = 'advanced'
-        #     jpagstier = 'advanced'
-        # else:
-        #     jpagstier = tier
-        # if tier in tiers:
-        #     # pathurl = 'http://www.alliancewar.com/aw/js/aw_s{}_{}_9path.json'.format(tier)
-        #     if tier is 'expert':
-        #         pathdata = aw_expert
-        #     elif tier is 'hard':
-        #         pathdata = aw_hard
-        #     elif tier is 'challenger':
-        #         pathdata = aw_challenger
-        #     elif tier is 'advanced':
-        #         pathdata = aw_advanced
-        #     else:
-        #         pathdata = aw_intermediate
         pathdata= self.aw_maps[tier]
         # if paths is not None:
             # await self.bot.say('DEBUG: 9path.json loaded from alliancewar.com')
@@ -681,15 +666,20 @@ class MCOCMaps:
             return {'error': 'unknown response'}
 
 
-    async def jm_format_champ(self, champ: ChampConverter):
+    async def jm_format_champ(self, champ):
         ''' Format champ name for display '''
-        print('champ: '+champ.verbose_str)
+        attrs = {}
+        token = champ[2:-2]
+        attrs['star'] = champ[0]
+        attrs['rank'] = champ[-1]
         # name = '{0}★{1}r{2}'.format(
         #     # self.class_emoji[champ_class], // don't need this
         #     champ[0], #star
         #     champ[2:-2], #name
         #     champ[-1] # rank
         # )
+        champion = get_champion(self.ctx.bot, token, attrs)
+        print('champ: '+champion.verbose_str)
         # champion = ChampionFactory.get_champion(self.bot, name)
         return champ
 
