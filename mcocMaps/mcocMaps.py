@@ -552,6 +552,9 @@ class MCOCMaps:
         [star]  : 4, 5, 6
 
         '''
+        sgd = cogs.mcocTools.StaticGameData()
+        #print(len(sgd.cdt_data), len(sgd.cdt_masteries), sgd.test)
+        cm = sgd.cdt_masteries
 
         default = self.NodeParser(scoutargs)
         keys = default.keys()
@@ -613,16 +616,35 @@ class MCOCMaps:
                     champ = await self.jm_format_champ(x['champ'])
                     if len(response) == 1:
                         em.set_thumbnail(url=champ.get_avatar())
+                    # em.add_field(name='{}  {}'.format(champ.collectoremoji, champ.star_name_str),
+                    #     value='v:{0} gv:{1} str:{2} gstr:{3} gc:{4} lcde:{5}'.format(
+                    #         x["masteries"]["v"],
+                    #         x["masteries"]["gv"],
+                    #         x["masteries"]["s"],
+                    #         x["masteries"]["gs"],
+                    #         x["masteries"]["gc"],
+                    #         x["masteries"]["lcde"]
+                    #     ), inline=False
+                    # )
                     em.add_field(name='{}  {}'.format(champ.collectoremoji, champ.star_name_str),
-                        value='vit:{0} gvit:{1} str:{2} gstr:{3} gc:{4} lcde:{5}'.format(
+                        value='{6}:{0} {7}:{1} {8}:{2} {9}:{3} {10}:{4} {11}{12}:{5}'.format(
                             x["masteries"]["v"],
                             x["masteries"]["gv"],
                             x["masteries"]["s"],
                             x["masteries"]["gs"],
                             x["masteries"]["gc"],
-                            x["masteries"]["lcde"]
+                            x["masteries"]["lcde"],
+                            cm['vitality']['icon'],
+                            cm['greatervitality']['icon'],
+                            cm['strength']['icon'],
+                            cm['greaterstrength']['icon'],
+                            cm['classcanon']['icon'],
+                            cm['liquidcourage']['icon'],
+                            cm['doubledge']['icon']
                         ), inline=False
                     )
+
+
             em.add_field(name='Scout observed Health & Attack', value='{}, {}'.format(default['hp'], default['atk']), inline=False)
             if pathdata is not None:
                 em = await self.get_awnode_details(ctx, default['node'], default['difficulty'], em)
