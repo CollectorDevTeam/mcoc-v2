@@ -667,20 +667,20 @@ class MCOCMaps:
 
     async def jm_format_champ(self, champ):
         ''' Format champ name for display '''
-        # attrs = {}
-        # token = champ[2:-2]
-        # attrs['star'] = champ[0]
-        # attrs['rank'] = champ[-1]
-        # champion = ChampConverter.get_champion(self.ctx.bot, token, attrs)
+        attrs = {}
+        token = champ[2:-2]
+        attrs['star'] = champ[0]
+        attrs['rank'] = champ[-1]
+        champion = ChampConverter.get_champion(self, self.bot, token, attrs)
 
-        token = '{0}★{1}r{2}'.format(
-            # self.class_emoji[champ_class], // don't need this
-            champ[0], #star
-            champ[2:-2], #name
-            champ[-1] # rank
-        )
+        # token = '{0}★{1}r{2}'.format(
+        #     # self.class_emoji[champ_class], // don't need this
+        #     champ[0], #star
+        #     champ[2:-2], #name
+        #     champ[-1] # rank
+        # )
+        # champion = await ChampConverter.convert(self, token)
 
-        champion = await ChampConverter.convert(self, token)
         print('champ: '+champion.verbose_str)
         # champion = ChampionFactory.get_champion(self.bot, name)
         return champ
