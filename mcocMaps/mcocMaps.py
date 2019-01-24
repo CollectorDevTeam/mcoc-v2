@@ -633,7 +633,7 @@ class MCOCMaps:
         for arg in nargs.lower().split(' '):
             for m in parse_re.finditer(arg):
                 default[m.lastgroup] = int(m.group(m.lastgroup))
-            if arg is in ('science','skill','mutant','mystic','cosmic','tech'):
+            if arg in ('science','skill','mutant','mystic','cosmic','tech',):
                 default['class'] = arg
                 continue
 
