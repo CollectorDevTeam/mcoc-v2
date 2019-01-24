@@ -633,10 +633,11 @@ class MCOCMaps:
         for arg in nargs.lower().split(' '):
             for m in parse_re.finditer(arg):
                 default[m.lastgroup] = int(m.group(m.lastgroup))
-            if arg in ('science','skill','mutant','mystic','cosmic','tech',):
-                default['class'] = arg
                 continue
-
+        try:
+            default['class'] = class_re.findall(nargs).pop(0)
+        else:
+            print('class_re failed')
 
         if default['hp'] == 0 or default['atk'] == 0:
             print('looking for hp atk raw values')
