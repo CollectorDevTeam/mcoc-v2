@@ -582,6 +582,7 @@ class MCOCMaps:
 
             # calls to jm service
             # only send jm's keys & values
+            data = {}
             for d in {'difficulty', 'node', 'hp','atk','star_filter','class_filter'}:
                 if d in keys:
                     data[d] = default[d]
