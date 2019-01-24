@@ -534,11 +534,11 @@ class MCOCMaps:
     async def _scout(self, ctx, *, scoutargs):
         '''
         JM's Scouter Lens inspection tool.
-        The Scouter Lens Mastery must contain at least 1 point.
+        Req: The Scouter Lens Mastery must contain at least 1 point.
 
         Valid Options:
         <tier>  : T1 - T22, expert, challenger, hard, inter, normal, easy
-        <node>  : 1 - 55
+        <node>  : n1 - 55
         <hp>    : hp12345, h12345, 12345
         <attack>: a1234, atk1234, 1234
         [class] : science, skill, mutant, tech, cosmic, mystic
@@ -550,52 +550,53 @@ class MCOCMaps:
         keys = default.keys()
 
         package = []
-        for key in keys:
-            package.append('{} : {}'.format(key, default[key]))
-
-        await self.bot.say('scoutlen testing')
-        await self.bot.say('\n'.join(package))
-
-        pathdata = self.aw_maps[default['difficulty']]
-        title='Scout Test node {}'.format(default['node'])
-        # nodedetails = pathdata['boosts'][str(default['node'])]
-        em = discord.Embed(color=default['color'], title=title, descritpion='', url='https://goo.gl/forms/ZgJG97KOpeSsQ2092')
-        em.set_footer(text='CollectorDevTeam + JM\'s Scouter Lens Bot',icon_url=self.COLLECTOR_ICON)
-        response = [{'champ':'4-electro-5','class':'science','masteries':{'v':1, 'gv':1,'s':1, 'gs':1, 'gc':1, 'lcde':0}}]
-
-        # calls to jm service
-        # response = await self.jm_send_request(AWD_API_URL, data=default)
-
-        if 'error' in response:
-            em.add_field(name='Scout API Error', value=str(response['error']))
+        if default['node'] == 0:
+            package.append('You must specify an Alliance War Node number. \n Examples:\n```node30\nn30```')
+        if default['tier'] == 0 and default['difficulty'] == '':
+            package.append('You must specify either an Alliance War Tier (T1 - T22) or a valid difficulty.\nExamples: ```t4\nT4\nExpert```')
+        if default['hp'] == 0:
+            package.append('You must specify the mystery champion observed Health\nExamples:```hp123456\nh123456\n123456```')
+        if default['atk'] == 0:
+            package.append('You must specify the mystery champion observed Attack\nExamples:```hp12345\nh12345\n12345```')
+        # for key in keys:
+        #     package.append('{} : {}'.format(key, default[key]))
+        if len(package) > 0:
+        # await self.bot.say('scoutlens testing')
+            await self.bot.say('\n'.join(package))
         else:
-            # result_em = discord.Embed(color=discord.Color.green(), title='Scout Results')
-            avatar_url = None
-            for x in response:
-                # I'm probably going to override this champ thing
-                champ = await self.jm_format_champ(x['champ'])
-                if avatar_url is None:
-                    # avatar_url = PORTRAIT.format(champ.mattkraftid)
-                    # print(avatar_url)
-                    # em.set_thumbnail(avatar_url)
-                    em.set_thumbnail(url=champ.get_avatar())
-                em.add_field(name=champ.verbose_str,
-                    value='vit:{0} gvit:{1} str:{2} gstr:{3} gc:{4} lcde:{5}'.format(
-                        x["masteries"]["v"],
-                        x["masteries"]["gv"],
-                        x["masteries"]["s"],
-                        x["masteries"]["gs"],
-                        x["masteries"]["gc"],
-                        x["masteries"]["lcde"]
+            pathdata = self.aw_maps[default['difficulty'].lower()]
+            title='JM\'s ScouterLens : AW Node {}'.format(default['node'])
+            # nodedetails = pathdata['boosts'][str(default['node'])]
+            em = discord.Embed(color=default['color'], title=title, descritpion='', url='https://goo.gl/forms/ZgJG97KOpeSsQ2092')
+            em.set_footer(text='CollectorDevTeam + JM\'s Scouter Lens Bot',icon_url=self.COLLECTOR_ICON)
+            response = [{'champ':'4-electro-5','class':'science','masteries':{'v':1, 'gv':1,'s':1, 'gs':1, 'gc':1, 'lcde':0}}]
+
+            # calls to jm service
+            # response = await self.jm_send_request(AWD_API_URL, data=default)
+
+            if 'error' in response:
+                em.add_field(name='Scout API Error', value=str(response['error']))
+            else:
+                avatar_url = None
+                for x in response:
+                    champ = await self.jm_format_champ(x['champ'])
+                    if avatar_url is None:
+                        em.set_thumbnail(url=champ.get_avatar())
+                    em.add_field(name=champ.verbose_str,
+                        value='vit:{0} gvit:{1} str:{2} gstr:{3} gc:{4} lcde:{5}'.format(
+                            x["masteries"]["v"],
+                            x["masteries"]["gv"],
+                            x["masteries"]["s"],
+                            x["masteries"]["gs"],
+                            x["masteries"]["gc"],
+                            x["masteries"]["lcde"]
+                        )
                     )
-                )
-        em.add_field(name='Scout observed hp', value='{}'.format(default['hp']))
-        em.add_field(name='Scout observed attack', value='{}'.format(default['atk']))
-        em = await self.get_awnode_details(ctx, default['node'], default['difficulty'], em)
-        # em.add_field(name='nodedetails', value=nodedetails)
+            em.add_field(name='Scout observed Health & Attack', value='{}, {}'.format(default['hp'], default['atk']), inline=False)
+            em = await self.get_awnode_details(ctx, default['node'], default['difficulty'], em)
 
 
-        await self.bot.say(embed=em)
+            await self.bot.say(embed=em)
         # champ_class = None
         # champ_classes = ('Mystic', 'Science', 'Skill', 'Mutant', 'Tech', 'Cosmic')
         # for c in champ_classes:
