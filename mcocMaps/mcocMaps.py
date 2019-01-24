@@ -567,7 +567,7 @@ class MCOCMaps:
             package.append('You must specify the mystery champion observed Attack\nExamples:``hp12345``\n``h12345``\n``12345``')
         # for key in keys:
         #     package.append('{} : {}'.format(key, default[key]))
-        em = discord.Embed(color=default['color'], title='JM\'s ScouterLens', description=desc, url='https://goo.gl/forms/ZgJG97KOpeSsQ2092')
+        em = discord.Embed(color=default['color'], title='JM\'s ScouterLens', description='', url='https://goo.gl/forms/ZgJG97KOpeSsQ2092')
         em.set_footer(text='CollectorDevTeam + JM\'s Scouter Lens Bot',icon_url=self.COLLECTOR_ICON)
         if len(package) > 0:
         # await self.bot.say('scoutlens testing')
@@ -581,6 +581,7 @@ class MCOCMaps:
                 desc = '{} Bracket | Node {}'.format(default['difficulty'].title(),default['node'])
             else:
                 desc = 'Tier {} | {} Bracket | Node {}'.format(default['tier'],default['difficulty'].title(), default['node'])
+            em.description(desc)
             # response = [{'champ':'4-electro-5','class':'science','masteries':{'v':1, 'gv':1,'s':1, 'gs':1, 'gc':1, 'lcde':0}},{'champ':'4-diablo-5','class':'mystic','masteries':{'v':1, 'gv':1,'s':1, 'gs':1, 'gc':1, 'lcde':0}}]
 
             # calls to jm service
