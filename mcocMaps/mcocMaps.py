@@ -13,6 +13,8 @@ JPAGS = 'http://www.alliancewar.com'
 PATREON = 'https://patreon.com/collectorbot'
 PORTRAIT = "https://raw.githubusercontent.com/CollectorDevTeam/assets/master/data/images/portraits/{}.png"
 FEATURED = "https://raw.githubusercontent.com/CollectorDevTeam/assets/master/data/images/featured/{}.png"
+remote_data_basepath = "https://raw.githubusercontent.com/CollectorDevTeam/assets/master/data/"
+
 
 boosts = json.loads(requests.get('https://raw.githubusercontent.com/CollectorDevTeam/assets/master/data/json/alliancewar/boosts.json').text)
 aw_advanced = json.loads(requests.get('https://raw.githubusercontent.com/CollectorDevTeam/assets/master/data/json/alliancewar/aw_advanced.json').text)
@@ -572,7 +574,7 @@ class MCOCMaps:
                 # I'm probably going to override this champ thing
                 champ = await self.jm_format_champ(x['champ'])
                 if portrait == '':
-                    em.set_thumbnail(url=PORTRAIT.format(champ.mattkraftid))
+                    em.set_thumbnail(url=champ.get_avatar())
                 champ_name = champ.verbose_str
                 em.add_field(
                     name=champ_name,
