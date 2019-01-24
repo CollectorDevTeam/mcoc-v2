@@ -414,7 +414,7 @@ class MCOCMaps:
             await self.bot.say('Valid tiers include: {}'.format(', '.join(self.aw_maps.keys())))
 
 
-    async def get_awnode_details(self, ctx, nodeNumber, tier):
+    async def get_awnode_details(self, ctx, nodeNumber, tier, em: discord.Embed = None):
         # boosts = self.alliancewarboosts
         tiers = {
             'expert':{ 'color' :discord.Color.gold(), 'minis': [27,28,29,30,31,48,51,52,53,55], 'boss':[54]},
@@ -434,7 +434,9 @@ class MCOCMaps:
             title='{} BOSS Node {} Boosts'.format(tier.title(),nodeNumber)
         else:
             title='{} Node {} Boosts'.format(tier.title(),nodeNumber)
-        em = discord.Embed(color=tiers[tier]['color'], title=title, descritpion='', url=JPAGS)
+        if em is None:
+            em = discord.Embed(color=tiers[tier]['color'], title=title, descritpion='', url=JPAGS)
+            em.set_footer(icon_url=JPAGS+'/aw/images/app_icon.jpg',text='AllianceWar.com')
         nodedetails = pathdata['boosts'][str(nodeNumber)]
         for n in nodedetails:
             title, text = '','No description. Report to @jpags#5202'
@@ -462,7 +464,6 @@ class MCOCMaps:
             em.add_field(name=title, value=text, inline=False)
         #     img = '{}/global/ui/images/booster/{}.png'.format(JPAGS, boosts['img'])
         # em.set_thumbnail(url=img)
-        em.set_footer(icon_url=JPAGS+'/aw/images/app_icon.jpg',text='AllianceWar.com')
         return em
 
     @alliancewar.command(pass_context=True, hidden=False, name="map")
@@ -557,7 +558,7 @@ class MCOCMaps:
 
         pathdata = self.aw_maps[default['difficulty']]
         title='Scout Test node {}'.format(default['node'])
-        nodedetails = pathdata['boosts'][str(default['node'])]
+        # nodedetails = pathdata['boosts'][str(default['node'])]
         em = discord.Embed(color=default['color'], title=title, descritpion='', url='https://goo.gl/forms/ZgJG97KOpeSsQ2092')
 
         response = [{'champ':'4-electro-5','class':'science','masteries':{'v':1, 'gv':1,'s':1, 'gs':1, 'gc':1, 'lcde':0}}]
@@ -588,9 +589,10 @@ class MCOCMaps:
                         x["masteries"]["lcde"]
                     )
                 )
-        em.add_field(name='nodedetails', value=nodedetails)
-        em.add_field(name='observed hp', value='{}'.format(default['hp']))
-        em.add_field(name='observed attack', value='{}'.format(default['atk']))
+        em.add_field(name='Scout observed hp', value='{}'.format(default['hp']))
+        em.add_field(name='Scout observed attack', value='{}'.format(default['atk']))
+        em = self.get_awnode_details(ctx, default['node'], default['difficulty'], em)
+        # em.add_field(name='nodedetails', value=nodedetails)
         em.set_footer(text='CollectorDevTeam + JM\'s Scouter Lens Bot',icon_url=self.COLLECTOR_ICON)
 
         await self.bot.say(embed=em)
