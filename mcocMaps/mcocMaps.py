@@ -627,7 +627,7 @@ class MCOCMaps:
                     #     ), inline=False
                     # )
                     em.add_field(name='{}  {}'.format(champ.collectoremoji, champ.star_name_str),
-                        value='{6}:{0} {7}:{1} {8}:{2} {9}:{3} {10}:{4} {11}{12}:{5}'.format(
+                        value='{6}  {0}   {7}  {1}  {8}  {2}  {9}  {3}  {10}  {4}  {11}{12}  {5}'.format(
                             x["masteries"]["v"],
                             x["masteries"]["gv"],
                             x["masteries"]["s"],
