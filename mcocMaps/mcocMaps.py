@@ -581,11 +581,13 @@ class MCOCMaps:
             result_em.add_field(name='Scout API Error', value=str(response['error']))
         else:
             # result_em = discord.Embed(color=discord.Color.green(), title='Scout Results')
+            portrait = ''
             for x in response:
                 # I'm probably going to override this champ thing
-                champ_name = await self.format_champ(x['champ'])
-
-                champ_name = x['champ']
+                champ = await self.format_champ(x['champ'])
+                    if portrait == '':
+                        em.set_thumbnail(champ.portraits)
+                champ_name = champ.verbose_str
                 em.add_field(
                     name=champ_name,
                     value='vit:{0} gvit:{1} str:{2} gstr:{3} gc:{4} lcde:{5}'.format(
@@ -603,6 +605,7 @@ class MCOCMaps:
         em.add_field(name='nodedetails', value=nodedetails)
         em.add_field(name='observed hp', value='{}'.format(default['hp']))
         em.add_field(name='observed attack', value='{}'.format(default['atk']))
+        em.set_thumbnail()
         em.set_footer(text='CollectorDevTeam + JM\'s Scouter Lens Bot',icon_url=self.COLLECTOR_ICON)
 
         await self.bot.say(embed=em)
