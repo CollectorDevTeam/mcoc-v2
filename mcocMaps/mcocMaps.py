@@ -18,8 +18,8 @@ aw_expert = json.loads(requests.get('https://raw.githubusercontent.com/Collector
 aw_hard = json.loads(requests.get('https://raw.githubusercontent.com/CollectorDevTeam/assets/master/data/json/alliancewar/aw_hard.json').text)
 aw_intermediate = json.loads(requests.get('https://raw.githubusercontent.com/CollectorDevTeam/assets/master/data/json/alliancewar/aw_intermediate.json').text)
 
-AWD_API_URL = '' #os.environ['SCOUTER_LENS_BOT_AWD_API_URL']
-MAS_API_URL = '' #os.environ['SCOUTER_LENS_BOT_MAS_API_URL']
+AWD_API_URL = 'http://chocripplebot.herokuapp.com/awd'
+# MAS_API_URL = 'http://chocripplebot.herokuapp.com/mas'
 
 class MCOCMaps:
     '''Maps for Marvel Contest of Champions'''
@@ -558,7 +558,8 @@ class MCOCMaps:
         default = self.NodeParser(scoutargs)
         keys = default.keys()
 
-        await self.bot.say('\n'.join('{}: {}'.format(k, default[k] for k in keys)))
+        package = '\n'.join('{}: {}'.format(k, default[k] for k in keys))
+        await self.bot.say(package)
 
         package = []
         for key in keys:
