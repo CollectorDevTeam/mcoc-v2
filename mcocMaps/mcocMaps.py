@@ -640,7 +640,7 @@ class MCOCMaps:
                             cm['greaterstrength']['icon'],
                             cm['glasscanon']['icon'],
                             cm['liquidcourage']['icon'],
-                            cm['doubledge']['icon']
+                            cm['doubleedge']['icon']
                         ), inline=False
                     )
 
