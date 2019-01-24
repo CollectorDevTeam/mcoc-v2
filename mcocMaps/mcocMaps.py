@@ -7,8 +7,7 @@ import re
 from .utils.dataIO import dataIO
 from discord.ext import commands
 from .mcocTools import StaticGameData
-from .mcoc import (class_color_codes, ChampConverter, ChampConverterMult,
-                  QuietUserError, override_error_handler)
+from .mcoc import ChampConverter, ChampConverterDebug
 
 JPAGS = 'http://www.alliancewar.com'
 PATREON = 'https://patreon.com/collectorbot'
@@ -668,17 +667,20 @@ class MCOCMaps:
 
     async def jm_format_champ(self, champ):
         ''' Format champ name for display '''
-        attrs = {}
-        token = champ[2:-2]
-        attrs['star'] = champ[0]
-        attrs['rank'] = champ[-1]
+        # attrs = {}
+        # token = champ[2:-2]
+        # attrs['star'] = champ[0]
+        # attrs['rank'] = champ[-1]
+        # champion = ChampConverter.get_champion(self.ctx.bot, token, attrs)
+
         # name = '{0}★{1}r{2}'.format(
         #     # self.class_emoji[champ_class], // don't need this
         #     champ[0], #star
         #     champ[2:-2], #name
         #     champ[-1] # rank
         # )
-        champion = get_champion(self.ctx.bot, token, attrs)
+
+        champion = ChampConverter.convert(champ)
         print('champ: '+champion.verbose_str)
         # champion = ChampionFactory.get_champion(self.bot, name)
         return champ
