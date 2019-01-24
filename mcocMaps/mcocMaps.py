@@ -573,7 +573,7 @@ class MCOCMaps:
         response = [{'champ':'4-electro-5','class':'science','masteries':{'v':1, 'gv':1,'s':1, 'gs':1, 'gc':1, 'lcde':0}},]
 
         # calls to jm service
-        # response = await self.send_request(AWD_API_URL, data=default)
+        # response = await self.jm_send_request(AWD_API_URL, data=default)
 
         if 'error' in response:
             result_em.add_field(name='Scout API Error', value=str(response['error']))
@@ -582,7 +582,7 @@ class MCOCMaps:
             portrait = ''
             for x in response:
                 # I'm probably going to override this champ thing
-                champ = await self.format_champ(x['champ'])
+                champ = await self.jm_format_champ(x['champ'])
                 if portrait == '':
                     em.set_thumbnail(champ.portraits)
                 champ_name = champ.verbose_str
@@ -688,10 +688,10 @@ class MCOCMaps:
         champ = ChampConverter(name)
         return champ
 
-    async def jm_parse_champ_filter(self, champ_filter):
-        star_filter = ''.join(ch for ch in champ_filter if ch.isdigit())
-        champ_filter = ''.join(ch for ch in champ_filter if ch.isalpha())
-        return star_filter, champ_filter
+    # async def jm_parse_champ_filter(self, champ_filter):
+    #     star_filter = ''.join(ch for ch in champ_filter if ch.isdigit())
+    #     champ_filter = ''.join(ch for ch in champ_filter if ch.isalpha())
+    #     return star_filter, champ_filter
 
 
     async def pages_menu(self, ctx, embed_list: list, category: str='', message: discord.Message=None, page=0, timeout: int=30, choice=False):
