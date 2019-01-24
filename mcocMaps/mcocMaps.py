@@ -628,7 +628,7 @@ class MCOCMaps:
             if arg.lower() in {'science', 'skill', 'mutant', 'mystic', 'cosmic','tech', 'sc','sk','mu','my','co','te'}:
                 default['class_filter'] = arg.lower()
             elif arg.lower() in {'expert','challenger','hard','intermediate','normal','easy'}:
-                default['difficulty'] = class_re.sub((arg.lower())
+                default['difficulty'] = class_re.sub('', arg.lower())
 
         if default['hp'] == 0 or default['atk'] == 0:
             print('looking for hp atk raw values')
