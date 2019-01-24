@@ -33,8 +33,8 @@ class MCOCMaps:
         'expert': aw_expert,
         'hard' : aw_hard,
         'intermediate': aw_intermediate,
-        'easy' : None,
-        'normal': None
+        'easy' : aw_advanced,
+        'normal': aw_advanced
         }
 
     aq_map = {
@@ -466,7 +466,7 @@ class MCOCMaps:
                     value = 'Boost details for {} missing from alliancewar.com.  Report to @jpags#5202.'.format(nodename)
                 em.add_field(name=title, value=text, inline=False)
         else:
-            em.add_field(name='Apologies Summoner',value='Alliance War data for {} has not been *collected*.  \nDonate data to CollectorDevTeam : https://discord.gg/BwhgZxk'.format(tier.title())
+            em.add_field(name='Apologies Summoner',value='Alliance War data for {} has not been *collected*.  \nDonate data to CollectorDevTeam : https://discord.gg/BwhgZxk'.format(tier.title()))
         #     img = '{}/global/ui/images/booster/{}.png'.format(JPAGS, boosts['img'])
         # em.set_thumbnail(url=img)
         return em
