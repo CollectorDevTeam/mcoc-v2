@@ -610,7 +610,7 @@ class MCOCMaps:
                     champ = await self.jm_format_champ(x['champ'])
                     if avatar_url == '':
                         em.set_thumbnail(url=champ.get_avatar())
-                    em.add_field(name='{} {}'.format(champ.collectoremoji, champ.verbose_str),
+                    em.add_field(name='{}  {}'.format(champ.collectoremoji, champ.verbose_str),
                         value='vit:{0} gvit:{1} str:{2} gstr:{3} gc:{4} lcde:{5}'.format(
                             x["masteries"]["v"],
                             x["masteries"]["gv"],
