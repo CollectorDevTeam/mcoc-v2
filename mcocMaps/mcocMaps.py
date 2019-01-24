@@ -624,7 +624,7 @@ class MCOCMaps:
         # added class: as full class name or initial 2 letters
         # ~ Zlobber
 
-        default = {'tier': 0, 'difficulty' : '', 'hp': 0, 'atk': 0, 'node' : 0, 'class' : None, 'star': '', 'color':discord.Color.gold()}
+        default = {'tier': 0, 'difficulty' : '', 'hp': 0, 'atk': 0, 'node' : 0, 'class' : None, 'star': 0, 'color':discord.Color.gold()}
         parse_re = re.compile(r'''\b(?:t(?:ier)?(?P<tier>[0-9]{1,2})
                     | hp?(?P<hp>[0-9]{2,6})
                     | a(?:tk)?(?P<atk>[0-9]{2,5})
@@ -670,7 +670,7 @@ class MCOCMaps:
 
         if default['difficulty'] != '' and default['node'] > 0 and default['hp'] > 0 and default['atk'] > 0:
             data = {'difficulty':default['difficulty'], 'node':default['node'], 'hp':default['hp'], 'atk':default['atk']}
-        if default['star'] >0:
+        if default['star'] > 0:
             data['star_filter'] = default['star']
         if default['class'] is not None:
             data['class_filter'] = default['class']
