@@ -616,7 +616,7 @@ class MCOCMaps:
                     champ = await self.jm_format_champ(x['champ'])
                     if len(response) == 1:
                         em.set_thumbnail(url=champ.get_avatar())
-                    if x['masteries']['lcde'] > 0:
+                    if x['masteries']['lcde'] = 0:
                         v = 'No Recoil detected'
                     else:
                         v = '<:recoil:524641305347883009> Recoil activated'
