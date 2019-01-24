@@ -555,9 +555,11 @@ class MCOCMaps:
 
         '''
 
-        default, data = self.NodeParser(scoutargs)
-
+        default = self.NodeParser(scoutargs)
         keys = default.keys()
+
+        await self.bot.say('\n'.join('{}: {}'.format(k, default[k] for k in keys)))
+
         package = []
         for key in keys:
             package.append('{} : {}'.format(key, default[key]))
@@ -573,7 +575,7 @@ class MCOCMaps:
         test = [{'champ':'4-electro-5','class':'science','masteries':{'v':1, 'gv':1,'s':1, 'gs':1, 'gc':1, 'lcde':0}},]
 
         # calls to jm service
-        # response = await self.send_request(AWD_API_URL, data=data)
+        # response = await self.send_request(AWD_API_URL, data=default)
 
         respose = test
 
@@ -624,21 +626,21 @@ class MCOCMaps:
         # added class: as full class name or initial 2 letters
         # ~ Zlobber
 
-        default = {'tier': 0, 'difficulty' : '', 'hp': 0, 'atk': 0, 'node' : 0, 'class' : None, 'star': 0, 'color':discord.Color.gold()}
+        default = {'tier': 0, 'difficulty' : '', 'hp': 0, 'atk': 0, 'node' : 0, 'class_filter' : None, 'star_filter': 0, 'color':discord.Color.gold()}
         parse_re = re.compile(r'''\b(?:t(?:ier)?(?P<tier>[0-9]{1,2})
                     | hp?(?P<hp>[0-9]{2,6})
                     | a(?:tk)?(?P<atk>[0-9]{2,5})
                     | (?P<hpi>\d{2,6})\s(?:\s)*(?P<atki>\d{2,5})
                     | n(?:ode)?(?P<node>[0-9]{1,2}))\b
-                    | (?P<star>[1-6](?=(?:star|s)\b|(?:★|☆|\*)\B)) ''', re.X)
+                    | (?P<star_filter>[1-6](?=(?:star|s)\b|(?:★|☆|\*)\B)) ''', re.X)
 
-        class_re = re.compile(r'''(?:(?P<class>sc(?:ience)?|sk(?:ill)?|mu(?:tant)?|my(?:stic)?|co(?:smic)?|te(?:ch)?))''',re.X)
+        # class_re = re.compile(r'''(?:(?P<class>sc(?:ience)?|sk(?:ill)?|mu(?:tant)?|my(?:stic)?|co(?:smic)?|te(?:ch)?))''',re.X)
 
         for arg in nargs.lower().split(' '):
             for m in parse_re.finditer(arg):
                 default[m.lastgroup] = int(m.group(m.lastgroup))
             if arg in {'science', 'skill', 'mutant', 'mystic', 'cosmic','tech'}:
-                default['class'] = arg
+                default['class_filter'] = arg
 
         if default['hp'] == 0 or default['atk'] == 0:
             print('looking for hp atk raw values')
@@ -659,7 +661,7 @@ class MCOCMaps:
                 print('found one integer')
                 if default['hp'] == 0 and default['atk'] > 0:
                     default['hp'] = hpatkint[0]
-                elif default['hp'] > 0 and default['atk'] ==0:
+                elif default['hp'] > 0 and default['atk'] == 0:
                     default['atk'] = hpatkint[0]
                 else:
                     print('unable to determine whether value is hp or attack')
@@ -668,14 +670,7 @@ class MCOCMaps:
             default['difficulty'] = self.aw_tiers[default['tier']]['diff'].lower()
             default['color'] = self.aw_tiers[default['tier']]['color']
 
-        if default['difficulty'] != '' and default['node'] > 0 and default['hp'] > 0 and default['atk'] > 0:
-            data = {'difficulty':default['difficulty'], 'node':default['node'], 'hp':default['hp'], 'atk':default['atk']}
-        if default['star'] > 0:
-            data['star_filter'] = default['star']
-        if default['class'] is not None:
-            data['class_filter'] = default['class']
-
-        return(default, data)
+        return(default)
 
     async def jm_send_request(self, url, data):
         ''' Send request to service'''
