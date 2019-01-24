@@ -11,6 +11,9 @@ from .mcoc import ChampConverter, Champion
 
 JPAGS = 'http://www.alliancewar.com'
 PATREON = 'https://patreon.com/collectorbot'
+PORTRAIT = "https://raw.githubusercontent.com/CollectorDevTeam/assets/master/data/images/portraits/{}.png"
+FEATURED = "https://raw.githubusercontent.com/CollectorDevTeam/assets/master/data/images/featured/{}.png"
+
 boosts = json.loads(requests.get('https://raw.githubusercontent.com/CollectorDevTeam/assets/master/data/json/alliancewar/boosts.json').text)
 aw_advanced = json.loads(requests.get('https://raw.githubusercontent.com/CollectorDevTeam/assets/master/data/json/alliancewar/aw_advanced.json').text)
 aw_challenger = json.loads(requests.get('https://raw.githubusercontent.com/CollectorDevTeam/assets/master/data/json/alliancewar/aw_challenger.json').text)
@@ -584,7 +587,7 @@ class MCOCMaps:
                 # I'm probably going to override this champ thing
                 champ = await self.jm_format_champ(x['champ'])
                 if portrait == '':
-                    em.set_thumbnail(champ.get_avatar())
+                    em.set_thumbnail(PORTRAIT.format(champ.mattkraftid))
                 champ_name = champ.verbose_str
                 em.add_field(
                     name=champ_name,
