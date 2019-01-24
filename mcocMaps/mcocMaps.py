@@ -620,13 +620,15 @@ class MCOCMaps:
                     | n(?:ode)?(?P<node>[0-9]{1,2}))\b
                     | (?P<star_filter>[1-6](?=(?:star|s)\b|(?:★|☆|\*)\B)) ''', re.X)
 
-        # class_re = re.compile(r'''(?:(?P<class>sc(?:ience)?|sk(?:ill)?|mu(?:tant)?|my(?:stic)?|co(?:smic)?|te(?:ch)?))''',re.X)
+        class_re = re.compile(r'''(?:(?P<class>sc(?:ience)?|sk(?:ill)?|mu(?:tant)?|my(?:stic)?|co(?:smic)?|te(?:ch)?))''',re.X)
 
         for arg in nargs.lower().split(' '):
             for m in parse_re.finditer(arg):
                 default[m.lastgroup] = int(m.group(m.lastgroup))
-            if arg in {'science', 'skill', 'mutant', 'mystic', 'cosmic','tech'}:
-                default['class_filter'] = arg
+            if arg.lower() in {'science', 'skill', 'mutant', 'mystic', 'cosmic','tech', 'sc','sk','mu','my','co','te'}:
+                default['class_filter'] = arg.lower()
+            elif arg.lower() in {'expert','challenger','hard','intermediate','normal','easy'}:
+                default['difficulty'] = class_re.sub((arg.lower())
 
         if default['hp'] == 0 or default['atk'] == 0:
             print('looking for hp atk raw values')
@@ -653,6 +655,7 @@ class MCOCMaps:
                     print('unable to determine whether value is hp or attack')
 
         if default['tier'] > 0:
+            #if Tier provided, override given difficulty.  Because stupid people.
             default['difficulty'] = self.aw_tiers[default['tier']]['diff'].lower()
             default['color'] = self.aw_tiers[default['tier']]['color']
 
