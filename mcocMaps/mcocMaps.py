@@ -634,7 +634,9 @@ class MCOCMaps:
         # added class: as full class name or initial 2 letters
         # ~ Zlobber
 
-        default = {'tier': 0, 'difficulty' : '', 'hp': 0, 'atk': 0, 'node' : 0, 'class_filter' : None, 'star_filter': 0, 'color':discord.Color.gold(), 'debug': 0}
+        # 'class_filter' : None, 'star_filter': 0,
+        
+        default = {'tier': 0, 'difficulty' : '', 'hp': 0, 'atk': 0, 'node' : 0, 'color':discord.Color.gold(), 'debug': 0}
         parse_re = re.compile(r'''\b(?:t(?:ier)?(?P<tier>[0-9]{1,2})
                     | hp?(?P<hp>[0-9]{2,6})
                     | a(?:tk)?(?P<atk>[0-9]{2,5})
