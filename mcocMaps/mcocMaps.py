@@ -590,6 +590,7 @@ class MCOCMaps:
 
             if 'error' in response:
                 em.add_field(name='Scout API Error', value=str(response['error']))
+                await self.bot.say(embed=em)
                 return
             else:
                 avatar_url = ''
