@@ -589,7 +589,7 @@ class MCOCMaps:
                     data[d] = str(default[d]) #stringify all data?
             response = await self.jm_send_request(AWD_API_URL, data=data)
 
-            if 'error' in response or if default['debug'] == 1:
+            if 'error' in response or default['debug'] == 1:
                 if default['debug'] == 1:
                     em.add_field(name='Transmitting:', value=json.dumps(data))
                     em.add_field(name='Scout API Error', value=str(response['error']))
