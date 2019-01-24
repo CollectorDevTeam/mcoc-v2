@@ -552,7 +552,7 @@ class MCOCMaps:
         [star]  : 4, 5, 6
 
         '''
-        sgd = cogs.mcocTools.StaticGameData()
+        sgd = StaticGameData()
         #print(len(sgd.cdt_data), len(sgd.cdt_masteries), sgd.test)
         cm = sgd.cdt_masteries
 
