@@ -636,7 +636,7 @@ class MCOCMaps:
                 continue
         try:
             default['class'] = class_re.findall(nargs).pop(0)
-        else:
+        except:
             print('class_re failed')
 
         if default['hp'] == 0 or default['atk'] == 0:
