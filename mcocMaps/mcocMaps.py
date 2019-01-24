@@ -686,7 +686,7 @@ class MCOCMaps:
             champ[2:-2], #name
             champ[-1] # rank
         )
-        champion = ChampConverter(name)
+        champion = ChampConverter(self.bot, name)
         return champion
 
     # async def jm_parse_champ_filter(self, champ_filter):
