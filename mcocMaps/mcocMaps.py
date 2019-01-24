@@ -558,18 +558,22 @@ class MCOCMaps:
 
         package = []
         if default['node'] == 0:
-            package.append('You must specify an Alliance War Node number. \n Examples:\n```node30\nn30```')
+            package.append('You must specify an Alliance War Node number. \n Examples:\n``node30``\n``n30``')
         if default['tier'] == 0 and default['difficulty'] == '':
-            package.append('You must specify either an Alliance War Tier (T1 - T22) or a valid difficulty.\nExamples: ```t4\nT4\nExpert```')
+            package.append('You must specify either an Alliance War Tier (T1 - T22) or a valid difficulty.\nExamples: ``t4``\n``T4``\n``Expert``')
         if default['hp'] == 0:
-            package.append('You must specify the mystery champion observed Health\nExamples:```hp123456\nh123456\n123456```')
+            package.append('You must specify the mystery champion observed Health\nExamples:``hp123456``\n``h123456``\n``123456``')
         if default['atk'] == 0:
-            package.append('You must specify the mystery champion observed Attack\nExamples:```hp12345\nh12345\n12345```')
+            package.append('You must specify the mystery champion observed Attack\nExamples:``hp12345``\n``h12345``\n``12345``')
         # for key in keys:
         #     package.append('{} : {}'.format(key, default[key]))
+        em = discord.Embed(color=default['color'], title='JM\'s ScouterLens', description=desc, url='https://goo.gl/forms/ZgJG97KOpeSsQ2092')
+        em.set_footer(text='CollectorDevTeam + JM\'s Scouter Lens Bot',icon_url=self.COLLECTOR_ICON)
         if len(package) > 0:
         # await self.bot.say('scoutlens testing')
-            await self.bot.say('\n'.join(package))
+            em.description('\n'.join(package))
+            await self.bot.say(embed=em)
+            return
         else:
             pathdata = self.aw_maps[default['difficulty'].lower()]
             # nodedetails = pathdata['boosts'][str(default['node'])]
@@ -577,8 +581,6 @@ class MCOCMaps:
                 desc = '{} Bracket | Node {}'.format(default['difficulty'].title(),default['node'])
             else:
                 desc = 'Tier {} | {} Bracket | Node {}'.format(default['tier'],default['difficulty'].title(), default['node'])
-            em = discord.Embed(color=default['color'], title='JM\'s ScouterLens', description=desc, url='https://goo.gl/forms/ZgJG97KOpeSsQ2092')
-            em.set_footer(text='CollectorDevTeam + JM\'s Scouter Lens Bot',icon_url=self.COLLECTOR_ICON)
             # response = [{'champ':'4-electro-5','class':'science','masteries':{'v':1, 'gv':1,'s':1, 'gs':1, 'gc':1, 'lcde':0}},{'champ':'4-diablo-5','class':'mystic','masteries':{'v':1, 'gv':1,'s':1, 'gs':1, 'gc':1, 'lcde':0}}]
 
             # calls to jm service
