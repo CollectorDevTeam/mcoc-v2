@@ -599,7 +599,7 @@ class MCOCMaps:
                             x["masteries"]["gs"],
                             x["masteries"]["gc"],
                             x["masteries"]["lcde"]
-                        )
+                        ), inline=False
                     )
             em.add_field(name='Scout observed Health & Attack', value='{}, {}'.format(default['hp'], default['atk']), inline=False)
             if pathdata is not None:
