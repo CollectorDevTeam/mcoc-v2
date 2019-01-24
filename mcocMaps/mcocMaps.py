@@ -572,7 +572,7 @@ class MCOCMaps:
                 # I'm probably going to override this champ thing
                 champ = await self.jm_format_champ(x['champ'])
                 if portrait == '':
-                    em.set_thumbnail(PORTRAIT.format(champ.mattkraftid))
+                    em.set_thumbnail(url=PORTRAIT.format(champ.mattkraftid))
                 champ_name = champ.verbose_str
                 em.add_field(
                     name=champ_name,
