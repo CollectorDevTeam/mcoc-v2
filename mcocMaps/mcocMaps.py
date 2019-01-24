@@ -7,13 +7,13 @@ import re
 from .utils.dataIO import dataIO
 from discord.ext import commands
 from .mcocTools import StaticGameData
-from .mcoc import ChampConverter, ChampConverterDebug
+from .mcoc import ChampConverter, ChampConverterDebug, Champions
 
 JPAGS = 'http://www.alliancewar.com'
 PATREON = 'https://patreon.com/collectorbot'
 PORTRAIT = "https://raw.githubusercontent.com/CollectorDevTeam/assets/master/data/images/portraits/{}.png"
 FEATURED = "https://raw.githubusercontent.com/CollectorDevTeam/assets/master/data/images/featured/{}.png"
-remote_data_basepath = "https://raw.githubusercontent.com/CollectorDevTeam/assets/master/data/"
+# remote_data_basepath = "https://raw.githubusercontent.com/CollectorDevTeam/assets/master/data/"
 
 
 boosts = json.loads(requests.get('https://raw.githubusercontent.com/CollectorDevTeam/assets/master/data/json/alliancewar/boosts.json').text)
@@ -569,15 +569,13 @@ class MCOCMaps:
             result_em.add_field(name='Scout API Error', value=str(response['error']))
         else:
             # result_em = discord.Embed(color=discord.Color.green(), title='Scout Results')
-            portrait = ''
+            portrait = None
             for x in response:
                 # I'm probably going to override this champ thing
                 champ = await self.jm_format_champ(x['champ'])
-                if portrait == '':
+                if portrait is None:
                     em.set_thumbnail(url=champ.get_avatar())
-                champ_name = champ.verbose_str
-                em.add_field(
-                    name=champ_name,
+                em.add_field(name=champ.verbose_str,
                     value='vit:{0} gvit:{1} str:{2} gstr:{3} gc:{4} lcde:{5}'.format(
                         x["masteries"]["v"],
                         x["masteries"]["gv"],
@@ -669,6 +667,7 @@ class MCOCMaps:
 
     async def jm_format_champ(self, champ):
         ''' Format champ name for display '''
+        print('starting jm_format_champ')
         attrs = {}
         token = champ[2:-2]
         attrs['star'] = int(champ[0])
@@ -684,7 +683,6 @@ class MCOCMaps:
         # champion = await ChampConverter.convert(self, token)
 
         print('champ: '+champion.verbose_str)
-        # champion = ChampionFactory.get_champion(self.bot, name)
         return champion
 
     # async def jm_parse_champ_filter(self, champ_filter):
