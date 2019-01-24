@@ -7,7 +7,7 @@ import re
 from .utils.dataIO import dataIO
 from discord.ext import commands
 from .mcocTools import StaticGameData
-from .mcoc import ChampConverter, Champion
+from .mcoc import ChampConverter, Champion, get_champion
 
 JPAGS = 'http://www.alliancewar.com'
 PATREON = 'https://patreon.com/collectorbot'
@@ -689,7 +689,7 @@ class MCOCMaps:
             champ[2:-2], #name
             champ[-1] # rank
         )
-        champion = ChampConverter(self.bot, name)
+        champion = get_champion(name)
         return champion
 
     # async def jm_parse_champ_filter(self, champ_filter):
