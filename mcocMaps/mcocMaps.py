@@ -571,7 +571,7 @@ class MCOCMaps:
         em.set_footer(text='CollectorDevTeam + JM\'s Scouter Lens Bot',icon_url=self.COLLECTOR_ICON)
         if len(package) > 0:
         # await self.bot.say('scoutlens testing')
-            em.description('\n'.join(package))
+            em.description='\n'.join(package)
             await self.bot.say(embed=em)
             return
         else:
@@ -581,7 +581,7 @@ class MCOCMaps:
                 desc = '{} Bracket | Node {}'.format(default['difficulty'].title(),default['node'])
             else:
                 desc = 'Tier {} | {} Bracket | Node {}'.format(default['tier'],default['difficulty'].title(), default['node'])
-            em.description(desc)
+            em.description=desc
             # response = [{'champ':'4-electro-5','class':'science','masteries':{'v':1, 'gv':1,'s':1, 'gs':1, 'gc':1, 'lcde':0}},{'champ':'4-diablo-5','class':'mystic','masteries':{'v':1, 'gv':1,'s':1, 'gs':1, 'gc':1, 'lcde':0}}]
 
             # calls to jm service
