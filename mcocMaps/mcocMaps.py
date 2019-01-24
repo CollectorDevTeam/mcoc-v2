@@ -7,7 +7,7 @@ import re
 from .utils.dataIO import dataIO
 from discord.ext import commands
 from .mcocTools import StaticGameData
-from .mcoc import ChampConverter
+from .mcoc import ChampConverter, Champion
 
 JPAGS = 'http://www.alliancewar.com'
 PATREON = 'https://patreon.com/collectorbot'
@@ -584,7 +584,7 @@ class MCOCMaps:
                 # I'm probably going to override this champ thing
                 champ = await self.jm_format_champ(x['champ'])
                 if portrait == '':
-                    em.set_thumbnail(champ.portraits)
+                    em.set_thumbnail(champ.get_avatar())
                 champ_name = champ.verbose_str
                 em.add_field(
                     name=champ_name,
