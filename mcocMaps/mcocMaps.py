@@ -7,7 +7,7 @@ import re
 from .utils.dataIO import dataIO
 from discord.ext import commands
 from .mcocTools import StaticGameData
-from .mcoc import ChampConverter, Champion, get_champion
+from .mcoc import ChampConverter, Champion, ChampionFactory
 
 JPAGS = 'http://www.alliancewar.com'
 PATREON = 'https://patreon.com/collectorbot'
