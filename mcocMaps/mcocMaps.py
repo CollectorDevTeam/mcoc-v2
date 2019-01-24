@@ -575,6 +575,7 @@ class MCOCMaps:
                 champ = await self.jm_format_champ(x['champ'])
                 if avatar_url is None:
                     avatar_url = PORTRAIT.format(champ.mattkraftid)
+                    print(avatar_url)
                     em.set_thumbnail(url=avatar_url)
                     # em.set_thumbnail(url=champ.get_avatar())
                 em.add_field(name=champ.verbose_str,
