@@ -638,7 +638,7 @@ class MCOCMaps:
                             cm['greatervitality']['icon'],
                             cm['strength']['icon'],
                             cm['greaterstrength']['icon'],
-                            cm['classcanon']['icon'],
+                            cm['glasscanon']['icon'],
                             cm['liquidcourage']['icon'],
                             cm['doubledge']['icon']
                         ), inline=False
