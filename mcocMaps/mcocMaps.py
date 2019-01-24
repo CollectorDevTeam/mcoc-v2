@@ -617,9 +617,9 @@ class MCOCMaps:
                     if len(response) == 1:
                         em.set_thumbnail(url=champ.get_avatar())
                     if x['masteries']['lcde'] != '0':
-                        v = 'No Recoil Detected'
+                        v = 'No Recoil detected'
                     else:
-                        v = 'Recoil activated'
+                        v = '<:recoil:524641305347883009> Recoil activated'
                     em.add_field(name='{}  {}'.format(champ.collectoremoji, champ.star_name_str),
                         value = v, inline=False)
                     # em.add_field(name='{}  {}'.format(champ.collectoremoji, champ.star_name_str),
