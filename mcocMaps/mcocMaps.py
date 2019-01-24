@@ -575,13 +575,13 @@ class MCOCMaps:
             if default['tier'] == 0:
                 desc = '{} Bracket | Node {}'.format(default['difficulty'].title(),default['node'])
             else:
-                desc = 'Tier {} | {} Bracket | Node {}'.format(default['tier'],default['difficulty'].title()default['node'])
+                desc = 'Tier {} | {} Bracket | Node {}'.format(default['tier'],default['difficulty'].title(), default['node'])
             em = discord.Embed(color=default['color'], title='JM\'s ScouterLens', description=desc, url='https://goo.gl/forms/ZgJG97KOpeSsQ2092')
             em.set_footer(text='CollectorDevTeam + JM\'s Scouter Lens Bot',icon_url=self.COLLECTOR_ICON)
-            response = [{'champ':'4-electro-5','class':'science','masteries':{'v':1, 'gv':1,'s':1, 'gs':1, 'gc':1, 'lcde':0}},{'champ':'4-diablo-5','class':'mystic','masteries':{'v':1, 'gv':1,'s':1, 'gs':1, 'gc':1, 'lcde':0}}]
+            # response = [{'champ':'4-electro-5','class':'science','masteries':{'v':1, 'gv':1,'s':1, 'gs':1, 'gc':1, 'lcde':0}},{'champ':'4-diablo-5','class':'mystic','masteries':{'v':1, 'gv':1,'s':1, 'gs':1, 'gc':1, 'lcde':0}}]
 
             # calls to jm service
-            # response = await self.jm_send_request(AWD_API_URL, data=default)
+            response = await self.jm_send_request(AWD_API_URL, data=default)
 
             if 'error' in response:
                 em.add_field(name='Scout API Error', value=str(response['error']))
