@@ -567,7 +567,7 @@ class MCOCMaps:
 
         # Disabled until Parser sorted
 
-        pathdata = aw_maps[default['difficulty']]
+        pathdata = self.aw_maps[default['difficulty']]
         title='Scout Test node {}'.format(default['node'])
         nodedetails = pathdata['boosts'][str(node)]
         em = discord.Embed(color=default['color'], title=title, descritpion='', url='https://goo.gl/forms/ZgJG97KOpeSsQ2092')
@@ -575,7 +575,7 @@ class MCOCMaps:
         em.add_field(name='observed hp', value='{}'.format(default['hp']))
         em.add_field(name='observed attack', value='{}'.format(default['atk']))
         em.set_footer(text='CollectorDevTeam + JM\'s Scouter Lens Bot',icon_url=self.COLLECTOR_ICON)
-        
+
         # champ_class = None
         # champ_classes = ('Mystic', 'Science', 'Skill', 'Mutant', 'Tech', 'Cosmic')
         # for c in champ_classes:
