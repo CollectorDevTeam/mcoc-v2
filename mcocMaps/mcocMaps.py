@@ -569,12 +569,14 @@ class MCOCMaps:
             em.add_field(name='Scout API Error', value=str(response['error']))
         else:
             # result_em = discord.Embed(color=discord.Color.green(), title='Scout Results')
-            portrait = None
+            avatar_url = None
             for x in response:
                 # I'm probably going to override this champ thing
                 champ = await self.jm_format_champ(x['champ'])
-                if portrait is None:
-                    em.set_thumbnail(url=champ.get_avatar())
+                if avatar_url is None:
+                    avatar_url = PORTRAIT.format(champ.mattkraftid)
+                    em.set_thumbnail(url=avatar_url)
+                    # em.set_thumbnail(url=champ.get_avatar())
                 em.add_field(name=champ.verbose_str,
                     value='vit:{0} gvit:{1} str:{2} gstr:{3} gc:{4} lcde:{5}'.format(
                         x["masteries"]["v"],
