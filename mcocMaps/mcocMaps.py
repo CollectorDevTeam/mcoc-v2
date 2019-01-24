@@ -679,6 +679,7 @@ class MCOCMaps:
 
     async def jm_format_champ(self, champ):
         ''' Format champ name for display '''
+        print('champ: '+champ)
         name = '{0}★{1}r{2}'.format(
             # self.class_emoji[champ_class], // don't need this
             champ[0], #star
