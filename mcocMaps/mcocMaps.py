@@ -562,6 +562,9 @@ class MCOCMaps:
         await self.bot.say('\n'.join(package))
 
 
+
+
+
         # Disabled until Parser sorted
 
         # if tier.lower() in aw_tiers:
@@ -630,9 +633,8 @@ class MCOCMaps:
         for arg in nargs.lower().split(' '):
             for m in parse_re.finditer(arg):
                 default[m.lastgroup] = int(m.group(m.lastgroup))
-        for c in ('science','skill','mutant','mystic','cosmic','tech'):
-            if c in nargs:
-                default['class'] = c
+            if arg is in ('science','skill','mutant','mystic','cosmic','tech'):
+                default['class'] = arg
                 continue
 
 
