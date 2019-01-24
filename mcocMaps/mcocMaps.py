@@ -683,7 +683,7 @@ class MCOCMaps:
 
         print('champ: '+champion.verbose_str)
         # champion = ChampionFactory.get_champion(self.bot, name)
-        return champ
+        return champion
 
     # async def jm_parse_champ_filter(self, champ_filter):
     #     star_filter = ''.join(ch for ch in champ_filter if ch.isdigit())
