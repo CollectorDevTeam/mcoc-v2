@@ -586,7 +586,7 @@ class MCOCMaps:
             data = {}
             for d in {'difficulty', 'node', 'hp','atk','star_filter','class_filter'}:
                 if d in keys:
-                    data[d] = default[str(d)] #stringify all data?
+                    data[d] = str(default[d]) #stringify all data?
             response = await self.jm_send_request(AWD_API_URL, data=data)
 
             if 'error' in response:
