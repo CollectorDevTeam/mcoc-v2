@@ -683,6 +683,7 @@ class MCOCMaps:
         if response.status_code == 200 or response.status_code == 400:
             return response.json()
         else:
+            print(response.text)
             return {'error': 'unknown response'}
 
 
