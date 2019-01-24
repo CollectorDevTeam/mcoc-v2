@@ -616,33 +616,33 @@ class MCOCMaps:
                     champ = await self.jm_format_champ(x['champ'])
                     if len(response) == 1:
                         em.set_thumbnail(url=champ.get_avatar())
-                    # em.add_field(name='{}  {}'.format(champ.collectoremoji, champ.star_name_str),
-                    #     value='v:{0} gv:{1} str:{2} gstr:{3} gc:{4} lcde:{5}'.format(
-                    #         x["masteries"]["v"],
-                    #         x["masteries"]["gv"],
-                    #         x["masteries"]["s"],
-                    #         x["masteries"]["gs"],
-                    #         x["masteries"]["gc"],
-                    #         x["masteries"]["lcde"]
-                    #     ), inline=False
-                    # )
                     em.add_field(name='{}  {}'.format(champ.collectoremoji, champ.star_name_str),
-                        value='{6}  {0}   {7}  {1}  {8}  {2}  {9}  {3}  {10}  {4}  {11}{12}  {5}'.format(
+                        value='v:{0} gv:{1} str:{2} gstr:{3} gc:{4} lcde:{5}'.format(
                             x["masteries"]["v"],
                             x["masteries"]["gv"],
                             x["masteries"]["s"],
                             x["masteries"]["gs"],
                             x["masteries"]["gc"],
-                            x["masteries"]["lcde"],
-                            cm['vitality']['icon'],
-                            cm['greatervitality']['icon'],
-                            cm['strength']['icon'],
-                            cm['greaterstrength']['icon'],
-                            cm['glasscanon']['icon'],
-                            cm['liquidcourage']['icon'],
-                            cm['doubleedge']['icon']
+                            x["masteries"]["lcde"]
                         ), inline=False
                     )
+                    # em.add_field(name='{}  {}'.format(champ.collectoremoji, champ.star_name_str),
+                    #     value='{6}  {0}   {7}  {1}  {8}  {2}  {9}  {3}  {10}  {4}  {11}{12}  {5}'.format(
+                    #         x["masteries"]["v"],
+                    #         x["masteries"]["gv"],
+                    #         x["masteries"]["s"],
+                    #         x["masteries"]["gs"],
+                    #         x["masteries"]["gc"],
+                    #         x["masteries"]["lcde"],
+                    #         cm['vitality']['icon'],
+                    #         cm['greatervitality']['icon'],
+                    #         cm['strength']['icon'],
+                    #         cm['greaterstrength']['icon'],
+                    #         cm['glasscanon']['icon'],
+                    #         cm['liquidcourage']['icon'],
+                    #         cm['doubleedge']['icon']
+                    #     ), inline=False
+                    # )
 
 
             em.add_field(name='Scout observed Health & Attack', value='{}, {}'.format(default['hp'], default['atk']), inline=False)
