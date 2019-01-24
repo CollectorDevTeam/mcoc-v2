@@ -689,7 +689,7 @@ class MCOCMaps:
             champ[2:-2], #name
             champ[-1] # rank
         )
-        champion = get_champion(name)
+        champion = ChampionFactory.get_champion(name)
         return champion
 
     # async def jm_parse_champ_filter(self, champ_filter):
