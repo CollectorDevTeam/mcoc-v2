@@ -537,7 +537,7 @@ class MCOCMaps:
         # em.set_image(url='https://us.v-cdn.net/6029252/uploads/editor/ok/zqyh48pgmptc.png') ## from Kabam_mike ~ Jan 2018
         await self.bot.say(embed=em)
 
-    @alliancewar.command(pass_context=True, hidden=True, name="scout")
+    @alliancewar.command(pass_context=True, hidden=False, name="scout")
     async def _scout(self, ctx, *, scoutargs):
         '''
         JM's Scouter Lens inspection tool.
@@ -605,10 +605,10 @@ class MCOCMaps:
                 await self.bot.say(embed=em)
                 return
             else:
-                avatar_url = ''
+                # avatar_url = ''
                 for x in response:
                     champ = await self.jm_format_champ(x['champ'])
-                    if avatar_url == '':
+                    if len(response) == 1:
                         em.set_thumbnail(url=champ.get_avatar())
                     em.add_field(name='{}  {}'.format(champ.collectoremoji, champ.star_name_str),
                         value='vit:{0} gvit:{1} str:{2} gstr:{3} gc:{4} lcde:{5}'.format(
