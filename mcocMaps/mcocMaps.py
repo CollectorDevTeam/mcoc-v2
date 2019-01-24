@@ -569,7 +569,7 @@ class MCOCMaps:
             # nodedetails = pathdata['boosts'][str(default['node'])]
             em = discord.Embed(color=default['color'], title=title, descritpion='', url='https://goo.gl/forms/ZgJG97KOpeSsQ2092')
             em.set_footer(text='CollectorDevTeam + JM\'s Scouter Lens Bot',icon_url=self.COLLECTOR_ICON)
-            response = [{'champ':'4-electro-5','class':'science','masteries':{'v':1, 'gv':1,'s':1, 'gs':1, 'gc':1, 'lcde':0}}]
+            response = [{'champ':'4-electro-5','class':'science','masteries':{'v':1, 'gv':1,'s':1, 'gs':1, 'gc':1, 'lcde':0}},{'champ':'4-diablo-5','class':'mystic','masteries':{'v':1, 'gv':1,'s':1, 'gs':1, 'gc':1, 'lcde':0}}]
 
             # calls to jm service
             # response = await self.jm_send_request(AWD_API_URL, data=default)
