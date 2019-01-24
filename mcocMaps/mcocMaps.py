@@ -684,7 +684,8 @@ class MCOCMaps:
             return response.json()
         else:
             print(response.text)
-            return {'error': 'unknown response'}
+            # return {'error': 'unknown response'}
+            return({'error': response.text})
 
 
     async def jm_format_champ(self, champ):
