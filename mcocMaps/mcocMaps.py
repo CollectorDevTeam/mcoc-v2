@@ -585,8 +585,8 @@ class MCOCMaps:
             for x in response:
                 # I'm probably going to override this champ thing
                 champ = await self.format_champ(x['champ'])
-                    if portrait == '':
-                        em.set_thumbnail(champ.portraits)
+                if portrait == '':
+                    em.set_thumbnail(champ.portraits)
                 champ_name = champ.verbose_str
                 em.add_field(
                     name=champ_name,
