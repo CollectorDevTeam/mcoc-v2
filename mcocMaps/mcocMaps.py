@@ -632,7 +632,7 @@ class MCOCMaps:
                     print('unable to determine whether value is hp or attack')
 
         if default['tier'] > 0:
-            default['difficulty'] = self.aw_tiers[default['tier']]['diff']
+            default['difficulty'] = self.aw_tiers[default['tier']]['diff'].lower()
             default['color'] = self.aw_tiers[default['tier']]['color']
 
         return(default)
