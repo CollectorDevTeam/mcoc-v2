@@ -558,13 +558,13 @@ class MCOCMaps:
 
         package = []
         if default['node'] == 0:
-            package.append('You must specify an Alliance War Node number. \n Examples:\n``node30``\n``n30``')
+            package.append('\nYou must specify an Alliance War Node number. \n Examples:\n``node30``\n``n30``')
         if default['tier'] == 0 and default['difficulty'] == '':
-            package.append('You must specify either an Alliance War Tier (T1 - T22) or a valid difficulty.\nExamples: ``t4``\n``T4``\n``Expert``')
+            package.append('\nYou must specify either an Alliance War Tier (T1 - T22) or a valid difficulty.\nExamples:\n``t4``\n``T4``\n``Expert``')
         if default['hp'] == 0:
-            package.append('You must specify the mystery champion observed Health\nExamples:``hp123456``\n``h123456``\n``123456``')
+            package.append('\nYou must specify the mystery champion observed Health\nExamples:\n``hp123456``\n``h123456``\n``123456``')
         if default['atk'] == 0:
-            package.append('You must specify the mystery champion observed Attack\nExamples:``hp12345``\n``h12345``\n``12345``')
+            package.append('\nYou must specify the mystery champion observed Attack\nExamples:\n``hp12345``\n``h12345``\n``12345``')
         # for key in keys:
         #     package.append('{} : {}'.format(key, default[key]))
         em = discord.Embed(color=default['color'], title='JM\'s ScouterLens', description='', url='https://goo.gl/forms/ZgJG97KOpeSsQ2092')
