@@ -32,7 +32,9 @@ class MCOCMaps:
         'challenger': aw_challenger,
         'expert': aw_expert,
         'hard' : aw_hard,
-        'intermediate': aw_intermediate
+        'intermediate': aw_intermediate,
+        'easy' : None,
+        'normal': None
         }
 
     aq_map = {
@@ -437,31 +439,34 @@ class MCOCMaps:
         if em == None:
             em = discord.Embed(color=tiers[tier]['color'], title=title, descritpion='', url=JPAGS)
             em.set_footer(icon_url=JPAGS+'/aw/images/app_icon.jpg',text='AllianceWar.com')
-        nodedetails = pathdata['boosts'][str(nodeNumber)]
-        for n in nodedetails:
-            title, text = '','No description. Report to @jpags#5202'
-            if ':' in n:
-                nodename, bump = n.split(':')
-            else:
-                nodename = n
-                bump = 0
-            if nodename in boosts:
-                title = boosts[nodename]['title']
-                if boosts[nodename]['text'] is not '':
-                    text = boosts[nodename]['text']
-                    print('nodename: {}\ntitle: {}\ntext: {}'.format(nodename, boosts[nodename]['title'], boosts[nodename]['text']))
-                    if bump is not None:
-                        try:
-                            text = text.format(bump)
-                        except:  #wrote specifically for limber_percent
-                            text = text.replace('}%}','}%').format(bump)  #wrote specifically for limber_percent
-                        print('nodename: {}\ntitle: {}\nbump: {}\ntext: {}'.format(nodename, boosts[nodename]['title'], bump, boosts[nodename]['text']))
+        if pathdata is not None:
+            nodedetails = pathdata['boosts'][str(nodeNumber)]
+            for n in nodedetails:
+                title, text = '','No description. Report to @jpags#5202'
+                if ':' in n:
+                    nodename, bump = n.split(':')
                 else:
-                    text = 'Description text is missing from alliancewar.com.  Report to @jpags#5202.'
-            else:
-                title = 'Error: {}'.format(nodename)
-                value = 'Boost details for {} missing from alliancewar.com.  Report to @jpags#5202.'.format(nodename)
-            em.add_field(name=title, value=text, inline=False)
+                    nodename = n
+                    bump = 0
+                if nodename in boosts:
+                    title = boosts[nodename]['title']
+                    if boosts[nodename]['text'] is not '':
+                        text = boosts[nodename]['text']
+                        print('nodename: {}\ntitle: {}\ntext: {}'.format(nodename, boosts[nodename]['title'], boosts[nodename]['text']))
+                        if bump is not None:
+                            try:
+                                text = text.format(bump)
+                            except:  #wrote specifically for limber_percent
+                                text = text.replace('}%}','}%').format(bump)  #wrote specifically for limber_percent
+                            print('nodename: {}\ntitle: {}\nbump: {}\ntext: {}'.format(nodename, boosts[nodename]['title'], bump, boosts[nodename]['text']))
+                    else:
+                        text = 'Description text is missing from alliancewar.com.  Report to @jpags#5202.'
+                else:
+                    title = 'Error: {}'.format(nodename)
+                    value = 'Boost details for {} missing from alliancewar.com.  Report to @jpags#5202.'.format(nodename)
+                em.add_field(name=title, value=text, inline=False)
+        else:
+            em.add_field(name='Apologies Summoner',value='Alliance War data for {} has not been *collected*.  \nDonate data to CollectorDevTeam : https://discord.gg/BwhgZxk'.format(tier.title())
         #     img = '{}/global/ui/images/booster/{}.png'.format(JPAGS, boosts['img'])
         # em.set_thumbnail(url=img)
         return em
@@ -523,6 +528,7 @@ class MCOCMaps:
     async def _tiers(self):
         '''List Alliance War Tiers'''
         name =  '''Tier   | Mult  | Difficulty'''
+        aw_tiers = self.aw_tiers
         value = '\n'.join(str(m)+'   | '+aw_tiers[m]['mult']+'   | ' + aw_tiers[m]['diff'] for m in aw_tiers.keys())
         em = discord.Embed(color=discord.Color.gold(), title='Alliance War Tiers', descritpion=desc, url=JPAGS)
         add_field(name=name, value=value)
@@ -593,7 +599,8 @@ class MCOCMaps:
                         )
                     )
             em.add_field(name='Scout observed Health & Attack', value='{}, {}'.format(default['hp'], default['atk']), inline=False)
-            em = await self.get_awnode_details(ctx, default['node'], default['difficulty'], em)
+            if pathdata is not None:
+                em = await self.get_awnode_details(ctx, default['node'], default['difficulty'], em)
 
 
             await self.bot.say(embed=em)
