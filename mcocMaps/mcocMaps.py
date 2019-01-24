@@ -680,7 +680,7 @@ class MCOCMaps:
         #     champ[-1] # rank
         # )
 
-        champion = ChampConverter.convert(champ)
+        champion = await self.ChampConverter.convert(champ)
         print('champ: '+champion.verbose_str)
         # champion = ChampionFactory.get_champion(self.bot, name)
         return champ
