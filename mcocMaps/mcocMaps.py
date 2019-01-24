@@ -669,8 +669,8 @@ class MCOCMaps:
         ''' Format champ name for display '''
         attrs = {}
         token = champ[2:-2]
-        attrs['star'] = champ[0]
-        attrs['rank'] = champ[-1]
+        attrs['star'] = int(champ[0])
+        attrs['rank'] = int(champ[-1])
         champion = await ChampConverter.get_champion(self, self.bot, token, attrs)
 
         # token = '{0}★{1}r{2}'.format(
