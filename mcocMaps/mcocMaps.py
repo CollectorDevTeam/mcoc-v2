@@ -569,7 +569,7 @@ class MCOCMaps:
 
         pathdata = self.aw_maps[default['difficulty']]
         title='Scout Test node {}'.format(default['node'])
-        nodedetails = pathdata['boosts'][str(node)]
+        nodedetails = pathdata['boosts'][str(default['node'])]
         em = discord.Embed(color=default['color'], title=title, descritpion='', url='https://goo.gl/forms/ZgJG97KOpeSsQ2092')
         em.add_field(name='nodedetails', value=nodedetails)
         em.add_field(name='observed hp', value='{}'.format(default['hp']))
