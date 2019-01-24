@@ -621,8 +621,7 @@ class MCOCMaps:
                     else:
                         v = 'Recoil activated'
                     em.add_field(name='{}  {}'.format(champ.collectoremoji, champ.star_name_str),
-                        value = v), inline=False
-                    )
+                        value = v, inline=False)
                     # em.add_field(name='{}  {}'.format(champ.collectoremoji, champ.star_name_str),
                     #     value='v:{0} gv:{1} str:{2} gstr:{3} gc:{4} lcde:{5}'.format(
                     #         x["masteries"]["v"],
