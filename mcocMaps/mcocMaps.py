@@ -574,10 +574,10 @@ class MCOCMaps:
                 # I'm probably going to override this champ thing
                 champ = await self.jm_format_champ(x['champ'])
                 if avatar_url is None:
-                    avatar_url = PORTRAIT.format(champ.mattkraftid)
-                    print(avatar_url)
-                    em.set_thumbnail(url=avatar_url)
-                    # em.set_thumbnail(url=champ.get_avatar())
+                    # avatar_url = PORTRAIT.format(champ.mattkraftid)
+                    # print(avatar_url)
+                    # em.set_thumbnail(avatar_url)
+                    em.set_thumbnail(url=champ.get_avatar())
                 em.add_field(name=champ.verbose_str,
                     value='vit:{0} gvit:{1} str:{2} gstr:{3} gc:{4} lcde:{5}'.format(
                         x["masteries"]["v"],
@@ -591,7 +591,6 @@ class MCOCMaps:
         em.add_field(name='nodedetails', value=nodedetails)
         em.add_field(name='observed hp', value='{}'.format(default['hp']))
         em.add_field(name='observed attack', value='{}'.format(default['atk']))
-        em.set_thumbnail()
         em.set_footer(text='CollectorDevTeam + JM\'s Scouter Lens Bot',icon_url=self.COLLECTOR_ICON)
 
         await self.bot.say(embed=em)
