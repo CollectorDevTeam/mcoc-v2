@@ -590,8 +590,8 @@ class MCOCMaps:
             response = await self.jm_send_request(AWD_API_URL, data=data)
 
             if 'error' in response:
-                if default['debug'] = 1:
-                    em.add_field(name='Transmitting:', value='{}'.format(json.dumps(data)))
+                if default['debug'] == 1:
+                    em.add_field(name='Transmitting:', value=json.dumps(data))
                     em.add_field(name='Scout API Error', value=str(response['error']))
                 else:
                     em.add_field(name='Scout API Error', value='unknown error')
