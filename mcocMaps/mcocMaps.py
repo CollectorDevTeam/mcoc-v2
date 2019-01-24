@@ -4,6 +4,7 @@ import urllib, json #For fetching JSON from alliancewar.com
 import os
 import requests
 import re
+import json
 from .utils.dataIO import dataIO
 from discord.ext import commands
 from .mcocTools import StaticGameData
@@ -589,7 +590,11 @@ class MCOCMaps:
             response = await self.jm_send_request(AWD_API_URL, data=data)
 
             if 'error' in response:
-                em.add_field(name='Scout API Error', value=str(response['error']))
+                if default['debug'] = 1:
+                    em.add_field(name='Transmitting:', value='{}'.format(json.dumps(data)))
+                    em.add_field(name='Scout API Error', value=str(response['error']))
+                else:
+                    em.add_field(name='Scout API Error', value='unknown error')
                 await self.bot.say(embed=em)
                 return
             else:
@@ -629,12 +634,13 @@ class MCOCMaps:
         # added class: as full class name or initial 2 letters
         # ~ Zlobber
 
-        default = {'tier': 0, 'difficulty' : '', 'hp': 0, 'atk': 0, 'node' : 0, 'class_filter' : None, 'star_filter': 0, 'color':discord.Color.gold()}
+        default = {'tier': 0, 'difficulty' : '', 'hp': 0, 'atk': 0, 'node' : 0, 'class_filter' : None, 'star_filter': 0, 'color':discord.Color.gold(), 'debug': 0}
         parse_re = re.compile(r'''\b(?:t(?:ier)?(?P<tier>[0-9]{1,2})
                     | hp?(?P<hp>[0-9]{2,6})
                     | a(?:tk)?(?P<atk>[0-9]{2,5})
                     | (?P<hpi>\d{2,6})\s(?:\s)*(?P<atki>\d{2,5})
-                    | n(?:ode)?(?P<node>[0-9]{1,2}))\b
+                    | n(?:ode)?(?P<node>[0-9]{1,2}))
+                    |(?:d(?P<debug>[0-9]{1,2}))\b
                     | (?P<star_filter>[1-6](?=(?:star|s)\b|(?:★|☆|\*)\B)) ''', re.X)
 
         class_re = re.compile(r'''(?:(?P<class>sc(?:ience)?|sk(?:ill)?|mu(?:tant)?|my(?:stic)?|co(?:smic)?|te(?:ch)?))''',re.X)
