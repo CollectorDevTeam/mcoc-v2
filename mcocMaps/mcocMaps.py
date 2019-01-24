@@ -673,14 +673,14 @@ class MCOCMaps:
         # attrs['rank'] = champ[-1]
         # champion = ChampConverter.get_champion(self.ctx.bot, token, attrs)
 
-        # name = '{0}★{1}r{2}'.format(
-        #     # self.class_emoji[champ_class], // don't need this
-        #     champ[0], #star
-        #     champ[2:-2], #name
-        #     champ[-1] # rank
-        # )
+        token = '{0}★{1}r{2}'.format(
+            # self.class_emoji[champ_class], // don't need this
+            champ[0], #star
+            champ[2:-2], #name
+            champ[-1] # rank
+        )
 
-        champion = await self.ChampConverter.convert(champ)
+        champion = await ChampConverter.convert(token)
         print('champ: '+champion.verbose_str)
         # champion = ChampionFactory.get_champion(self.bot, name)
         return champ
