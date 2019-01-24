@@ -590,6 +590,7 @@ class MCOCMaps:
 
             if 'error' in response:
                 em.add_field(name='Scout API Error', value=str(response['error']))
+                print('\n'.join(x[y] for y in x))
             else:
                 avatar_url = ''
                 for x in response:
