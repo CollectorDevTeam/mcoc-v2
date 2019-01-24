@@ -620,7 +620,7 @@ class MCOCMaps:
         # added class: as full class name or initial 2 letters
         # ~ Zlobber
 
-        default = {'tier': 0, 'difficulty' : '', 'hp': 0, 'atk': 0, 'node' : 0, 'class' : None, 'star': ''}
+        default = {'tier': 0, 'difficulty' : '', 'hp': 0, 'atk': 0, 'node' : 0, 'class' : None, 'star': '', 'color':discord.Color.gold()}
         parse_re = re.compile(r'''\b(?:t(?:ier)?(?P<tier>[0-9]{1,2})
                     | hp?(?P<hp>[0-9]{2,6})
                     | a(?:tk)?(?P<atk>[0-9]{2,5})
@@ -633,7 +633,7 @@ class MCOCMaps:
         for arg in nargs.lower().split(' '):
             for m in parse_re.finditer(arg):
                 default[m.lastgroup] = int(m.group(m.lastgroup))
-            if arg.lower() in {'science', 'skill', 'mutant', 'mystic', 'cosmic','tech'}:
+            if arg in {'science', 'skill', 'mutant', 'mystic', 'cosmic','tech'}:
                 default['class'] = arg
 
         if default['hp'] == 0 or default['atk'] == 0:
@@ -659,6 +659,10 @@ class MCOCMaps:
                     default['atk'] = hpatkint[0]
                 else:
                     print('unable to determine whether value is hp or attack')
+
+        if default['tier'] > 0:
+            default['difficulty'] = aw_tiers[default['tier']]['diff']
+            default['color'] = aw_tiers[default['tier']]['color']
 
         return(default)
 
