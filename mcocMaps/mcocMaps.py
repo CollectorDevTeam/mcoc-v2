@@ -567,44 +567,15 @@ class MCOCMaps:
 
         # Disabled until Parser sorted
 
-        # if tier.lower() in aw_tiers:
-        #     difficulty=tier.lower()
-        # elif isinstance(tier, int) and tier <= 22:
-        #     difficulty=aw_tiers[tier]
-        # else:
-        #     tier = int(tier_re.sub('',tier))
-        #     difficulty=aw_tiers[tier]
-        # print(difficulty)
-        #
-        # if tier not in tiers:
-        #     jpagstier = 'advanced'
-        # else:
-        #     jpagstier = tier
-        # if tier in tiers:
-        #     # pathurl = 'http://www.alliancewar.com/aw/js/aw_s{}_{}_9path.json'.format(tier)
-        #     if tier is 'expert' or tier <= 3 :
-        #         pathdata = aw_expert
-        #     elif tier is 'hard' or tier == 6 or tier == 7 or tier == 8 or tier == 9:
-        #         pathdata = aw_hard
-        #     elif tier is 'challenger' or tier == 4 or tier == 5:
-        #         pathdata = aw_challenger
-        #     elif tier is 'advanced':
-        #         pathdata = aw_advanced
-        #     else:
-        #         pathdata = aw_intermediate
-        # title='Scout Test node {}'.format(node)
-        # nodedetails = pathdata['boosts'][str(node)]
-        # em = discord.Embed(color=tiers[jpagstier]['color'], title=title, descritpion='', url=JPAGS)
-        # em.add_field(name='nodedetails', value=nodedetails)
-        # em.add_field(name='observed hp', value='{}'.format(hp))
-        # em.add_field(name='observed attack', value='{}'.format(attack))
-        # em.set_footer(text='CollectorDevTeam + JM\'s Scouter Lens Bot',icon_url=self.COLLECTOR_ICON)
-        #
-        #
-        # tiers = {'expert':discord.Color.gold(),'hard':discord.Color.red(),'challenger':discord.Color.orange(),'intermediate':discord.Color.blue(),'advanced':discord.Color.green()}
-        # if tier not in tiers:
-        #     await self.bot.say('Tier not recognized')
-        #     return
+        pathdata = aw_maps[default['difficulty']]
+        title='Scout Test node {}'.format(default['node'])
+        nodedetails = pathdata['boosts'][str(node)]
+        em = discord.Embed(color=default['color'], title=title, descritpion='', url='https://goo.gl/forms/ZgJG97KOpeSsQ2092')
+        em.add_field(name='nodedetails', value=nodedetails)
+        em.add_field(name='observed hp', value='{}'.format(default['hp']))
+        em.add_field(name='observed attack', value='{}'.format(default['atk']))
+        em.set_footer(text='CollectorDevTeam + JM\'s Scouter Lens Bot',icon_url=self.COLLECTOR_ICON)
+        
         # champ_class = None
         # champ_classes = ('Mystic', 'Science', 'Skill', 'Mutant', 'Tech', 'Cosmic')
         # for c in champ_classes:
