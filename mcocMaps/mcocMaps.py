@@ -572,7 +572,8 @@ class MCOCMaps:
             package.append('\nYou must specify the mystery champion observed Attack\nExamples:\n``hp12345``\n``h12345``\n``12345``')
         # for key in keys:
         #     package.append('{} : {}'.format(key, default[key]))
-        em2 = em = discord.Embed(color=default['color'], title='JM\'s ScouterLens', description='', url='https://goo.gl/forms/ZgJG97KOpeSsQ2092')
+        em = discord.Embed(color=default['color'], title='JM\'s ScouterLens', description='', url='https://goo.gl/forms/ZgJG97KOpeSsQ2092')
+        em2 = discord.Embed(color=default['color'], title='JM\'s ScouterLens', description='', url='https://goo.gl/forms/ZgJG97KOpeSsQ2092')
         em.set_footer(text='CollectorDevTeam + JM\'s Scouter Lens Bot',icon_url=self.COLLECTOR_ICON)
         em2.set_footer(text='CollectorDevTeam + JM\'s Scouter Lens Bot',icon_url=self.COLLECTOR_ICON)
         if len(package) > 0:
