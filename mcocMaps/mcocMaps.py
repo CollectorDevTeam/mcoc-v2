@@ -729,8 +729,8 @@ class MCOCMaps:
 
         if default['tier'] > 0:
             #if Tier provided, override given difficulty.  Because stupid people.
-            default['difficulty'] = self.aw_tiers[default['tier']]['diff'].lower()
-            default['color'] = self.aw_tiers[default['tier']]['color']
+            default['difficulty'] = self.aw_tiers[int(default['tier'])]['diff'].lower()
+            default['color'] = self.aw_tiers[int(default['tier'])]['color']
 
         return(default)
 
