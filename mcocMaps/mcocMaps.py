@@ -605,7 +605,10 @@ class MCOCMaps:
                 return
             elif default['debug'] == 1:
                 em.add_field(name='Transmitting:', value=json.dumps(data))
-                em.add_field(name='Scout API Error', value='\n'.join(r for r in response))
+                reqerror = []
+                for r in response.keys():
+                    reqerror.append('{} {}'.format(response[r]))
+                em.add_field(name='Scout API Error', value='\n'.join(reqerror))
             elif 'error' in response:
                 em.add_field(name='Scout API Error', value='unknown error')
                 await self.bot.say(embed=em)
