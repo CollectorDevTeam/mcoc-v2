@@ -620,6 +620,8 @@ class MCOCMaps:
             else:
                 desc1 = []
                 desc2 = []
+                desc1.append(desc)
+                desc2.append(desc)
                 xchampions = {}
                 for x in response:
                     champ = await self.jm_format_champ(x['champ'])
