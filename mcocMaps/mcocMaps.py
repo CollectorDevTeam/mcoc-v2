@@ -598,7 +598,7 @@ class MCOCMaps:
                 data['node'] = 'n{}'.format(default['node'])
                 # data['hp'] = 'hp{}'.format(default['hp'])
                 # data['atk'] = 'atk{}'.format(default['atk'])
-            if default['test'] = True:
+            if default['test'] == True:
                 response = await self.jm_send_request(AWD_API_URL_TEST, data=data)
             else:
                 response = await self.jm_send_request(AWD_API_URL, data=data)
