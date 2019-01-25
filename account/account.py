@@ -259,21 +259,21 @@ class Account:
         await self.bot.say(embed=data)
 
 
-    @update.command(pass_context=True, no_pm=True)
-    async def started(self, ctx, *, started):
-        """When did you start playing Contest of Champions?"""
-        key = "Started"
-        try:
-            value = dateParse(started)
-            print(value)
-            user = ctx.message.author
-            if ctx.message.author.id not in self.nerdie:
-                data = self._unknownuser(ctx, user)
-            else:
-                data = self._updated(ctx, key, value)
-            await self.bot.say(embed=data)
-        except:
-            await self.bot.say('Please enter a date.')
+    # @update.command(pass_context=True, no_pm=True)
+    # async def started(self, ctx, *, started):
+    #     """When did you start playing Contest of Champions?"""
+    #     key = "Started"
+    #     try:
+    #         value = dateParse(started)
+    #         print(value)
+    #         user = ctx.message.author
+    #         if ctx.message.author.id not in self.nerdie:
+    #             data = self._unknownuser(ctx, user)
+    #         else:
+    #             data = self._updated(ctx, key, value)
+    #         await self.bot.say(embed=data)
+    #     except:
+    #         await self.bot.say('Please enter a date.')
 
 
     @update.command(pass_context=True, no_pm=True)
