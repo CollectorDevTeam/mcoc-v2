@@ -685,7 +685,7 @@ class MCOCMaps:
 
             embed_list=[]
             em1 = em
-            em2.description = '\n'.join(desc1)
+            em1.description = '\n'.join(desc1)
             embed_list.append(em1)
             em2 = em
             em2.description = '\n'.join(desc2)
