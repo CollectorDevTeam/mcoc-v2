@@ -14,6 +14,7 @@ JPAGS = 'http://www.alliancewar.com'
 PATREON = 'https://patreon.com/collectorbot'
 PORTRAIT = "https://raw.githubusercontent.com/CollectorDevTeam/assets/master/data/images/portraits/{}.png"
 FEATURED = "https://raw.githubusercontent.com/CollectorDevTeam/assets/master/data/images/featured/{}.png"
+JOINCDT = 'https://discord.gg/BwhgZxk'
 # remote_data_basepath = "https://raw.githubusercontent.com/CollectorDevTeam/assets/master/data/"
 
 
@@ -313,6 +314,7 @@ class MCOCMaps:
     @commands.group(pass_context=True, hidden=False)
     async def alliance(self, ctx):
         '''Alliance Commands'''
+        send_cmd_help()
 
     @alliance.command(pass_context=True, name='setalliancerole', hidden=False)
     async def _set_alliance_role(self, ctx, role : discord.Role):
@@ -532,15 +534,13 @@ class MCOCMaps:
         '''List Alliance War Tiers'''
         name =  '''Tier   | Mult  | Difficulty'''
         aw_tiers = self.aw_tiers
-        # value = '\n'.join(str(m)+'   | '+aw_tiers[m]['mult']+'   | ' + aw_tiers[m]['diff'] for m in aw_tiers.keys())
         value = []
+        value.append(name)
         for m in aw_tiers.keys():
             value.append('{}    | {}    | {}'.format(m, aw_tiers[m], aw_tiers[m]['diff']))
-        # value = '\n'.join(str(m)+'   | '+aw_tiers[m]['mult']+'   | ' + aw_tiers[m]['diff'] for m in aw_tiers.keys())
-        em = discord.Embed(color=discord.Color.gold(), title='Alliance War Tiers', descritpion=desc, url=JPAGS)
+        em = discord.Embed(color=discord.Color.gold(), title='Alliance War Tiers', url=JOINCDT)
         add_field(name=name, value='\n'.join(value))
         em.set_footer(text='CollectorDevTeam',icon_url=self.COLLECTOR_ICON)
-        # em.set_image(url='https://us.v-cdn.net/6029252/uploads/editor/ok/zqyh48pgmptc.png') ## from Kabam_mike ~ Jan 2018
         await self.bot.say(embed=em)
 
     @alliancewar.command(pass_context=True, hidden=False, name="scout")
