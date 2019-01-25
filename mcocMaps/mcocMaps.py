@@ -697,8 +697,11 @@ class MCOCMaps:
                 default['class_filter'] = arg.lower()
             elif arg.lower() in {'expert','challenger','hard','intermediate','normal','easy'}:
                 default['difficulty'] = class_re.sub('', arg.lower())
-            elif arge == 'test':
+            elif arg == 'test':
                 default['test']=True
+            else:
+                pass
+
 
         if default['hp'] == 0 or default['atk'] == 0:
             print('looking for hp atk raw values')
