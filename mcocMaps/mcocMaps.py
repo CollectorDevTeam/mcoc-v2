@@ -539,7 +539,7 @@ class MCOCMaps:
         for m in aw_tiers.keys():
             value.append('{}    | {}    | {}'.format(m, aw_tiers[m], aw_tiers[m]['diff']))
         em = discord.Embed(color=discord.Color.gold(), title='Alliance War Tiers', url=JOINCDT)
-        add_field(name=name, value='\n'.join(value))
+        em.add_field(name=name, value='\n'.join(value))
         em.set_footer(text='CollectorDevTeam',icon_url=self.COLLECTOR_ICON)
         await self.bot.say(embed=em)
 
