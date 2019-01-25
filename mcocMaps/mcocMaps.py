@@ -639,7 +639,7 @@ class MCOCMaps:
 
                     if prettyname not in desc1:
                         desc1.append(prettyname)
-                        desc2.append(prettyname`)
+                        desc2.append(prettyname)
                     desc1.append(v)
                     desc2.append(v2)
 
