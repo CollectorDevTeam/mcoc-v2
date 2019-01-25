@@ -7,7 +7,7 @@ import re
 import json
 from .utils.dataIO import dataIO
 from discord.ext import commands
-from .mcocTools import StaticGameData, PagesMenu
+from .mcocTools import (StaticGameData, PagesMenu, KABAM_ICON, COLLECTOR_ICON)
 from .mcoc import ChampConverter, ChampConverterDebug, Champion
 
 JPAGS = 'http://www.alliancewar.com'
@@ -572,8 +572,9 @@ class MCOCMaps:
             package.append('\nYou must specify the mystery champion observed Attack\nExamples:\n``hp12345``\n``h12345``\n``12345``')
         # for key in keys:
         #     package.append('{} : {}'.format(key, default[key]))
-        em = discord.Embed(color=default['color'], title='JM\'s ScouterLens', description='', url='https://goo.gl/forms/ZgJG97KOpeSsQ2092')
+        em2 = em = discord.Embed(color=default['color'], title='JM\'s ScouterLens', description='', url='https://goo.gl/forms/ZgJG97KOpeSsQ2092')
         em.set_footer(text='CollectorDevTeam + JM\'s Scouter Lens Bot',icon_url=self.COLLECTOR_ICON)
+        em2.set_footer(text='CollectorDevTeam + JM\'s Scouter Lens Bot',icon_url=self.COLLECTOR_ICON)
         if len(package) > 0:
         # await self.bot.say('scoutlens testing')
             em.description='\n'.join(package)
@@ -643,7 +644,8 @@ class MCOCMaps:
                     desc1.append(v)
                     desc2.append(v2)
 
-
+                em1.description = '\n'.join(desc1)
+                em2.description = '\n'.join(desc2)
                     #testing as Description
                     # em.add_field(name='{}  {}'.format(champ.collectoremoji, champ.star_name_str),
                     #     value = v, inline=False)
@@ -680,18 +682,17 @@ class MCOCMaps:
 
 
             em.add_field(name='Scout observed Health & Attack', value='{}, {}'.format(default['hp'], default['atk']), inline=False)
+            em2.add_field(name='Scout observed Health & Attack', value='{}, {}'.format(default['hp'], default['atk']), inline=False)
+
             if pathdata is not None:
                 em = await self.get_awnode_details(ctx, default['node'], default['difficulty'], em)
+                em2 = await self.get_awnode_details(ctx, default['node'], default['difficulty'], em2)
 
             embed_list=[]
-            em1 = em
-            em1.description = '\n'.join(desc1)
             embed_list.append(em1)
-            em2 = em
-            em2.description = '\n'.join(desc2)
             embed_list.append(em2)
             menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
-            await menu.menu_start(pages=embed_list, page_number=0)
+            await menu.menu_start(pages=embed_list)
 
             # await self.bot.say(embed=em)
 
