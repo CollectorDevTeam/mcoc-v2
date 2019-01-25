@@ -684,10 +684,12 @@ class MCOCMaps:
                 em = await self.get_awnode_details(ctx, default['node'], default['difficulty'], em)
 
             embed_list=[]
-            em.description = '\n'.join(desc1)
-            embed_list.append(em)
-            em.description = '\n'.join(desc2)
-            embed_list.append(em)
+            em1 = em
+            em2.description = '\n'.join(desc1)
+            embed_list.append(em1)
+            em2 = em
+            em2.description = '\n'.join(desc2)
+            embed_list.append(em2)
             menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
             await menu.menu_start(pages=embed_list, page_number=0)
 
