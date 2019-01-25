@@ -644,7 +644,7 @@ class MCOCMaps:
                     desc1.append(v)
                     desc2.append(v2)
 
-                em1.description = '\n'.join(desc1)
+                em.description = '\n'.join(desc1)
                 em2.description = '\n'.join(desc2)
                     #testing as Description
                     # em.add_field(name='{}  {}'.format(champ.collectoremoji, champ.star_name_str),
