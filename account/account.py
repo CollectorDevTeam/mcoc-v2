@@ -265,6 +265,7 @@ class Account:
         key = "Started"
         try:
             value = dateParse(started)
+            print(value)
             user = ctx.message.author
             if ctx.message.author.id not in self.nerdie:
                 data = self._unknownuser(ctx, user)
