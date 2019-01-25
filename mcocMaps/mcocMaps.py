@@ -310,7 +310,7 @@ class MCOCMaps:
         await self.bot.say(embed=em)
 
 ### Beginning of Alliance Management Functions
-    @commands.group(pass_context=True, hidden=True)
+    @commands.group(pass_context=True, hidden=False)
     async def alliance(self, ctx):
         '''Alliance Commands'''
 
@@ -369,7 +369,7 @@ class MCOCMaps:
     async def alliancewar(self, ctx):
         '''Alliancewar.com Commands [WIP]'''
 
-    @alliancewar.command(pass_context=True, hidden=False, name='seasons', aliases=['rewards'])
+    @alliancewar.command(pass_context=True, hidden=True, name='seasons', aliases=['rewards'])
     async def _season_rewards(self, ctx, tier, rank=''):
         sgd = StaticGameData()
         cdt_sr = await sgd.get_gsheets_data('aw_season_rewards')
@@ -397,7 +397,7 @@ class MCOCMaps:
         else:
             await self.bot.say('Valid tiers include: {}'.format(', '.join(self.aw_maps.keys())))
 
-    @alliancewar.command(pass_context=True, hidden=True, name="nodes")
+    @alliancewar.command(pass_context=True, hidden=False, name="nodes")
     async def _nodes_info(self, ctx, tier: str, *, nodes):
         '''Report Node information.
         This command has a reported defect and it is being investigatedself.'''
@@ -532,9 +532,13 @@ class MCOCMaps:
         '''List Alliance War Tiers'''
         name =  '''Tier   | Mult  | Difficulty'''
         aw_tiers = self.aw_tiers
-        value = '\n'.join(str(m)+'   | '+aw_tiers[m]['mult']+'   | ' + aw_tiers[m]['diff'] for m in aw_tiers.keys())
+        # value = '\n'.join(str(m)+'   | '+aw_tiers[m]['mult']+'   | ' + aw_tiers[m]['diff'] for m in aw_tiers.keys())
+        value = []
+        for m in aw_tiers.keys():
+            value.append('{}    | {}    | {}'.format(m, aw_tiers[m], aw_tiers[m]['diff']))
+        # value = '\n'.join(str(m)+'   | '+aw_tiers[m]['mult']+'   | ' + aw_tiers[m]['diff'] for m in aw_tiers.keys())
         em = discord.Embed(color=discord.Color.gold(), title='Alliance War Tiers', descritpion=desc, url=JPAGS)
-        add_field(name=name, value=value)
+        add_field(name=name, value='\n'.join(value))
         em.set_footer(text='CollectorDevTeam',icon_url=self.COLLECTOR_ICON)
         # em.set_image(url='https://us.v-cdn.net/6029252/uploads/editor/ok/zqyh48pgmptc.png') ## from Kabam_mike ~ Jan 2018
         await self.bot.say(embed=em)
