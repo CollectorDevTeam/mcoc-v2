@@ -24,7 +24,9 @@ aw_expert = json.loads(requests.get('https://raw.githubusercontent.com/Collector
 aw_hard = json.loads(requests.get('https://raw.githubusercontent.com/CollectorDevTeam/assets/master/data/json/alliancewar/aw_hard.json').text)
 aw_intermediate = json.loads(requests.get('https://raw.githubusercontent.com/CollectorDevTeam/assets/master/data/json/alliancewar/aw_intermediate.json').text)
 
-AWD_API_URL = 'http://chocripplebot.herokuapp.com/awd'
+
+AWD_API_URL_TEST = 'http://chocripplebot.herokuapp.com/awd'
+AWD_API_URL = 'http://scouterlensbot.herokuapp.com/awd'
 # MAS_API_URL = 'http://chocripplebot.herokuapp.com/mas'
 
 class MCOCMaps:
@@ -596,7 +598,10 @@ class MCOCMaps:
                 data['node'] = 'n{}'.format(default['node'])
                 # data['hp'] = 'hp{}'.format(default['hp'])
                 # data['atk'] = 'atk{}'.format(default['atk'])
-            response = await self.jm_send_request(AWD_API_URL, data=data)
+            if default['test'] == True:
+                response = await self.jm_send_request(AWD_API_URL_TEST, data=data)
+            else:
+                response = await self.jm_send_request(AWD_API_URL, data=data)
 
             if 'error' in response and default['debug'] == 1:
                 em.add_field(name='Transmitting:', value=json.dumps(data))
@@ -605,7 +610,7 @@ class MCOCMaps:
                 return
             elif default['debug'] == 1:
                 em.add_field(name='Transmitting:', value=json.dumps(data))
-                em.add_field(name='Scout API Error', value=response['text'])
+                em.add_field(name='Scout API Error', value=json.dumps(response))
             elif 'error' in response:
                 em.add_field(name='Scout API Error', value='unknown error')
                 await self.bot.say(embed=em)
@@ -674,7 +679,7 @@ class MCOCMaps:
 
         # 'class_filter' : None, 'star_filter': 0,
 
-        default = {'tier': 0, 'difficulty' : '', 'hp': 0, 'atk': 0, 'node' : 0, 'color':discord.Color.gold(), 'debug': 0}
+        default = {'tier': 0, 'difficulty' : '', 'hp': 0, 'atk': 0, 'node' : 0, 'color':discord.Color.gold(), 'debug': 0, 'test': False}
         parse_re = re.compile(r'''\b(?:t(?:ier)?(?P<tier>[0-9]{1,2})
                     | hp?(?P<hp>[0-9]{2,6})
                     | a(?:tk)?(?P<atk>[0-9]{2,5})
@@ -692,6 +697,11 @@ class MCOCMaps:
                 default['class_filter'] = arg.lower()
             elif arg.lower() in {'expert','challenger','hard','intermediate','normal','easy'}:
                 default['difficulty'] = class_re.sub('', arg.lower())
+            elif arg == 'test':
+                default['test']=True
+            else:
+                pass
+
 
         if default['hp'] == 0 or default['atk'] == 0:
             print('looking for hp atk raw values')
@@ -719,8 +729,8 @@ class MCOCMaps:
 
         if default['tier'] > 0:
             #if Tier provided, override given difficulty.  Because stupid people.
-            default['difficulty'] = self.aw_tiers[default['tier']]['diff'].lower()
-            default['color'] = self.aw_tiers[default['tier']]['color']
+            default['difficulty'] = self.aw_tiers[int(default['tier'])]['diff'].lower()
+            default['color'] = self.aw_tiers[int(default['tier'])]['color']
 
         return(default)
 

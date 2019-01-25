@@ -56,9 +56,9 @@ class Account:
                     data.add_field(name=i+":", value=self.nerdie[user.id][i])
                 else:
                     pass
-            if 'Started' in self.nerdie[user.id]:
-                since = datetime.datetime(self.nerdie[user.id]['Started'])
-                days_since = (datetime.datetime.utcnow() - since).days
+            # if 'Started' in self.nerdie[user.id]:
+            #     since = datetime.datetime(self.nerdie[user.id]['Started'])
+            #     days_since = (datetime.datetime.utcnow() - since).days
                 # data.add_field(name='Entered the Contest {}'.format(since.date()), value="Playing for {} days!".format(days_since))
 
             if user.avatar_url:
@@ -233,20 +233,21 @@ class Account:
         await self.bot.say(embed=data)
 
 
-    @update.command(pass_context=True, no_pm=True)
-    async def started(self, ctx, *, started):
-        """When did you start playing Contest of Champions?"""
-        key = "Started"
-        try:
-            value = dateParse(started)
-            user = ctx.message.author
-            if ctx.message.author.id not in self.nerdie:
-                data = self._unknownuser(ctx, user)
-            else:
-                data = self._updated(ctx, key, value)
-            await self.bot.say(embed=data)
-        except:
-            await self.bot.say('Please enter a date.')
+    # @update.command(pass_context=True, no_pm=True)
+    # async def started(self, ctx, *, started):
+    #     """When did you start playing Contest of Champions?"""
+    #     key = "Started"
+    #     try:
+    #         value = dateParse(started)
+    #         print(value)
+    #         user = ctx.message.author
+    #         if ctx.message.author.id not in self.nerdie:
+    #             data = self._unknownuser(ctx, user)
+    #         else:
+    #             data = self._updated(ctx, key, value)
+    #         await self.bot.say(embed=data)
+    #     except:
+    #         await self.bot.say('Please enter a date.')
 
 
     @update.command(pass_context=True, no_pm=True)
