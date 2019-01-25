@@ -684,7 +684,7 @@ class MCOCMaps:
                 em = await self.get_awnode_details(ctx, default['node'], default['difficulty'], em)
 
             embed_list=[]
-            em.descritpion = '\n'.join(desc1)
+            em.description = '\n'.join(desc1)
             embed_list.append(em)
             em.description = '\n'.join(desc2)
             embed_list.append(em)
