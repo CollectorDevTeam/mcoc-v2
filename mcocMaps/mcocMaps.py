@@ -7,7 +7,7 @@ import re
 import json
 from .utils.dataIO import dataIO
 from discord.ext import commands
-from .mcocTools import StaticGameData
+from .mcocTools import StaticGameData, PagesMenu
 from .mcoc import ChampConverter, ChampConverterDebug, Champion
 
 JPAGS = 'http://www.alliancewar.com'
@@ -616,17 +616,40 @@ class MCOCMaps:
                 await self.bot.say(embed=em)
                 return
             else:
-                # avatar_url = ''
+                desc1 = []
+                desc2 = []
+                xchampions = {}
                 for x in response:
                     champ = await self.jm_format_champ(x['champ'])
                     if len(response) == 1:
                         em.set_thumbnail(url=champ.get_avatar())
+
+                    v2 = 'v:{0} gv:{1} str:{2} gstr:{3} gc:{4} lcde:{5}'.format(
+                            x["masteries"]["v"],
+                            x["masteries"]["gv"],
+                            x["masteries"]["s"],
+                            x["masteries"]["gs"],
+                            x["masteries"]["gc"],
+                            x["masteries"]["lcde"])
                     if x['masteries']['lcde'] == 0:
                         v = 'No Recoil detected'
                     else:
                         v = '<:recoil:524641305347883009> Recoil activated'
-                    em.add_field(name='{}  {}'.format(champ.collectoremoji, champ.star_name_str),
-                        value = v, inline=False)
+                    prettyname = '\n{}  {}'.format(champ.collectoremoji, champ.star_name_str)
+
+                    if prettyname not in desc1:
+                        desc1.append(prettyname)
+                        desc2.append(prettyname`)
+                    desc1.append(v)
+                    desc2.append(v2)
+
+
+                    #testing as Description
+                    # em.add_field(name='{}  {}'.format(champ.collectoremoji, champ.star_name_str),
+                    #     value = v, inline=False)
+                    #
+
+
                     # em.add_field(name='{}  {}'.format(champ.collectoremoji, champ.star_name_str),
                     #     value='v:{0} gv:{1} str:{2} gstr:{3} gc:{4} lcde:{5}'.format(
                     #         x["masteries"]["v"],
@@ -660,13 +683,15 @@ class MCOCMaps:
             if pathdata is not None:
                 em = await self.get_awnode_details(ctx, default['node'], default['difficulty'], em)
 
+            embed_list=[]
+                em = em.descritpion = '\n'.join(desc1)
+                embed_list.append(em)
+                em = em.description = '\n'.join(desc2)
+            menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
+            await menu.menu_start(pages=embed_list, page_number=0)
 
-            await self.bot.say(embed=em)
-        # champ_class = None
-        # champ_classes = ('Mystic', 'Science', 'Skill', 'Mutant', 'Tech', 'Cosmic')
-        # for c in champ_classes:
-        #     if c in hargs:
-        #         champ_class = c
+            # await self.bot.say(embed=em)
+
 
     def NodeParser(self, nargs):
         # bounderies around all matches (N34T4 not allowed)
