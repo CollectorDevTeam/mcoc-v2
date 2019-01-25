@@ -628,7 +628,8 @@ class MCOCMaps:
                     if len(response) == 1:
                         em.set_thumbnail(url=champ.get_avatar())
 
-                    v2 = 'v:{0} gv:{1} str:{2} gstr:{3} gc:{4} lcde:{5}'.format(
+                    v2 = 'V:{0} GV:{1} S:{2} GS:{3} GC:{4} LCDE:{5}'.format(
+                    # v2 = 'v:{0} gv:{1} str:{2} gstr:{3} gc:{4} lcde:{5}'.format(
                             x["masteries"]["v"],
                             x["masteries"]["gv"],
                             x["masteries"]["s"],
