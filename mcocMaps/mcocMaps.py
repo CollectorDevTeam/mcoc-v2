@@ -11,6 +11,8 @@ from discord.ext import commands
 from __main__ import send_cmd_help
 from .mcocTools import (StaticGameData, PagesMenu, KABAM_ICON, COLLECTOR_ICON)
 from .mcoc import ChampConverter, ChampConverterDebug, Champion
+from .utils import chat_formatting as chat
+from .utils import collector_helper
 
 JPAGS = 'http://www.alliancewar.com'
 PATREON = 'https://patreon.com/collectorbot'
@@ -34,6 +36,7 @@ AWD_API_URL = 'http://scouterlensbot.herokuapp.com/awd'
 
 class MCOCMaps:
     '''Maps for Marvel Contest of Champions'''
+
     aw_maps = {'advanced': aw_advanced,
         'challenger': aw_challenger,
         'expert': aw_expert,
@@ -526,15 +529,16 @@ class MCOCMaps:
     @alliancewar.command(pass_context=False, hidden=False, name="tiers", aliases=['tier'])
     async def _tiers(self):
         '''List Alliance War Tiers'''
-        name = 'Tier   | Mult  | Difficulty'
-        aw_tiers = self.aw_tiers
-        value = []
-        for k, v in aw_tiers.items():
-            value.append('\n{} | {} | {}'.format(k, v['mult'], v['diff']))
+        name = '\u200b'
+        value = [['Tier', 'Mult', 'Difficulty']]
+        for k, v in self.aw_tiers.items():
+            value.append([k, v['mult'], v['diff']])
+        v = collector_helper.tabulate_data(value, width=[4, 4, 14], align=['left', 'left', 'left'], rotate=False, separate_header=True)
         em = discord.Embed(color=discord.Color.gold(), title='Alliance War Tiers', url=JOINCDT)
-        em.add_field(name=name, value=''.join(value))
+        em.add_field(name=name, value=chat.box(v), inline=False)
         em.set_footer(text='CollectorDevTeam',icon_url=self.COLLECTOR_ICON)
         await self.bot.say(embed=em)
+
 
     @alliancewar.command(pass_context=True, hidden=False, name="scout")
     async def _scout(self, ctx, *, scoutargs):
@@ -881,6 +885,7 @@ class MCOCMaps:
                     return await self.bot.delete_message(message)
                 except:
                     pass
+
 
 def setup(bot):
     bot.add_cog(MCOCMaps(bot))
