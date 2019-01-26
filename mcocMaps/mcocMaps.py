@@ -314,7 +314,7 @@ class MCOCMaps:
     @commands.group(pass_context=True, hidden=False)
     async def alliance(self, ctx):
         '''Alliance Commands'''
-        send_cmd_help()
+        await send_cmd_help(ctx)
 
     @alliance.command(pass_context=True, name='setalliancerole', hidden=False)
     async def _set_alliance_role(self, ctx, role : discord.Role):
@@ -519,25 +519,19 @@ class MCOCMaps:
     #
     #     await self.pages_menu(ctx=ctx, embed_list=page_list, timeout=60, page=tracks[track]-1)
 
-    @alliancewar.command(pass_context=False, hidden=False, name="tiers", aliases=('tier'))
-    async def _tiers(self):
-        '''List Alliance War Tiers'''
-        name =  '''Tier   | Mult  | Difficulty'''
-        aw_tiers = self.aw_tiers
-        # value = []
-        # value.append(name)
-        # for m in aw_tiers.keys():
-        #     value.append('\n{} | {} | {}'.format(m, aw_tiers[m], aw_tiers[m]['diff']))
-        em = discord.Embed(color=discord.Color.gold(), title='Alliance War Tiers', url=JOINCDT)
-        # em.add_field(name=name, value=''.join(value))
-        for d in ('Expert','Challenger','Hard','Intermediate','Normal','Easy',):
-            v = []
-            for k in aw_tiers:
-                if d in aw_tiers[k]:
-                    v.append('T{} : Multi x {}'.format(aw_tiers[k], aw_tiers[k]['mult']))
-            em.add_field(name=d,value='\n'.join(v))
-        em.set_footer(text='CollectorDevTeam',icon_url=self.COLLECTOR_ICON)
-        await self.bot.say(embed=em)
+    # @alliancewar.command(pass_context=False, hidden=False, name="tiers", aliases=('tier'))
+    # async def _tiers(self):
+    #     '''List Alliance War Tiers'''
+    #     name =  '''Tier   | Mult  | Difficulty'''
+    #     aw_tiers = self.aw_tiers
+    #     # value = []
+    #     # value.append(name)
+    #     # for m in aw_tiers.keys():
+    #     #     value.append('\n{} | {} | {}'.format(m, aw_tiers[m], aw_tiers[m]['diff']))
+    #     em = discord.Embed(color=discord.Color.gold(), title='Alliance War Tiers', url=JOINCDT)
+    #     # em.add_field(name=name, value=''.join(value))
+    #     em.set_footer(text='CollectorDevTeam',icon_url=self.COLLECTOR_ICON)
+    #     await self.bot.say(embed=em)
 
     @alliancewar.command(pass_context=True, hidden=False, name="scout")
     async def _scout(self, ctx, *, scoutargs):
