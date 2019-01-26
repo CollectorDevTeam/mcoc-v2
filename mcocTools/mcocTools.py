@@ -9,7 +9,7 @@ import json
 import asyncio
 import aiohttp
 import modgrammar as md
-# for Calculator
+# for Calculator/
 from math import *
 from random import *# from functools import wraps, partial
 
