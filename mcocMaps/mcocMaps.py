@@ -1,5 +1,6 @@
 import discord
 import asyncio
+import aiohttp
 import urllib, json #For fetching JSON from alliancewar.com
 import os
 import requests
@@ -765,13 +766,12 @@ class MCOCMaps:
 
     async def jm_send_request(self, url, data):
         ''' Send request to service'''
-        response = requests.post(url, json=data)
-        if response.status_code == 200 or response.status_code == 400:
-            return response.json()
-        else:
-            print(response.text)
-            # return {'error': 'unknown response'}
-            return({'error': response.text})
+        async with aiohttp.ClientSession() as session:
+            async with session.post(url, json=data) as response:
+                if response.status == 200 or response.status == 400:
+                    return await response.json()
+                else:
+                    return {'error': await response.text()}
 
 
     async def jm_format_champ(self, champ):
