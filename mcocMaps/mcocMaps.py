@@ -528,14 +528,14 @@ class MCOCMaps:
         # value.append(name)
         # for m in aw_tiers.keys():
         #     value.append('\n{} | {} | {}'.format(m, aw_tiers[m], aw_tiers[m]['diff']))
-        em = discord.Embed(color=discord.Color.gold(), title='Alliance War Tiers', description=''.join(value), url=JOINCDT)
+        em = discord.Embed(color=discord.Color.gold(), title='Alliance War Tiers', url=JOINCDT)
         # em.add_field(name=name, value=''.join(value))
         for d in ('Expert','Challenger','Hard','Intermediate','Normal','Easy',):
             v = []
             for k in aw_tiers:
                 if d in aw_tiers[k]:
                     v.append('T{} : Multi x {}'.format(aw_tiers[k], aw_tiers[k]['mult']))
-            em.add_field(name=d,value='\n'.join(v))    
+            em.add_field(name=d,value='\n'.join(v))
         em.set_footer(text='CollectorDevTeam',icon_url=self.COLLECTOR_ICON)
         await self.bot.say(embed=em)
 
