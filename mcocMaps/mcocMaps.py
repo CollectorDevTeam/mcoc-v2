@@ -7,6 +7,7 @@ import re
 import json
 from .utils.dataIO import dataIO
 from discord.ext import commands
+from __main__ import send_cmd_help
 from .mcocTools import (StaticGameData, PagesMenu, KABAM_ICON, COLLECTOR_ICON)
 from .mcoc import ChampConverter, ChampConverterDebug, Champion
 
