@@ -9,7 +9,9 @@ import json
 import asyncio
 import aiohttp
 import modgrammar as md
-# from functools import wraps, partial
+# for Calculator
+from math import *
+from random import *# from functools import wraps, partial
 
 from collections import ChainMap, namedtuple, OrderedDict
 from .utils import chat_formatting as chat
