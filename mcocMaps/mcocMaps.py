@@ -527,7 +527,7 @@ class MCOCMaps:
         value = []
         # value.append(name)
         for m in aw_tiers.keys():
-            value.append('\n{}    | {}    | {}'.format(m, aw_tiers[m], aw_tiers[m]['diff']))
+            value.append('\n{} | {} | {}'.format(m, aw_tiers[m], aw_tiers[m]['diff']))
         em = discord.Embed(color=discord.Color.gold(), title='Alliance War Tiers', description='', url=JOINCDT)
         em.add_field(name=name, value=''.join(value))
         em.set_footer(text='CollectorDevTeam',icon_url=self.COLLECTOR_ICON)
