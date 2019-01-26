@@ -370,7 +370,7 @@ class MCOCMaps:
     @commands.group(pass_context=True, aliases=['aw',])
     async def alliancewar(self, ctx):
         '''Alliancewar.com Commands [WIP]'''
-        self send_cmd_help(ctx)
+        await send_cmd_help(ctx)
 
     @alliancewar.command(pass_context=True, hidden=True, name='seasons', aliases=['rewards'])
     async def _season_rewards(self, ctx, tier, rank=''):
