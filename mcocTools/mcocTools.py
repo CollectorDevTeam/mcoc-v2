@@ -985,7 +985,7 @@ class MCOCTools:
             menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
             await menu.menu_start(page_list, page_number)
 
-class HelperTools:
+class Calculator:
     def __init__(self, bot):
         self.bot = bot
 
