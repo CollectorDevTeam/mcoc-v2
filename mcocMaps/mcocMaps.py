@@ -496,28 +496,28 @@ class MCOCMaps:
 
 
 
-    @alliancewar.command(pass_context=True, hidden=False, name="path", aliases=('tracks','track','paths'))
-    async def _path_info(self, ctx, track='A', tier = 'expert'):
-        '''Report AW track information.'''
-        season = 2
-        tiers = {'expert':discord.Color.gold(),'hard':discord.Color.red(),'challenger':discord.Color.orange(),'intermediate':discord.Color.blue(),'advanced':discord.Color.green()}
-        tracks = {'A':1,'B':2,'C':3,'D':4,'E':5,'F':6,'G':7,'H':8,'I':9}
-
-        if tier not in tiers:
-            tier = 'advanced'
-        pathdata= self.aw_maps[tier]
-        page_list = []
-        for t in tracks:
-            em = discord.Embed(color=tiers[tier], title='{} Alliance War Path {}'.format(tier.title(), track), descritpion='', url=JPAGS)
-            em.add_field(name='node placeholder',value='boosts placeholders')
-            em.add_field(name='node placeholder',value='boosts placeholders')
-            em.add_field(name='node placeholder',value='boosts placeholders')
-            mapurl = '{}warmap_3_{}.png'.format(self.basepath,tier.lower())
-            em.set_image(url=mapurl)
-            em.set_footer(icon_url=JPAGS+'/aw/images/app_icon.jpg',text='AllianceWar.com')
-            page_list.append(em)
-
-        await self.pages_menu(ctx=ctx, embed_list=page_list, timeout=60, page=tracks[track]-1)
+    # @alliancewar.command(pass_context=True, hidden=False, name="path", aliases=('tracks','track','paths'))
+    # async def _path_info(self, ctx, track='A', tier = 'expert'):
+    #     '''Report AW track information.'''
+    #     season = 2
+    #     tiers = {'expert':discord.Color.gold(),'hard':discord.Color.red(),'challenger':discord.Color.orange(),'intermediate':discord.Color.blue(),'advanced':discord.Color.green()}
+    #     tracks = {'A':1,'B':2,'C':3,'D':4,'E':5,'F':6,'G':7,'H':8,'I':9}
+    #
+    #     if tier not in tiers:
+    #         tier = 'advanced'
+    #     pathdata= self.aw_maps[tier]
+    #     page_list = []
+    #     for t in tracks:
+    #         em = discord.Embed(color=tiers[tier], title='{} Alliance War Path {}'.format(tier.title(), track), descritpion='', url=JPAGS)
+    #         em.add_field(name='node placeholder',value='boosts placeholders')
+    #         em.add_field(name='node placeholder',value='boosts placeholders')
+    #         em.add_field(name='node placeholder',value='boosts placeholders')
+    #         mapurl = '{}warmap_3_{}.png'.format(self.basepath,tier.lower())
+    #         em.set_image(url=mapurl)
+    #         em.set_footer(icon_url=JPAGS+'/aw/images/app_icon.jpg',text='AllianceWar.com')
+    #         page_list.append(em)
+    #
+    #     await self.pages_menu(ctx=ctx, embed_list=page_list, timeout=60, page=tracks[track]-1)
 
     @alliancewar.command(pass_context=False, hidden=False, name="tiers", aliases=('tier'))
     async def _tiers(self):
