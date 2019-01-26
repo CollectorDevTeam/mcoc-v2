@@ -985,6 +985,30 @@ class MCOCTools:
             menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
             await menu.menu_start(page_list, page_number)
 
+class HelperTools:
+    def __init__(self, bot):
+        self.bot = bot
+
+    @commands.command(pass_context=True, name='calculator', aliases=('calc',))
+
+    async def _calc(self, context, *, m):
+        '''Math is fun!
+        Type math, get fun.'''
+        print(m)
+        m = ''.join(m)
+        math_filter = re.findall(r'[\[\]\-()*+/0-9=.,% ]|>|<|==|>=|<=|\||&|~|!=|^|sum'
+        		+ '|range|random|randint|choice|randrange|True|False|if|and|or|else'
+        		+ '|is|not|for|in|acos|acosh|asin|asinh|atan|atan2|atanh|ceil'
+        		+ '|copysign|cos|cosh|degrees|e|erf|erfc|exp|expm1|fabs|factorial'
+        		+ '|floor|fmod|frexp|fsum|gamma|gcd|hypot|inf|isclose|isfinite'
+        		+ '|isinf|isnan|ldexp|lgamma|log|log10|log1p|log2|modf|nan|pi'
+        		+ '|pow|radians|sin|sinh|sqrt|tan|tanh|round', m)
+        print(''.join(math_filter))
+        calculate_stuff = eval(''.join(math_filter))
+        if len(str(calculate_stuff)) > 0:
+            em = discord.Embed(color=discord.Color.blue(),
+            	description='**Input**\n`{}`\n\n**Result**\n`{}`'.format(m, calculate_stuff))
+            await self.bot.say(embed=em)
 
 class CDTReport:
     """Report Users"""
@@ -1146,3 +1170,4 @@ def setup(bot):
     bot.loop.create_task(sgd.load_cdt_data())
     bot.add_cog(MCOCTools(bot))
     bot.add_cog(CDTReport(bot))
+    bot.add_cog(Calculator(bot))
