@@ -436,6 +436,7 @@ class MCOCTools:
             "".format(red_repo, author_repo, server_url, collectorpatreon))
         devteam = ( "DeltaSigma#8530\n"
                     "JJW#8071\n"
+                    "JM#7725"
                     )
         supportteam=('phil_wo#3733\nSpiderSebas#9910\nsuprmatt#2753\ntaoness#5565')
         embed = discord.Embed(colour=discord.Colour.red(), title="Collector", url=collectorpatreon)
