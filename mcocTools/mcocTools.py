@@ -992,7 +992,6 @@ class Calculator:
         self.bot = bot
 
     @commands.command(pass_context=True, name='calculator', aliases=('calc',))
-
     async def _calc(self, context, *, m):
         '''Math is fun!
         Type math, get fun.'''
