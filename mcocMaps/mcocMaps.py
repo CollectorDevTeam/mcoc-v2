@@ -311,22 +311,22 @@ class MCOCMaps:
         await self.bot.say(embed=em)
 
 ### Beginning of Alliance Management Functions
-    @commands.group(pass_context=True, hidden=False)
-    async def alliance(self, ctx):
-        '''Alliance Commands'''
-        await send_cmd_help(ctx)
-
-    @alliance.command(pass_context=True, name='setalliancerole', hidden=False)
-    async def _set_alliance_role(self, ctx, role : discord.Role):
-        '''Alliance Set subcommands'''
-        server = ctx.message.server
-        if role in server.roles:
-            message = await self.bot.say('Setting the Alliance Role as ``{}``\nClick OK to confirm.'.format(role.name))
-            confirm = await self._confirmation(ctx, message)
-            if confirm:
-                await self.bot.edit_message(message,'Setting the Alliance Role as ``{}``'.format(role.name))
-            else:
-                await self.bot.edit_message(message,'Setting the Alliance Role as ``{}``\nOperation canceled.'.format(role.name))
+    # @commands.group(pass_context=True, hidden=False)
+    # async def alliance(self, ctx):
+    #     '''Alliance Commands'''
+    #     await send_cmd_help(ctx)
+    #
+    # @alliance.command(pass_context=True, name='setalliancerole', hidden=False)
+    # async def _set_alliance_role(self, ctx, role : discord.Role):
+    #     '''Alliance Set subcommands'''
+    #     server = ctx.message.server
+    #     if role in server.roles:
+    #         message = await self.bot.say('Setting the Alliance Role as ``{}``\nClick OK to confirm.'.format(role.name))
+    #         confirm = await self._confirmation(ctx, message)
+    #         if confirm:
+    #             await self.bot.edit_message(message,'Setting the Alliance Role as ``{}``'.format(role.name))
+    #         else:
+    #             await self.bot.edit_message(message,'Setting the Alliance Role as ``{}``\nOperation canceled.'.format(role.name))
 
     async def _confirmation(self, ctx, message):
             await self.bot.add_reaction(message, '❌')
@@ -370,6 +370,7 @@ class MCOCMaps:
     @commands.group(pass_context=True, aliases=['aw',])
     async def alliancewar(self, ctx):
         '''Alliancewar.com Commands [WIP]'''
+        self send_cmd_help(ctx)
 
     @alliancewar.command(pass_context=True, hidden=True, name='seasons', aliases=['rewards'])
     async def _season_rewards(self, ctx, tier, rank=''):
