@@ -1033,7 +1033,7 @@ class CDTHelperFunctions:
         return chat.box('\n'.join(rows))
 
     def tabulate_data(table_data, width=None, align=None, rotate=False, separate_header=True):
-    '''Turn a list of lists into a tabular string'''
+        '''Turn a list of lists into a tabular string'''
         print('tabulate_data')
         align_opts = {'center': '^', 'left': '<', 'right': '>'}
         default_align = 'center'
