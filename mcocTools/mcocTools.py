@@ -1034,7 +1034,6 @@ class CDTHelperFunctions:
 
     def tabulate_data(table_data, width=None, align=None, rotate=False, separate_header=True):
         '''Turn a list of lists into a tabular string'''
-        print('tabulate_data')
         align_opts = {'center': '^', 'left': '<', 'right': '>'}
         default_align = 'center'
         default_width = 5
@@ -1045,12 +1044,9 @@ class CDTHelperFunctions:
             if any(len(x) != tbl_cols for x in table_data):
                 raise IndexError('Array is not uniform')
 
-            width = pad_list(width, tbl_cols, default_width)
-            align = pad_list(align, tbl_cols, default_align)
-            print(width)
-            print(align)
-            for i in iter_rows(table_data, rotate):
-
+            width = CDTHelperFunctions.pad_list(width, tbl_cols, default_width)
+            align = CDTHelperFunctions.pad_list(align, tbl_cols, default_align)
+            for i in CDTHelperFunctions.iter_rows(table_data, rotate):
                 fstr = '{:{}{}}'.format(i[0], align_opts[align[0]], width[0])
                 if tbl_cols > 1:
                     for n in range(1, tbl_cols):
