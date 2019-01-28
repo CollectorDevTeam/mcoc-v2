@@ -66,8 +66,6 @@ class Account:
             else:
                 data.set_author(name=ingame)
 
-
-
             data.add_field(name='Join the UMCOC community',value='https://discord.gg/umcoc', inline=False)
             data.set_footer(text='CollectorDevTeam - customize with /account update',
                     icon_url=self.COLLECTOR_ICON)
@@ -76,12 +74,12 @@ class Account:
             else:
                 await self.bot.say(embed=data)
 
-    @_account.commands(pass_context=True, name="delete", invoke_without_command=True,)
-    async def _delete(self , ctx):
-        '''Delete your CollectorVerse account'''
-        user = ctx.message.author
-        question= 'Are you sure you want to delete your CollectorVerse account?'
-        answer = PagesMenu.confirm(self, ctx, question)
+    # @_account.commands(pass_context=True, name="delete", invoke_without_command=True,)
+    # async def _delete(self , ctx):
+    #     '''Delete your CollectorVerse account'''
+    #     user = ctx.message.author
+    #     question= 'Are you sure you want to delete your CollectorVerse account?'
+    #     answer = PagesMenu.confirm(self, ctx, question)
         # if answer:
         #     if user.id in self.nerdie:
         #         dropped = self.nerdie[user.id].pop()
