@@ -421,7 +421,7 @@ class Alliance:
                 # else:
                 #     pass
             dataIO.save_json(self.alliances, self.guilds)
-            await self.bot.say('Members saved for {}'.format(self.guilds[server.id][r]))
+            print('Members saved for {}'.format(self.guilds[server.id][r]))
             return
         else:
             data = self._unknownguild(ctx, server)
