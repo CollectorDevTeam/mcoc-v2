@@ -5,6 +5,7 @@ from .utils.dataIO import dataIO
 from .utils import checks
 from __main__ import send_cmd_help
 from dateutil.parser import parse as dateParse
+import re
 import os
 from .utils.chat_formatting import *
 from .hook import RosterUserConverter
@@ -293,28 +294,29 @@ class Account:
                 icon_url=self.COLLECTOR_ICON)
         return data
 
-# class Alliance:
-#     """The CollectorVerse Alliance Cog"""
+class Alliance:
+    """The CollectorVerse Alliance Cog"""
+
+    def __init__(self, bot):
+        self.bot = bot
+        self.alliances = "data/account/alliances.json"
+        self.guilds = dataIO.load_json(self.alliances)
+        self.COLLECTOR_ICON='https://raw.githubusercontent.com/CollectorDevTeam/assets/master/data/cdt_icon.png'
 #
-#     def __init__(self, bot):
-#         self.bot = bot
-#         self.profile = "data/account/alliances.json"
-#         self.guild = dataIO.load_json(self.profile)
-#         self.COLLECTOR_ICON='https://raw.githubusercontent.com/CollectorDevTeam/assets/master/data/cdt_icon.png'
 #
 #
-#
-#     @commands.group(name="alliance", aliases=('clan','guild'), pass_context=True, invoke_without_command=True, no_pm=True, hidden=True)
-#     # @commands.group(name="account", aliases=('profile',), pass_context=True, invoke_without_command=True)
-#     async def _alliance(self, ctx, user : discord.Member=None):
-#         """CollectorVerse Account
-#
-#         In-Game username
-#         CollectorVerse Roster Top 5 + Prestige
-#         Alliance, Job, Age, Gender, Timezone, About, Website, Playing Since
-#         """
-#         server = ctx.message.server
-#         if ctx.invoked_subcommand is None:
+    @commands.group(name="alliance", aliases=('clan','guild'), pass_context=True, invoke_without_command=True, no_pm=True, hidden=True)
+    async def _alliance(self, ctx, user : discord.Member=None):
+        """CollectorVerse Account
+
+        In-Game username
+        CollectorVerse Roster Top 5 + Prestige
+        Alliance, Job, Age, Gender, Timezone, About, Website, Playing Since
+        """
+        server = ctx.message.server
+        if ctx.invoked_subcommand is None:
+            self._present_alliance(ctx, user)
+
 #             if not user:
 #                 user = ctx.message.author
 #             # if server.id not in self.guild:
@@ -375,219 +377,168 @@ class Account:
 #     #     user = ctx.message.author
 #     #     if user.id in self.guild:
 #     #         self.guild.pop(user.id, None)
-#     #         dataIO.save_json(self.profile, self.guild)
+#     #         dataIO.save_json(self.alliances, self.guild)
 #     #     data.add_field(name="Congrats!:sparkles:", value="You have deleted your CollectorVerse account.")
 #
-#     @checks.admin_or_permissions(manage_server=True)
-#     @_alliance.command(name="register", pass_context=True, invoke_without_command=True, no_pm=True)
-#     async def _reg(self, ctx):
-#         """Sign up to register your Alliance server!"""
-#         user = ctx.message.author
-#         server = ctx.message.server
-#
-#         if server.id not in self.guild:
-#             data = self._createalliance(server)
-#         else:
-#             data = discord.Embed(colour=user.colour)
-#             data.add_field(name="Error:warning:",value="Opps, it seems like you already have an guild registered, {}.".format(user.mention))
-#
-#         data.set_footer(text='CollectorDevTeam',
-#                 icon_url=self.COLLECTOR_ICON)
-#         await self.bot.say(embed=data)
+
+    async def _present_alliance(self, ctx, user):
+        #1 search for user in registered alliances
+        #2 if user in alliance:
+            # if ctx.server == alliance:
+                # present full info
+            #  if ctx.server != alliance:
+                # present public info
+        server = ctx.message.server
+        alliance = self.find_alliance(user)
+
+        if ctx.message.channel.is_private:
+            ucolor = discord.Color.gold()
+        else:
+            ucolor = user.color
+        if alliance is None:
+            em = discord.Embed(color=ucolor, title='CollectorVerse Alliances', description='User is not regisered with a Collectorverse alliance.', url='https://discord.gg/umcoc')
+        elif server.id == alliance and user.id in guilds[alliance]:  #Alliance server & Alliance member
+            em = discord.Embed(color=ucolor, title='CollectorVerse Alliances', description='Display private profile ~ All kinds of info stored', url='https://discord.gg/umcoc')
+        elif server.id == alliance:
+            em = discord.Embed(color=ucolor, title='CollectorVerse Alliances', description='Display Alliance Server recruiting profile', url='https://discord.gg/umcoc')
+        else:
+            em = discord.Embed(color=ucolor, title='CollectorVerse Alliances', description='Display public profile.\nInclude server join link, if set.\nInclude Alliance Prestige\nInclude About\n etc', url='https://discord.gg/umcoc')
+        em.set_footer(text='CollectorDevTeam', icon_url=COLLECTOR_ICON)
+        await self.bot.say(embed=em)
+
+    def _find_alliance(self, user):
+        guilds = self.guilds
+        for g in guilds.keys():
+            if user.id in guilds[g]:
+                return g
+        return None
+
+    def _get_members(self, server):
+        if server.id  in self.guilds:
+            members = server.members
+            jobs = {'officers':[], 'bg1':[], 'bg2':[], 'bg3':[]}
+            for job in jobs.keys():
+                if job in self.guilds[server.id]:
+                    for m in members:
+                        if self.guilds[server.id][job] in member.roles:
+                            jobs[job].append(m)
+                    self.guilds[server.id][r]['members'] = jobs[r]
+                else:
+                    pass
+            dataIO.save_json(self.alliances, self.guilds)
+            await self.bot.say('Members saved for {}'.format(self.guilds[server.id][r]))
+        else:
+            data = self._unknownguild(ctx, server)
+
+    @checks.admin_or_permissions(manage_server=True)
+    @_alliance.command(name="register", pass_context=True, invoke_without_command=True, no_pm=True)
+    async def _reg(self, ctx):
+        """Sign up to register your Alliance server!"""
+        user = ctx.message.author
+        server = ctx.message.server
+
+        if server.id not in self.guilds:
+            data = self._createalliance(server)
+        else:
+            data = discord.Embed(colour=user.colour)
+            data.add_field(name="Error:warning:",value="Opps, it seems like you already have an guild registered, {}.".format(user.mention))
+
+        data.set_footer(text='CollectorDevTeam',
+                icon_url=self.COLLECTOR_ICON)
+        await self.bot.say(embed=data)
 #
 #     # @commands.group(name="update", pass_context=True, invoke_without_command=True, no_pm=True)
-#     @_alliance.group(name="update", pass_context=True, invoke_without_command=True, no_pm=True)
-#     async def update(self, ctx):
-#         """Update your CollectorVerse account"""
-#         await send_cmd_help(ctx)
+    @checks.admin_or_permissions(manage_server=True)
+    @_alliance.group(name="update", pass_context=True, invoke_without_command=True, no_pm=True)
+    async def update(self, ctx):
+        """Update your CollectorVerse account"""
+        await send_cmd_help(ctx)
 #
-#     # @update.command(pass_context=True, no_pm=True)
-#     # async def ingame(self, ctx, *, value):
-#     #     """What's your in-game MCOC username?"""
-#     #     key = "MCOC username"
-#     #     user = ctx.message.author
-#     #
-#     #     if user.id not in self.guild:
-#     #         data = self._unknownuser(ctx, user)
-#     #     else:
-#     #         data = self._updated(ctx, key, value)
-#     #     await self.bot.say(embed=data)
-#     #
-#     # @update.command(pass_context=True, no_pm=True)
-#     # async def alliance(self, ctx, *, value=None):
-#     #     """What's your Alliance name?"""
-#     #     key = "Alliance"
-#     #     user = ctx.message.author
-#     #     if user.id not in self.guild:
-#     #         data = self._unknownuser(ctx, user)
-#     #     else:
-#     #         if "Recruiting" in self.guild[user.id]:
-#     #             if 'Looking for Alliance' in self.guild[user.id]["Recruiting"]:
-#     #                 self.guild[user.id].pop("Recruiting",None)
-#     #                 dataIO.save_json(self.profile, self.guild)
-#     #         data = self._updated(ctx, key, value)
-#     #         pass
-#     #     await self.bot.say(embed=data)
-#     #
-#     #
-#     # @update.command(pass_context=True, no_pm=True)
-#     # async def recruiting(self, ctx, *, value):
-#     #     """Are you Looking for Alliance or Members?
-#     #     lfa   = Looking for Alliance
-#     #     lfm   = Looking for members
-#     #     merge = Looking for Merger"""
-#     #     key = "Recruiting"
-#     #     user = ctx.message.author
-#     #     valid = {'lfa':'Looking for Alliance', 'lfm': 'Looking for Members', 'merge':'Looking for Merger'}
-#     #     if value in valid.keys():
-#     #         if user.id not in self.guild:
-#     #             data = self._unknownuser(ctx, user)
-#     #         else:
-#     #             if value in ('lfa','Looking for Alliance'):
-#     #                 self.guild[user.id].pop("Alliance",None)
-#     #                 dataIO.save_json(self.profile, self.guild)
-#     #             if value in ('lfa','lfm','merge'):
-#     #                 data = self._updated(ctx, key, valid[value])
-#     #             else:
-#     #                 data = self._updated(ctx, key, value)
-#     #     else:
-#     #         data = discord.Embed(colour=user.colour)
-#     #         data.add_field(name="Error:warning:",value='Use one of the valid codes: lfa, lfm, merge.')
-#     #         data.set_footer(text='CollectorDevTeam',
-#     #                 icon_url=self.COLLECTOR_ICON)
-#     #     await self.bot.say(embed=data)
-#     #
-#     # @update.command(pass_context=True, no_pm=True)
-#     # async def timezone(self, ctx, *, value):
-#     #     """What's your UTC timezone?"""
-#     #     key = "Timezone"
-#     #     user = ctx.message.author
-#     #     if 'UTC+' in value or 'UTC-' in value:
-#     #         if user.id not in self.guild:
-#     #             data = self._unknownuser(ctx, user)
-#     #         else:
-#     #             data = self._updated(ctx, key, value)
-#     #     else:
-#     #         data = discord.Embed(colour=user.colour)
-#     #         data.add_field(name="Error:warning:",value='Timezone value must be recorded in UTC+ or UTC- format.')
-#     #         data.set_footer(text='CollectorDevTeam',
-#     #                 icon_url=self.COLLECTOR_ICON)
-#     #     await self.bot.say(embed=data)
-#     #
-#     #
-#     # @update.command(pass_context=True, no_pm=True)
-#     # async def about(self, ctx, *, about):
-#     #     """Tell us about yourself"""
-#     #     key = "About"
-#     #     value = about
-#     #     user = ctx.message.author
-#     #
-#     #     if user.id not in self.guild:
-#     #         data = self._unknownuser(ctx, user)
-#     #     else:
-#     #         data = self._updated(ctx, key, value)
-#     #     await self.bot.say(embed=data)
-#     #
-#     # @update.command(pass_context=True, no_pm=True)
-#     # async def website(self, ctx, *, site):
-#     #     """Do you have a website?"""
-#     #     key = "Website"
-#     #     value = site
-#     #     user = ctx.message.author
-#     #
-#     #     if ctx.message.author.id not in self.guild:
-#     #         data = self._unknownuser(ctx, user)
-#     #     else:
-#     #         data = self._updated(ctx, key, value)
-#     #     await self.bot.say(embed=data)
-#     #
-#     #
-#     # @update.command(pass_context=True, no_pm=True)
-#     # async def age(self, ctx, *, age):
-#     #     """How old are you?"""
-#     #     key = "Age"
-#     #     value = age
-#     #     user = ctx.message.author
-#     #
-#     #     if ctx.message.author.id not in self.guild:
-#     #         data = self._unknownuser(ctx, user)
-#     #     else:
-#     #         data = self._updated(ctx, key, value)
-#     #     await self.bot.say(embed=data)
-#     #
-#     #
-#     # @update.command(pass_context=True, no_pm=True)
-#     # async def job(self, ctx, *, job):
-#     #     """Do you have an alliance job?"""
-#     #     key = "Job"
-#     #     value = job
-#     #     user = ctx.message.author
-#     #
-#     #     if ctx.message.author.id not in self.guild:
-#     #         data = self._unknownuser(ctx, user)
-#     #     else:
-#     #         data = self._updated(ctx, key, value)
-#     #     await self.bot.say(embed=data)
-#     #
-#     #
-#     # @update.command(pass_context=True, no_pm=True)
-#     # async def gender(self, ctx, *, gender):
-#     #     """What's your gender?"""
-#     #     key = "Gender"
-#     #     value = gender
-#     #     user = ctx.message.author
-#     #
-#     #     if ctx.message.author.id not in self.guild:
-#     #         data = self._unknownuser(ctx, user)
-#     #     else:
-#     #         data = self._updated(ctx, key, value)
-#     #     await self.bot.say(embed=data)
-#     #
-#     #
-#     # @update.command(pass_context=True, no_pm=True)
-#     # async def started(self, ctx, *, started):
-#     #     """When did you start playing Contest of Champions?"""
-#     #     key = "Started"
-#     #     try:
-#     #         value = dateParse(started)
-#     #         user = ctx.message.author
-#     #         if ctx.message.author.id not in self.guild:
-#     #             data = self._unknownuser(ctx, user)
-#     #         else:
-#     #             data = self._updated(ctx, key, value)
-#     #         await self.bot.say(embed=data)
-#     #     except:
-#     #         await self.bot.say('Please enter a date.')
-#     #
-#     #
-#     # @update.command(pass_context=True, no_pm=True)
-#     # async def other(self, ctx, *, other):
-#     #     """Incase you want to add anything else..."""
-#     #     key = "Other"
-#     #     value = other
-#     #     user = ctx.message.author
-#     #
-#     #     if ctx.message.author.id not in self.guild:
-#     #         data = self._unknownuser(ctx, user)
-#     #     else:
-#     #         data = self._updated(ctx, key, value)
-#     #     await self.bot.say(embed=data)
+    @update.command(pass_context=True, name='name', aliases=('clanname','guildname',) ,no_pm=True)
+    async def _alliancename(self, ctx, *, value):
+        """What's your in-game MCOC username?"""
+        key = "guildname"
+        server = ctx.message.server
+
+        if server.id not in self.guilds:
+            data = self._unknownuser(ctx, server)
+        else:
+            data = self._updated(ctx, key, value)
+        await self.bot.say(embed=data)
+
+    @update.command(pass_context=True, name='tag', aliases=('clanname','guildname',) ,no_pm=True)
+    async def _alliancetag(self, ctx, *, value):
+        """What's your in-game MCOC username?"""
+        key = "guildtag"
+        v = value.split('')
+        if len(v) > 5:
+            await self.bot.say('Clan Tag must be <= 5 characters.\nDo not include the \[ or \] brackets.')
+        server = ctx.message.server
+        if server.id not in self.guilds:
+            data = self._unknownguild(ctx, server)
+        else:
+            data = self._updated(ctx, key, value)
+        await self.bot.say(embed=data)
+
+    @update.command(pass_context=True, name='officers', no_pm=True)
+    async def _officers(self, ctx, value: discord.Role):
+        """What's your in-game MCOC username?"""
+        key = "officers"
+        server = ctx.message.server
+        if server.id not in self.guilds:
+            data = self._unknownguild(ctx, server)
+        else:
+            data = self._updated(ctx, key, value)
+        await self.bot.say(embed=data)
+
+    @update.command(pass_context=True, name='bg1', aliases=('battlegroup1',) no_pm=True)
+    async def _bg1(self, ctx, value: discord.Role):
+        """What's your in-game MCOC username?"""
+        key = "bg1"
+        server = ctx.message.server
+        if server.id not in self.guilds:
+            data = self._unknownguild(ctx, server)
+        else:
+            data = self._updated(ctx, key, value)
+        await self.bot.say(embed=data)
+
+    @update.command(pass_context=True, name='bg2', aliases=('battlegroup2',) no_pm=True)
+    async def _bg2(self, ctx, value: discord.Role):
+        """What's your in-game MCOC username?"""
+        key = "bg2"
+        server = ctx.message.server
+        if server.id not in self.guilds:
+            data = self._unknownguild(ctx, server)
+        else:
+            data = self._updated(ctx, key, value)
+        await self.bot.say(embed=data)
+
+    @update.command(pass_context=True, name='bg3', aliases=('battlegroup3',) no_pm=True)
+    async def _bg3(self, ctx, value: discord.Role):
+        """What's your in-game MCOC username?"""
+        key = "bg3"
+        server = ctx.message.server
+        if server.id not in self.guilds:
+            data = self._unknownguild(ctx, server)
+        else:
+            data = self._updated(ctx, key, value)
+        await self.bot.say(embed=data)
 #
-#     def _createalliance(self, server):
-#         self.guild[server.id] = {}
-#         dataIO.save_json(self.profile, self.guild)
-#         data = discord.Embed(colour=get_color(ctx))
-#         data.add_field(name="Congrats!:sparkles:", value="You have officaly created your CollectorVerse Alliance account, {}.".format(user.mention))
-#         data.set_footer(text='CollectorDevTeam',
-#                 icon_url=self.COLLECTOR_ICON)
-#         return data
-#
-#     def _unknownguild(self, ctx, user):
-#         data = discord.Embed(colour=get_color(ctx))
-#         data.add_field(name="Error:warning:",value="Sadly, this feature is only available for people who had registered for an account. \n\nYou can register for a account today for free. All you have to do is say `{}signup` and you'll be all set.".format(ctx.prefix))
-#         data.set_footer(text='CollectorDevTeam',
-#                 icon_url=self.COLLECTOR_ICON)
-#         return data
+    def _createalliance(self, server):
+        self.guilds[server.id] = {}
+        dataIO.save_json(self.alliances, self.guilds)
+        data = discord.Embed(colour=get_color(ctx))
+        data.add_field(name="Congrats!:sparkles:", value="{}, ou have officaly created your CollectorVerse Alliance for this server: {}.".format(user.mention, server.name))
+        data.set_footer(text='CollectorDevTeam',
+                icon_url=self.COLLECTOR_ICON)
+        return data
+
+    def _unknownguild(self, ctx, user):
+        data = discord.Embed(colour=get_color(ctx))
+        data.add_field(name="Error:warning:",value="Sadly, this feature is only available for people who had registered for an account. \n\nYou can register for a account today for free. All you have to do is say `{}signup` and you'll be all set.".format(ctx.prefix))
+        data.set_footer(text='CollectorDevTeam',
+                icon_url=self.COLLECTOR_ICON)
+        return data
 
     # def _updated(self, ctx, key, value):
     #     user = ctx.message.author
@@ -598,7 +549,7 @@ class Account:
     #     else:
     #         self.guild[user.id].update({key : value})
     #         data.add_field(name="Congrats!:sparkles:",value="You have set your {} to {}".format(key, value))
-    #     dataIO.save_json(self.profile, self.guild)
+    #     dataIO.save_json(self.alliances, self.guild)
     #     data.set_footer(text='CollectorDevTeam',
     #             icon_url=self.COLLECTOR_ICON)
     #     return data
