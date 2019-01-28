@@ -75,14 +75,14 @@ class Account:
                     icon_url=self.COLLECTOR_ICON)
             await self.bot.say(embed=data)
 
-    # @_acc.commands(pass_context=True, name="delete")
-    # async def _delete(self,ctx):
-    #     '''Delete your CollectorVerse account'''
-    #     user = ctx.message.author
-    #     if user.id in self.nerdie:
-    #         self.nerdie.pop(user.id, None)
-    #         dataIO.save_json(self.profile, self.nerdie)
-    #     data.add_field(name="Congrats!:sparkles:", value="You have deleted your CollectorVerse account.")
+    @_acc.commands(pass_context=True, name="delete")
+    async def _delete(self,ctx):
+        '''Delete your CollectorVerse account'''
+        user = ctx.message.author
+        if user.id in self.nerdie:
+            self.nerdie.pop(user.id)
+            dataIO.save_json(self.profile, self.nerdie)
+        data.add_field(name="Congrats!:sparkles:", value="You have deleted your CollectorVerse account.")
 
 
     # @commands.group(name="update", pass_context=True, invoke_without_command=True, no_pm=True)
@@ -301,17 +301,12 @@ class Alliance:
         self.bot = bot
         self.alliances = "data/account/alliances.json"
         self.guilds = dataIO.load_json(self.alliances)
-        self.COLLECTOR_ICON='https://raw.githubusercontent.com/CollectorDevTeam/assets/master/data/cdt_icon.png'
-#
-#
-#
+        # self.COLLECTOR_ICON='https://raw.githubusercontent.com/CollectorDevTeam/assets/master/data/cdt_icon.png'
+
     @commands.group(name="alliance", aliases=('clan','guild'), pass_context=True, invoke_without_command=True, no_pm=True, hidden=True)
     async def _alliance(self, ctx, user : discord.Member=None):
-        """CollectorVerse Account
+        """CollectorVerse Alliance tools
 
-        In-Game username
-        CollectorVerse Roster Top 5 + Prestige
-        Alliance, Job, Age, Gender, Timezone, About, Website, Playing Since
         """
         server = ctx.message.server
         if ctx.invoked_subcommand is None:
@@ -382,12 +377,12 @@ class Alliance:
 #
 
     async def _present_alliance(self, ctx, user):
-        #1 search for user in registered alliances
-        #2 if user in alliance:
-            # if ctx.server == alliance:
-                # present full info
-            #  if ctx.server != alliance:
-                # present public info
+        ## 1 search for user in registered alliances
+        ## 2 if user in alliance:
+        ##    if ctx.server == alliance:
+        ##         present full info
+        ##      if ctx.server != alliance:
+        ##         present public info
         server = ctx.message.server
         alliance = self.find_alliance(user)
 
@@ -436,16 +431,20 @@ class Alliance:
         """Sign up to register your Alliance server!"""
         user = ctx.message.author
         server = ctx.message.server
+        question = '{}, do you want to register this Discord Server as your Alliance Server?'
+        answer = await PagesMenu.confirm(self, ctx, question)
+        if answer is True:
+            if server.id not in self.guilds:
+                data = self._createalliance(server)
+            else:
+                data = discord.Embed(colour=user.colour)
+                data.add_field(name="Error:warning:",value="Opps, it seems like you already have an guild registered, {}.".format(user.mention))
 
-        if server.id not in self.guilds:
-            data = self._createalliance(server)
+            data.set_footer(text='CollectorDevTeam',
+                    icon_url=self.COLLECTOR_ICON)
+            await self.bot.say(embed=data)
         else:
-            data = discord.Embed(colour=user.colour)
-            data.add_field(name="Error:warning:",value="Opps, it seems like you already have an guild registered, {}.".format(user.mention))
-
-        data.set_footer(text='CollectorDevTeam',
-                icon_url=self.COLLECTOR_ICON)
-        await self.bot.say(embed=data)
+            return
 #
 #     # @commands.group(name="update", pass_context=True, invoke_without_command=True, no_pm=True)
     @checks.admin_or_permissions(manage_server=True)
@@ -525,6 +524,7 @@ class Alliance:
         await self.bot.say(embed=data)
 #
     def _createalliance(self, server):
+
         self.guilds[server.id] = {}
         dataIO.save_json(self.alliances, self.guilds)
         data = discord.Embed(colour=get_color(ctx))
