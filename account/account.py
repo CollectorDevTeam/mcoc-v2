@@ -472,7 +472,7 @@ class Alliance:
             data = self._updated(ctx, key, value)
         await self.bot.say(embed=data)
 
-    @update.command(pass_context=True, name='tag', ,no_pm=True)
+    @update.command(pass_context=True, name='tag', no_pm=True)
     async def _alliancetag(self, ctx, *, value):
         """What's your in-game MCOC username?"""
         key = "guildtag"
