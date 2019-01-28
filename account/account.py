@@ -77,17 +77,17 @@ class Account:
             else:
                 await self.bot.say(embed=data)
 
-    # @_acc.commands(pass_context=True, name="delete",)
-    # async def _delete(self ,ctx):
-    #     '''Delete your CollectorVerse account'''
-    #     user = ctx.message.author
-    #     question= 'Are you sure you want to delete your CollectorVerse account?'
-    #     answer = PagesMenu.confirm(self, ctx, question)
-    #     if answer:
-    #         if user.id in self.nerdie:
-    #             # dropped = self.nerdie.pop(user.id, None)
-    #             dataIO.save_json(self.profile, self.nerdie)
-    #         data.add_field(name="Congrats!:sparkles:", value="You have deleted your CollectorVerse account.")
+    @_acc.commands(pass_context=True, name="delete",)
+    async def _delete(self ,ctx):
+        '''Delete your CollectorVerse account'''
+        user = ctx.message.author
+        question= 'Are you sure you want to delete your CollectorVerse account?'
+        answer = PagesMenu.confirm(self, ctx, question)
+        if answer:
+            if user.id in self.nerdie:
+                dropped = self.nerdie[user.id].pop()
+                dataIO.save_json(self.profile, self.nerdie)
+            data.add_field(name="Congrats!:sparkles:", value="You have deleted your CollectorVerse account.")
 
 
     # @commands.group(name="update", pass_context=True, invoke_without_command=True, no_pm=True)
