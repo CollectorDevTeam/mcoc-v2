@@ -21,8 +21,7 @@ class Account:
         self.nerdie = dataIO.load_json(self.profile)
         self.COLLECTOR_ICON='https://raw.githubusercontent.com/CollectorDevTeam/assets/master/data/cdt_icon.png'
 
-    @commands.group(name="account", aliases=('profile',), pass_context=True, invoke_without_command=True, no_pm=True)
-    # @commands.group(name="account", aliases=('profile',), pass_context=True, invoke_without_command=True)
+    @commands.group(name="account", aliases=('profile',), pass_context=True, invoke_without_command=True)
     async def _acc(self, ctx, user : discord.Member=None):
         """CollectorVerse Account
 
@@ -42,10 +41,10 @@ class Account:
             else:
                 ingame = 'No MCOC in-game id registered.'
             try:
-                color = user.colour
+                ucolor = user.colour
             except:
-                color = discord.Color.gold()
-            data = discord.Embed(title="CollectorVerse Profile", colour=color, description='Discord user: {}#{}'.format(user.name, user.discriminator), url='https://discord.gg/umcoc')
+                ucolor = discord.Color.gold()
+            data = discord.Embed(title="CollectorVerse Profile", colour=ucolor, description='Discord user: {}#{}'.format(user.name, user.discriminator), url='https://discord.gg/umcoc')
             roster = await RosterUserConverter(ctx, user.mention).convert()
             if roster:
                 data.add_field(name='Prestige', value=roster.prestige, inline=False)
@@ -73,19 +72,22 @@ class Account:
             data.add_field(name='Join the UMCOC community',value='https://discord.gg/umcoc', inline=False)
             data.set_footer(text='CollectorDevTeam - customize with /account update',
                     icon_url=self.COLLECTOR_ICON)
-            await self.bot.say(embed=data)
+            if ctx.message.channel.is_private():
+                await self.bot.whisper(embed=data)
+            else:
+                await self.bot.say(embed=data)
 
-    @_acc.commands(pass_context=True, name="delete")
-    async def _delete(self,ctx):
-        '''Delete your CollectorVerse account'''
-        user = ctx.message.author
-        question= 'Are you sure you want to delete your CollectorVerse account?'
-        answer = PagesMenu.confirm(self, ctx, question)
-        if answer:
-            if user.id in self.nerdie:
-                # dropped = self.nerdie.pop(user.id, None)
-                dataIO.save_json(self.profile, self.nerdie)
-            data.add_field(name="Congrats!:sparkles:", value="You have deleted your CollectorVerse account.")
+    # @_acc.commands(pass_context=True, name="delete",)
+    # async def _delete(self ,ctx):
+    #     '''Delete your CollectorVerse account'''
+    #     user = ctx.message.author
+    #     question= 'Are you sure you want to delete your CollectorVerse account?'
+    #     answer = PagesMenu.confirm(self, ctx, question)
+    #     if answer:
+    #         if user.id in self.nerdie:
+    #             # dropped = self.nerdie.pop(user.id, None)
+    #             dataIO.save_json(self.profile, self.nerdie)
+    #         data.add_field(name="Congrats!:sparkles:", value="You have deleted your CollectorVerse account.")
 
 
     # @commands.group(name="update", pass_context=True, invoke_without_command=True, no_pm=True)
