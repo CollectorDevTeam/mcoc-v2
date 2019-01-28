@@ -80,7 +80,7 @@ class Account:
         '''Delete your CollectorVerse account'''
         user = ctx.message.author
         if user.id in self.nerdie:
-            self.nerdie.pop(user.id)
+            self.nerdie['user'].popitem()
             dataIO.save_json(self.profile, self.nerdie)
         data.add_field(name="Congrats!:sparkles:", value="You have deleted your CollectorVerse account.")
 
