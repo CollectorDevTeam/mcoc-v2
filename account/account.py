@@ -20,7 +20,6 @@ class Account:
         self.profile = "data/account/accounts.json"
         self.nerdie = dataIO.load_json(self.profile)
         self.COLLECTOR_ICON='https://raw.githubusercontent.com/CollectorDevTeam/assets/master/data/cdt_icon.png'
-        self.menu = PagesMenu
 
     @commands.group(name="account", aliases=('profile',), pass_context=True, invoke_without_command=True)
     async def _account(self, ctx, user : discord.Member=None):
@@ -72,7 +71,7 @@ class Account:
                     icon_url=self.COLLECTOR_ICON)
             pages = []
             pages.append(data)
-            await menu.menu_start(self, pages)
+            await PagesMenu.menu_start(self, pages)
             # if ctx.message.channel.is_private:
             #     await self.bot.whisper(embed=data)
             # else:
