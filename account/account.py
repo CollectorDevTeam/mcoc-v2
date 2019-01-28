@@ -492,7 +492,7 @@ class Alliance:
             data = self._updated(ctx, key, value)
         await self.bot.say(embed=data)
 
-    @update.command(pass_context=True, name='bg1', aliases=('battlegroup1',) no_pm=True)
+    @update.command(pass_context=True, name='bg1', aliases=('battlegroup1',), no_pm=True)
     async def _bg1(self, ctx, value: discord.Role):
         """What's your in-game MCOC username?"""
         key = "bg1"
@@ -503,7 +503,7 @@ class Alliance:
             data = self._updated(ctx, key, value)
         await self.bot.say(embed=data)
 
-    @update.command(pass_context=True, name='bg2', aliases=('battlegroup2',) no_pm=True)
+    @update.command(pass_context=True, name='bg2', aliases=('battlegroup2',), no_pm=True)
     async def _bg2(self, ctx, value: discord.Role):
         """What's your in-game MCOC username?"""
         key = "bg2"
@@ -514,7 +514,7 @@ class Alliance:
             data = self._updated(ctx, key, value)
         await self.bot.say(embed=data)
 
-    @update.command(pass_context=True, name='bg3', aliases=('battlegroup3',) no_pm=True)
+    @update.command(pass_context=True, name='bg3', aliases=('battlegroup3',), no_pm=True)
     async def _bg3(self, ctx, value: discord.Role):
         """What's your in-game MCOC username?"""
         key = "bg3"
