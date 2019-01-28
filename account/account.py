@@ -22,14 +22,13 @@ class Account:
         self.COLLECTOR_ICON='https://raw.githubusercontent.com/CollectorDevTeam/assets/master/data/cdt_icon.png'
 
     @commands.group(name="account", aliases=('profile',), pass_context=True, invoke_without_command=True)
-    async def _acc(self, ctx, user : discord.Member=None):
+    async def _account(self, ctx, user : discord.Member=None):
         """CollectorVerse Account
 
         In-Game username
         CollectorVerse Roster Top 5 + Prestige
         Alliance, Job, Age, Gender, Timezone, About, Website, Playing Since
         """
-
         if ctx.invoked_subcommand is None:
             if not user:
                 user = ctx.message.author
@@ -77,21 +76,21 @@ class Account:
             else:
                 await self.bot.say(embed=data)
 
-    @_acc.commands(pass_context=True, name="delete",)
-    async def _delete(self ,ctx):
+    @_account.commands(pass_context=True, name="delete", invoke_without_command=True,)
+    async def _delete(self , ctx):
         '''Delete your CollectorVerse account'''
         user = ctx.message.author
         question= 'Are you sure you want to delete your CollectorVerse account?'
         answer = PagesMenu.confirm(self, ctx, question)
-        if answer:
-            if user.id in self.nerdie:
-                dropped = self.nerdie[user.id].pop()
-                dataIO.save_json(self.profile, self.nerdie)
-            data.add_field(name="Congrats!:sparkles:", value="You have deleted your CollectorVerse account.")
+        # if answer:
+        #     if user.id in self.nerdie:
+        #         dropped = self.nerdie[user.id].pop()
+        #         dataIO.save_json(self.profile, self.nerdie)
+        #     data.add_field(name="Congrats!:sparkles:", value="You have deleted your CollectorVerse account.")
 
 
     # @commands.group(name="update", pass_context=True, invoke_without_command=True, no_pm=True)
-    @_acc.group(name="update", pass_context=True, invoke_without_command=True, no_pm=True)
+    @_account.group(name="update", pass_context=True, invoke_without_command=True, no_pm=True)
     async def update(self, ctx):
         """Update your CollectorVerse account"""
         await send_cmd_help(ctx)
@@ -371,7 +370,7 @@ class Alliance:
 #             #         icon_url=self.COLLECTOR_ICON)
 #             # await self.bot.say(embed=data)
 #
-#     # @_acc.commands(pass_context=True, name="delete")
+#     # @_account.commands(pass_context=True, name="delete")
 #     # async def _delete(self,ctx):
 #     #     '''Delete your CollectorVerse account'''
 #     #     user = ctx.message.author
