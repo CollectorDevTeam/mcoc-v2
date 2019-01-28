@@ -418,12 +418,14 @@ class Alliance:
                         if self.guilds[server.id][job] in member.roles:
                             jobs[job].append(m)
                     self.guilds[server.id][r]['members'] = jobs[r]
-                else:
-                    pass
+                # else:
+                #     pass
             dataIO.save_json(self.alliances, self.guilds)
             await self.bot.say('Members saved for {}'.format(self.guilds[server.id][r]))
+            return
         else:
             data = self._unknownguild(ctx, server)
+            return
 
     @checks.admin_or_permissions(manage_server=True)
     @_alliance.command(name="register", pass_context=True, invoke_without_command=True, no_pm=True)
