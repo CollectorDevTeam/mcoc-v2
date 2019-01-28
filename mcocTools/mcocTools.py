@@ -353,6 +353,35 @@ class PagesMenu:
             except discord.Forbidden:
                 await self.bot.say("Bot does not have the proper Permissions")
 
+    async def confirm(self, ctx, question: str):
+        '''Returns Boolean'''
+        if ctx.message.channel.is_private():
+            ucolor=discord.Color.gold()
+        else:
+            ucolor=user.color()
+        data = discord.Embed(title='Confirmation', description=question, color=ucolor)
+        data.set_footer(text='CollectorDevTeam Dataset', icon_url=COLLECTOR_ICON)
+        message = await self.bot.say(embed=data)
+
+        await self.bot.add_reaction(message, '❌')
+        await self.bot.add_reaction(message, '🆗')
+        react = await self.bot.wait_for_reaction(message=message,
+                user=ctx.message.author, timeout=90, emoji=['❌', '🆗'])
+        if react is not None:
+            if react.reaction.emoji == '❌':
+                data.add_field(name='Confirmation', value='{} has canceled confirmation'.format(ctx.message.author.name))
+                await self.bot.edit_message(message, embed=data)
+                return False
+            elif react.reaction.emoji == '🆗':
+                data.add_field(name='Confirmation', value='{} has confirmed.'.format(ctx.message.author.name))
+                await self.bot.edit_message(message, embed=data)
+                return True
+        else:
+            data.add_field(name='Confirmation', value='{} has not responded'.format(ctx.message.author.name))
+            await self.bot.edit_message(message, embed=data)
+            return False
+
+
 class MCOCTools:
     '''Tools for Marvel Contest of Champions'''
     lookup_links = {
@@ -1013,6 +1042,7 @@ class Calculator:
 
 class CDTHelperFunctions:
     '''Helper Functions'''
+
     def tabulate(table_data, width, rotate=True, header_sep=True, align_out=True):
         rows = []
         cells_in_row = None
