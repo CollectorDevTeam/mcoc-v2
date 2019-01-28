@@ -20,6 +20,7 @@ class Account:
         self.profile = "data/account/accounts.json"
         self.nerdie = dataIO.load_json(self.profile)
         self.COLLECTOR_ICON='https://raw.githubusercontent.com/CollectorDevTeam/assets/master/data/cdt_icon.png'
+        self.menu = PagesMenu
 
     @commands.group(name="account", aliases=('profile',), pass_context=True, invoke_without_command=True)
     async def _account(self, ctx, user : discord.Member=None):
@@ -69,10 +70,13 @@ class Account:
             data.add_field(name='Join the UMCOC community',value='https://discord.gg/umcoc', inline=False)
             data.set_footer(text='CollectorDevTeam - customize with /account update',
                     icon_url=self.COLLECTOR_ICON)
-            if ctx.message.channel.is_private:
-                await self.bot.whisper(embed=data)
-            else:
-                await self.bot.say(embed=data)
+            pages = data.append(data)
+            await self.menu.menu_start(pages)
+            # if ctx.message.channel.is_private:
+            #     await self.bot.whisper(embed=data)
+            # else:
+            #     await self.bot.say(embed=data)
+
 
     # @_account.commands(pass_context=True, name="delete", invoke_without_command=True,)
     # async def _delete(self , ctx):
@@ -557,6 +561,7 @@ class Alliance:
     #     data.set_footer(text='CollectorDevTeam',
     #             icon_url=self.COLLECTOR_ICON)
     #     return data
+
 
 def get_color(ctx):
     if ctx.message.channel.is_private:
