@@ -70,7 +70,8 @@ class Account:
             data.add_field(name='Join the UMCOC community',value='https://discord.gg/umcoc', inline=False)
             data.set_footer(text='CollectorDevTeam - customize with /account update',
                     icon_url=self.COLLECTOR_ICON)
-            pages = data.append(data)
+            pages = []
+            pages.append(data)
             await self.menu.menu_start(pages)
             # if ctx.message.channel.is_private:
             #     await self.bot.whisper(embed=data)
