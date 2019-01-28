@@ -79,8 +79,10 @@ class Account:
     async def _delete(self,ctx):
         '''Delete your CollectorVerse account'''
         user = ctx.message.author
+        question= 'Are you sure you want to delete your CollectorVerse account?'
+        answer = PagesMenu.confirm(self, ctx, question)
         if user.id in self.nerdie:
-            self.nerdie['user'].popitem()
+            dropped = self.nerdie.pop(user.id)
             dataIO.save_json(self.profile, self.nerdie)
         data.add_field(name="Congrats!:sparkles:", value="You have deleted your CollectorVerse account.")
 
