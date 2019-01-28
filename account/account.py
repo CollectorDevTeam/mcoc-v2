@@ -72,7 +72,7 @@ class Account:
                     icon_url=self.COLLECTOR_ICON)
             pages = []
             pages.append(data)
-            await self.menu.menu_start(pages)
+            await menu.menu_start(self, pages)
             # if ctx.message.channel.is_private:
             #     await self.bot.whisper(embed=data)
             # else:
