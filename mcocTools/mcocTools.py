@@ -355,7 +355,7 @@ class PagesMenu:
 
     async def confirm(self, ctx, question: str):
         '''Returns Boolean'''
-        if ctx.message.channel.is_private():
+        if ctx.message.channel.is_private:
             ucolor=discord.Color.gold()
         else:
             ucolor=user.color()

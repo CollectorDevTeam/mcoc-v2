@@ -72,7 +72,7 @@ class Account:
             data.add_field(name='Join the UMCOC community',value='https://discord.gg/umcoc', inline=False)
             data.set_footer(text='CollectorDevTeam - customize with /account update',
                     icon_url=self.COLLECTOR_ICON)
-            if ctx.message.channel.is_private():
+            if ctx.message.channel.is_private:
                 await self.bot.whisper(embed=data)
             else:
                 await self.bot.say(embed=data)
@@ -562,7 +562,7 @@ class Alliance:
     #     return data
 
 def get_color(ctx):
-    if ctx.message.channel.is_private():
+    if ctx.message.channel.is_private:
         return discord.Color.gold()
     else:
         return ctx.message.author.color
