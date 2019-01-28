@@ -81,10 +81,11 @@ class Account:
         user = ctx.message.author
         question= 'Are you sure you want to delete your CollectorVerse account?'
         answer = PagesMenu.confirm(self, ctx, question)
-        if user.id in self.nerdie:
-            dropped = self.nerdie.pop(user.id, None)
-            dataIO.save_json(self.profile, self.nerdie)
-        data.add_field(name="Congrats!:sparkles:", value="You have deleted your CollectorVerse account.")
+        if answer:
+            if user.id in self.nerdie:
+                # dropped = self.nerdie.pop(user.id, None)
+                dataIO.save_json(self.profile, self.nerdie)
+            data.add_field(name="Congrats!:sparkles:", value="You have deleted your CollectorVerse account.")
 
 
     # @commands.group(name="update", pass_context=True, invoke_without_command=True, no_pm=True)
