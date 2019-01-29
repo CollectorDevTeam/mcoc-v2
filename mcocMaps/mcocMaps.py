@@ -255,7 +255,7 @@ class MCOCMaps:
                 for miniboss in self.aq_map_tips[maptype]['miniboss']:
                     em3.add_field(name=miniboss[0],value=miniboss[1])
                 embeds.append(em3)
-            await self.menu.menu_start(pages=embeds, timeout=120)
+            await self.menu.menu_start(pages=embeds)
 
 
 
