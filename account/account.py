@@ -450,7 +450,7 @@ class Alliance:
 #
 #     # @commands.group(name="update", pass_context=True, invoke_without_command=True)
     @checks.admin_or_permissions(manage_server=True)
-    @_alliance.group(name="update", pass_context=True, invoke_without_command=True, no_pm=True)
+    @_alliance.group(name="set", aliases='update', pass_context=True, invoke_without_command=True, no_pm=True)
     async def _update(self, ctx):
         """Update your CollectorVerse Alliance"""
         await send_cmd_help(ctx)
@@ -464,7 +464,7 @@ class Alliance:
         if server.id not in self.guilds:
             data = self._unknownuser(ctx, server)
         else:
-            data = self._update(ctx, key, value)
+            data = self._guildupdate(ctx, key, value)
         await PagesMenu.menu_start(self, [data])
 
     @_update.command(pass_context=True, name='tag')
@@ -478,7 +478,7 @@ class Alliance:
         if server.id not in self.guilds:
             data = self._unknownguild(ctx, server)
         else:
-            data = self._update(ctx, key, value)
+            data = self._guildupdate(ctx, key, value)
         await PagesMenu.menu_start(self, [data])
 
     @_update.command(pass_context=True, name='officers')
@@ -489,7 +489,7 @@ class Alliance:
         if server.id not in self.guilds:
             data = self._unknownguild(ctx, server)
         else:
-            data = self._update(ctx, key, value)
+            data = self._guildupdate(ctx, key, value)
         await PagesMenu.menu_start(self, [data])
 
     @_update.command(pass_context=True, name='bg1', aliases=('battlegroup1',))
@@ -500,7 +500,7 @@ class Alliance:
         if server.id not in self.guilds:
             data = self._unknownguild(ctx, server)
         else:
-            data = self._update(ctx, key, value)
+            data = self._guildupdate(ctx, key, value)
         await PagesMenu.menu_start(self, [data])
 
     @_update.command(pass_context=True, name='bg2', aliases=('battlegroup2',))
@@ -511,7 +511,7 @@ class Alliance:
         if server.id not in self.guilds:
             data = self._unknownguild(ctx, server)
         else:
-            data = self._update(ctx, key, value)
+            data = self._guildupdate(ctx, key, value)
         await PagesMenu.menu_start(self, [data])
 
     @_update.command(pass_context=True, name='bg3', aliases=('battlegroup3',))
@@ -522,7 +522,7 @@ class Alliance:
         if server.id not in self.guilds:
             data = self._unknownguild(ctx, server)
         else:
-            data = self._update(ctx, key, value)
+            data = self._guildupdate(ctx, key, value)
         await PagesMenu.menu_start(self, [data])
 #
     def _createalliance(self, ctx, server):
@@ -542,19 +542,19 @@ class Alliance:
                 icon_url=COLLECTOR_ICON)
         return data
 
-    # def _update(self, ctx, key, value):
-    #     user = ctx.message.author
-    #     data = discord.Embed(colour=get_color(ctx))
-    #     if value in ('""',"''"," ","None","none","-",):
-    #         self.guild[user.id].pop(key, None)
-    #         data.add_field(name="Congrats!:sparkles:", value="You have deleted {} from your account.".format(key))
-    #     else:
-    #         self.guild[user.id].update({key : value})
-    #         data.add_field(name="Congrats!:sparkles:",value="You have set your {} to {}".format(key, value))
-    #     dataIO.save_json(self.alliances, self.guild)
-    #     data.set_footer(text='CollectorDevTeam',
-    #             icon_url=COLLECTOR_ICON)
-    #     return data
+    def _guildupdate(self, ctx, key, value):
+        server = ctx.message.server
+        data = discord.Embed(colour=get_color(ctx))
+        if value in ('""',"''"," ","None","none","-",):
+            self.guild[server.id].pop(key, None)
+            data.add_field(name="Congrats!:sparkles:", value="You have deleted {} from your Alliance.".format(key))
+        else:
+            self.guild[server.id].update({key : value})
+            data.add_field(name="Congrats!:sparkles:",value="You have set your {} to {}".format(key, value))
+        dataIO.save_json(self.alliances, self.guild)
+        data.set_footer(text='CollectorDevTeam',
+                icon_url=COLLECTOR_ICON)
+        return data
 
 
 def get_color(ctx):
