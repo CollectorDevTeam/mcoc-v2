@@ -308,7 +308,7 @@ class Alliance:
         """
         server = ctx.message.server
         if ctx.invoked_subcommand is None:
-            self._present_alliance(ctx, user)
+            await self._present_alliance(ctx, user)
 
 #             if not user:
 #                 user = ctx.message.author
@@ -383,6 +383,7 @@ class Alliance:
         ##         present full info
         ##      if ctx.server != alliance:
         ##         present public info
+        await self.bot.say('testing alliance presentation')
         server = ctx.message.server
         alliances = self.find_alliance(user) #list
 
