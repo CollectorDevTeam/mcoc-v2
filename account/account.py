@@ -384,18 +384,20 @@ class Alliance:
         ##      if ctx.server != alliance:
         ##         present public info
         server = ctx.message.server
-        alliance = self.find_alliance(user)
+        alliances = self.find_alliance(user) #list
 
         if alliance is None:
             data = discord.Embed(color=get_color(ctx), title='CollectorVerse Alliances', description='User is not regisered with a Collectorverse alliance.', url='https://discord.gg/umcoc')
-        elif server.id == alliance and user.id in guilds[alliance]:  #Alliance server & Alliance member
-            data = discord.Embed(color=get_color(ctx), title='CollectorVerse Alliances', description='Display private profile ~ All kinds of info stored', url='https://discord.gg/umcoc')
-        elif server.id == alliance:
-            data = discord.Embed(color=get_color(ctx), title='CollectorVerse Alliances', description='Display Alliance Server recruiting profile', url='https://discord.gg/umcoc')
         else:
-            data = discord.Embed(color=get_color(ctx), title='CollectorVerse Alliances', description='Display public profile.\nInclude server join link, if set.\nInclude Alliance Prestige\nInclude About\n etc', url='https://discord.gg/umcoc')
-        data.set_footer(text='CollectorDevTeam', icon_url=COLLECTOR_ICON)
-        await PagesMenu.menu_start(self, [data])
+            for alliance in alliances:
+                if server.id == alliance and user.id in guilds[alliance]:  #Alliance server & Alliance member
+                    data = discord.Embed(color=get_color(ctx), title='CollectorVerse Alliances', description='Display private profile ~ All kinds of info stored', url='https://discord.gg/umcoc')
+                elif server.id == alliance:
+                    data = discord.Embed(color=get_color(ctx), title='CollectorVerse Alliances', description='Display Alliance Server recruiting profile', url='https://discord.gg/umcoc')
+                else:
+                    data = discord.Embed(color=get_color(ctx), title='CollectorVerse Alliances', description='Display public profile.\nInclude server join link, if set.\nInclude Alliance Prestige\nInclude About\n etc', url='https://discord.gg/umcoc')
+                data.set_footer(text='CollectorDevTeam', icon_url=COLLECTOR_ICON)
+                await PagesMenu.menu_start(self, [data])
 
     def _find_alliance(self, user):
         alliances = []
@@ -455,7 +457,7 @@ class Alliance:
 #
     @_update.command(pass_context=True, name='name', aliases=('clanname','guildname',) ,no_pm=True)
     async def _alliancename(self, ctx, *, value):
-        """What's your in-game MCOC username?"""
+        """What's your Alliance name?"""
         key = "guildname"
         server = ctx.message.server
 
@@ -467,7 +469,7 @@ class Alliance:
 
     @_update.command(pass_context=True, name='tag')
     async def _alliancetag(self, ctx, *, value):
-        """What's your in-game MCOC username?"""
+        """What's your Alliance tag? Only include the 5 tag characters."""
         key = "guildtag"
         v = value.split('')
         if len(v) > 5:
@@ -481,7 +483,7 @@ class Alliance:
 
     @_update.command(pass_context=True, name='officers')
     async def _officers(self, ctx, value: discord.Role):
-        """What's your in-game MCOC username?"""
+        """Which role are your Alliance Officers?"""
         key = "officers"
         server = ctx.message.server
         if server.id not in self.guilds:
@@ -492,7 +494,7 @@ class Alliance:
 
     @_update.command(pass_context=True, name='bg1', aliases=('battlegroup1',))
     async def _bg1(self, ctx, value: discord.Role):
-        """What's your in-game MCOC username?"""
+        """Which role is your Battlegroup 1?"""
         key = "bg1"
         server = ctx.message.server
         if server.id not in self.guilds:
@@ -503,7 +505,7 @@ class Alliance:
 
     @_update.command(pass_context=True, name='bg2', aliases=('battlegroup2',))
     async def _bg2(self, ctx, value: discord.Role):
-        """What's your in-game MCOC username?"""
+        """Which role is your Battlegroup 2?"""
         key = "bg2"
         server = ctx.message.server
         if server.id not in self.guilds:
@@ -514,7 +516,7 @@ class Alliance:
 
     @_update.command(pass_context=True, name='bg3', aliases=('battlegroup3',))
     async def _bg3(self, ctx, value: discord.Role):
-        """What's your in-game MCOC username?"""
+        """Which role is your Battlegroup 3?"""
         key = "bg3"
         server = ctx.message.server
         if server.id not in self.guilds:
