@@ -528,11 +528,13 @@ class MCOCMaps:
     async def _tiers(self):
         '''List Alliance War Tiers'''
         aw_tiers = self.aw_tiers
-        name = '\u200b'
-        value = [['Tier', 'Mult', 'Difficulty']]
+        # name = '\u200b'
+        # value = [['Tier', 'Mult', 'Difficulty']]
+        name = 'Tier, Multiplier & Difficulty'
+        value=[]
         for k, v in aw_tiers.items():
             value.append([k, v['mult'], v['diff']])
-        v = CDTHelperFunctions.tabulate_data(value, width=[4, 4, 14], align=['left', 'left', 'left'], rotate=False, separate_header=True)
+        v = CDTHelperFunctions.tabulate_data(value, width=[4, 4, 14], align=['left', 'left', 'left'], rotate=False, separate_header=False)
         em = discord.Embed(color=discord.Color.gold(), title='Alliance War Tiers', url=JOINCDT)
         em.add_field(name=name, value=chat.box(v), inline=False)
         em.set_footer(text='CollectorDevTeam',icon_url=self.COLLECTOR_ICON)
