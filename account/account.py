@@ -366,10 +366,10 @@ class Alliance:
         '''Delete CollectorVerse Alliance'''
         server = ctx.message.server
         if server.id in self.guilds:
-            question = 'Are you sure you want to delete your CollectorVerse Alliance {}?'.format(user.name)
+            question = '{}, are you sure you want to deregsister {} as your CollectorVerse Alliance?'.format(ctx.message.author.mention, server.name)
             answer = await PagesMenu.confirm(self, ctx, question)
             if answer:
-                dropped = self.guilds.pop(user.id, None)
+                dropped = self.guilds.pop(server.id, None)
                 dataIO.save_json(self.alliances, self.guilds)
                 data=discord.Embed(title="Congrats!:sparkles:", description="You have deleted your CollectorVerse Alliance.", color=get_color(ctx))
             else:
