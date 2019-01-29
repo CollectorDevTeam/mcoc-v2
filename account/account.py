@@ -290,7 +290,7 @@ class Account:
     def _updated(self, ctx, key, value):
         user = ctx.message.author
         if ctx.message.channel.is_private:
-            ucolor=discord.Colors.gold()
+            ucolor=discord.Color.gold()
         else:
             ucolor = user.color
         data = discord.Embed(colour=ucolour)
