@@ -395,10 +395,10 @@ class Alliance:
                 members = self._get_members(alliance)
                 if server.id == alliance.id and user.id in guild:  #Alliance server & Alliance member
                     members = self._get_members(server)
-                    data = discord.Embed(color=get_color(ctx), title='CollectorVerse Alliances', description='Display private profile ~ All kinds of info stored', url='https://discord.gg/umcoc')
-                    joblist = ['officers','bg1','bg2','bg3']
-                    for job in joblist:
-                        data.add_field(name=job.title(), value='\n'.join(members[job]))
+                    if members is not None:
+                        data = discord.Embed(color=get_color(ctx), title='CollectorVerse Alliances', description='Display private profile ~ All kinds of info stored', url='https://discord.gg/umcoc')
+                        for m in members.keys():
+                            data.add_field(name=m.title(), value='\n'.join(members[m]))
                 if server.id == alliance.id: #Alliance server visitor
                     data = discord.Embed(color=get_color(ctx), title='CollectorVerse Alliances', description='Display Alliance Server recruiting profile', url='https://discord.gg/umcoc')
                     publiclist = ['name','tag','founded','leader','invitation','recruiting']
@@ -427,10 +427,13 @@ class Alliance:
             jobs = {'officers':[], 'bg1':[], 'bg2':[], 'bg3':[]}
             for job in jobs.keys():
                 if job in self.guilds[server.id]:
-                    for m in members:
-                        if self.guilds[server.id][job] in member.roles:
-                            jobs[job].append(m.name)
-                    self.guilds[server.id][r]['members'] = jobs[r]
+                    roles = server.roles
+                    for r in roles:
+                        if r.id == self.guilds[server.id]
+                            for m in members:
+                                if r in member.roles:
+                                    jobs[job].append(m.name)
+                self.guilds[server.id][job]['members'] = jobs[r]
                 # else:
                 #     pass
             dataIO.save_json(self.alliances, self.guilds)
@@ -438,7 +441,7 @@ class Alliance:
             return
         else:
             data = self._unknownguild(ctx, server)
-            return
+            return None
 
     @checks.admin_or_permissions(manage_server=True)
     @_alliance.command(name="register", pass_context=True, invoke_without_command=True, no_pm=True)
