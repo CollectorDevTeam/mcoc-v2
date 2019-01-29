@@ -384,6 +384,8 @@ class Alliance:
         ##      if ctx.server != alliance:
         ##         present public info
         await self.bot.say('testing alliance presentation')
+        if user is None:
+            user = ctx.message.author
         server = ctx.message.server
         alliances = self._find_alliance(user) #list
 
