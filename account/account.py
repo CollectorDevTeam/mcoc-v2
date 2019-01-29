@@ -69,11 +69,11 @@ class Account:
 
     @account.command(pass_context=True, aliases=('remove', 'del',), invoke_without_command=True)
     async def delete(self, ctx):
-        '''Delete your CollectorVerse account'''
+        '''Delete CollectorVerse account'''
         user = ctx.message.author
         if user.id in self.nerdie:
             question = 'Are you sure you want to delete your CollectorVerse account {}?'.format(user.name)
-            answer = PagesMenu.confirm(self, ctx, question)
+            answer = await PagesMenu.confirm(self, ctx, question)
             if answer:
                 dropped = self.nerdie.pop(user.id, None)
                 dataIO.save_json(self.profile, self.nerdie)
