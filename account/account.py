@@ -231,21 +231,21 @@ class Account:
         await PagesMenu.menu_start(self, [data])
 
 
-    # @update.command(pass_context=True)
-    # async def started(self, ctx, *, started):
-    #     """When did you start playing Contest of Champions?"""
-    #     key = "Started"
-    #     try:
-    #         value = dateParse(started)
-    #         print(value)
-    #         user = ctx.message.author
-    #         if ctx.message.author.id not in self.nerdie:
-    #             data = self._unknownuser(ctx, user)
-    #         else:
-    #             data = self._updated(ctx, key, value)
-    #         await PagesMenu.menu_start(self, [data])
-    #     except:
-    #         await self.bot.say('Please enter a date.')
+    @update.command(pass_context=True)
+    async def started(self, ctx, *, started:str):
+        """When did you start playing Contest of Champions?"""
+        key = "Started"
+        try:
+            value = dateutil.dateParse(started)
+            print(value)
+            user = ctx.message.author
+            if ctx.message.author.id not in self.nerdie:
+                data = self._unknownuser(ctx, user)
+            else:
+                data = self._updated(ctx, key, value)
+            await PagesMenu.menu_start(self, [data])
+        except:
+            await self.bot.say('Please enter a date.')
 
 
     @update.command(pass_context=True)
