@@ -73,8 +73,8 @@ class Account:
             # pages.append(data)
             await PagesMenu.menu_start(self, [data])
 
-    @_account.commands(pass_context=True, name="delete", invoke_without_command=True)
-    async def _delete(self , ctx):
+    @account.commands(pass_context=True, name="delete", invoke_without_command=True)
+    async def _delete(self, ctx):
         '''Delete your CollectorVerse account'''
         user = ctx.message.author
         question= 'Are you sure you want to delete your CollectorVerse account?'
