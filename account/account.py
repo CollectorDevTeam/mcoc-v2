@@ -34,7 +34,7 @@ class Account:
             if not user:
                 user = ctx.message.author
             if user.id not in self.nerdie:
-                data = self._createuser(user)
+                data = self._createuser(ctx, user)
 
             if 'MCOC username' in self.nerdie[user.id]:
                 ingame = 'MCOC in-game id: {}'.format(self.nerdie[user.id]['MCOC username'])
@@ -261,7 +261,7 @@ class Account:
             data = self._updated(ctx, key, value)
         await PagesMenu.menu_start(self, [data])
 
-    def _createuser(self, user):
+    def _createuser(self, ctx, user):
         self.nerdie[user.id] = {}
         dataIO.save_json(self.profile, self.nerdie)
         data = discord.Embed(colour=get_color(ctx))
