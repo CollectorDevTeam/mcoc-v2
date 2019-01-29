@@ -135,7 +135,7 @@ class Account:
                 else:
                     data = self._updated(ctx, key, value)
         else:
-            data = discord.Embed(colour=user.colour)
+            data = discord.Embed(colour=get_color(ctx))
             data.add_field(name="Error:warning:",value='Use one of the valid codes: lfa, lfm, merge.')
             data.set_footer(text='CollectorDevTeam',
                     icon_url=self.COLLECTOR_ICON)
@@ -152,7 +152,7 @@ class Account:
             else:
                 data = self._updated(ctx, key, value)
         else:
-            data = discord.Embed(colour=user.colour)
+            data = discord.Embed(colour=get_color(ctx))
             data.add_field(name="Error:warning:",value='Timezone value must be recorded in UTC+ or UTC- format.')
             data.set_footer(text='CollectorDevTeam',
                     icon_url=self.COLLECTOR_ICON)
@@ -261,14 +261,14 @@ class Account:
     def _createuser(self, user):
         self.nerdie[user.id] = {}
         dataIO.save_json(self.profile, self.nerdie)
-        data = discord.Embed(colour=user.colour)
+        data = discord.Embed(colour=get_color(ctx))
         data.add_field(name="Congrats!:sparkles:", value="You have officaly created your CollectorVerse account, {}.".format(user.mention))
         data.set_footer(text='CollectorDevTeam',
                 icon_url=self.COLLECTOR_ICON)
         return data
 
     def _unknownuser(self, ctx, user):
-        data = discord.Embed(colour=user.colour)
+        data = discord.Embed(colour=get_color(ctx))
         data.add_field(name="Error:warning:",value="Sadly, this feature is only available for people who had registered for an account. \n\nYou can register for a account today for free. All you have to do is say `{}signup` and you'll be all set.".format(ctx.prefix))
         data.set_footer(text='CollectorDevTeam',
                 icon_url=self.COLLECTOR_ICON)
@@ -346,7 +346,7 @@ class Alliance:
 #             #     data = self._unknownuser(ctx, user)
 #             # else:
 #             #     try:
-#             #         data = discord.Embed(colour=user.colour)
+#             #         data = discord.Embed(colour=get_color(ctx))
 #             #     except:
 #             #         data = discord.Embed(colour=discord.Color.gold())
 #             #     data.add_field(name="Error:warning:",value="{} doesn't have an account at the moment, sorry.".format(user.mention))
@@ -425,7 +425,7 @@ class Alliance:
             if server.id not in self.guilds:
                 data = self._createalliance(server)
             else:
-                data = discord.Embed(colour=user.colour)
+                data = discord.Embed(colour=get_color(ctx))
                 data.add_field(name="Error:warning:",value="Opps, it seems like you already have an guild registered, {}.".format(user.mention))
 
             data.set_footer(text='CollectorDevTeam',
@@ -530,7 +530,7 @@ class Alliance:
 
     # def _updated(self, ctx, key, value):
     #     user = ctx.message.author
-    #     data = discord.Embed(colour=user.colour)
+    #     data = discord.Embed(colour=get_color(ctx))
     #     if value in ('""',"''"," ","None","none","-",):
     #         self.guild[user.id].pop(key, None)
     #         data.add_field(name="Congrats!:sparkles:", value="You have deleted {} from your account.".format(key))
