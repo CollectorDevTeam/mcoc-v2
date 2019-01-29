@@ -67,7 +67,7 @@ class Account:
         else:
             pass
 
-    @account.commands(pass_context=True, aliases=('remove', 'del',), invoke_without_command=True)
+    @account.command(pass_context=True, aliases=('remove', 'del',), invoke_without_command=True)
     async def delete(self, ctx):
         '''Delete your CollectorVerse account'''
         user = ctx.message.author
