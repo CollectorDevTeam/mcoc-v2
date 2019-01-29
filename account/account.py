@@ -526,7 +526,7 @@ class Alliance:
         self.guilds[server.id] = {}
         dataIO.save_json(self.alliances, self.guilds)
         data = discord.Embed(colour=get_color(ctx))
-        data.add_field(name="Congrats!:sparkles:", value="{}, you have officaly created your CollectorVerse Alliance for this server: {}.".format(user.mention, server.name))
+        data.add_field(name="Congrats!:sparkles:", value="{}, you have officaly registered {} as a CollectorVerse Alliance.".format(ctx.message.author.mention, server.name))
         data.set_footer(text='CollectorDevTeam',
                 icon_url=COLLECTOR_ICON)
         return data
