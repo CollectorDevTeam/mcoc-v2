@@ -19,7 +19,6 @@ class Account:
         self.bot = bot
         self.profile = "data/account/accounts.json"
         self.nerdie = dataIO.load_json(self.profile)
-        self.COLLECTOR_ICON='https://raw.githubusercontent.com/CollectorDevTeam/assets/master/data/cdt_icon.png'
 
 
     @commands.group(name='account', aliases=('profile',), pass_context=True, invoke_without_command=True)
@@ -62,7 +61,7 @@ class Account:
             else:
                 data.set_author(name=ingame)
             data.add_field(name='Join the UMCOC community',value='https://discord.gg/umcoc', inline=False)
-            data.set_footer(text='CollectorDevTeam - customize with /account update', icon_url=self.COLLECTOR_ICON)
+            data.set_footer(text='CollectorDevTeam - customize with /account update', icon_url=COLLECTOR_ICON)
             await PagesMenu.menu_start(self, [data])
         else:
             pass
@@ -141,7 +140,7 @@ class Account:
             data = discord.Embed(colour=get_color(ctx))
             data.add_field(name="Error:warning:",value='Use one of the valid codes: lfa, lfm, merge.')
             data.set_footer(text='CollectorDevTeam',
-                    icon_url=self.COLLECTOR_ICON)
+                    icon_url=COLLECTOR_ICON)
         await PagesMenu.menu_start(self, [data])
 
     @_update.command(pass_context=True)
@@ -158,7 +157,7 @@ class Account:
             data = discord.Embed(colour=get_color(ctx))
             data.add_field(name="Error:warning:",value='Timezone value must be recorded in UTC+ or UTC- format.')
             data.set_footer(text='CollectorDevTeam',
-                    icon_url=self.COLLECTOR_ICON)
+                    icon_url=COLLECTOR_ICON)
         await PagesMenu.menu_start(self, [data])
 
 
@@ -269,14 +268,14 @@ class Account:
         data = discord.Embed(colour=get_color(ctx))
         data.add_field(name="Congrats!:sparkles:", value="You have officaly created your CollectorVerse account, {}.".format(user.mention))
         data.set_footer(text='CollectorDevTeam',
-                icon_url=self.COLLECTOR_ICON)
+                icon_url=COLLECTOR_ICON)
         return data
 
     def _unknownuser(self, ctx, user):
         data = discord.Embed(colour=get_color(ctx))
         data.add_field(name="Error:warning:",value="Sadly, this feature is only available for people who had registered for an account. \n\nYou can register for a account today for free. All you have to do is say `{}signup` and you'll be all set.".format(ctx.prefix))
         data.set_footer(text='CollectorDevTeam',
-                icon_url=self.COLLECTOR_ICON)
+                icon_url=COLLECTOR_ICON)
         return data
 
     def _updated(self, ctx, key, value):
@@ -290,7 +289,7 @@ class Account:
             data.add_field(name="Congrats!:sparkles:",value="You have set your {} to {}".format(key, value))
         dataIO.save_json(self.profile, self.nerdie)
         data.set_footer(text='CollectorDevTeam',
-                icon_url=self.COLLECTOR_ICON)
+                icon_url=COLLECTOR_ICON)
         return data
 
 class Alliance:
@@ -300,7 +299,7 @@ class Alliance:
         self.bot = bot
         self.alliances = "data/account/alliances.json"
         self.guilds = dataIO.load_json(self.alliances)
-        # self.COLLECTOR_ICON='https://raw.githubusercontent.com/CollectorDevTeam/assets/master/data/cdt_icon.png'
+        # COLLECTOR_ICON='https://raw.githubusercontent.com/CollectorDevTeam/assets/master/data/cdt_icon.png'
 
     @commands.group(name='alliance', aliases=('clan','guild'), pass_context=True, invoke_without_command=True, hidden=True)
     async def _alliance(self, ctx, user : discord.Member=None):
@@ -358,7 +357,7 @@ class Alliance:
 #
 #             # data.add_field(name='Join the UMCOC community',value='https://discord.gg/umcoc', inline=False)
 #             # data.set_footer(text='CollectorDevTeam - customize with /account update',
-#             #         icon_url=self.COLLECTOR_ICON)
+#             #         icon_url=COLLECTOR_ICON)
 #             # await PagesMenu.menu_start(self, [data])
 #
     @checks.admin_or_permissions(manage_server=True)
@@ -372,9 +371,9 @@ class Alliance:
             if answer:
                 dropped = self.guilds.pop(user.id, None)
                 dataIO.save_json(self.alliances, self.guilds)
-                data=discord.Embed(title="Congrats!:sparkles:", description="You have deleted your CollectorVerse account.", color=get_color(ctx))
+                data=discord.Embed(title="Congrats!:sparkles:", description="You have deleted your CollectorVerse Alliance.", color=get_color(ctx))
             else:
-                data=discord.Embed(title="Sorry!:sparkles:", description="You have no CollectorVerse account.", color=get_color(ctx))
+                data=discord.Embed(title="Sorry!:sparkles:", description="You have no CollectorVerse Alliance.", color=get_color(ctx))
             await PagesMenu.menu_start(self, [data])
 
     async def _present_alliance(self, ctx, user):
@@ -440,7 +439,7 @@ class Alliance:
                 data.add_field(name="Error:warning:",value="Opps, it seems like you already have an guild registered, {}.".format(user.mention))
 
             data.set_footer(text='CollectorDevTeam',
-                    icon_url=self.COLLECTOR_ICON)
+                    icon_url=COLLECTOR_ICON)
             await PagesMenu.menu_start(self, [data])
         else:
             return
@@ -449,7 +448,7 @@ class Alliance:
     @checks.admin_or_permissions(manage_server=True)
     @_alliance.group(name="update", pass_context=True, invoke_without_command=True, no_pm=True)
     async def _update(self, ctx):
-        """Update your CollectorVerse account"""
+        """Update your CollectorVerse Alliance"""
         await send_cmd_help(ctx)
 #
     @_update.command(pass_context=True, name='name', aliases=('clanname','guildname',) ,no_pm=True)
@@ -527,16 +526,16 @@ class Alliance:
         self.guilds[server.id] = {}
         dataIO.save_json(self.alliances, self.guilds)
         data = discord.Embed(colour=get_color(ctx))
-        data.add_field(name="Congrats!:sparkles:", value="{}, ou have officaly created your CollectorVerse Alliance for this server: {}.".format(user.mention, server.name))
+        data.add_field(name="Congrats!:sparkles:", value="{}, you have officaly created your CollectorVerse Alliance for this server: {}.".format(user.mention, server.name))
         data.set_footer(text='CollectorDevTeam',
-                icon_url=self.COLLECTOR_ICON)
+                icon_url=COLLECTOR_ICON)
         return data
 
     def _unknownguild(self, ctx, user):
         data = discord.Embed(colour=get_color(ctx))
-        data.add_field(name="Error:warning:",value="Sadly, this feature is only available for people who had registered for an account. \n\nYou can register for a account today for free. All you have to do is say `{}signup` and you'll be all set.".format(ctx.prefix))
+        data.add_field(name="Error:warning:",value="Sadly, this feature is only available for Discord server owners who registerd for an Alliance. \n\nYou can register for a account today for free. All you have to do is:\nCreate a Discord server.\nInvite Collector\nOn your Alliance server say `{} alliance signup` and you'll be all set.".format(ctx.prefix))
         data.set_footer(text='CollectorDevTeam',
-                icon_url=self.COLLECTOR_ICON)
+                icon_url=COLLECTOR_ICON)
         return data
 
     # def _updated(self, ctx, key, value):
@@ -550,7 +549,7 @@ class Alliance:
     #         data.add_field(name="Congrats!:sparkles:",value="You have set your {} to {}".format(key, value))
     #     dataIO.save_json(self.alliances, self.guild)
     #     data.set_footer(text='CollectorDevTeam',
-    #             icon_url=self.COLLECTOR_ICON)
+    #             icon_url=COLLECTOR_ICON)
     #     return data
 
 
