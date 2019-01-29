@@ -60,17 +60,13 @@ class Account:
             #     since = datetime.datetime(self.nerdie[user.id]['Started'])
             #     days_since = (datetime.datetime.utcnow() - since).days
                 # data.add_field(name='Entered the Contest {}'.format(since.date()), value="Playing for {} days!".format(days_since))
-
             if user.avatar_url:
                 data.set_author(name=ingame, url=user.avatar_url)
                 data.set_thumbnail(url=user.avatar_url)
             else:
                 data.set_author(name=ingame)
-
             data.add_field(name='Join the UMCOC community',value='https://discord.gg/umcoc', inline=False)
             data.set_footer(text='CollectorDevTeam - customize with /account update', icon_url=self.COLLECTOR_ICON)
-            # pages = []
-            # pages.append(data)
             await PagesMenu.menu_start(self, [data])
 
     # @_account.commands(pass_context=True, name="delete", invoke_without_command=True)
