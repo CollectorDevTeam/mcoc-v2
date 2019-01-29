@@ -1,4 +1,4 @@
-PagesMenu.pages_menuimport discord
+import discord
 import asyncio
 import aiohttp
 import urllib, json #For fetching JSON from alliancewar.com
@@ -208,6 +208,7 @@ class MCOCMaps:
 
     def __init__(self, bot):
         self.bot = bot
+        self.menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
 
     @commands.group(pass_context=True, aliases=['aq',])
     async def alliancequest(self, ctx):
@@ -254,7 +255,7 @@ class MCOCMaps:
                 for miniboss in self.aq_map_tips[maptype]['miniboss']:
                     em3.add_field(name=miniboss[0],value=miniboss[1])
                 embeds.append(em3)
-            await PagesMenu.pages_menu(ctx=ctx, pages=embeds, timeout=120)
+            await self.menu.menu_start(ctx=ctx, pages=embeds, timeout=120)
 
 
 
@@ -281,7 +282,7 @@ class MCOCMaps:
                     em.add_field(name='Enigmatic {}'.format(enigma[0]), value =enigma[1])
                 em.set_footer(text='Art: CollectorDevTeam, Plan: LabyrinthTeam',)
                 pages.append(em)
-            await PagesMenu.pages_menu(ctx=ctx, pages=pages, timeout=120, page=int(maptype))
+            await self.menu.menu_start(ctx=ctx, pages=pages, timeout=120, page=int(maptype))
                 #await self.bot.say(embed=em)
 
     @commands.command(pass_context=True, aliases=['lolteam, kiryu'])
@@ -297,7 +298,7 @@ class MCOCMaps:
             em.set_image(url=imgurl)
             em.set_footer(text='Art: CollectorDevTeam Plan: LabyrinthTeam',)
             pages.append(em)
-        await PagesMenu.pages_menu(ctx=ctx, pages=pages, timeout=60, page=team-1)
+        await self.menu.menu_start(ctx=ctx, pages=pages, timeout=60, page=team-1)
 
     @commands.command(pass_context=True)
     async def warmap(self, ctx, *, maptype: str = 'expert'):
@@ -385,7 +386,7 @@ class MCOCMaps:
                 pages.append(em)
                 # await self.bot.say(embed=em)
             if len(pages) > 0:
-                await PagesMenu.pages_menu(ctx=ctx, pages=pages, timeout=60, page=0)
+                await self.menu.menu_start(ctx=ctx, pages=pages, timeout=60, page=0)
         else:
             await self.bot.say('Valid tiers include: {}'.format(', '.join(self.aw_maps.keys())))
 
@@ -486,7 +487,7 @@ class MCOCMaps:
     #         em.set_footer(icon_url=JPAGS+'/aw/images/app_icon.jpg',text='AllianceWar.com')
     #         pages.append(em)
     #
-    #     await PagesMenu.pages_menu(ctx=ctx, pages=pages, timeout=60, page=tracks[track]-1)
+    #     await self.menu.menu_start(ctx=ctx, pages=pages, timeout=60, page=tracks[track]-1)
 
     @alliancewar.command(pass_context=False, hidden=False, name="tiers", aliases=['tier'])
     async def _tiers(self):
