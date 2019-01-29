@@ -772,12 +772,11 @@ class MCOCMaps:
 
     async def jm_send_request(self, url, data):
         '''Send request to service'''
-        response = requests.post(url, json=data)
-        if response.status_code == 200 or response.status_code == 400:
-            return response.json()
-        else:
-            print(response.text)
-            return({'error': response.text})
+        async with aiohttp.request('POST', url, data=json.dumps(data)) as response:
+            if response.status == 200 or response.status == 400:
+                return await response.json()
+            else:
+                return {'error': await response.text()}
 
 
     async def jm_format_champ(self, champ):
