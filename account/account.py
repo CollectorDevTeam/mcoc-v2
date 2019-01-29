@@ -21,6 +21,7 @@ class Account:
         self.nerdie = dataIO.load_json(self.profile)
         self.COLLECTOR_ICON='https://raw.githubusercontent.com/CollectorDevTeam/assets/master/data/cdt_icon.png'
 
+
     @commands.group(name="account", aliases=('profile',), pass_context=True, invoke_without_command=True)
     async def _account(self, ctx, user : discord.Member=None):
         """CollectorVerse Account
@@ -69,9 +70,9 @@ class Account:
             data.add_field(name='Join the UMCOC community',value='https://discord.gg/umcoc', inline=False)
             data.set_footer(text='CollectorDevTeam - customize with /account update',
                     icon_url=self.COLLECTOR_ICON)
-            pages = []
-            pages.append(data)
-            await PagesMenu.menu_start(self, pages)
+            # pages = []
+            # pages.append(data)
+            await PagesMenu.menu_start(self, [data])
             # if ctx.message.channel.is_private:
             #     await self.bot.whisper(embed=data)
             # else:
