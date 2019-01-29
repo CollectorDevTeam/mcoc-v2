@@ -293,7 +293,7 @@ class Account:
             ucolor=discord.Color.gold()
         else:
             ucolor = user.color
-        data = discord.Embed(colour=ucolour)
+        data = discord.Embed(colour=ucolor)
         if value in ('""',"''"," ","None","none","-",):
             self.nerdie[user.id].pop(key, None)
             data.add_field(name="Congrats!:sparkles:", value="You have deleted {} from your account.".format(key))
