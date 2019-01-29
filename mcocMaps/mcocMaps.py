@@ -537,7 +537,9 @@ class MCOCMaps:
         v = CDTHelperFunctions.tabulate_data(value, width=[4, 4, 14], align=['left', 'left', 'left'], rotate=False, separate_header=False)
         em = discord.Embed(color=discord.Color.gold(), title='Alliance War Tiers', url=JOINCDT)
         em.set_thumbnail(url='http://www.alliancewar.com/aw/images/app_icon.jpg')
-        em.add_field(name=name, value=chat.box(v), inline=False)
+        package = '\n'.join(l for l in v)
+        em.add_field(name=name, value='```{}```'.format(package))
+        # em.add_field(name=name, value=chat.box(v), inline=False)
         em.set_footer(text='CollectorDevTeam',icon_url=self.COLLECTOR_ICON)
         await self.bot.say(embed=em)
 
