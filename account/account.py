@@ -301,9 +301,9 @@ class Alliance:
         self.guilds = dataIO.load_json(self.alliances)
         # COLLECTOR_ICON='https://raw.githubusercontent.com/CollectorDevTeam/assets/master/data/cdt_icon.png'
 
-    @commands.group(name='alliance', aliases=('clan','guild'), pass_context=True, invoke_without_command=True, hidden=True)
+    @commands.group(name='alliance', aliases=('clan','guild'), pass_context=True, invoke_without_command=True, hidden=False)
     async def _alliance(self, ctx, user : discord.Member=None):
-        """CollectorVerse Alliance tools
+        """[ALPHA] CollectorVerse Alliance tools
 
         """
         server = ctx.message.server
@@ -386,24 +386,36 @@ class Alliance:
         server = ctx.message.server
         alliances = self.find_alliance(user) #list
 
-        if alliance is None:
+        if alliances is None:
             data = discord.Embed(color=get_color(ctx), title='CollectorVerse Alliances', description='User is not regisered with a Collectorverse alliance.', url='https://discord.gg/umcoc')
         else:
             for alliance in alliances:
-                if server.id == alliance and user.id in guilds[alliance]:  #Alliance server & Alliance member
+                guild = self.guilds[alliance]
+                members = self._get_members(alliance)
+                if server.id == alliance.id and user.id in guild:  #Alliance server & Alliance member
+                    members = self._get_members(server)
                     data = discord.Embed(color=get_color(ctx), title='CollectorVerse Alliances', description='Display private profile ~ All kinds of info stored', url='https://discord.gg/umcoc')
-                elif server.id == alliance:
+                    joblist = ['officers','bg1','bg2','bg3']
+                    for job in joblist:
+                        data.add_field(name=job.title(), value='\n'.join(members[job]))
+                if server.id == alliance.id: #Alliance server visitor
                     data = discord.Embed(color=get_color(ctx), title='CollectorVerse Alliances', description='Display Alliance Server recruiting profile', url='https://discord.gg/umcoc')
-                else:
+                    publiclist = ['name','tag','founded','leader','invitation','recruiting']
+                    for public in publiclist:
+                        if public in guild:
+                            data.add_field(name=public.title(),value=guild[public])
+                else: #Alliance stranger
                     data = discord.Embed(color=get_color(ctx), title='CollectorVerse Alliances', description='Display public profile.\nInclude server join link, if set.\nInclude Alliance Prestige\nInclude About\n etc', url='https://discord.gg/umcoc')
                 data.set_footer(text='CollectorDevTeam', icon_url=COLLECTOR_ICON)
                 await PagesMenu.menu_start(self, [data])
 
     def _find_alliance(self, user):
+        '''Returns a list of Servers or None'''
         alliances = []
         guilds = self.guilds
         for g in guilds.keys():
             if user.id in guilds[g]:
+                discord.Client.get_server(g)
                 alliances.append(g)
                 return alliances
         return None
@@ -416,7 +428,7 @@ class Alliance:
                 if job in self.guilds[server.id]:
                     for m in members:
                         if self.guilds[server.id][job] in member.roles:
-                            jobs[job].append(m)
+                            jobs[job].append(m.name)
                     self.guilds[server.id][r]['members'] = jobs[r]
                 # else:
                 #     pass
@@ -430,7 +442,7 @@ class Alliance:
     @checks.admin_or_permissions(manage_server=True)
     @_alliance.command(name="register", pass_context=True, invoke_without_command=True, no_pm=True)
     async def _reg(self, ctx):
-        """Sign up to register your Alliance server!"""
+        """[ALPHA] Sign up to register your Alliance server!"""
         user = ctx.message.author
         server = ctx.message.server
         question = '{}, do you want to register this Discord Server as your Alliance Server?'.format(ctx.message.author.mention)
