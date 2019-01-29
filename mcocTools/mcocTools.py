@@ -358,7 +358,7 @@ class PagesMenu:
         if ctx.message.channel.is_private:
             ucolor=discord.Color.gold()
         else:
-            ucolor=user.color()
+            ucolor=ctx.message.author.color()
         data = discord.Embed(title='Confirmation', description=question, color=ucolor)
         data.set_footer(text='CollectorDevTeam Dataset', icon_url=COLLECTOR_ICON)
         message = await self.bot.say(embed=data)
