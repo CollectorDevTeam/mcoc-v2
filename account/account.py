@@ -289,7 +289,11 @@ class Account:
 
     def _updated(self, ctx, key, value):
         user = ctx.message.author
-        data = discord.Embed(colour=user.colour)
+        if ctx.message.channel.is_private:
+            ucolor=discord.Colors.gold()
+        else:
+            ucolor = user.color
+        data = discord.Embed(colour=ucolour)
         if value in ('""',"''"," ","None","none","-",):
             self.nerdie[user.id].pop(key, None)
             data.add_field(name="Congrats!:sparkles:", value="You have deleted {} from your account.".format(key))
