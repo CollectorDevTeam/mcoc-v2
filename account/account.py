@@ -96,7 +96,7 @@ class Account:
         if user.id not in self.nerdie:
             data = self._unknownuser(ctx, user)
         else:
-            data = self._updated(ctx, key, value)
+            data = self._update(ctx, key, value)
         await PagesMenu.menu_start(self, [data])
 
     @_update.command(pass_context=True)
@@ -111,7 +111,7 @@ class Account:
                 if 'Looking for Alliance' in self.nerdie[user.id]["Recruiting"]:
                     self.nerdie[user.id].pop("Recruiting",None)
                     dataIO.save_json(self.profile, self.nerdie)
-            data = self._updated(ctx, key, value)
+            data = self._update(ctx, key, value)
             pass
         await PagesMenu.menu_start(self, [data])
 
@@ -133,9 +133,9 @@ class Account:
                     self.nerdie[user.id].pop("Alliance",None)
                     dataIO.save_json(self.profile, self.nerdie)
                 if value in ('lfa','lfm','merge'):
-                    data = self._updated(ctx, key, valid[value])
+                    data = self._update(ctx, key, valid[value])
                 else:
-                    data = self._updated(ctx, key, value)
+                    data = self._update(ctx, key, value)
         else:
             data = discord.Embed(colour=get_color(ctx))
             data.add_field(name="Error:warning:",value='Use one of the valid codes: lfa, lfm, merge.')
@@ -152,7 +152,7 @@ class Account:
             if user.id not in self.nerdie:
                 data = self._unknownuser(ctx, user)
             else:
-                data = self._updated(ctx, key, value)
+                data = self._update(ctx, key, value)
         else:
             data = discord.Embed(colour=get_color(ctx))
             data.add_field(name="Error:warning:",value='Timezone value must be recorded in UTC+ or UTC- format.')
@@ -171,7 +171,7 @@ class Account:
         if user.id not in self.nerdie:
             data = self._unknownuser(ctx, user)
         else:
-            data = self._updated(ctx, key, value)
+            data = self._update(ctx, key, value)
         await PagesMenu.menu_start(self, [data])
 
     @_update.command(pass_context=True)
@@ -184,7 +184,7 @@ class Account:
         if ctx.message.author.id not in self.nerdie:
             data = self._unknownuser(ctx, user)
         else:
-            data = self._updated(ctx, key, value)
+            data = self._update(ctx, key, value)
         await PagesMenu.menu_start(self, [data])
 
 
@@ -198,7 +198,7 @@ class Account:
         if ctx.message.author.id not in self.nerdie:
             data = self._unknownuser(ctx, user)
         else:
-            data = self._updated(ctx, key, value)
+            data = self._update(ctx, key, value)
         await PagesMenu.menu_start(self, [data])
 
 
@@ -212,7 +212,7 @@ class Account:
         if ctx.message.author.id not in self.nerdie:
             data = self._unknownuser(ctx, user)
         else:
-            data = self._updated(ctx, key, value)
+            data = self._update(ctx, key, value)
         await PagesMenu.menu_start(self, [data])
 
 
@@ -226,7 +226,7 @@ class Account:
         if ctx.message.author.id not in self.nerdie:
             data = self._unknownuser(ctx, user)
         else:
-            data = self._updated(ctx, key, value)
+            data = self._update(ctx, key, value)
         await PagesMenu.menu_start(self, [data])
 
 
@@ -243,7 +243,7 @@ class Account:
             if ctx.message.author.id not in self.nerdie:
                 data = self._unknownuser(ctx, user)
             else:
-                data = self._updated(ctx, key, value)
+                data = self._update(ctx, key, value)
             await PagesMenu.menu_start(self, [data])
         else:
             await self.bot.say('Enter a valid date.')
@@ -259,7 +259,7 @@ class Account:
         if ctx.message.author.id not in self.nerdie:
             data = self._unknownuser(ctx, user)
         else:
-            data = self._updated(ctx, key, value)
+            data = self._update(ctx, key, value)
         await PagesMenu.menu_start(self, [data])
 
     def _createuser(self, ctx, user):
@@ -278,7 +278,7 @@ class Account:
                 icon_url=COLLECTOR_ICON)
         return data
 
-    def _updated(self, ctx, key, value):
+    def _update(self, ctx, key, value):
         user = ctx.message.author
         data = discord.Embed(colour=get_color(ctx))
         if value in ('""',"''"," ","None","none","-",):
@@ -464,7 +464,7 @@ class Alliance:
         if server.id not in self.guilds:
             data = self._unknownuser(ctx, server)
         else:
-            data = self._updated(ctx, key, value)
+            data = self._update(ctx, key, value)
         await PagesMenu.menu_start(self, [data])
 
     @_update.command(pass_context=True, name='tag')
@@ -478,7 +478,7 @@ class Alliance:
         if server.id not in self.guilds:
             data = self._unknownguild(ctx, server)
         else:
-            data = self._updated(ctx, key, value)
+            data = self._update(ctx, key, value)
         await PagesMenu.menu_start(self, [data])
 
     @_update.command(pass_context=True, name='officers')
@@ -489,7 +489,7 @@ class Alliance:
         if server.id not in self.guilds:
             data = self._unknownguild(ctx, server)
         else:
-            data = self._updated(ctx, key, value)
+            data = self._update(ctx, key, value)
         await PagesMenu.menu_start(self, [data])
 
     @_update.command(pass_context=True, name='bg1', aliases=('battlegroup1',))
@@ -500,7 +500,7 @@ class Alliance:
         if server.id not in self.guilds:
             data = self._unknownguild(ctx, server)
         else:
-            data = self._updated(ctx, key, value)
+            data = self._update(ctx, key, value)
         await PagesMenu.menu_start(self, [data])
 
     @_update.command(pass_context=True, name='bg2', aliases=('battlegroup2',))
@@ -511,7 +511,7 @@ class Alliance:
         if server.id not in self.guilds:
             data = self._unknownguild(ctx, server)
         else:
-            data = self._updated(ctx, key, value)
+            data = self._update(ctx, key, value)
         await PagesMenu.menu_start(self, [data])
 
     @_update.command(pass_context=True, name='bg3', aliases=('battlegroup3',))
@@ -522,7 +522,7 @@ class Alliance:
         if server.id not in self.guilds:
             data = self._unknownguild(ctx, server)
         else:
-            data = self._updated(ctx, key, value)
+            data = self._update(ctx, key, value)
         await PagesMenu.menu_start(self, [data])
 #
     def _createalliance(self, ctx, server):
@@ -542,7 +542,7 @@ class Alliance:
                 icon_url=COLLECTOR_ICON)
         return data
 
-    # def _updated(self, ctx, key, value):
+    # def _update(self, ctx, key, value):
     #     user = ctx.message.author
     #     data = discord.Embed(colour=get_color(ctx))
     #     if value in ('""',"''"," ","None","none","-",):
