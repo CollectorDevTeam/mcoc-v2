@@ -71,15 +71,16 @@ class Account:
     async def delete(self, ctx):
         '''Delete your CollectorVerse account'''
         user = ctx.message.author
-        question = 'Are you sure you want to delete your CollectorVerse account {}?'.format(user.name)
-        answer = PagesMenu.confirm(self, ctx, question)
-        if answer:
-            if user.id in self.nerdie:
+        if user.id in self.nerdie:
+            question = 'Are you sure you want to delete your CollectorVerse account {}?'.format(user.name)
+            answer = PagesMenu.confirm(self, ctx, question)
+            if answer:
                 dropped = self.nerdie.pop(user.id, None)
                 dataIO.save_json(self.profile, self.nerdie)
-            data=discord.Embed(title="Congrats!:sparkles:", description="You have deleted your CollectorVerse account.", color=get_color(ctx))
+                data=discord.Embed(title="Congrats!:sparkles:", description="You have deleted your CollectorVerse account.", color=get_color(ctx))
+            else:
+                data=discord.Embed(title="Sorry!:sparkles:", description="You have no CollectorVerse account.", color=get_color(ctx))
             await PagesMenu.menu_start(self, [data])
-
 
     # @commands.group(name="update", pass_context=True, invoke_without_command=True)
     @account.group(name="update", pass_context=True, invoke_without_command=True)
