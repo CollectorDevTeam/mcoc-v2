@@ -312,11 +312,11 @@ class Alliance:
 
 #             if not user:
 #                 user = ctx.message.author
-#             # if server.id not in self.guild:
+#             # if server.id not in self.guilds:
 #             #     data = self._createserver(server)
 #
-#             # if 'MCOC username' in self.guild[user.id]:
-#             #     ingame = 'MCOC in-game id: {}'.format(self.guild[user.id]['MCOC username'])
+#             # if 'MCOC username' in self.guilds[user.id]:
+#             #     ingame = 'MCOC in-game id: {}'.format(self.guilds[user.id]['MCOC username'])
 #             # else:
 #             #     ingame = 'No MCOC in-game id registered.'
 #             # data = discord.Embed(title="CollectorVerse Profile", colour=get_color(ctx), description='Discord user: {}#{}'.format(user.name, user.discriminator), url='https://discord.gg/umcoc')
@@ -327,12 +327,12 @@ class Alliance:
 #             # else:
 #             #     data.add_field(name='Prestige', value='User has no registerd CollectorVerse roster.\nUse the ``/roster`` command to get started.')
 #             # for i in ['Alliance', 'Job', 'Recruiting', 'Age', 'Gender', 'Timezone', 'About', 'Other', 'Website']:
-#             #     if i in self.guild[user.id]:
-#             #         data.add_field(name=i+":", value=self.guild[user.id][i])
+#             #     if i in self.guilds[user.id]:
+#             #         data.add_field(name=i+":", value=self.guilds[user.id][i])
 #             #     else:
 #             #         pass
-#             # if 'Started' in self.guild[user.id]:
-#             #     since = datetime.datetime(self.guild[user.id]['Started'])
+#             # if 'Started' in self.guilds[user.id]:
+#             #     since = datetime.datetime(self.guilds[user.id]['Started'])
 #             #     days_since = (datetime.datetime.utcnow() - since).days
 #             #     # data.add_field(name='Entered the Contest {}'.format(since.date()), value="Playing for {} days!".format(days_since))
 #             #
@@ -558,10 +558,10 @@ class Alliance:
         server = ctx.message.server
         data = discord.Embed(colour=get_color(ctx))
         if value in ('""',"''"," ","None","none","-",):
-            self.guild[server.id].pop(key, None)
+            self.guilds[server.id].pop(key, None)
             data.add_field(name="Congrats!:sparkles:", value="You have deleted {} from your Alliance.".format(key))
         else:
-            self.guild[server.id].update({key : value})
+            self.guilds[server.id].update({key : value})
             data.add_field(name="Congrats!:sparkles:",value="You have set your {} to {}".format(key, value))
         dataIO.save_json(self.alliances, self.guild)
         data.set_footer(text='CollectorDevTeam',
