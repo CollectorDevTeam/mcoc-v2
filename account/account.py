@@ -68,28 +68,22 @@ class Account:
                 data.set_author(name=ingame)
 
             data.add_field(name='Join the UMCOC community',value='https://discord.gg/umcoc', inline=False)
-            data.set_footer(text='CollectorDevTeam - customize with /account update',
-                    icon_url=self.COLLECTOR_ICON)
+            data.set_footer(text='CollectorDevTeam - customize with /account update', icon_url=self.COLLECTOR_ICON)
             # pages = []
             # pages.append(data)
             await PagesMenu.menu_start(self, [data])
-            # if ctx.message.channel.is_private:
-            #     await self.bot.whisper(embed=data)
-            # else:
-            #     await PagesMenu.menu_start(self, [data])
 
-
-    # @_account.commands(pass_context=True, name="delete", invoke_without_command=True,)
-    # async def _delete(self , ctx):
-    #     '''Delete your CollectorVerse account'''
-    #     user = ctx.message.author
-    #     question= 'Are you sure you want to delete your CollectorVerse account?'
-    #     answer = PagesMenu.confirm(self, ctx, question)
-        # if answer:
-        #     if user.id in self.nerdie:
-        #         dropped = self.nerdie[user.id].pop()
-        #         dataIO.save_json(self.profile, self.nerdie)
-        #     data.add_field(name="Congrats!:sparkles:", value="You have deleted your CollectorVerse account.")
+    @_account.commands(pass_context=True, name="delete", invoke_without_command=True)
+    async def _delete(self , ctx):
+        '''Delete your CollectorVerse account'''
+        user = ctx.message.author
+        question= 'Are you sure you want to delete your CollectorVerse account?'
+        answer = PagesMenu.confirm(self, ctx, question)
+        if answer:
+            if user.id in self.nerdie:
+                dropped = self.nerdie.pop(user.id)
+                dataIO.save_json(self.profile, self.nerdie)
+            data.add_field(name="Congrats!:sparkles:", value="You have deleted your CollectorVerse account.")
 
 
     # @commands.group(name="update", pass_context=True, invoke_without_command=True)
