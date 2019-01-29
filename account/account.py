@@ -79,7 +79,7 @@ class Account:
     #         if user.id in self.nerdie:
     #             dropped = self.nerdie.pop(user.id)
     #             dataIO.save_json(self.profile, self.nerdie)
-    #         data.add_field(name="Congrats!:sparkles:", value="You have deleted your CollectorVerse account.")
+    #         data=discord.Embed(title="Congrats!:sparkles:", description="You have deleted your CollectorVerse account.", color=get_color(ctx))
     #         await PagesMenu.menu_start(self, [data])
 
 
