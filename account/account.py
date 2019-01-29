@@ -235,10 +235,11 @@ class Account:
     async def started(self, ctx, *, started:str):
         """When did you start playing Contest of Champions?"""
         key = "Started"
-        value = dateParse(str(started))
+        value = started
+        started = dateParse(started)
         print(value)
 
-        if isinstance(value, datetime.datetime):
+        if isinstance(started, datetime.datetime):
             user = ctx.message.author
             if ctx.message.author.id not in self.nerdie:
                 data = self._unknownuser(ctx, user)
