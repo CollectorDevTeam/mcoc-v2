@@ -429,7 +429,7 @@ class Alliance:
         """Sign up to register your Alliance server!"""
         user = ctx.message.author
         server = ctx.message.server
-        question = '{}, do you want to register this Discord Server as your Alliance Server?'
+        question = '{}, do you want to register this Discord Server as your Alliance Server?'.format(ctx.message.author.mention)
         answer = await PagesMenu.confirm(self, ctx, question)
         if answer is True:
             if server.id not in self.guilds:
