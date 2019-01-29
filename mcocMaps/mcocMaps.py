@@ -1,4 +1,4 @@
-import discord
+PagesMenu.pages_menuimport discord
 import asyncio
 import aiohttp
 import urllib, json #For fetching JSON from alliancewar.com
@@ -254,7 +254,7 @@ class MCOCMaps:
                 for miniboss in self.aq_map_tips[maptype]['miniboss']:
                     em3.add_field(name=miniboss[0],value=miniboss[1])
                 embeds.append(em3)
-            await self.pages_menu(ctx=ctx, embed_list=embeds, timeout=120)
+            await PagesMenu.pages_menu(ctx=ctx, pages=embeds, timeout=120)
 
 
 
@@ -265,7 +265,7 @@ class MCOCMaps:
             LOL maps: 0, 1, 2, 3, 4, 5, 6, 7
             /lol 5'''
         if maptype in self.lolmaps:
-            page_list = []
+            pages = []
             for i in range(0, 8):
                 maptitle = 'Labyrinth of Legends: Kiryu\'s {}'.format(self.lolmaps[str(i)]['maptitle'])
                 em = discord.Embed(color=discord.Color.gold(),title=maptitle,url=PATREON) #, description = '\n'.join(desclist))
@@ -280,15 +280,15 @@ class MCOCMaps:
                     # desclist.append('{}\n{}\n\n'.format(enigma[0], enigma[1]))
                     em.add_field(name='Enigmatic {}'.format(enigma[0]), value =enigma[1])
                 em.set_footer(text='Art: CollectorDevTeam, Plan: LabyrinthTeam',)
-                page_list.append(em)
-            await self.pages_menu(ctx=ctx, embed_list=page_list, timeout=120, page=int(maptype))
+                pages.append(em)
+            await PagesMenu.pages_menu(ctx=ctx, pages=pages, timeout=120, page=int(maptype))
                 #await self.bot.say(embed=em)
 
     @commands.command(pass_context=True, aliases=['lolteam, kiryu'])
     async def lolteams(self, ctx, *, team: int = 1):
         '''Highly Effective LOL Teams'''
         maxkiryu = 5
-        page_list = []
+        pages = []
         for i in range(1, maxkiryu+1):
             imgurl = '{}kiryu{}.png'.format(self.basepath, i)
             print(imgurl)
@@ -296,8 +296,8 @@ class MCOCMaps:
             em = discord.Embed(color=discord.Color.gold(),title=imgtitle,url=PATREON)
             em.set_image(url=imgurl)
             em.set_footer(text='Art: CollectorDevTeam Plan: LabyrinthTeam',)
-            page_list.append(em)
-        await self.pages_menu(ctx=ctx, embed_list=page_list, timeout=60, page=team-1)
+            pages.append(em)
+        await PagesMenu.pages_menu(ctx=ctx, pages=pages, timeout=60, page=team-1)
 
     @commands.command(pass_context=True)
     async def warmap(self, ctx, *, maptype: str = 'expert'):
@@ -312,42 +312,6 @@ class MCOCMaps:
         em.set_image(url=mapurl)
         em.set_footer(text='CollectorDevTeam',icon_url=self.COLLECTOR_ICON)
         await self.bot.say(embed=em)
-
-### Beginning of Alliance Management Functions
-    # @commands.group(pass_context=True, hidden=False)
-    # async def alliance(self, ctx):
-    #     '''Alliance Commands'''
-    #     await send_cmd_help(ctx)
-    #
-    # @alliance.command(pass_context=True, name='setalliancerole', hidden=False)
-    # async def _set_alliance_role(self, ctx, role : discord.Role):
-    #     '''Alliance Set subcommands'''
-    #     server = ctx.message.server
-    #     if role in server.roles:
-    #         message = await self.bot.say('Setting the Alliance Role as ``{}``\nClick OK to confirm.'.format(role.name))
-    #         confirm = await self._confirmation(ctx, message)
-    #         if confirm:
-    #             await self.bot.edit_message(message,'Setting the Alliance Role as ``{}``'.format(role.name))
-    #         else:
-    #             await self.bot.edit_message(message,'Setting the Alliance Role as ``{}``\nOperation canceled.'.format(role.name))
-
-    async def _confirmation(self, ctx, message):
-            await self.bot.add_reaction(message, '❌')
-            await self.bot.add_reaction(message, '🆗')
-            react = await self.bot.wait_for_reaction(message=message, user=ctx.message.author, timeout=30, emoji=['❌', '🆗'])
-            if react.reaction == None:
-                await self.bot.remove_reaction(message, '❌')
-                await self.bot.remove_reaction(message, '🆗')
-                return False
-            elif react.reaction == '❌':
-                await self.bot.remove_reaction(message, '❌')
-                await self.bot.remove_reaction(message, '🆗')
-                return False
-            elif react.reaction == '🆗':
-                await self.bot.remove_reaction(message, '❌')
-                await self.bot.remove_reaction(message, '🆗')
-                return True
-
 
 ### Beginning of AllianceWar.com integration
 
@@ -410,7 +374,7 @@ class MCOCMaps:
         This command has a reported defect and it is being investigatedself.'''
         season = 2
         tier = tier.lower()
-        page_list = []
+        pages = []
         if tier in self.aw_maps.keys():
             # nodeNumbers = nodes.split(' ')
             for node in nodes.split(' '):
@@ -418,10 +382,10 @@ class MCOCMaps:
                 em = await self.get_awnode_details(ctx = ctx, nodeNumber=node,tier=tier)
                 mapurl = '{}warmap_3_{}.png'.format(self.basepath,tier.lower())
                 em.set_image(url=mapurl)
-                page_list.append(em)
+                pages.append(em)
                 # await self.bot.say(embed=em)
-            if len(page_list) > 0:
-                await self.pages_menu(ctx=ctx, embed_list=page_list, timeout=60, page=0)
+            if len(pages) > 0:
+                await PagesMenu.pages_menu(ctx=ctx, pages=pages, timeout=60, page=0)
         else:
             await self.bot.say('Valid tiers include: {}'.format(', '.join(self.aw_maps.keys())))
 
@@ -511,7 +475,7 @@ class MCOCMaps:
     #     if tier not in tiers:
     #         tier = 'advanced'
     #     pathdata= self.aw_maps[tier]
-    #     page_list = []
+    #     pages = []
     #     for t in tracks:
     #         em = discord.Embed(color=tiers[tier], title='{} Alliance War Path {}'.format(tier.title(), track), descritpion='', url=JPAGS)
     #         em.add_field(name='node placeholder',value='boosts placeholders')
@@ -520,9 +484,9 @@ class MCOCMaps:
     #         mapurl = '{}warmap_3_{}.png'.format(self.basepath,tier.lower())
     #         em.set_image(url=mapurl)
     #         em.set_footer(icon_url=JPAGS+'/aw/images/app_icon.jpg',text='AllianceWar.com')
-    #         page_list.append(em)
+    #         pages.append(em)
     #
-    #     await self.pages_menu(ctx=ctx, embed_list=page_list, timeout=60, page=tracks[track]-1)
+    #     await PagesMenu.pages_menu(ctx=ctx, pages=pages, timeout=60, page=tracks[track]-1)
 
     @alliancewar.command(pass_context=False, hidden=False, name="tiers", aliases=['tier'])
     async def _tiers(self):
@@ -695,11 +659,11 @@ class MCOCMaps:
                 em = await self.get_awnode_details(ctx, default['node'], default['difficulty'], em)
                 em2 = await self.get_awnode_details(ctx, default['node'], default['difficulty'], em2)
 
-            embed_list=[]
-            embed_list.append(em)
-            embed_list.append(em2)
+            pages=[]
+            pages.append(em)
+            pages.append(em2)
             menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
-            await menu.menu_start(pages=embed_list)
+            await menu.menu_start(pages=pages)
 
             # await self.bot.say(embed=em)
 
@@ -805,87 +769,87 @@ class MCOCMaps:
     #     return star_filter, champ_filter
 
 
-    async def pages_menu(self, ctx, embed_list: list, category: str='', message: discord.Message=None, page=0, timeout: int=30, choice=False):
-        """menu control logic for this taken from
-           https://github.com/Lunar-Dust/Dusty-Cogs/blob/master/menu/menu.py"""
-        print('list len = {}'.format(len(embed_list)))
-        length = len(embed_list)
-        em = embed_list[page]
-        if not message:
-            message = await self.bot.say(embed=em)
-            # try:
-            #     await self.bot.delete_message(ctx.message)
-            # except:
-            #     pass
-            if length > 5:
-                await self.bot.add_reaction(message, '⏪')
-            if length > 1:
-                await self.bot.add_reaction(message, '◀')
-            if choice is True:
-                await self.bot.add_reaction(message,'🆗')
-            await self.bot.add_reaction(message, '❌')
-            if length > 1:
-                await self.bot.add_reaction(message, '▶')
-            if length > 5:
-                await self.bot.add_reaction(message, '⏩')
-        else:
-            message = await self.bot.edit_message(message, embed=em)
-        await asyncio.sleep(1)
-
-        react = await self.bot.wait_for_reaction(message=message, timeout=timeout,emoji=['▶', '◀', '❌', '⏪', '⏩','🆗'])
-        # if react.reaction.me == self.bot.user:
-        #     react = await self.bot.wait_for_reaction(message=message, timeout=timeout,emoji=['▶', '◀', '❌', '⏪', '⏩','🆗'])
-        if react is None:
-            try:
-                try:
-                    await self.bot.clear_reactions(message)
-                except:
-                    await self.bot.remove_reaction(message,'⏪', self.bot.user) #rewind
-                    await self.bot.remove_reaction(message, '◀', self.bot.user) #previous_page
-                    await self.bot.remove_reaction(message, '❌', self.bot.user) # Cancel
-                    await self.bot.remove_reaction(message,'🆗',self.bot.user) #choose
-                    await self.bot.remove_reaction(message, '▶', self.bot.user) #next_page
-                    await self.bot.remove_reaction(message,'⏩', self.bot.user) # fast_forward
-            except:
-                pass
-            return None
-        elif react is not None:
-            # react = react.reaction.emoji
-            if react.reaction.emoji == '▶': #next_page
-                next_page = (page + 1) % len(embed_list)
-                # await self.bot.remove_reaction(message, '▶', react.user)
-                await self.bot.remove_reaction(message, '▶', react.user)
-                return await self.pages_menu(ctx, embed_list, message=message, page=next_page, timeout=timeout)
-            elif react.reaction.emoji == '◀': #previous_page
-                next_page = (page - 1) % len(embed_list)
-                await self.bot.remove_reaction(message, '◀', react.user)
-                return await self.pages_menu(ctx, embed_list, message=message, page=next_page, timeout=timeout)
-            elif react.reaction.emoji == '⏪': #rewind
-                next_page = (page - 5) % len(embed_list)
-                await self.bot.remove_reaction(message, '⏪', react.user)
-                return await self.pages_menu(ctx, embed_list, message=message, page=next_page, timeout=timeout)
-            elif react.reaction.emoji == '⏩': # fast_forward
-                next_page = (page + 5) % len(embed_list)
-                await self.bot.remove_reaction(message, '⏩', react.user)
-                return await self.pages_menu(ctx, embed_list, message=message, page=next_page, timeout=timeout)
-            elif react.reaction.emoji == '🆗': #choose
-                if choice is True:
-                    # await self.bot.remove_reaction(message, '🆗', react.user)
-                    prompt = await self.bot.say(SELECTION.format(category+' '))
-                    answer = await self.bot.wait_for_message(timeout=10, author=ctx.message.author)
-                    if answer is not None:
-                        await self.bot.delete_message(prompt)
-                        prompt = await self.bot.say('Process choice : {}'.format(answer.content.lower().strip()))
-                        url = '{}{}/{}'.format(BASEURL,category,answer.content.lower().strip())
-                        await self._process_item(ctx, url=url, category=category)
-                        await self.bot.delete_message(prompt)
-                else:
-                    pass
-            else:
-                try:
-                    return await self.bot.delete_message(message)
-                except:
-                    pass
+    # async def pages_menu(self, ctx, pages: list, category: str='', message: discord.Message=None, page=0, timeout: int=30, choice=False):
+    #     """menu control logic for this taken from
+    #        https://github.com/Lunar-Dust/Dusty-Cogs/blob/master/menu/menu.py"""
+    #     print('list len = {}'.format(len(pages)))
+    #     length = len(pages)
+    #     em = pages[page]
+    #     if not message:
+    #         message = await self.bot.say(embed=em)
+    #         # try:
+    #         #     await self.bot.delete_message(ctx.message)
+    #         # except:
+    #         #     pass
+    #         if length > 5:
+    #             await self.bot.add_reaction(message, '⏪')
+    #         if length > 1:
+    #             await self.bot.add_reaction(message, '◀')
+    #         if choice is True:
+    #             await self.bot.add_reaction(message,'🆗')
+    #         await self.bot.add_reaction(message, '❌')
+    #         if length > 1:
+    #             await self.bot.add_reaction(message, '▶')
+    #         if length > 5:
+    #             await self.bot.add_reaction(message, '⏩')
+    #     else:
+    #         message = await self.bot.edit_message(message, embed=em)
+    #     await asyncio.sleep(1)
+    #
+    #     react = await self.bot.wait_for_reaction(message=message, timeout=timeout,emoji=['▶', '◀', '❌', '⏪', '⏩','🆗'])
+    #     # if react.reaction.me == self.bot.user:
+    #     #     react = await self.bot.wait_for_reaction(message=message, timeout=timeout,emoji=['▶', '◀', '❌', '⏪', '⏩','🆗'])
+    #     if react is None:
+    #         try:
+    #             try:
+    #                 await self.bot.clear_reactions(message)
+    #             except:
+    #                 await self.bot.remove_reaction(message,'⏪', self.bot.user) #rewind
+    #                 await self.bot.remove_reaction(message, '◀', self.bot.user) #previous_page
+    #                 await self.bot.remove_reaction(message, '❌', self.bot.user) # Cancel
+    #                 await self.bot.remove_reaction(message,'🆗',self.bot.user) #choose
+    #                 await self.bot.remove_reaction(message, '▶', self.bot.user) #next_page
+    #                 await self.bot.remove_reaction(message,'⏩', self.bot.user) # fast_forward
+    #         except:
+    #             pass
+    #         return None
+    #     elif react is not None:
+    #         # react = react.reaction.emoji
+    #         if react.reaction.emoji == '▶': #next_page
+    #             next_page = (page + 1) % len(pages)
+    #             # await self.bot.remove_reaction(message, '▶', react.user)
+    #             await self.bot.remove_reaction(message, '▶', react.user)
+    #             return await self.pages_menu(ctx, pages, message=message, page=next_page, timeout=timeout)
+    #         elif react.reaction.emoji == '◀': #previous_page
+    #             next_page = (page - 1) % len(pages)
+    #             await self.bot.remove_reaction(message, '◀', react.user)
+    #             return await self.pages_menu(ctx, pages, message=message, page=next_page, timeout=timeout)
+    #         elif react.reaction.emoji == '⏪': #rewind
+    #             next_page = (page - 5) % len(pages)
+    #             await self.bot.remove_reaction(message, '⏪', react.user)
+    #             return await self.pages_menu(ctx, pages, message=message, page=next_page, timeout=timeout)
+    #         elif react.reaction.emoji == '⏩': # fast_forward
+    #             next_page = (page + 5) % len(pages)
+    #             await self.bot.remove_reaction(message, '⏩', react.user)
+    #             return await self.pages_menu(ctx, pages, message=message, page=next_page, timeout=timeout)
+    #         elif react.reaction.emoji == '🆗': #choose
+    #             if choice is True:
+    #                 # await self.bot.remove_reaction(message, '🆗', react.user)
+    #                 prompt = await self.bot.say(SELECTION.format(category+' '))
+    #                 answer = await self.bot.wait_for_message(timeout=10, author=ctx.message.author)
+    #                 if answer is not None:
+    #                     await self.bot.delete_message(prompt)
+    #                     prompt = await self.bot.say('Process choice : {}'.format(answer.content.lower().strip()))
+    #                     url = '{}{}/{}'.format(BASEURL,category,answer.content.lower().strip())
+    #                     await self._process_item(ctx, url=url, category=category)
+    #                     await self.bot.delete_message(prompt)
+    #             else:
+    #                 pass
+    #         else:
+    #             try:
+    #                 return await self.bot.delete_message(message)
+    #             except:
+    #                 pass
 
 def setup(bot):
     bot.add_cog(MCOCMaps(bot))
