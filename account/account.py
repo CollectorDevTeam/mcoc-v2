@@ -302,8 +302,8 @@ class Alliance:
         self.guilds = dataIO.load_json(self.alliances)
         # self.COLLECTOR_ICON='https://raw.githubusercontent.com/CollectorDevTeam/assets/master/data/cdt_icon.png'
 
-    @commands.group(name="alliance", aliases=('clan','guild'), pass_context=True, invoke_without_command=True, hidden=True)
-    async def _alliance(self, ctx, user : discord.Member=None):
+    @commands.group(aliases=('clan','guild'), pass_context=True, invoke_without_command=True, hidden=True)
+    async def alliance(self, ctx, user : discord.Member=None):
         """CollectorVerse Alliance tools
 
         """
@@ -362,7 +362,7 @@ class Alliance:
 #             # await PagesMenu.menu_start(self, [data])
 #
     @checks.admin_or_permissions(manage_server=True)
-    @_alliance.command(pass_context=True, aliases=('remove', 'del',), invoke_without_command=True, no_pm=True)
+    @alliance.command(pass_context=True, aliases=('remove', 'del',), invoke_without_command=True, no_pm=True)
     async def delete(self, ctx):
         '''Delete CollectorVerse Alliance'''
         server = ctx.message.server
@@ -425,7 +425,7 @@ class Alliance:
             return
 
     @checks.admin_or_permissions(manage_server=True)
-    @_alliance.command(name="register", pass_context=True, invoke_without_command=True, no_pm=True)
+    @alliance.command(name="register", pass_context=True, invoke_without_command=True, no_pm=True)
     async def _reg(self, ctx):
         """Sign up to register your Alliance server!"""
         user = ctx.message.author
@@ -447,7 +447,7 @@ class Alliance:
 #
 #     # @commands.group(name="update", pass_context=True, invoke_without_command=True)
     @checks.admin_or_permissions(manage_server=True)
-    @_alliance.group(name="update", pass_context=True, invoke_without_command=True, no_pm=True)
+    @alliance.group(name="update", pass_context=True, invoke_without_command=True, no_pm=True)
     async def update(self, ctx):
         """Update your CollectorVerse account"""
         await send_cmd_help(ctx)
