@@ -502,7 +502,7 @@ class Alliance:
         if server.id not in self.guilds:
             data = self._unknownguild(ctx, server)
         else:
-            data = self._updateguilds(ctx, key, value)
+            data = self._updateguilds(ctx, key, value.id)
         await PagesMenu.menu_start(self, [data])
 
     @_update.command(pass_context=True, name='bg1', aliases=('battlegroup1',))
@@ -513,7 +513,7 @@ class Alliance:
         if server.id not in self.guilds:
             data = self._unknownguild(ctx, server)
         else:
-            data = self._updateguilds(ctx, key, value)
+            data = self._updateguilds(ctx, key, value.id)
         await PagesMenu.menu_start(self, [data])
 
     @_update.command(pass_context=True, name='bg2', aliases=('battlegroup2',))
@@ -524,7 +524,7 @@ class Alliance:
         if server.id not in self.guilds:
             data = self._unknownguild(ctx, server)
         else:
-            data = self._updateguilds(ctx, key, value)
+            data = self._updateguilds(ctx, key, value.id)
         await PagesMenu.menu_start(self, [data])
 
     @_update.command(pass_context=True, name='bg3', aliases=('battlegroup3',))
@@ -535,7 +535,7 @@ class Alliance:
         if server.id not in self.guilds:
             data = self._unknownguild(ctx, server)
         else:
-            data = self._updateguilds(ctx, key, value)
+            data = self._updateguilds(ctx, key, value.id)
         await PagesMenu.menu_start(self, [data])
 #
     def _createalliance(self, ctx, server):
