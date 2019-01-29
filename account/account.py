@@ -568,6 +568,10 @@ def check_folder():
 def check_file():
     data = {}
     f = "data/account/accounts.json"
+    f2 = "data/account/alliances.json"
+    if not dataIO.is_valid_json(f):
+        print("I'm creating the file, so relax bruh.")
+        dataIO.save_json(f, data)
     if not dataIO.is_valid_json(f):
         print("I'm creating the file, so relax bruh.")
         dataIO.save_json(f, data)
