@@ -65,8 +65,8 @@ class Account:
             data.set_footer(text='CollectorDevTeam - customize with /account update', icon_url=self.COLLECTOR_ICON)
             await PagesMenu.menu_start(self, [data])
 
-    @_account.commands(pass_context=True, name="delete", invoke_without_command=True)
-    async def _delete(self, ctx):
+    @_account.commands(pass_context=True, aliases=('remove', 'del',), invoke_without_command=True)
+    async def delete(self, ctx):
         '''Delete your CollectorVerse account'''
         user = ctx.message.author
         question = 'Are you sure you want to delete your CollectorVerse account {}?'.format(user.name)
