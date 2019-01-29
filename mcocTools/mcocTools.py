@@ -359,7 +359,7 @@ class PagesMenu:
             ucolor=discord.Color.gold()
         else:
             ucolor=ctx.message.author.color
-        data = discord.Embed(title='Confirmation', description=question, color=ucolor)
+        data = discord.Embed(title='Confirmation:sparkles:', description=question, color=ucolor)
         data.set_footer(text='CollectorDevTeam Dataset', icon_url=COLLECTOR_ICON)
         message = await self.bot.say(embed=data)
 
@@ -369,15 +369,18 @@ class PagesMenu:
                 user=ctx.message.author, timeout=90, emoji=['❌', '🆗'])
         if react is not None:
             if react.reaction.emoji == '❌':
-                data.add_field(name='Confirmation', value='{} has canceled confirmation'.format(ctx.message.author.name))
+                data.description = '{} has canceled confirmation'.format(ctx.message.author.name)
+                # data.add_field(name='Confirmation', value='{} has canceled confirmation'.format(ctx.message.author.name))
                 await self.bot.edit_message(message, embed=data)
                 return False
             elif react.reaction.emoji == '🆗':
-                data.add_field(name='Confirmation', value='{} has confirmed.'.format(ctx.message.author.name))
+                data.description='{} has confirmed.'.format(ctx.message.author.name)
+                # data.add_field(name='Confirmation', value='{} has confirmed.'.format(ctx.message.author.name))
                 await self.bot.edit_message(message, embed=data)
                 return True
         else:
-            data.add_field(name='Confirmation', value='{} has not responded'.format(ctx.message.author.name))
+            data.description='{} has not responded'.format(ctx.message.author.name)
+            # data.add_field(name='Confirmation', value='{} has not responded'.format(ctx.message.author.name))
             await self.bot.edit_message(message, embed=data)
             return False
 
