@@ -76,7 +76,7 @@ class Account:
             # if ctx.message.channel.is_private:
             #     await self.bot.whisper(embed=data)
             # else:
-            #     await self.bot.say(embed=data)
+            #     await PagesMenu.menu_start(self, [data])
 
 
     # @_account.commands(pass_context=True, name="delete", invoke_without_command=True,)
@@ -92,13 +92,13 @@ class Account:
         #     data.add_field(name="Congrats!:sparkles:", value="You have deleted your CollectorVerse account.")
 
 
-    # @commands.group(name="update", pass_context=True, invoke_without_command=True, no_pm=True)
-    @_account.group(name="update", pass_context=True, invoke_without_command=True, no_pm=True)
+    # @commands.group(name="update", pass_context=True, invoke_without_command=True)
+    @_account.group(name="update", pass_context=True, invoke_without_command=True)
     async def update(self, ctx):
         """Update your CollectorVerse account"""
         await send_cmd_help(ctx)
 
-    @update.command(pass_context=True, no_pm=True)
+    @update.command(pass_context=True)
     async def ingame(self, ctx, *, value):
         """What's your in-game MCOC username?"""
         key = "MCOC username"
@@ -108,9 +108,9 @@ class Account:
             data = self._unknownuser(ctx, user)
         else:
             data = self._updated(ctx, key, value)
-        await self.bot.say(embed=data)
+        await PagesMenu.menu_start(self, [data])
 
-    @update.command(pass_context=True, no_pm=True)
+    @update.command(pass_context=True)
     async def alliance(self, ctx, *, value=None):
         """What's your Alliance name?"""
         key = "Alliance"
@@ -124,10 +124,10 @@ class Account:
                     dataIO.save_json(self.profile, self.nerdie)
             data = self._updated(ctx, key, value)
             pass
-        await self.bot.say(embed=data)
+        await PagesMenu.menu_start(self, [data])
 
 
-    @update.command(pass_context=True, no_pm=True)
+    @update.command(pass_context=True)
     async def recruiting(self, ctx, *, value):
         """Are you Looking for Alliance or Members?
         lfa   = Looking for Alliance
@@ -152,9 +152,9 @@ class Account:
             data.add_field(name="Error:warning:",value='Use one of the valid codes: lfa, lfm, merge.')
             data.set_footer(text='CollectorDevTeam',
                     icon_url=self.COLLECTOR_ICON)
-        await self.bot.say(embed=data)
+        await PagesMenu.menu_start(self, [data])
 
-    @update.command(pass_context=True, no_pm=True)
+    @update.command(pass_context=True)
     async def timezone(self, ctx, *, value):
         """What's your UTC timezone?"""
         key = "Timezone"
@@ -169,10 +169,10 @@ class Account:
             data.add_field(name="Error:warning:",value='Timezone value must be recorded in UTC+ or UTC- format.')
             data.set_footer(text='CollectorDevTeam',
                     icon_url=self.COLLECTOR_ICON)
-        await self.bot.say(embed=data)
+        await PagesMenu.menu_start(self, [data])
 
 
-    @update.command(pass_context=True, no_pm=True)
+    @update.command(pass_context=True)
     async def about(self, ctx, *, about):
         """Tell us about yourself"""
         key = "About"
@@ -183,9 +183,9 @@ class Account:
             data = self._unknownuser(ctx, user)
         else:
             data = self._updated(ctx, key, value)
-        await self.bot.say(embed=data)
+        await PagesMenu.menu_start(self, [data])
 
-    @update.command(pass_context=True, no_pm=True)
+    @update.command(pass_context=True)
     async def website(self, ctx, *, site):
         """Do you have a website?"""
         key = "Website"
@@ -196,10 +196,10 @@ class Account:
             data = self._unknownuser(ctx, user)
         else:
             data = self._updated(ctx, key, value)
-        await self.bot.say(embed=data)
+        await PagesMenu.menu_start(self, [data])
 
 
-    @update.command(pass_context=True, no_pm=True)
+    @update.command(pass_context=True)
     async def age(self, ctx, *, age):
         """How old are you?"""
         key = "Age"
@@ -210,10 +210,10 @@ class Account:
             data = self._unknownuser(ctx, user)
         else:
             data = self._updated(ctx, key, value)
-        await self.bot.say(embed=data)
+        await PagesMenu.menu_start(self, [data])
 
 
-    @update.command(pass_context=True, no_pm=True)
+    @update.command(pass_context=True)
     async def job(self, ctx, *, job):
         """Do you have an alliance job?"""
         key = "Job"
@@ -224,10 +224,10 @@ class Account:
             data = self._unknownuser(ctx, user)
         else:
             data = self._updated(ctx, key, value)
-        await self.bot.say(embed=data)
+        await PagesMenu.menu_start(self, [data])
 
 
-    @update.command(pass_context=True, no_pm=True)
+    @update.command(pass_context=True)
     async def gender(self, ctx, *, gender):
         """What's your gender?"""
         key = "Gender"
@@ -238,10 +238,10 @@ class Account:
             data = self._unknownuser(ctx, user)
         else:
             data = self._updated(ctx, key, value)
-        await self.bot.say(embed=data)
+        await PagesMenu.menu_start(self, [data])
 
 
-    # @update.command(pass_context=True, no_pm=True)
+    # @update.command(pass_context=True)
     # async def started(self, ctx, *, started):
     #     """When did you start playing Contest of Champions?"""
     #     key = "Started"
@@ -253,12 +253,12 @@ class Account:
     #             data = self._unknownuser(ctx, user)
     #         else:
     #             data = self._updated(ctx, key, value)
-    #         await self.bot.say(embed=data)
+    #         await PagesMenu.menu_start(self, [data])
     #     except:
     #         await self.bot.say('Please enter a date.')
 
 
-    @update.command(pass_context=True, no_pm=True)
+    @update.command(pass_context=True)
     async def other(self, ctx, *, other):
         """Incase you want to add anything else..."""
         key = "Other"
@@ -269,7 +269,7 @@ class Account:
             data = self._unknownuser(ctx, user)
         else:
             data = self._updated(ctx, key, value)
-        await self.bot.say(embed=data)
+        await PagesMenu.menu_start(self, [data])
 
     def _createuser(self, user):
         self.nerdie[user.id] = {}
@@ -310,7 +310,7 @@ class Alliance:
         self.guilds = dataIO.load_json(self.alliances)
         # self.COLLECTOR_ICON='https://raw.githubusercontent.com/CollectorDevTeam/assets/master/data/cdt_icon.png'
 
-    @commands.group(name="alliance", aliases=('clan','guild'), pass_context=True, invoke_without_command=True, no_pm=True, hidden=True)
+    @commands.group(name="alliance", aliases=('clan','guild'), pass_context=True, invoke_without_command=True, hidden=True)
     async def _alliance(self, ctx, user : discord.Member=None):
         """CollectorVerse Alliance tools
 
@@ -371,7 +371,7 @@ class Alliance:
 #             # data.add_field(name='Join the UMCOC community',value='https://discord.gg/umcoc', inline=False)
 #             # data.set_footer(text='CollectorDevTeam - customize with /account update',
 #             #         icon_url=self.COLLECTOR_ICON)
-#             # await self.bot.say(embed=data)
+#             # await PagesMenu.menu_start(self, [data])
 #
 #     # @_account.commands(pass_context=True, name="delete")
 #     # async def _delete(self,ctx):
@@ -398,15 +398,15 @@ class Alliance:
         else:
             ucolor = user.color
         if alliance is None:
-            em = discord.Embed(color=ucolor, title='CollectorVerse Alliances', description='User is not regisered with a Collectorverse alliance.', url='https://discord.gg/umcoc')
+            data = discord.Embed(color=ucolor, title='CollectorVerse Alliances', description='User is not regisered with a Collectorverse alliance.', url='https://discord.gg/umcoc')
         elif server.id == alliance and user.id in guilds[alliance]:  #Alliance server & Alliance member
-            em = discord.Embed(color=ucolor, title='CollectorVerse Alliances', description='Display private profile ~ All kinds of info stored', url='https://discord.gg/umcoc')
+            data = discord.Embed(color=ucolor, title='CollectorVerse Alliances', description='Display private profile ~ All kinds of info stored', url='https://discord.gg/umcoc')
         elif server.id == alliance:
-            em = discord.Embed(color=ucolor, title='CollectorVerse Alliances', description='Display Alliance Server recruiting profile', url='https://discord.gg/umcoc')
+            data = discord.Embed(color=ucolor, title='CollectorVerse Alliances', description='Display Alliance Server recruiting profile', url='https://discord.gg/umcoc')
         else:
-            em = discord.Embed(color=ucolor, title='CollectorVerse Alliances', description='Display public profile.\nInclude server join link, if set.\nInclude Alliance Prestige\nInclude About\n etc', url='https://discord.gg/umcoc')
-        em.set_footer(text='CollectorDevTeam', icon_url=COLLECTOR_ICON)
-        await self.bot.say(embed=em)
+            data = discord.Embed(color=ucolor, title='CollectorVerse Alliances', description='Display public profile.\nInclude server join link, if set.\nInclude Alliance Prestige\nInclude About\n etc', url='https://discord.gg/umcoc')
+        data.set_footer(text='CollectorDevTeam', icon_url=COLLECTOR_ICON)
+        await PagesMenu.menu_start(self, [data])
 
     def _find_alliance(self, user):
         guilds = self.guilds
@@ -435,7 +435,7 @@ class Alliance:
             return
 
     @checks.admin_or_permissions(manage_server=True)
-    @_alliance.command(name="register", pass_context=True, invoke_without_command=True, no_pm=True)
+    @_alliance.command(name="register", pass_context=True, invoke_without_command=True)
     async def _reg(self, ctx):
         """Sign up to register your Alliance server!"""
         user = ctx.message.author
@@ -451,13 +451,13 @@ class Alliance:
 
             data.set_footer(text='CollectorDevTeam',
                     icon_url=self.COLLECTOR_ICON)
-            await self.bot.say(embed=data)
+            await PagesMenu.menu_start(self, [data])
         else:
             return
 #
-#     # @commands.group(name="update", pass_context=True, invoke_without_command=True, no_pm=True)
+#     # @commands.group(name="update", pass_context=True, invoke_without_command=True)
     @checks.admin_or_permissions(manage_server=True)
-    @_alliance.group(name="update", pass_context=True, invoke_without_command=True, no_pm=True)
+    @_alliance.group(name="update", pass_context=True, invoke_without_command=True)
     async def update(self, ctx):
         """Update your CollectorVerse account"""
         await send_cmd_help(ctx)
@@ -472,9 +472,9 @@ class Alliance:
             data = self._unknownuser(ctx, server)
         else:
             data = self._updated(ctx, key, value)
-        await self.bot.say(embed=data)
+        await PagesMenu.menu_start(self, [data])
 
-    @update.command(pass_context=True, name='tag', no_pm=True)
+    @update.command(pass_context=True, name='tag')
     async def _alliancetag(self, ctx, *, value):
         """What's your in-game MCOC username?"""
         key = "guildtag"
@@ -486,9 +486,9 @@ class Alliance:
             data = self._unknownguild(ctx, server)
         else:
             data = self._updated(ctx, key, value)
-        await self.bot.say(embed=data)
+        await PagesMenu.menu_start(self, [data])
 
-    @update.command(pass_context=True, name='officers', no_pm=True)
+    @update.command(pass_context=True, name='officers')
     async def _officers(self, ctx, value: discord.Role):
         """What's your in-game MCOC username?"""
         key = "officers"
@@ -497,9 +497,9 @@ class Alliance:
             data = self._unknownguild(ctx, server)
         else:
             data = self._updated(ctx, key, value)
-        await self.bot.say(embed=data)
+        await PagesMenu.menu_start(self, [data])
 
-    @update.command(pass_context=True, name='bg1', aliases=('battlegroup1',), no_pm=True)
+    @update.command(pass_context=True, name='bg1', aliases=('battlegroup1',))
     async def _bg1(self, ctx, value: discord.Role):
         """What's your in-game MCOC username?"""
         key = "bg1"
@@ -508,9 +508,9 @@ class Alliance:
             data = self._unknownguild(ctx, server)
         else:
             data = self._updated(ctx, key, value)
-        await self.bot.say(embed=data)
+        await PagesMenu.menu_start(self, [data])
 
-    @update.command(pass_context=True, name='bg2', aliases=('battlegroup2',), no_pm=True)
+    @update.command(pass_context=True, name='bg2', aliases=('battlegroup2',))
     async def _bg2(self, ctx, value: discord.Role):
         """What's your in-game MCOC username?"""
         key = "bg2"
@@ -519,9 +519,9 @@ class Alliance:
             data = self._unknownguild(ctx, server)
         else:
             data = self._updated(ctx, key, value)
-        await self.bot.say(embed=data)
+        await PagesMenu.menu_start(self, [data])
 
-    @update.command(pass_context=True, name='bg3', aliases=('battlegroup3',), no_pm=True)
+    @update.command(pass_context=True, name='bg3', aliases=('battlegroup3',))
     async def _bg3(self, ctx, value: discord.Role):
         """What's your in-game MCOC username?"""
         key = "bg3"
@@ -530,7 +530,7 @@ class Alliance:
             data = self._unknownguild(ctx, server)
         else:
             data = self._updated(ctx, key, value)
-        await self.bot.say(embed=data)
+        await PagesMenu.menu_start(self, [data])
 #
     def _createalliance(self, server):
 
