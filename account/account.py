@@ -1,4 +1,4 @@
-get_color(ctx)import discord
+import discord
 import datetime
 from discord.ext import commands
 from .utils.dataIO import dataIO
