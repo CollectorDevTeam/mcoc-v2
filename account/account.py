@@ -238,7 +238,7 @@ class Account:
         value = dateParse(str(started))
         print(value)
 
-        if isinstance(value, datetime.date):
+        if isinstance(value, datetime.datetime):
             user = ctx.message.author
             if ctx.message.author.id not in self.nerdie:
                 data = self._unknownuser(ctx, user)
