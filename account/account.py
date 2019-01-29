@@ -433,7 +433,7 @@ class Alliance:
         answer = await PagesMenu.confirm(self, ctx, question)
         if answer is True:
             if server.id not in self.guilds:
-                data = self._createalliance(server)
+                data = self._createalliance(ctx, server)
             else:
                 data = discord.Embed(colour=get_color(ctx))
                 data.add_field(name="Error:warning:",value="Opps, it seems like you already have an guild registered, {}.".format(user.mention))
@@ -521,7 +521,7 @@ class Alliance:
             data = self._updated(ctx, key, value)
         await PagesMenu.menu_start(self, [data])
 #
-    def _createalliance(self, server):
+    def _createalliance(self, ctx, server):
 
         self.guilds[server.id] = {}
         dataIO.save_json(self.alliances, self.guilds)
