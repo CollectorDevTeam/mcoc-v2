@@ -385,7 +385,7 @@ class Alliance:
         ##         present public info
         await self.bot.say('testing alliance presentation')
         server = ctx.message.server
-        alliances = self.find_alliance(user) #list
+        alliances = self._find_alliance(user) #list
 
         if alliances is None:
             data = discord.Embed(color=get_color(ctx), title='CollectorVerse Alliances', description='User is not regisered with a Collectorverse alliance.', url='https://discord.gg/umcoc')
