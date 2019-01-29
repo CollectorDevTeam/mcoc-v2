@@ -398,10 +398,12 @@ class Alliance:
         await PagesMenu.menu_start(self, [data])
 
     def _find_alliance(self, user):
+        alliances = []
         guilds = self.guilds
         for g in guilds.keys():
             if user.id in guilds[g]:
-                return g
+                alliances.append(g)
+                return alliances
         return None
 
     def _get_members(self, server):
