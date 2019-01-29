@@ -476,7 +476,7 @@ class Alliance:
         if server.id not in self.guilds:
             data = self._unknownuser(ctx, server)
         else:
-            data = self._guildupdate(ctx, key, value)
+            data = self._updateguilds(ctx, key, value)
         await PagesMenu.menu_start(self, [data])
 
     @_update.command(pass_context=True, name='tag')
@@ -490,7 +490,7 @@ class Alliance:
         if server.id not in self.guilds:
             data = self._unknownguild(ctx, server)
         else:
-            data = self._guildupdate(ctx, key, value)
+            data = self._updateguilds(ctx, key, value)
         await PagesMenu.menu_start(self, [data])
 
     @_update.command(pass_context=True, name='officers')
@@ -501,7 +501,7 @@ class Alliance:
         if server.id not in self.guilds:
             data = self._unknownguild(ctx, server)
         else:
-            data = self._guildupdate(ctx, key, value)
+            data = self._updateguilds(ctx, key, value)
         await PagesMenu.menu_start(self, [data])
 
     @_update.command(pass_context=True, name='bg1', aliases=('battlegroup1',))
@@ -512,7 +512,7 @@ class Alliance:
         if server.id not in self.guilds:
             data = self._unknownguild(ctx, server)
         else:
-            data = self._guildupdate(ctx, key, value)
+            data = self._updateguilds(ctx, key, value)
         await PagesMenu.menu_start(self, [data])
 
     @_update.command(pass_context=True, name='bg2', aliases=('battlegroup2',))
@@ -523,7 +523,7 @@ class Alliance:
         if server.id not in self.guilds:
             data = self._unknownguild(ctx, server)
         else:
-            data = self._guildupdate(ctx, key, value)
+            data = self._updateguilds(ctx, key, value)
         await PagesMenu.menu_start(self, [data])
 
     @_update.command(pass_context=True, name='bg3', aliases=('battlegroup3',))
@@ -534,7 +534,7 @@ class Alliance:
         if server.id not in self.guilds:
             data = self._unknownguild(ctx, server)
         else:
-            data = self._guildupdate(ctx, key, value)
+            data = self._updateguilds(ctx, key, value)
         await PagesMenu.menu_start(self, [data])
 #
     def _createalliance(self, ctx, server):
@@ -554,7 +554,7 @@ class Alliance:
                 icon_url=COLLECTOR_ICON)
         return data
 
-    def _guildupdate(self, ctx, key, value):
+    def _updateguilds(self, ctx, key, value):
         server = ctx.message.server
         data = discord.Embed(colour=get_color(ctx))
         if value in ('""',"''"," ","None","none","-",):
@@ -563,7 +563,7 @@ class Alliance:
         else:
             self.guilds[server.id].update({key : value})
             data.add_field(name="Congrats!:sparkles:",value="You have set your {} to {}".format(key, value))
-        dataIO.save_json(self.alliances, self.guild)
+        dataIO.save_json(self.alliances, self.guilds)
         data.set_footer(text='CollectorDevTeam',
                 icon_url=COLLECTOR_ICON)
         return data
