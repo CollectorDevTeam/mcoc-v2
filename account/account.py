@@ -576,4 +576,4 @@ def setup(bot):
     check_folder()
     check_file()
     bot.add_cog(Account(bot))
-    # bot.add_cog(Alliance(bot))
+    bot.add_cog(Alliance(bot))
