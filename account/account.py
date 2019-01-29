@@ -22,8 +22,8 @@ class Account:
         self.COLLECTOR_ICON='https://raw.githubusercontent.com/CollectorDevTeam/assets/master/data/cdt_icon.png'
 
 
-    @commands.group(name="account", aliases=('profile',), pass_context=True, invoke_without_command=True)
-    async def _account(self, ctx, user : discord.Member=None):
+    @commands.group(aliases=('profile',), pass_context=True, invoke_without_command=True)
+    async def account(self, ctx, user : discord.Member=None):
         """CollectorVerse Account
 
         In-Game username
@@ -64,8 +64,10 @@ class Account:
             data.add_field(name='Join the UMCOC community',value='https://discord.gg/umcoc', inline=False)
             data.set_footer(text='CollectorDevTeam - customize with /account update', icon_url=self.COLLECTOR_ICON)
             await PagesMenu.menu_start(self, [data])
+        else:
+            pass
 
-    @_account.commands(pass_context=True, aliases=('remove', 'del',), invoke_without_command=True)
+    @account.commands(pass_context=True, aliases=('remove', 'del',), invoke_without_command=True)
     async def delete(self, ctx):
         '''Delete your CollectorVerse account'''
         user = ctx.message.author
@@ -80,7 +82,7 @@ class Account:
 
 
     # @commands.group(name="update", pass_context=True, invoke_without_command=True)
-    @_account.group(name="update", pass_context=True, invoke_without_command=True)
+    @account.group(name="update", pass_context=True, invoke_without_command=True)
     async def update(self, ctx):
         """Update your CollectorVerse account"""
         await send_cmd_help(ctx)
@@ -356,7 +358,7 @@ class Alliance:
 #             #         icon_url=self.COLLECTOR_ICON)
 #             # await PagesMenu.menu_start(self, [data])
 #
-#     # @_account.commands(pass_context=True, name="delete")
+#     # @account.commands(pass_context=True, name="delete")
 #     # async def _delete(self,ctx):
 #     #     '''Delete your CollectorVerse account'''
 #     #     user = ctx.message.author
