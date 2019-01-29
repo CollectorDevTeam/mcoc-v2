@@ -8,8 +8,9 @@ import json
 from .utils.dataIO import dataIO
 from discord.ext import commands
 from __main__ import send_cmd_help
-from .mcocTools import (StaticGameData, PagesMenu, KABAM_ICON, COLLECTOR_ICON)
+from .mcocTools import (StaticGameData, PagesMenu, KABAM_ICON, COLLECTOR_ICON, CDTHelperFunctions)
 from .mcoc import ChampConverter, ChampConverterDebug, Champion
+from .utils import chat_formatting as chat
 
 JPAGS = 'http://www.alliancewar.com'
 PATREON = 'https://patreon.com/collectorbot'
@@ -525,13 +526,14 @@ class MCOCMaps:
     @alliancewar.command(pass_context=False, hidden=False, name="tiers", aliases=['tier'])
     async def _tiers(self):
         '''List Alliance War Tiers'''
-        name = 'Tier   | Mult  | Difficulty'
         aw_tiers = self.aw_tiers
-        value = []
+        name = '\u200b'
+        value = [['Tier', 'Mult', 'Difficulty']]
         for k, v in aw_tiers.items():
-            value.append('\n{} | {} | {}'.format(k, v['mult'], v['diff']))
+            value.append([k, v['mult'], v['diff']])
+        v = CDTHelperFunctions.tabulate_data(value, width=[4, 4, 14], align=['left', 'left', 'left'], rotate=False, separate_header=True)
         em = discord.Embed(color=discord.Color.gold(), title='Alliance War Tiers', url=JOINCDT)
-        em.add_field(name=name, value=''.join(value))
+        em.add_field(name=name, value=chat.box(v), inline=False)
         em.set_footer(text='CollectorDevTeam',icon_url=self.COLLECTOR_ICON)
         await self.bot.say(embed=em)
 
