@@ -483,8 +483,8 @@ class Alliance:
     async def _alliancetag(self, ctx, *, value):
         """What's your Alliance tag? Only include the 5 tag characters."""
         key = "guildtag"
-        v = value.split('')
-        if len(v) > 5:
+        # v = value.split('')
+        if len(value) > 5:
             await self.bot.say('Clan Tag must be <= 5 characters.\nDo not include the \[ or \] brackets.')
         server = ctx.message.server
         if server.id not in self.guilds:
