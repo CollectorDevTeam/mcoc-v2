@@ -22,8 +22,8 @@ class Account:
         self.COLLECTOR_ICON='https://raw.githubusercontent.com/CollectorDevTeam/assets/master/data/cdt_icon.png'
 
 
-    @commands.group(aliases=('profile',), pass_context=True, invoke_without_command=True)
-    async def account(self, ctx, user : discord.Member=None):
+    @commands.group(name='account', aliases=('profile',), pass_context=True, invoke_without_command=True)
+    async def _account(self, ctx, user : discord.Member=None):
         """CollectorVerse Account
 
         In-Game username
@@ -67,8 +67,8 @@ class Account:
         else:
             pass
 
-    @account.command(pass_context=True, aliases=('remove', 'del',), invoke_without_command=True)
-    async def delete(self, ctx):
+    @_account.command(name='delete', pass_context=True, aliases=('remove', 'del',), invoke_without_command=True)
+    async def _delete(self, ctx):
         '''Delete CollectorVerse account'''
         user = ctx.message.author
         if user.id in self.nerdie:
@@ -83,12 +83,12 @@ class Account:
             await PagesMenu.menu_start(self, [data])
 
     # @commands.group(name="update", pass_context=True, invoke_without_command=True)
-    @account.group(name="update", pass_context=True, invoke_without_command=True)
-    async def update(self, ctx):
+    @_account.group(name="update", pass_context=True, invoke_without_command=True)
+    async def _update(self, ctx):
         """Update your CollectorVerse account"""
         await send_cmd_help(ctx)
 
-    @update.command(pass_context=True)
+    @_update.command(pass_context=True)
     async def ingame(self, ctx, *, value):
         """What's your in-game MCOC username?"""
         key = "MCOC username"
@@ -100,7 +100,7 @@ class Account:
             data = self._updated(ctx, key, value)
         await PagesMenu.menu_start(self, [data])
 
-    @update.command(pass_context=True)
+    @_update.command(pass_context=True)
     async def alliance(self, ctx, *, value=None):
         """What's your Alliance name?"""
         key = "Alliance"
@@ -117,7 +117,7 @@ class Account:
         await PagesMenu.menu_start(self, [data])
 
 
-    @update.command(pass_context=True)
+    @_update.command(pass_context=True)
     async def recruiting(self, ctx, *, value):
         """Are you Looking for Alliance or Members?
         lfa   = Looking for Alliance
@@ -144,7 +144,7 @@ class Account:
                     icon_url=self.COLLECTOR_ICON)
         await PagesMenu.menu_start(self, [data])
 
-    @update.command(pass_context=True)
+    @_update.command(pass_context=True)
     async def timezone(self, ctx, *, value):
         """What's your UTC timezone?"""
         key = "Timezone"
@@ -162,7 +162,7 @@ class Account:
         await PagesMenu.menu_start(self, [data])
 
 
-    @update.command(pass_context=True)
+    @_update.command(pass_context=True)
     async def about(self, ctx, *, about):
         """Tell us about yourself"""
         key = "About"
@@ -175,7 +175,7 @@ class Account:
             data = self._updated(ctx, key, value)
         await PagesMenu.menu_start(self, [data])
 
-    @update.command(pass_context=True)
+    @_update.command(pass_context=True)
     async def website(self, ctx, *, site):
         """Do you have a website?"""
         key = "Website"
@@ -189,7 +189,7 @@ class Account:
         await PagesMenu.menu_start(self, [data])
 
 
-    @update.command(pass_context=True)
+    @_update.command(pass_context=True)
     async def age(self, ctx, *, age):
         """How old are you?"""
         key = "Age"
@@ -203,7 +203,7 @@ class Account:
         await PagesMenu.menu_start(self, [data])
 
 
-    @update.command(pass_context=True)
+    @_update.command(pass_context=True)
     async def job(self, ctx, *, job):
         """Do you have an alliance job?"""
         key = "Job"
@@ -217,7 +217,7 @@ class Account:
         await PagesMenu.menu_start(self, [data])
 
 
-    @update.command(pass_context=True)
+    @_update.command(pass_context=True)
     async def gender(self, ctx, *, gender):
         """What's your gender?"""
         key = "Gender"
@@ -231,7 +231,7 @@ class Account:
         await PagesMenu.menu_start(self, [data])
 
 
-    @update.command(pass_context=True)
+    @_update.command(pass_context=True)
     async def started(self, ctx, *, started:str):
         """When did you start playing Contest of Champions?"""
         key = "Started"
@@ -250,7 +250,7 @@ class Account:
             await self.bot.say('Enter a valid date.')
 
 
-    @update.command(pass_context=True)
+    @_update.command(pass_context=True)
     async def other(self, ctx, *, other):
         """Incase you want to add anything else..."""
         key = "Other"
@@ -302,8 +302,8 @@ class Alliance:
         self.guilds = dataIO.load_json(self.alliances)
         # self.COLLECTOR_ICON='https://raw.githubusercontent.com/CollectorDevTeam/assets/master/data/cdt_icon.png'
 
-    @commands.group(aliases=('clan','guild'), pass_context=True, invoke_without_command=True, hidden=True)
-    async def alliance(self, ctx, user : discord.Member=None):
+    @commands.group(name='alliance', aliases=('clan','guild'), pass_context=True, invoke_without_command=True, hidden=True)
+    async def _alliance(self, ctx, user : discord.Member=None):
         """CollectorVerse Alliance tools
 
         """
@@ -362,8 +362,8 @@ class Alliance:
 #             # await PagesMenu.menu_start(self, [data])
 #
     @checks.admin_or_permissions(manage_server=True)
-    @alliance.command(pass_context=True, aliases=('remove', 'del',), invoke_without_command=True, no_pm=True)
-    async def delete(self, ctx):
+    @_alliance.command(name='delete', pass_context=True, aliases=('remove', 'del','rm'), invoke_without_command=True, no_pm=True)
+    async def _delete(self, ctx):
         '''Delete CollectorVerse Alliance'''
         server = ctx.message.server
         if server.id in self.guilds:
@@ -425,7 +425,7 @@ class Alliance:
             return
 
     @checks.admin_or_permissions(manage_server=True)
-    @alliance.command(name="register", pass_context=True, invoke_without_command=True, no_pm=True)
+    @_alliance.command(name="register", pass_context=True, invoke_without_command=True, no_pm=True)
     async def _reg(self, ctx):
         """Sign up to register your Alliance server!"""
         user = ctx.message.author
@@ -447,12 +447,12 @@ class Alliance:
 #
 #     # @commands.group(name="update", pass_context=True, invoke_without_command=True)
     @checks.admin_or_permissions(manage_server=True)
-    @alliance.group(name="update", pass_context=True, invoke_without_command=True, no_pm=True)
-    async def update(self, ctx):
+    @_alliance.group(name="update", pass_context=True, invoke_without_command=True, no_pm=True)
+    async def _update(self, ctx):
         """Update your CollectorVerse account"""
         await send_cmd_help(ctx)
 #
-    @update.command(pass_context=True, name='name', aliases=('clanname','guildname',) ,no_pm=True)
+    @_update.command(pass_context=True, name='name', aliases=('clanname','guildname',) ,no_pm=True)
     async def _alliancename(self, ctx, *, value):
         """What's your in-game MCOC username?"""
         key = "guildname"
@@ -464,7 +464,7 @@ class Alliance:
             data = self._updated(ctx, key, value)
         await PagesMenu.menu_start(self, [data])
 
-    @update.command(pass_context=True, name='tag')
+    @_update.command(pass_context=True, name='tag')
     async def _alliancetag(self, ctx, *, value):
         """What's your in-game MCOC username?"""
         key = "guildtag"
@@ -478,7 +478,7 @@ class Alliance:
             data = self._updated(ctx, key, value)
         await PagesMenu.menu_start(self, [data])
 
-    @update.command(pass_context=True, name='officers')
+    @_update.command(pass_context=True, name='officers')
     async def _officers(self, ctx, value: discord.Role):
         """What's your in-game MCOC username?"""
         key = "officers"
@@ -489,7 +489,7 @@ class Alliance:
             data = self._updated(ctx, key, value)
         await PagesMenu.menu_start(self, [data])
 
-    @update.command(pass_context=True, name='bg1', aliases=('battlegroup1',))
+    @_update.command(pass_context=True, name='bg1', aliases=('battlegroup1',))
     async def _bg1(self, ctx, value: discord.Role):
         """What's your in-game MCOC username?"""
         key = "bg1"
@@ -500,7 +500,7 @@ class Alliance:
             data = self._updated(ctx, key, value)
         await PagesMenu.menu_start(self, [data])
 
-    @update.command(pass_context=True, name='bg2', aliases=('battlegroup2',))
+    @_update.command(pass_context=True, name='bg2', aliases=('battlegroup2',))
     async def _bg2(self, ctx, value: discord.Role):
         """What's your in-game MCOC username?"""
         key = "bg2"
@@ -511,7 +511,7 @@ class Alliance:
             data = self._updated(ctx, key, value)
         await PagesMenu.menu_start(self, [data])
 
-    @update.command(pass_context=True, name='bg3', aliases=('battlegroup3',))
+    @_update.command(pass_context=True, name='bg3', aliases=('battlegroup3',))
     async def _bg3(self, ctx, value: discord.Role):
         """What's your in-game MCOC username?"""
         key = "bg3"
