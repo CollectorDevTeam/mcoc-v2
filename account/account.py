@@ -572,9 +572,9 @@ def check_file():
     if not dataIO.is_valid_json(f):
         print("I'm creating the file, so relax bruh.")
         dataIO.save_json(f, data)
-    if not dataIO.is_valid_json(f):
+    if not dataIO.is_valid_json(f2):
         print("I'm creating the file, so relax bruh.")
-        dataIO.save_json(f, data)
+        dataIO.save_json(f2, data)
 
 def setup(bot):
     check_folder()
