@@ -1,4 +1,4 @@
-import discord
+get_color(ctx)import discord
 import datetime
 from discord.ext import commands
 from .utils.dataIO import dataIO
@@ -40,11 +40,7 @@ class Account:
                 ingame = 'MCOC in-game id: {}'.format(self.nerdie[user.id]['MCOC username'])
             else:
                 ingame = 'No MCOC in-game id registered.'
-            try:
-                ucolor = user.colour
-            except:
-                ucolor = discord.Color.gold()
-            data = discord.Embed(title="CollectorVerse Profile", colour=ucolor, description='Discord user: {}#{}'.format(user.name, user.discriminator), url='https://discord.gg/umcoc')
+            data = discord.Embed(title="CollectorVerse Profile", colour=get_color(ctx), description='Discord user: {}#{}'.format(user.name, user.discriminator), url='https://discord.gg/umcoc')
             roster = await RosterUserConverter(ctx, user.mention).convert()
             if roster:
                 data.add_field(name='Prestige', value=roster.prestige, inline=False)
@@ -280,11 +276,7 @@ class Account:
 
     def _updated(self, ctx, key, value):
         user = ctx.message.author
-        if ctx.message.channel.is_private:
-            ucolor=discord.Color.gold()
-        else:
-            ucolor = user.color
-        data = discord.Embed(colour=ucolor)
+        data = discord.Embed(colour=get_color(ctx))
         if value in ('""',"''"," ","None","none","-",):
             self.nerdie[user.id].pop(key, None)
             data.add_field(name="Congrats!:sparkles:", value="You have deleted {} from your account.".format(key))
@@ -323,11 +315,7 @@ class Alliance:
 #             #     ingame = 'MCOC in-game id: {}'.format(self.guild[user.id]['MCOC username'])
 #             # else:
 #             #     ingame = 'No MCOC in-game id registered.'
-#             # try:
-#             #     color = user.colour
-#             # except:
-#             #     color = discord.Color.gold()
-#             # data = discord.Embed(title="CollectorVerse Profile", colour=color, description='Discord user: {}#{}'.format(user.name, user.discriminator), url='https://discord.gg/umcoc')
+#             # data = discord.Embed(title="CollectorVerse Profile", colour=get_color(ctx), description='Discord user: {}#{}'.format(user.name, user.discriminator), url='https://discord.gg/umcoc')
 #             # roster = await RosterUserConverter(ctx, user.mention).convert()
 #             # if roster:
 #             #     data.add_field(name='Prestige', value=roster.prestige, inline=False)
@@ -388,18 +376,14 @@ class Alliance:
         server = ctx.message.server
         alliance = self.find_alliance(user)
 
-        if ctx.message.channel.is_private:
-            ucolor = discord.Color.gold()
-        else:
-            ucolor = user.color
         if alliance is None:
-            data = discord.Embed(color=ucolor, title='CollectorVerse Alliances', description='User is not regisered with a Collectorverse alliance.', url='https://discord.gg/umcoc')
+            data = discord.Embed(color=get_color(ctx), title='CollectorVerse Alliances', description='User is not regisered with a Collectorverse alliance.', url='https://discord.gg/umcoc')
         elif server.id == alliance and user.id in guilds[alliance]:  #Alliance server & Alliance member
-            data = discord.Embed(color=ucolor, title='CollectorVerse Alliances', description='Display private profile ~ All kinds of info stored', url='https://discord.gg/umcoc')
+            data = discord.Embed(color=get_color(ctx), title='CollectorVerse Alliances', description='Display private profile ~ All kinds of info stored', url='https://discord.gg/umcoc')
         elif server.id == alliance:
-            data = discord.Embed(color=ucolor, title='CollectorVerse Alliances', description='Display Alliance Server recruiting profile', url='https://discord.gg/umcoc')
+            data = discord.Embed(color=get_color(ctx), title='CollectorVerse Alliances', description='Display Alliance Server recruiting profile', url='https://discord.gg/umcoc')
         else:
-            data = discord.Embed(color=ucolor, title='CollectorVerse Alliances', description='Display public profile.\nInclude server join link, if set.\nInclude Alliance Prestige\nInclude About\n etc', url='https://discord.gg/umcoc')
+            data = discord.Embed(color=get_color(ctx), title='CollectorVerse Alliances', description='Display public profile.\nInclude server join link, if set.\nInclude Alliance Prestige\nInclude About\n etc', url='https://discord.gg/umcoc')
         data.set_footer(text='CollectorDevTeam', icon_url=COLLECTOR_ICON)
         await PagesMenu.menu_start(self, [data])
 
