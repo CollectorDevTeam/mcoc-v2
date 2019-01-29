@@ -429,7 +429,7 @@ class Alliance:
                 if job in self.guilds[server.id]:
                     roles = server.roles
                     for r in roles:
-                        if r.id == self.guilds[server.id]
+                        if r.id == self.guilds[server.id]:
                             for m in members:
                                 if r in member.roles:
                                     jobs[job].append(m.name)
