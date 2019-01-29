@@ -53,7 +53,7 @@ class Account:
                 else:
                     pass
             if 'Started' in self.nerdie[user.id]:
-                since = dateParse(lf.nerdi[user.id]['Started'])
+                since = dateParse(self.nerdie[user.id]['Started'])
                 days_since = (datetime.datetime.utcnow() - since).days
                 data.add_field(name='Entered the Contest {}'.format(since.date()), value="Playing for {} days!".format(days_since))
             if user.avatar_url:
