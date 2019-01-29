@@ -361,15 +361,21 @@ class Alliance:
 #             #         icon_url=self.COLLECTOR_ICON)
 #             # await PagesMenu.menu_start(self, [data])
 #
-#     # @account.commands(pass_context=True, name="delete")
-#     # async def _delete(self,ctx):
-#     #     '''Delete your CollectorVerse account'''
-#     #     user = ctx.message.author
-#     #     if user.id in self.guild:
-#     #         self.guild.pop(user.id, None)
-#     #         dataIO.save_json(self.alliances, self.guild)
-#     #     data.add_field(name="Congrats!:sparkles:", value="You have deleted your CollectorVerse account.")
-#
+    @checks.admin_or_permissions(manage_server=True)
+    @_alliance.command(pass_context=True, aliases=('remove', 'del',), invoke_without_command=True, no_pm=True)
+    async def delete(self, ctx):
+        '''Delete CollectorVerse Alliance'''
+        server = ctx.message.server
+        if server.id in self.guilds:
+            question = 'Are you sure you want to delete your CollectorVerse Alliance {}?'.format(user.name)
+            answer = await PagesMenu.confirm(self, ctx, question)
+            if answer:
+                dropped = self.guilds.pop(user.id, None)
+                dataIO.save_json(self.alliances, self.guilds)
+                data=discord.Embed(title="Congrats!:sparkles:", description="You have deleted your CollectorVerse account.", color=get_color(ctx))
+            else:
+                data=discord.Embed(title="Sorry!:sparkles:", description="You have no CollectorVerse account.", color=get_color(ctx))
+            await PagesMenu.menu_start(self, [data])
 
     async def _present_alliance(self, ctx, user):
         ## 1 search for user in registered alliances
@@ -419,7 +425,7 @@ class Alliance:
             return
 
     @checks.admin_or_permissions(manage_server=True)
-    @_alliance.command(name="register", pass_context=True, invoke_without_command=True)
+    @_alliance.command(name="register", pass_context=True, invoke_without_command=True, no_pm=True)
     async def _reg(self, ctx):
         """Sign up to register your Alliance server!"""
         user = ctx.message.author
@@ -441,7 +447,7 @@ class Alliance:
 #
 #     # @commands.group(name="update", pass_context=True, invoke_without_command=True)
     @checks.admin_or_permissions(manage_server=True)
-    @_alliance.group(name="update", pass_context=True, invoke_without_command=True)
+    @_alliance.group(name="update", pass_context=True, invoke_without_command=True, no_pm=True)
     async def update(self, ctx):
         """Update your CollectorVerse account"""
         await send_cmd_help(ctx)
