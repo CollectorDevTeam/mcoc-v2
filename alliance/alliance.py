@@ -9,7 +9,7 @@ from .utils.dataIO import dataIO
 from .utils import checks
 # from .utils import chat_formatting as chat
 from .mcocTools import (KABAM_ICON, COLLECTOR_ICON, PagesMenu)
-from .hook import RosterUserConverter
+from .hook import RosterUserConverter 
 # import cogs.mcocTools
 
 class Alliance:
