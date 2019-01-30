@@ -439,7 +439,7 @@ class Alliance:
                             for m in members:
                                 if r in member.roles:
                                     jobs[job].append(m.name)
-                self.guilds[server.id][job]['members'] = jobs[r]
+                self.guilds[server.id][job]['members'] = jobs[job]
                 # else:
                 #     pass
             dataIO.save_json(self.alliances, self.guilds)
@@ -512,6 +512,7 @@ class Alliance:
             data = self._unknownguild(ctx, server)
         else:
             data = self._updateguilds(ctx, key, value.id)
+        members = self._get_members(server)
         await PagesMenu.menu_start(self, [data])
 
     @_update.command(pass_context=True, name='bg1', aliases=('battlegroup1',))
