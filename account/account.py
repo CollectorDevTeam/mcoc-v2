@@ -420,7 +420,9 @@ class Alliance:
             if user.id in guilds[g]:
                 discord.Client.get_server(g)
                 alliances.append(g)
+                await self.bot.say('debug: found user\'s alliances')
                 return alliances
+        await self.bot.say('debug: found no alliance')
         return None
 
     def _get_members(self, server):
