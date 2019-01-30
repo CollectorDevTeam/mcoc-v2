@@ -114,9 +114,12 @@ class Alliance:
         else:
             for alliance in alliances:
                 guild = self.guilds[alliance]
-                members = self._get_members(alliance)
+                # s = discord.Client.get_server(alliance)
+                # members = discord.Client._get_members(s)
+                
+                ## need a function to update all alliance roles + members
+
                 if server.id == alliance.id and user.id in guild:  #Alliance server & Alliance member
-                    members = self._get_members(server)
                     if members is None:
                         await self.bot.say('No alliances found')
                     else:
