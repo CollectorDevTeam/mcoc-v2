@@ -231,7 +231,7 @@ class Alliance:
         if server.id not in self.guilds:
             data = self._unknownguild(ctx, server)
         else:
-            data = self._updateguilds(ctx, key, value.id)
+            data = self._updateguilds(ctx, key, {value.id})
         members = self._get_members(server)
         await PagesMenu.menu_start(self, [data])
 
@@ -243,7 +243,7 @@ class Alliance:
         if server.id not in self.guilds:
             data = self._unknownguild(ctx, server)
         else:
-            data = self._updateguilds(ctx, key, value.id)
+            data = self._updateguilds(ctx, key, {value.id})
         await PagesMenu.menu_start(self, [data])
 
     @_update.command(pass_context=True, name='bg2', aliases=('battlegroup2',))
@@ -254,7 +254,7 @@ class Alliance:
         if server.id not in self.guilds:
             data = self._unknownguild(ctx, server)
         else:
-            data = self._updateguilds(ctx, key, value.id)
+            data = self._updateguilds(ctx, key, {value.id})
         await PagesMenu.menu_start(self, [data])
 
     @_update.command(pass_context=True, name='bg3', aliases=('battlegroup3',))
@@ -265,7 +265,18 @@ class Alliance:
         if server.id not in self.guilds:
             data = self._unknownguild(ctx, server)
         else:
-            data = self._updateguilds(ctx, key, value.id)
+            data = self._updateguilds(ctx, key, {value.id})
+        await PagesMenu.menu_start(self, [data])
+
+    @_update.command(pass_context=True, name='memberrole', aliases=('battlegroup3',))
+    async def _bg3(self, ctx, value: discord.Role):
+        """Which role represents all members of your alliance (up to 30)?"""
+        key = "memberrole"
+        server = ctx.message.server
+        if server.id not in self.guilds:
+            data = self._unknownguild(ctx, server)
+        else:
+            data = self._updateguilds(ctx, key, {value.id})
         await PagesMenu.menu_start(self, [data])
 #
     def _createalliance(self, ctx, server):
