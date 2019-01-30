@@ -118,14 +118,13 @@ class Alliance:
                 # members = discord.Client._get_members(s)
 
                 ## need a function to update all alliance roles + members
-
+                standard = {'officers':'officersnames','bg1':'bg1names','bg2':'bg2names','bg3':'bg3names'}
                 if server.id == alliance.id and user.id in guild:  #Alliance server & Alliance member
-                    if members is None:
-                        await self.bot.say('No alliances found')
-                    else:
-                        data = discord.Embed(color=get_color(ctx), title='CollectorVerse Alliances', description='Display private profile ~ All kinds of info stored', url='https://discord.gg/umcoc')
-                        for m in members.keys():
-                            data.add_field(name=m.title(), value='\n'.join(members[m]))
+                    data = discord.Embed(color=get_color(ctx), title='CollectorVerse Alliances', description='Display private profile ~ All kinds of info stored', url='https://discord.gg/umcoc')
+                    for s in standard.keys():
+                        if s in guild:
+                            data.add_field(name=s.title(), value=guild[standard[s]])
+
                 if server.id == alliance.id: #Alliance server visitor
                     data = discord.Embed(color=get_color(ctx), title='CollectorVerse Alliances', description='Display Alliance Server recruiting profile', url='https://discord.gg/umcoc')
                     publiclist = ['name','tag','founded','leader','invitation','recruiting']
