@@ -397,7 +397,9 @@ class Alliance:
                 members = self._get_members(alliance)
                 if server.id == alliance.id and user.id in guild:  #Alliance server & Alliance member
                     members = self._get_members(server)
-                    if members is not None:
+                    if members is None:
+                        await self.bot.say('No alliances found')
+                    else:
                         data = discord.Embed(color=get_color(ctx), title='CollectorVerse Alliances', description='Display private profile ~ All kinds of info stored', url='https://discord.gg/umcoc')
                         for m in members.keys():
                             data.add_field(name=m.title(), value='\n'.join(members[m]))
@@ -413,16 +415,16 @@ class Alliance:
                 await PagesMenu.menu_start(self, [data])
 
     def _find_alliance(self, user):
-        '''Returns a list of Servers or None'''
+        '''Returns a list of Server IDs or None'''
         alliances = []
         guilds = self.guilds
         for g in guilds.keys():
             if user.id in guilds[g]:
                 discord.Client.get_server(g)
                 alliances.append(g)
-                await self.bot.say('debug: found user\'s alliances')
+                print('debug: found user\'s alliances')
                 return alliances
-        await self.bot.say('debug: found no alliance')
+        print('debug: found no alliance')
         return None
 
     def _get_members(self, server):
