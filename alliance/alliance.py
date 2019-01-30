@@ -140,8 +140,9 @@ class Alliance:
         '''Returns a list of Server IDs or None'''
         alliances = []
         guilds = self.guilds
-        for g in guilds.keys():
-            if user.id in guilds[g]:
+        for g in guilds.items():
+            if user.id in g:
+            # if user.id in guilds[g]['officersids'] or user.id in guilds[g]['bg1ids'] or user.id in guilds[g]['bg2ids'] or user.id in guilds[g]['bg3ids']:
                 discord.Client.get_server(g)
                 alliances.append(g)
                 print('debug: found user\'s alliances')
