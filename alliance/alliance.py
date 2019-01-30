@@ -1,16 +1,16 @@
-import discord
+import re
+import os
 import datetime
+from dateutil.parser import parse as dateParse
+import discord
+from __main__ import send_cmd_help
 from discord.ext import commands
 from .utils.dataIO import dataIO
 from .utils import checks
-from __main__ import send_cmd_help
-from dateutil.parser import parse as dateParse
-import re
-import os
 from .utils.chat_formatting import *
-from .hook import RosterUserConverter
-import cogs.mcocTools
 from .mcocTools import (KABAM_ICON, COLLECTOR_ICON, PagesMenu)
+from .hook import RosterUserConverter
+# import cogs.mcocTools
 
 class Alliance:
     """The CollectorVerse Alliance Cog"""
@@ -26,7 +26,7 @@ class Alliance:
         """[ALPHA] CollectorVerse Alliance tools
 
         """
-        server = ctx.message.server
+        # server = ctx.message.server
         if ctx.invoked_subcommand is None:
             await self._present_alliance(ctx, user)
 
