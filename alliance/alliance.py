@@ -231,14 +231,16 @@ class Alliance:
         members = server.members
         if server.id not in self.guilds:
             data = self._unknownguild(ctx, server)
+            await PagesMenu.menu_start(self, [data])
         else:
-            package = {'id': value.id, 'members': []}
+            package = []
             for m in members:
                 if value in m.roles:
-                    package['members'].append(m.id)
-            data = self._updateguilds(ctx, key, {value.id})
-        members = self._get_members(server)
-        await PagesMenu.menu_start(self, [data])
+                    package.append(m.id)
+            data = self._updateguilds(ctx, key, value.id)
+            data = self._updateguilds(ctx, key+'members', '\n'.join(package))
+            await PagesMenu.menu_start(self, [data, data2])
+        # members = self._get_members(server)
 
     # @_update.command(pass_context=True, name='bg1', aliases=('battlegroup1',))
     # async def _bg1(self, ctx, *, value: discord.Role):
