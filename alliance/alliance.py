@@ -116,7 +116,7 @@ class Alliance:
                 guild = self.guilds[alliance]
                 # s = discord.Client.get_server(alliance)
                 # members = discord.Client._get_members(s)
-                
+
                 ## need a function to update all alliance roles + members
 
                 if server.id == alliance.id and user.id in guild:  #Alliance server & Alliance member
@@ -241,7 +241,7 @@ class Alliance:
                 if value in m.roles:
                     package.append(m.id)
             data = self._updateguilds(ctx, key, value.id)
-            data = self._updateguilds(ctx, key+'members', '\n'.join(package))
+            data2 = self._updateguilds(ctx, key+'members', '\n'.join(package))
             await PagesMenu.menu_start(self, [data, data2])
         # members = self._get_members(server)
 
