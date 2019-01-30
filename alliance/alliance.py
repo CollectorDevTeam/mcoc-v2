@@ -268,8 +268,8 @@ class Alliance:
             data = self._updateguilds(ctx, key, {value.id})
         await PagesMenu.menu_start(self, [data])
 
-    @_update.command(pass_context=True, name='memberrole', aliases=('battlegroup3',))
-    async def _bg3(self, ctx, value: discord.Role):
+    @_update.command(pass_context=True, name='memberrole', aliases=('members','alliance',))
+    async def _memberrole(self, ctx, value: discord.Role):
         """Which role represents all members of your alliance (up to 30)?"""
         key = "memberrole"
         server = ctx.message.server
