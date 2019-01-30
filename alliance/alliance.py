@@ -244,7 +244,7 @@ class Alliance:
                     package2.append(m.name)
             data = self._updateguilds(ctx, key, value.id)
             data2 = self._updateguilds(ctx, 'officersids', '\n'.join(package))
-            data3 = self._updateguilds(ctx, 'officersnames', '\n'.join(package))
+            data3 = self._updateguilds(ctx, 'officersnames', '\n'.join(package2))
             await PagesMenu.menu_start(self, [data], 0)
         # members = self._get_members(server)
 
