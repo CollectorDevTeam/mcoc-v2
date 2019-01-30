@@ -227,7 +227,7 @@ class Alliance:
         await PagesMenu.menu_start(self, [data])
 
     @_update.command(pass_context=True, name='officers')
-    async def _officers(self, ctx, *, value: discord.Role):
+    async def _officers(self, ctx, value: discord.Role):
         """Which role are your Alliance Officers?"""
         key = "officers"
         server = ctx.message.server
@@ -243,9 +243,9 @@ class Alliance:
                     package.append(m.id)
                     package2.append(m.name)
             data = self._updateguilds(ctx, key, value.id)
-            data2 = self._updateguilds(ctx, 'officersids', '\n'.join(package))
-            data3 = self._updateguilds(ctx, 'officersnames', '\n'.join(package))
-            await PagesMenu.menu_start(self, [data, data2, data3])
+            # data2 = self._updateguilds(ctx, 'officersids', '\n'.join(package))
+            # data3 = self._updateguilds(ctx, 'officersnames', '\n'.join(package))
+            await PagesMenu.menu_start(self, [data], 0)
         # members = self._get_members(server)
 
     # @_update.command(pass_context=True, name='bg1', aliases=('battlegroup1',))
