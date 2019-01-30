@@ -237,12 +237,15 @@ class Alliance:
             await PagesMenu.menu_start(self, [data])
         else:
             package = []
+            package2 = []
             for m in members:
                 if value in m.roles:
                     package.append(m.id)
+                    package2.append(m.name)
             data = self._updateguilds(ctx, key, value.id)
-            data2 = self._updateguilds(ctx, key+'members', '\n'.join(package))
-            await PagesMenu.menu_start(self, [data, data2])
+            data2 = self._updateguilds(ctx, 'officersids', '\n'.join(package))
+            data2 = self._updateguilds(ctx, 'officersnames', '\n'.join(package))
+            await PagesMenu.menu_start(self, [data, data2, data3])
         # members = self._get_members(server)
 
     # @_update.command(pass_context=True, name='bg1', aliases=('battlegroup1',))
