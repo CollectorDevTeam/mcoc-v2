@@ -1,3 +1,5 @@
+import re
+import os
 import discord
 import datetime
 from discord.ext import commands
@@ -5,12 +7,11 @@ from .utils.dataIO import dataIO
 from .utils import checks
 from __main__ import send_cmd_help
 from dateutil.parser import parse as dateParse
-import re
-import os
 from .utils.chat_formatting import *
 from .hook import RosterUserConverter
 import cogs.mcocTools
 from .mcocTools import (KABAM_ICON, COLLECTOR_ICON, PagesMenu)
+
 
 class Account:
     """The CollectorVerse Account Cog"""

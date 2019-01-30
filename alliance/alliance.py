@@ -1,13 +1,13 @@
-import re
+# import re
 import os
-import datetime
-from dateutil.parser import parse as dateParse
+# import datetime
 import discord
-from __main__ import send_cmd_help
 from discord.ext import commands
+from dateutil.parser import parse as dateParse
+from __main__ import send_cmd_help
 from .utils.dataIO import dataIO
 from .utils import checks
-from .utils.chat_formatting import *
+# from .utils import chat_formatting as chat
 from .mcocTools import (KABAM_ICON, COLLECTOR_ICON, PagesMenu)
 from .hook import RosterUserConverter
 # import cogs.mcocTools
@@ -19,10 +19,9 @@ class Alliance:
         self.bot = bot
         self.alliances = "data/account/alliances.json"
         self.guilds = dataIO.load_json(self.alliances)
-        # COLLECTOR_ICON='https://raw.githubusercontent.com/CollectorDevTeam/assets/master/data/cdt_icon.png'
 
-    @commands.group(name='alliance', aliases=('clan','guild'), pass_context=True, invoke_without_command=True, hidden=False)
-    async def _alliance(self, ctx, user : discord.Member=None):
+    @commands.group(name='alliance', aliases=('clan', 'guild'), pass_context=True, invoke_without_command=True, hidden=False)
+    async def _alliance(self, ctx, user: discord.Member = None):
         """[ALPHA] CollectorVerse Alliance tools
 
         """
@@ -30,56 +29,6 @@ class Alliance:
         if ctx.invoked_subcommand is None:
             await self._present_alliance(ctx, user)
 
-#             if not user:
-#                 user = ctx.message.author
-#             # if server.id not in self.guilds:
-#             #     data = self._createserver(server)
-#
-#             # if 'MCOC username' in self.guilds[user.id]:
-#             #     ingame = 'MCOC in-game id: {}'.format(self.guilds[user.id]['MCOC username'])
-#             # else:
-#             #     ingame = 'No MCOC in-game id registered.'
-#             # data = discord.Embed(title="CollectorVerse Profile", colour=get_color(ctx), description='Discord user: {}#{}'.format(user.name, user.discriminator), url='https://discord.gg/umcoc')
-#             # roster = await RosterUserConverter(ctx, user.mention).convert()
-#             # if roster:
-#             #     data.add_field(name='Prestige', value=roster.prestige, inline=False)
-#             #     data.add_field(name='Top 5 Champs', value='\n'.join(roster.top5), inline=False)
-#             # else:
-#             #     data.add_field(name='Prestige', value='User has no registerd CollectorVerse roster.\nUse the ``/roster`` command to get started.')
-#             # for i in ['Alliance', 'Job', 'Recruiting', 'Age', 'Gender', 'Timezone', 'About', 'Other', 'Website']:
-#             #     if i in self.guilds[user.id]:
-#             #         data.add_field(name=i+":", value=self.guilds[user.id][i])
-#             #     else:
-#             #         pass
-#             # if 'Started' in self.guilds[user.id]:
-#             #     since = datetime.datetime(self.guilds[user.id]['Started'])
-#             #     days_since = (datetime.datetime.utcnow() - since).days
-#             #     # data.add_field(name='Entered the Contest {}'.format(since.date()), value="Playing for {} days!".format(days_since))
-#             #
-#             # if user.avatar_url:
-#             #     # name = str(user)
-#             #     # name = user.n
-#             #     # name = " ~ ".join((name, user.nick)) if user.nick else name
-#             #     data.set_author(name=ingame, url=user.avatar_url)
-#             #     data.set_thumbnail(url=user.avatar_url)
-#             # else:
-#             #     data.set_author(name=ingame)
-#
-#
-#             # elif user == ctx.message.author:
-#             #     data = self._unknownuser(ctx, user)
-#             # else:
-#             #     try:
-#             #         data = discord.Embed(colour=get_color(ctx))
-#             #     except:
-#             #         data = discord.Embed(colour=discord.Color.gold())
-#             #     data.add_field(name="Error:warning:",value="{} doesn't have an account at the moment, sorry.".format(user.mention))
-#
-#             # data.add_field(name='Join the UMCOC community',value='https://discord.gg/umcoc', inline=False)
-#             # data.set_footer(text='CollectorDevTeam - customize with /account update',
-#             #         icon_url=COLLECTOR_ICON)
-#             # await PagesMenu.menu_start(self, [data])
-#
     @checks.admin_or_permissions(manage_server=True)
     @_alliance.command(name='delete', pass_context=True, aliases=('remove', 'del','rm'), invoke_without_command=True, no_pm=True)
     async def _delete(self, ctx):
@@ -89,7 +38,8 @@ class Alliance:
             question = '{}, are you sure you want to deregsister {} as your CollectorVerse Alliance?'.format(ctx.message.author.mention, server.name)
             answer = await PagesMenu.confirm(self, ctx, question)
             if answer:
-                dropped = self.guilds.pop(server.id, None)
+                self.guilds.pop(server.id, None)
+                # dropped = self.guilds.pop(server.id, None)
                 dataIO.save_json(self.alliances, self.guilds)
                 data=discord.Embed(title="Congrats!:sparkles:", description="You have deleted your CollectorVerse Alliance.", color=get_color(ctx))
             else:
