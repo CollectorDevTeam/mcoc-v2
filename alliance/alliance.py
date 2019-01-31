@@ -107,8 +107,8 @@ class Alliance:
         for m in servermembers:
             if role in m.roles:
                 members.append(m)
-        package = {key:role.id, 'role':role, 'members':members}
-        self.guilds.update(key, package)
+        package = {key:{'role':role, 'members':members}}
+        self.guilds[key].update(package)
         dataIO.save_json(self.alliances, self.guilds)
         print('Members saved for {}'.format(role.name))
         return
@@ -126,6 +126,7 @@ class Alliance:
                 data = self._createalliance(ctx, server)
                 roles = server.roles
                 for role in roles:
+                    #add default roles
                     for key in ('officers', 'bg1', 'bg2', 'bg3', 'alliance'):
                         if role.name.lower() == key:
                             self._get_members(server, key, role)
