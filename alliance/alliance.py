@@ -107,10 +107,11 @@ class Alliance:
         for m in servermembers:
             if role in m.roles:
                 members.append(m)
-        package = {key:{'role':role, 'members':members}}
-        self.guilds[key].update(package)
+        package = {key: {'role':role, 'members':members}}
+        self.guilds[server.id][key].update(package)
         dataIO.save_json(self.alliances, self.guilds)
         print('Members saved for {}'.format(role.name))
+        print(json.dumps(package))
         return
 
     @checks.admin_or_permissions(manage_server=True)
