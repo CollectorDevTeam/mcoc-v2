@@ -108,7 +108,7 @@ class Alliance:
             if role in m.roles:
                 members.append(m)
         package = {key: {'role':role, 'members':members}}
-        self.guilds[server.id][key].update(package)
+        self.guilds[server.id].update(package)
         dataIO.save_json(self.alliances, self.guilds)
         print('Members saved for {}'.format(role.name))
         print(json.dumps(package))
@@ -130,6 +130,7 @@ class Alliance:
                     #add default roles
                     for key in ('officers', 'bg1', 'bg2', 'bg3', 'alliance'):
                         if role.name.lower() == key:
+                            self.guilds[server.id].update(key : {'role': role})
                             self._get_members(server, key, role)
             else:
                 data = discord.Embed(colour=get_color(ctx))
@@ -185,7 +186,7 @@ class Alliance:
             data = self._unknownguild(ctx, server)
             await PagesMenu.menu_start(self, [data])
         else:
-            self._get_members(server, key, role)
+            # self._get_members(server, key, role)
             # data = self._updateguilds(ctx, key, value.id)
             # pacakge.update('role', role)
 
