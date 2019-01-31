@@ -130,7 +130,7 @@ class Alliance:
                     #add default roles
                     for key in ('officers', 'bg1', 'bg2', 'bg3', 'alliance'):
                         if role.name.lower() == key:
-                            self.guilds[server.id].update(key : {'role': role})
+                            self.guilds[server.id].update({key : {'role': role}})
                             self._get_members(server, key, role)
             else:
                 data = discord.Embed(colour=get_color(ctx))
