@@ -9,7 +9,7 @@ from .utils.dataIO import dataIO
 from .utils import checks
 # from .utils import chat_formatting as chat
 from .mcocTools import (KABAM_ICON, COLLECTOR_ICON, PagesMenu)
-from .hook import RosterUserConverter 
+from .hook import RosterUserConverter
 # import cogs.mcocTools
 
 class Alliance:
@@ -86,7 +86,7 @@ class Alliance:
                 data.set_footer(text='CollectorDevTeam', icon_url=COLLECTOR_ICON)
                 await PagesMenu.menu_start(self, [data])
 
-    def _find_alliance(self, user):
+    def _find_alliance(self, user:discord.User):
         '''Returns a list of Server IDs or None'''
         alliances = []
         guilds = self.guilds
@@ -100,27 +100,18 @@ class Alliance:
         print('debug: found no alliance')
         return None
 
-    def _get_members(self, server):
-        if server.id  in self.guilds:
-            members = server.members
-            jobs = {'officers':[], 'bg1':[], 'bg2':[], 'bg3':[]}
-            for job in jobs.keys():
-                if job in self.guilds[server.id]:
-                    roles = server.roles
-                    for r in roles:
-                        if r.id == self.guilds[server.id]:
-                            for m in members:
-                                if r in member.roles:
-                                    jobs[job].append(m.name)
-                self.guilds[server.id][job]['members'] = jobs[job]
-                # else:
-                #     pass
-            dataIO.save_json(self.alliances, self.guilds)
-            print('Members saved for {}'.format(self.guilds[server.id][r]))
-            return
-        else:
-            data = self._unknownguild(ctx, server)
-            return None
+    def _get_members(self, server, key, role):
+        '''For known Server and Role, find all server.members with role'''
+        servermembers = server.members
+        members = []
+        for m in servermembers:
+            if role in m.roles:
+                members.append(m)
+        package = {key:role.id, 'role':role, 'members':members}
+        self.guilds.update(key, package)
+        dataIO.save_json(self.alliances, self.guilds)
+        print('Members saved for {}'.format(role.name))
+        return
 
     @checks.admin_or_permissions(manage_server=True)
     @_alliance.command(name="register", pass_context=True, invoke_without_command=True, no_pm=True)
@@ -133,9 +124,14 @@ class Alliance:
         if answer is True:
             if server.id not in self.guilds:
                 data = self._createalliance(ctx, server)
+                roles = server.roles
+                for role in roles:
+                    for key in ('officers', 'bg1', 'bg2', 'bg3', 'alliance'):
+                        if role.name.lower() == key:
+                            self._get_members(server, key, role)
             else:
                 data = discord.Embed(colour=get_color(ctx))
-                data.add_field(name="Error:warning:",value="Opps, it seems like you already have an guild registered, {}.".format(user.mention))
+                data.add_field(name="Error:warning:", value="Opps, it seems like you already have an guild registered, {}.".format(user.mention))
 
             data.set_footer(text='CollectorDevTeam',
                     icon_url=COLLECTOR_ICON)
@@ -157,7 +153,7 @@ class Alliance:
         server = ctx.message.server
 
         if server.id not in self.guilds:
-            data = self._unknownuser(ctx, server)
+            data = self._unknownguild(ctx, server)
         else:
             data = self._updateguilds(ctx, key, value)
         await PagesMenu.menu_start(self, [data])
@@ -168,7 +164,7 @@ class Alliance:
         key = "guildtag"
         # v = value.split('')
         if len(value) > 5:
-            await self.bot.say('Clan Tag must be <= 5 characters.\nDo not include the \[ or \] brackets.')
+            await self.bot.say('Clan Tag must be <= 5 characters.\nDo not include the [ or ] brackets.')
         server = ctx.message.server
         if server.id not in self.guilds:
             data = self._unknownguild(ctx, server)
@@ -176,27 +172,25 @@ class Alliance:
             data = self._updateguilds(ctx, key, value)
         await PagesMenu.menu_start(self, [data])
 
+    @checks.admin_or_permissions(manage_server=True)
     @_update.command(pass_context=True, name='officers')
-    async def _officers(self, ctx, value: discord.Role):
+    async def _officers(self, ctx, role: discord.Role):
         """Which role are your Alliance Officers?"""
         key = "officers"
         server = ctx.message.server
-        members = server.members
+
         if server.id not in self.guilds:
             data = self._unknownguild(ctx, server)
             await PagesMenu.menu_start(self, [data])
         else:
-            package = []
-            package2 = []
-            for m in members:
-                if value in m.roles:
-                    package.append(m.id)
-                    package2.append(m.name)
-            data = self._updateguilds(ctx, key, value.id)
-            data2 = self._updateguilds(ctx, 'officersids', '\n'.join(package))
-            data3 = self._updateguilds(ctx, 'officersnames', '\n'.join(package2))
+            self._get_members(server, key, role)
+            # data = self._updateguilds(ctx, key, value.id)
+            # pacakge.update('role', role)
+
+            # members = self._get_members(server, value)
+            # data2 = self._updateguilds(ctx, 'officersids', '\n'.join(package))
+            # data3 = self._updateguilds(ctx, 'officersnames', '\n'.join(package2))
             await PagesMenu.menu_start(self, [data], 0)
-        # members = self._get_members(server)
 
     # @_update.command(pass_context=True, name='bg1', aliases=('battlegroup1',))
     # async def _bg1(self, ctx, *, value: discord.Role):
@@ -252,7 +246,7 @@ class Alliance:
                 icon_url=COLLECTOR_ICON)
         return data
 
-    def _unknownguild(self, ctx, user):
+    def _unknownguild(self, ctx, server):
         data = discord.Embed(colour=get_color(ctx))
         data.add_field(name="Error:warning:",value="Sadly, this feature is only available for Discord server owners who registerd for an Alliance. \n\nYou can register for a account today for free. All you have to do is:\nCreate a Discord server.\nInvite Collector\nOn your Alliance server say `{} alliance signup` and you'll be all set.".format(ctx.prefix))
         data.set_footer(text='CollectorDevTeam',
