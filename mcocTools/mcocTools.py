@@ -906,7 +906,7 @@ class MCOCTools:
     @eventquest.command(name='14.1', pass_context=True, aliases=('sinisterfoes','sinisterfoesofspiderman',))
     async def eq_sinisterfoes(self, ctx, tier='Master'):
         '''Sinister Foes of Spider-Man'''
-        event = 'eq_14'
+        event = 'eq_14.1'
         await self.format_eventquest(event, tier.lower())
 
     @eventquest.command(name='15', pass_context=True, aliases=('haveyouseenthisdog','kingping','medusa','kp',))
