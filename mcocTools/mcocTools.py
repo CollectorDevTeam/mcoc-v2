@@ -1023,7 +1023,7 @@ class MCOCTools:
                         data.description='★ First pass here for Completion'
                     data.add_field(name='Fights', value=vq[chapterpath]['fights'])
                     data.add_field(name='Boosts', value=vq[chapterpath]['boosts'])
-                    if value=vq[chapterpath]['fights'] != '':
+                    if vq[chapterpath]['fights'] != '':
                         data.add_field(name='ƦƆ51#4587 Comments', value=vq[chapterpath]['fights'])
                     page_list.append(data)
             data=discord.Embed(color=discord.Color.gold(),title='Chapter {} MVP Champions'.format(chapter, path))
