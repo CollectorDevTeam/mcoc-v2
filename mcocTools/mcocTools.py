@@ -1023,13 +1023,8 @@ class MCOCTools:
         page_list = []
         for cp in valid:
             v = vq[cp]
-            data=discord.Embed(color=discord.Color.gold(),title=v['title'],description='')
+            data=discord.Embed(color=discord.Color.gold(),title=v['title'],description=v['description'])
             data.set_footer(text='CollectorDevTeam + 2002ƦƆ51', icon_url=self.COLLECTOR_ICON)
-            if 'description' in v:
-                if v['firstpass'] == True:
-                    data.description='★ First pass here for Completion\n\n{}'.format(v['description'])
-                else:
-                    data.description=v['description']
             if 'imageurl' in v:
                 data.set_image(url=v['imageurl'])
                 data.url=v['imageurl']
