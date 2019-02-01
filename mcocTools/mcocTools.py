@@ -1024,7 +1024,8 @@ class MCOCTools:
 
         page_list = []
         for cp in valid:
-            keys = vq[cp].items()
+            keys = vq[cp].keys()
+            print(''.join(keys))
             data=discord.Embed(color=discord.Color.gold(),title=vq[cp]['title'],description='')
             print(vq[cp]['title'])
             if 'description' in keys:
