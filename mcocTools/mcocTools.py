@@ -1020,7 +1020,7 @@ class MCOCTools:
         vq = await sgd.get_gsheets_data('variant')
         valid = vq.keys()
         temp = []
-        for v in valid():
+        for v in valid:
             temp.append(v)
         valid = temp.sort()
         page_number = valid.index(chapter+'A')
