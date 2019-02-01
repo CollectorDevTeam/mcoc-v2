@@ -1029,10 +1029,15 @@ class MCOCTools:
                     data.add_field(name='Boosts', value=vq[chapterpath]['boosts'])
                     # if vq[chapterpath]['fights'] != '':
                     data.add_field(name='ƦƆ51#4587 Comments', value=vq[chapterpath]['fights'])
+                    data.set_footer(text='CollectorDevTeam',
+                            icon_url=self.COLLECTOR_ICON)
+
                     page_list.append(data)
             data=discord.Embed(color=discord.Color.gold(),title='Chapter {} MVP Champions'.format(chapter, path))
             data.description = vq[chapter+'MVP']['comments']
             data.add_field(name='Honorable Mentions',value=vq[chapter+'MVP']['comments'])
+            data.set_footer(text='CollectorDevTeam', icon_url=self.COLLECTOR_ICON)
+
             page_list.append(data)
 
         menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
