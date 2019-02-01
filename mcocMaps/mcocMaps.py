@@ -208,7 +208,7 @@ class MCOCMaps:
 
     def __init__(self, bot):
         self.bot = bot
-        self.menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
+        # self.menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
 
     @commands.group(pass_context=True, aliases=['aq',])
     async def alliancequest(self, ctx):
@@ -300,7 +300,7 @@ class MCOCMaps:
             em.set_image(url=imgurl)
             em.set_footer(text='Art: CollectorDevTeam Plan: LabyrinthTeam',)
             pages.append(em)
-        menu_start(pages=pages, page=team-1)
+        menu.menu_start(pages=pages, page=team-1)
 
     @commands.command(pass_context=True)
     async def warmap(self, ctx, *, maptype: str = 'expert'):
@@ -668,7 +668,7 @@ class MCOCMaps:
             pages.append(em)
             pages.append(em2)
             menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
-            await self.menu.menu_start(pages=pages)
+            await menu.menu_start(pages=pages)
 
             # await self.bot.say(embed=em)
 
