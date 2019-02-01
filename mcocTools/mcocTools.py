@@ -914,7 +914,7 @@ class MCOCTools:
     @eventquest.command(name='13.1', pass_context=True, aliases=('secretempireforever','punisher2099','carnage','p99',))
     async def eq_secretempireforever(self, ctx, tier='Master'):
         '''SECRET EMPIRE FOREVER'''
-        event = 'eq_'
+        event = 'eq_13.1'
         await self.format_eventquest(event, tier.lower())
 
     @eventquest.command(name='14.1', pass_context=True, aliases=('sinisterfoes','sinisterfoesofspiderman','vulture','sparky','smse',))
