@@ -1013,23 +1013,23 @@ class MCOCTools:
             rows = set(vq.keys()) - {'_headers'}
 
         page_list = []
-            for chapter in chapters:
-                for path in paths:
-                    chapterpath = chapter+path
-                    if chapterpath in rows:
-                        data=discord.Embed(color=discord.Color.gold(),title='Chapter {} Path {}'.format(chapter, path),url=vq[chapterpath]['imageurl'])
-                        data.set_image=vq[chapterpath]['imageurl']
-                        if vq[chapterpath]['firstpass']=='TRUE':
-                            data.description='★ First pass here for Completion'
-                        data.add_field(name='Fights', value=vq[chapterpath]['fights'])
-                        data.add_field(name='Boosts', value=vq[chapterpath]['boosts'])
-                        if value=vq[chapterpath]['fights'] != '':
-                            data.add_field(name='ƦƆ51#4587 Comments', value=vq[chapterpath]['fights'])
-                        page_list.append(data)
-                data=discord.Embed(color=discord.Color.gold(),title='Chapter {} MVP Champions'.format(chapter, path))
-                data.description = vq[chapter+'MVP']['comments']
-                data.add_field(name='Honorable Mentions',value=vq[chapter+'MVP']['comments'])
-                page_list.append(data)
+        for chapter in chapters:
+            for path in paths:
+                chapterpath = chapter+path
+                if chapterpath in rows:
+                    data=discord.Embed(color=discord.Color.gold(),title='Chapter {} Path {}'.format(chapter, path),url=vq[chapterpath]['imageurl'])
+                    data.set_image=vq[chapterpath]['imageurl']
+                    if vq[chapterpath]['firstpass']=='TRUE':
+                        data.description='★ First pass here for Completion'
+                    data.add_field(name='Fights', value=vq[chapterpath]['fights'])
+                    data.add_field(name='Boosts', value=vq[chapterpath]['boosts'])
+                    if value=vq[chapterpath]['fights'] != '':
+                        data.add_field(name='ƦƆ51#4587 Comments', value=vq[chapterpath]['fights'])
+                    page_list.append(data)
+            data=discord.Embed(color=discord.Color.gold(),title='Chapter {} MVP Champions'.format(chapter, path))
+            data.description = vq[chapter+'MVP']['comments']
+            data.add_field(name='Honorable Mentions',value=vq[chapter+'MVP']['comments'])
+            page_list.append(data)
 
         menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
         await menu.menu_start(page_list, page_number)
