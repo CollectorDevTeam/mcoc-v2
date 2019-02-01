@@ -1004,39 +1004,40 @@ class MCOCTools:
         '''Variant Quest
         chapters = 1.1, 1.2, 1.3, 2.1, 2.2, 2.3, 3.1, 3.2, 3.3'''
         chapters = ('1.1', '1.2', '1.3', ' 2.1', '2.2', '2.3', '3.1', '3.2', '3.3',)
-        paths = ('A','B','C','D','E','F','Boss')
-        if chapter not in chapters:
+        valid = ('1.1', '1.2', '1.3', '1MVP','1Options', '2.1', '2.2', '2.3', '2MVP', '2Options', '3.1', '3.2', '3.3','3MVP','3Options',)
+        paths = ('A','B','C','D','E','F','Boss',)
+        if chapter not in valid:
             pass
         else:
-            page_number = chapters.index(chapter)
+            page_number = chapters.index(valid)
             sgd=StaticGameData()
             vq = await sgd.get_gsheets_data('eq_variant')
-            # rows = set(vq.keys()) - {'_headers'}
+            rows = set(vq.keys()) - {'_headers'}
             # print(rows)
-            rows = str(vq['rows']['comment']).split(", ")
+            # rows = str(vq['rows']['comment']).split(", ")
 
 
         page_list = []
         for chapter in chapters:
-            for path in paths:
-                chapterpath = '{}{}'.format(chapter,path)
-                if chapterpath in rows:
-                    data=discord.Embed(color=discord.Color.gold(),title='Chapter {} Path {}'.format(chapter, path),url=vq[chapterpath]['imageurl'])
-                    data.set_image=vq[chapterpath]['imageurl']
-                    if vq[chapterpath]['firstpass']=='TRUE':
-                        data.description='★ First pass here for Completion'
-                    data.add_field(name='Fights', value=vq[chapterpath]['fights'])
-                    data.add_field(name='Boosts', value=vq[chapterpath]['boosts'])
-                    # if vq[chapterpath]['fights'] != '':
-                    data.add_field(name='ƦƆ51#4587 Comments', value=vq[chapterpath]['fights'])
-                    data.set_footer(text='CollectorDevTeam',
-                            icon_url=self.COLLECTOR_ICON)
+            for cp in valid:
+                data=discord.Embed(color=discord.Color.gold(),title=vq[cp]['title'],url=vq[cp]['imageurl'],description=vq[cp]['description'])
+                data.set_image=vq[cp]['imageurl']
+                if vq[cp]['firstpass']=='TRUE' or vq[cp]['firstpass'] == True:
+                    data.add_field(name='Completion', value='★ First pass here for Completion')
+                if vq[cp]['fights'] != '':
+                    data.add_field(name='Fights', value=vq[cp]['fights'])
+                if vq[cp]['boosts'] != '':
+                    data.add_field(name='Boosts', value=vq[cp]['boosts'])
+                if vq[cp]['comments'] != '':
+                    data.add_field(name='ƦƆ51#4587 Comments', value=vq[cp]['comments'])
+                data.set_footer(text='CollectorDevTeam',
+                        icon_url=self.COLLECTOR_ICON)
 
-                    page_list.append(data)
-            data=discord.Embed(color=discord.Color.gold(),title='Chapter {} MVP Champions'.format(chapter, path))
-            data.description = vq[chapter+'MVP']['comments']
-            data.add_field(name='Honorable Mentions',value=vq[chapter+'MVP']['comments'])
-            data.set_footer(text='CollectorDevTeam', icon_url=self.COLLECTOR_ICON)
+                page_list.append(data)
+            # data=discord.Embed(color=discord.Color.gold(),title='Chapter {} MVP Champions'.format(chapter, path))
+            # data.description = vq[chapter+'MVP']['comments']
+            # data.add_field(name='Honorable Mentions',value=vq[chapter+'MVP']['comments'])
+            # data.set_footer(text='CollectorDevTeam', icon_url=self.COLLECTOR_ICON)
 
             page_list.append(data)
 
