@@ -1043,7 +1043,7 @@ class MCOCTools:
             data.set_footer(text='CollectorDevTeam + 2002ƦƆ51', icon_url=self.COLLECTOR_ICON)
             if 'imageurl' in v:
                 data.set_image(url=v['imageurl'])
-                data.url=v['imageurl']
+                # data.url=v['imageurl']
             if 'fights' in v:
                 data.add_field(name='Fights', value=v['fights'])
             if 'boosts' in v:
