@@ -1014,15 +1014,12 @@ class MCOCTools:
         chapters = ('1.1', '1.2', '1.3', ' 2.1', '2.2', '2.3', '3.1', '3.2', '3.3',)
         # valid = ('1.1', '1.2', '1.3', '1MVP','1Options', '2.1', '2.2', '2.3', '2MVP', '2Options', '3.1', '3.2', '3.3','3MVP','3Options',)
         paths = ('A','B','C','D','E','F','Boss',)
+        page_number = valid.index(chapter+'A')
+        sgd=StaticGameData()
+        vq = await sgd.get_gsheets_data('variant')
         valid = vq.keys()
         if chapter not in chapters:
-            pass
-        else:
-            page_number = valid.index(chapter+'A')
-            sgd=StaticGameData()
-            vq = await sgd.get_gsheets_data('variant')
-            # rows = set(vq.keys()) - {'_headers'}
-
+            return
         page_list = []
         for cp in valid:
             v = vq[cp]
