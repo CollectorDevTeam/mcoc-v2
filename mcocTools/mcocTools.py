@@ -91,11 +91,11 @@ class StaticGameData:
         )
 
         self.gsheet_handler.register_gsheet(
-                name='eq_variant',
+                name='variant',
                 gkey='1ZnoP_Kz_dC1DuTYmRX0spQLcHjiUZtT-oVTF52MHO3g',
-                local='data/mcoc/eq_variant.json',
+                local='data/mcoc/variant.json',
                 # sheet_name='Collectorfy',
-                range_name='eq_variant',
+                range_name='variant',
                 #settings=dict(column_handler='champs: to_list')
         )
 
@@ -1019,8 +1019,8 @@ class MCOCTools:
         else:
             page_number = valid.index(chapter)
             sgd=StaticGameData()
-            vq = await sgd.get_gsheets_data('eq_variant')
-            rows = set(vq.keys()) - {'_headers'}
+            vq = await sgd.get_gsheets_data('variant')
+            # rows = set(vq.keys()) - {'_headers'}
 
         page_list = []
         for cp in valid:
