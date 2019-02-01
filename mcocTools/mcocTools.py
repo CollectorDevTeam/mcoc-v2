@@ -100,7 +100,7 @@ class StaticGameData:
         )
 
         # Update this list to add Events
-        events = ['15','15.1','16','16.1','17','17.1','17.2','18','18.1', '19.1', '20', '20.1', '21', '21.1', '21.2']
+        events = ['14.1','15','15.1','16','16.1','17','17.1','17.2','18','18.1', '19.1', '20', '20.1', '21', '21.1', '21.2']
 
         for event in events:
             self.gsheet_handler.register_gsheet(
@@ -903,8 +903,14 @@ class MCOCTools:
     #     event = 'eq_'
     #     await self.format_eventquest(event, tier.lower())
 
+    @eventquest.command(name='14.1', pass_context=True, aliases=('sinisterfoes','sinisterfoesofspiderman',))
+    async def eq_sinisterfoes(self, ctx, tier='Master'):
+        '''Sinister Foes of Spider-Man'''
+        event = 'eq_14'
+        await self.format_eventquest(event, tier.lower())
+
     @eventquest.command(name='15', pass_context=True, aliases=('haveyouseenthisdog','kingping','medusa','kp',))
-    async def eq_(self, ctx, tier='Master'):
+    async def eq_haveyouseenthisdog(self, ctx, tier='Master'):
         '''Have You Seen This Dog?'''
         event = 'eq_15'
         await self.format_eventquest(event, tier.lower())
@@ -1026,10 +1032,10 @@ class MCOCTools:
                     data.add_field(name='Completion', value='★ First pass here for Completion')
                 if vq[cp]['fights'] != '':
                     data.add_field(name='Fights', value=vq[cp]['fights'])
-                if vq[cp]['boosts'] != '':
-                    data.add_field(name='Boosts', value=vq[cp]['boosts'])
-                if vq[cp]['comments'] != '':
-                    data.add_field(name='ƦƆ51#4587 Comments', value=vq[cp]['comments'])
+                # if vq[cp]['boosts'] != '':
+                #     data.add_field(name='Boosts', value=vq[cp]['boosts'])
+                # if vq[cp]['comments'] != '':
+                #     data.add_field(name='ƦƆ51#4587 Comments', value=vq[cp]['comments'])
                 data.set_footer(text='CollectorDevTeam',
                         icon_url=self.COLLECTOR_ICON)
 
