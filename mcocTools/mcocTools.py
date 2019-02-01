@@ -1036,7 +1036,7 @@ class MCOCTools:
             data.set_footer(text='CollectorDevTeam', icon_url=self.COLLECTOR_ICON)
             if vq[cp]['firstpass']=='TRUE' or vq[cp]['firstpass'] == True:
                 data.add_field(name='Completion', value='★ First pass here for Completion')
-            if 'fights' in keys():
+            if 'fights' in keys:
                 data.add_field(name='Fights', value=vq[cp]['fights'])
                 print(vq[cp]['fights'])
             page_list.append(data)
