@@ -100,7 +100,7 @@ class StaticGameData:
         )
 
         # Update this list to add Events
-        events = ['14.1','15','15.1','16','16.1','17','17.1','17.2','18','18.1', '19.1', '20', '20.1', '21', '21.1', '21.2']
+        events = ['13.1','14','14.1','15','15.1','16','16.1','17','17.1','17.2','18','18.1', '19.1', '20', '20.1', '21', '21.1', '21.2']
 
         for event in events:
             self.gsheet_handler.register_gsheet(
@@ -1022,7 +1022,8 @@ class MCOCTools:
         valid = []
         for v in vq.keys():
             valid.append(v)
-        valid = valid.sort()
+        valid = sorted(valid)
+        print(join('\n',valid))
         page_number = valid.index(chapter+'A')
         page_list = []
         for cp in valid:
