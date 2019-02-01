@@ -1013,7 +1013,7 @@ class MCOCTools:
             vq = await sgd.get_gsheets_data('eq_variant')
             # rows = set(vq.keys()) - {'_headers'}
             # print(rows)
-            rows = vq['rows']['comment'].split(", ")
+            rows = str(vq['rows']['comment']).split(", ")
 
 
         page_list = []
