@@ -90,6 +90,14 @@ class StaticGameData:
                 #settings=dict(column_handler='champs: to_list')
         )
 
+        self.gsheet_handler.register_gsheet(
+                name='variant_quest',
+                gkey='1ZnoP_Kz_dC1DuTYmRX0spQLcHjiUZtT-oVTF52MHO3g',
+                local='data/mcoc/variant_quest.json',
+                sheet_name='Collectorfy',
+                #settings=dict(column_handler='champs: to_list')
+        )
+
         # Update this list to add Events
         events = ['15','15.1','16','16.1','17','17.1','17.2','18','18.1', '19.1', '20', '20.1', '21', '21.1', '21.2']
 
@@ -989,6 +997,39 @@ class MCOCTools:
     #     '''TITLE'''
     #     event = 'eq_'
     #     await self.format_eventquest(event, tier.lower())
+
+    @eventqest.command(name'variant', pass_context=True)
+    async def eq_variant(self, ctx, chapter: str):
+        '''Variant Quest
+        chapters = 1.1, 1.2, 1.3, 2.1, 2.2, 2.3, 3.1, 3.2, 3.3'''
+        chapters = ('1.1', '1.2', '1.3', ' 2.1', '2.2', '2.3', '3.1', '3.2', '3.3',)
+        paths = ('A','B','C','D','E','F','Boss')
+        if chapter not in chapters:
+            pass
+        else:
+            page_number = chapters.index(chapter)
+            sgd=StaticGameData()
+            vq = await sgd.get_gsheets_data('variant_quest')
+            rows = set(vq.keys()) - {'_headers'}
+
+        page_list = []
+            for chapter in chapters:
+                for path in paths:
+                    chapterpath = chapter+path
+                    if chapterpath in rows:
+                        data=discord.Embed(color=discord.Color.gold(),title='Chapter {} Path {}'.format(chapter, path),url=vq[chapterpath]['imageurl'])
+                        data.set_image=vq[chapterpath]['imageurl']
+                        if vq[chapterpath]['firstpass']=='TRUE':
+                            data.description='★ First pass here for Completion'
+                        data.add_field(name='Fights', value=vq[chapterpath]['fights'])
+                        data.add_field(name='Boosts', value=vq[chapterpath]['boosts'])
+                        if value=vq[chapterpath]['fights'] != '':
+                            data.add_field(name='ƦƆ51#4587 Comments', value=vq[chapterpath]['fights'])
+                        page_list.append(data)
+                data=discord.Embed(color=discord.Color.gold(),title='Chapter {} MVP Champions'.format(chapter, path))
+                data.description = vq[chapter+'MVP']['comments']
+                data.add_field(name='Honorable Mentions',value=vq[chapter+'MVP']['comments'])
+
 
     async def format_eventquest(self, event, tier): #, tiers=('beginner','normal','heroic','master')):
         sgd = StaticGameData()
