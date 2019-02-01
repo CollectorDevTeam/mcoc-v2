@@ -1025,15 +1025,15 @@ class MCOCTools:
             v = vq[cp]
             data=discord.Embed(color=discord.Color.gold(),title=v['title'],description=v['description'])
             data.set_footer(text='CollectorDevTeam + 2002ƦƆ51', icon_url=self.COLLECTOR_ICON)
-            if 'imageurl' in v:
-                data.set_image(url=v['imageurl'])
-                data.url=v['imageurl']
+            # if 'imageurl' in v:
+            #     data.set_image(url=v['imageurl'])
+            #     data.url=v['imageurl']
             if 'fights' in v:
                 data.add_field(name='Fights', value=v['fights'])
-            if 'boosts' in v:
-                data.add_field(name='Boosts', value=v['boosts'])
-            if 'comments' in v:
-                data.add_field(name='Comments', value=v['comments'])
+            # if 'boosts' in v:
+            #     data.add_field(name='Boosts', value=v['boosts'])
+            # if 'comments' in v:
+            #     data.add_field(name='Comments', value=v['comments'])
 
             page_list.append(data)
         menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
