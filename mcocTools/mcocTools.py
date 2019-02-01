@@ -998,7 +998,7 @@ class MCOCTools:
     #     event = 'eq_'
     #     await self.format_eventquest(event, tier.lower())
 
-    @eventquest.command(name'variant', pass_context=True)
+    @eventquest.command(name='variant', pass_context=True)
     async def eq_variant(self, ctx, chapter: str):
         '''Variant Quest
         chapters = 1.1, 1.2, 1.3, 2.1, 2.2, 2.3, 3.1, 3.2, 3.3'''
