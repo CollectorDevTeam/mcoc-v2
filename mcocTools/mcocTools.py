@@ -91,7 +91,7 @@ class StaticGameData:
         )
 
         self.gsheet_handler.register_gsheet(
-                name='eq_variant`',
+                name='eq_variant',
                 gkey='1ZnoP_Kz_dC1DuTYmRX0spQLcHjiUZtT-oVTF52MHO3g',
                 local='data/mcoc/eq_variant.json',
                 # sheet_name='Collectorfy',
