@@ -1012,14 +1012,14 @@ class MCOCTools:
         '''Variant Quest
         chapters = 1.1, 1.2, 1.3, 2.1, 2.2, 2.3, 3.1, 3.2, 3.3'''
         chapters = ('1.1', '1.2', '1.3', ' 2.1', '2.2', '2.3', '3.1', '3.2', '3.3',)
+        if chapter not in chapters:
+            return
         # valid = ('1.1', '1.2', '1.3', '1MVP','1Options', '2.1', '2.2', '2.3', '2MVP', '2Options', '3.1', '3.2', '3.3','3MVP','3Options',)
-        paths = ('A','B','C','D','E','F','Boss',)
-        page_number = valid.index(chapter+'A')
+        # paths = ('A','B','C','D','E','F','Boss',)
         sgd=StaticGameData()
         vq = await sgd.get_gsheets_data('variant')
         valid = vq.keys()
-        if chapter not in chapters:
-            return
+        page_number = valid.index(chapter+'A')
         page_list = []
         for cp in valid:
             v = vq[cp]
