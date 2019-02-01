@@ -1024,16 +1024,19 @@ class MCOCTools:
 
         page_list = []
         for cp in valid:
-            data=discord.Embed(color=discord.Color.gold(),title=vq[cp]['title'],url=vq[cp]['imageurl'],description='')
-            if vq[cp]['description'] != '':
+            keys = vq[cp].keys()
+            data=discord.Embed(color=discord.Color.gold(),title=vq[cp]['title'],description='')
+            if 'description' in keys:
                 data.description=vq[cp]['description']
             print(vq[cp]['title'])
             print(vq[cp]['description'])
-            data.set_image(url=vq[cp]['imageurl'])
+            if 'imageurl' in keys:
+                data.set_image(url=vq[cp]['imageurl'])
+                data.url=vq[cp]['imageurl']
             data.set_footer(text='CollectorDevTeam', icon_url=self.COLLECTOR_ICON)
             if vq[cp]['firstpass']=='TRUE' or vq[cp]['firstpass'] == True:
                 data.add_field(name='Completion', value='★ First pass here for Completion')
-            if vq[cp]['fights'] != '':
+            if 'fights' in keys():
                 data.add_field(name='Fights', value=vq[cp]['fights'])
                 print(vq[cp]['fights'])
             page_list.append(data)
