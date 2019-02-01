@@ -1005,7 +1005,7 @@ class MCOCTools:
     #     event = 'eq_'
     #     await self.format_eventquest(event, tier.lower())
 
-    @eventquest.command(name='variant', pass_context=True)
+    @commands.command(name='variant', pass_context=True)
     async def eq_variant(self, ctx, chapter: str):
         '''Variant Quest
         chapters = 1.1, 1.2, 1.3, 2.1, 2.2, 2.3, 3.1, 3.2, 3.3'''
@@ -1019,36 +1019,20 @@ class MCOCTools:
             sgd=StaticGameData()
             vq = await sgd.get_gsheets_data('eq_variant')
             rows = set(vq.keys()) - {'_headers'}
-            # print(rows)
-            # rows = str(vq['rows']['comment']).split(", ")
-
 
         page_list = []
-        for chapter in chapters:
-            for cp in valid:
-                data=discord.Embed(color=discord.Color.gold(),title=vq[cp]['title'],url=vq[cp]['imageurl'],description=vq[cp]['description'])
-                data.set_image(url=vq[cp]['imageurl'])
-                if vq[cp]['firstpass']=='TRUE' or vq[cp]['firstpass'] == True:
-                    data.add_field(name='Completion', value='★ First pass here for Completion')
-                if vq[cp]['fights'] != '':
-                    data.add_field(name='Fights', value=vq[cp]['fights'])
-                # if vq[cp]['boosts'] != '':
-                #     data.add_field(name='Boosts', value=vq[cp]['boosts'])
-                # if vq[cp]['comments'] != '':
-                #     data.add_field(name='ƦƆ51#4587 Comments', value=vq[cp]['comments'])
-                data.set_footer(text='CollectorDevTeam',
-                        icon_url=self.COLLECTOR_ICON)
-
-                page_list.append(data)
-            # data=discord.Embed(color=discord.Color.gold(),title='Chapter {} MVP Champions'.format(chapter, path))
-            # data.description = vq[chapter+'MVP']['comments']
-            # data.add_field(name='Honorable Mentions',value=vq[chapter+'MVP']['comments'])
-            # data.set_footer(text='CollectorDevTeam', icon_url=self.COLLECTOR_ICON)
-
+        for cp in valid:
+            data=discord.Embed(color=discord.Color.gold(),title=vq[cp]['title'],url=vq[cp]['imageurl'],description=vq[cp]['description'])
+            data.set_image(url=vq[cp]['imageurl'])
+            data.set_footer(text='CollectorDevTeam', icon_url=self.COLLECTOR_ICON)
+            if vq[cp]['firstpass']=='TRUE' or vq[cp]['firstpass'] == True:
+                data.add_field(name='Completion', value='★ First pass here for Completion')
+            if vq[cp]['fights'] != '':
+                data.add_field(name='Fights', value=vq[cp]['fights'])
             page_list.append(data)
-
         menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
         await menu.menu_start(page_list, page_number)
+        await menu.menu_start()
 
     async def format_eventquest(self, event, tier): #, tiers=('beginner','normal','heroic','master')):
         sgd = StaticGameData()
