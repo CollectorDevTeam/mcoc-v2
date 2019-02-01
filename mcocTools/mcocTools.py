@@ -1021,7 +1021,7 @@ class MCOCTools:
         for chapter in chapters:
             for cp in valid:
                 data=discord.Embed(color=discord.Color.gold(),title=vq[cp]['title'],url=vq[cp]['imageurl'],description=vq[cp]['description'])
-                data.set_image=vq[cp]['imageurl']
+                data.set_image(url=vq[cp]['imageurl'])
                 if vq[cp]['firstpass']=='TRUE' or vq[cp]['firstpass'] == True:
                     data.add_field(name='Completion', value='★ First pass here for Completion')
                 if vq[cp]['fights'] != '':
