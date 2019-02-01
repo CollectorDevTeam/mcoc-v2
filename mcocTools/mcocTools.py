@@ -1012,7 +1012,7 @@ class MCOCTools:
             sgd=StaticGameData()
             vq = await sgd.get_gsheets_data('eq_variant')
             # rows = set(vq.keys()) - {'_headers'}
-            print(rows)
+            # print(rows)
             rows = vq['rows']['comment'].split(", ")
 
 
