@@ -100,7 +100,7 @@ class StaticGameData:
         )
 
         # Update this list to add Events
-        events = ['13.1','14','14.1','15','15.1','16','16.1','17','17.1','17.2','18','18.1', '19.1', '20', '20.1', '21', '21.1', '21.2']
+        events = ['13','13.1','14','14.1','15','15.1','16','16.1','17','17.1','17.2','18','18.1', '19.1', '20', '20.1', '21', '21.1', '21.2']
 
         for event in events:
             self.gsheet_handler.register_gsheet(
@@ -905,7 +905,19 @@ class MCOCTools:
     #     event = 'eq_'
     #     await self.format_eventquest(event, tier.lower())
 
-    @eventquest.command(name='14.1', pass_context=True, aliases=('sinisterfoes','sinisterfoesofspiderman',))
+    @eventquest.command(name='13', pass_context=True, aliases=('guardians','yondu','nebula','guardiansvolzero',))
+    async def eq_guardiansvolzero(self, ctx, tier='Master'):
+        '''GUARDIANS OF THE GALAX VOL ZERO'''
+        event = 'eq_13'
+        await self.format_eventquest(event, tier.lower())
+
+    @eventquest.command(name='13.1', pass_context=True, aliases=('secretempireforever','punisher2099','carnage','p99',))
+    async def eq_secretempireforever(self, ctx, tier='Master'):
+        '''SECRET EMPIRE FOREVER'''
+        event = 'eq_'
+        await self.format_eventquest(event, tier.lower())
+
+    @eventquest.command(name='14.1', pass_context=True, aliases=('sinisterfoes','sinisterfoesofspiderman','vulture','sparky','smse',))
     async def eq_sinisterfoes(self, ctx, tier='Master'):
         '''Sinister Foes of Spider-Man'''
         event = 'eq_14.1'
@@ -1019,11 +1031,7 @@ class MCOCTools:
         sgd=StaticGameData()
         vq = await sgd.get_gsheets_data('variant')
         # valid = vq.keys()
-        valid = []
-        for v in vq.keys():
-            valid.append(v)
-        valid = sorted(valid)
-        print('\n'.join(valid))
+        valid = ['1MVP','1Options','1.1A','1.1B','1.1Boss','1.1C','1.1D','1.1E','1.1F','1.2A','1.2B','1.2Boss','1.2C','1.2D','1.2E','1.3A','1.3B','1.3Boss','1.3C','1.3D','1.3E','2MVP','2Options','2.1A','2.1B','2.1Boss','2.1C','2.1D','2.1E','2.1F','2.2A','2.2B','2.2Boss','2.2C','2.2D','2.3A','2.3B','2.3Boss','2.3C','2.3D','2.3E','2.3F','3MVP','3Options','3.1A','3.1B','3.1Boss','3.1C','3.1D','3.1E','3.1F','3.2A','3.2B','3.2Boss','3.2C','3.2D','3.2E','3.2F','3.3A','3.3B','3.3Boss','3.3C','3.3D','3.3E','3.3F']
         page_number = valid.index(chapter+'A')
         page_list = []
         for cp in valid:
