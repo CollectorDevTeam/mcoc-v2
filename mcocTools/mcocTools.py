@@ -1009,7 +1009,7 @@ class MCOCTools:
         if chapter not in valid:
             pass
         else:
-            page_number = chapters.index(valid)
+            page_number = valid.index(chapter)
             sgd=StaticGameData()
             vq = await sgd.get_gsheets_data('eq_variant')
             rows = set(vq.keys()) - {'_headers'}
