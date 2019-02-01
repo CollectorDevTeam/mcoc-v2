@@ -1011,12 +1011,15 @@ class MCOCTools:
             page_number = chapters.index(chapter)
             sgd=StaticGameData()
             vq = await sgd.get_gsheets_data('eq_variant')
-            rows = set(vq.keys()) - {'_headers'}
+            # rows = set(vq.keys()) - {'_headers'}
+            print(rows)
+            rows = vq['rows']['comment'].split(", ")
+
 
         page_list = []
         for chapter in chapters:
             for path in paths:
-                chapterpath = chapter+path
+                chapterpath = '{}{}'.format(chapter,path)
                 if chapterpath in rows:
                     data=discord.Embed(color=discord.Color.gold(),title='Chapter {} Path {}'.format(chapter, path),url=vq[chapterpath]['imageurl'])
                     data.set_image=vq[chapterpath]['imageurl']
@@ -1024,8 +1027,8 @@ class MCOCTools:
                         data.description='★ First pass here for Completion'
                     data.add_field(name='Fights', value=vq[chapterpath]['fights'])
                     data.add_field(name='Boosts', value=vq[chapterpath]['boosts'])
-                    if vq[chapterpath]['fights'] != '':
-                        data.add_field(name='ƦƆ51#4587 Comments', value=vq[chapterpath]['fights'])
+                    # if vq[chapterpath]['fights'] != '':
+                    data.add_field(name='ƦƆ51#4587 Comments', value=vq[chapterpath]['fights'])
                     page_list.append(data)
             data=discord.Embed(color=discord.Color.gold(),title='Chapter {} MVP Champions'.format(chapter, path))
             data.description = vq[chapter+'MVP']['comments']
