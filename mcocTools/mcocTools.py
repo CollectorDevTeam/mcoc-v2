@@ -94,7 +94,7 @@ class StaticGameData:
                 name='variant',
                 gkey='1ZnoP_Kz_dC1DuTYmRX0spQLcHjiUZtT-oVTF52MHO3g',
                 local='data/mcoc/variant.json',
-                # sheet_name='Collectorfy',
+                sheet_name='Collectorfy',
                 range_name='variant',
                 #settings=dict(column_handler='champs: to_list')
         )
