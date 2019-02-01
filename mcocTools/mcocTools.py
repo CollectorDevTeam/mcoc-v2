@@ -1018,11 +1018,11 @@ class MCOCTools:
         # paths = ('A','B','C','D','E','F','Boss',)
         sgd=StaticGameData()
         vq = await sgd.get_gsheets_data('variant')
-        valid = vq.keys()
-        temp = []
-        for v in valid:
-            temp.append(v)
-        valid = temp.sort()
+        # valid = vq.keys()
+        valid = []
+        for v in vq.keys():
+            valid.append(v)
+        valid = valid.sorted()
         page_number = valid.index(chapter+'A')
         page_list = []
         for cp in valid:
@@ -1036,8 +1036,8 @@ class MCOCTools:
                 data.add_field(name='Fights', value=v['fights'])
             # if 'boosts' in v:
             #     data.add_field(name='Boosts', value=v['boosts'])
-            # if 'comments' in v:
-            #     data.add_field(name='Comments', value=v['comments'])
+            if 'comments' in v:
+                data.add_field(name='Comments', value=v['comments'])
 
             page_list.append(data)
         menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
