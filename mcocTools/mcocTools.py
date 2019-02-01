@@ -1053,8 +1053,8 @@ class MCOCTools:
                 data.add_field(name='Fights', value=v['fights'])
             if 'boosts' in v:
                 data.add_field(name='Boosts', value=v['boosts'])
-            if 'comments' in v:
-                data.add_field(name='Comments', value=v['comments'])
+            # if 'comments' in v:
+            #     data.add_field(name='Comments', value=v['comments'])
 
             page_list.append(data)
         menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
