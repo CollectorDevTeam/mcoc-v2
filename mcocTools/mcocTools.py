@@ -998,7 +998,7 @@ class MCOCTools:
     #     event = 'eq_'
     #     await self.format_eventquest(event, tier.lower())
 
-    @eventqest.command(name'variant', pass_context=True)
+    @eventquest.command(name'variant', pass_context=True)
     async def eq_variant(self, ctx, chapter: str):
         '''Variant Quest
         chapters = 1.1, 1.2, 1.3, 2.1, 2.2, 2.3, 3.1, 3.2, 3.3'''
@@ -1029,7 +1029,10 @@ class MCOCTools:
                 data=discord.Embed(color=discord.Color.gold(),title='Chapter {} MVP Champions'.format(chapter, path))
                 data.description = vq[chapter+'MVP']['comments']
                 data.add_field(name='Honorable Mentions',value=vq[chapter+'MVP']['comments'])
+                page_list.append(data)
 
+        menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
+        await menu.menu_start(page_list, page_number)
 
     async def format_eventquest(self, event, tier): #, tiers=('beginner','normal','heroic','master')):
         sgd = StaticGameData()
