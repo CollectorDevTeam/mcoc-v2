@@ -1019,7 +1019,7 @@ class MCOCTools:
         sgd=StaticGameData()
         vq = await sgd.get_gsheets_data('variant')
         valid = vq.keys()
-        page_number = valid.index(chapter+'A')
+        page_number = list(valid).index(chapter+'A')
         page_list = []
         for cp in valid:
             v = vq[cp]
