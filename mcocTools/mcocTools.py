@@ -1019,10 +1019,13 @@ class MCOCTools:
         sgd=StaticGameData()
         vq = await sgd.get_gsheets_data('variant')
         valid = vq.keys()
-
-        page_number = list(valid).index(chapter+'A')
+        temp = []
+        for v in valid():
+            temp.append(v)
+        valid = temp.sort()
+        page_number = valid.index(chapter+'A')
         page_list = []
-        for cp in list(valid).sort():
+        for cp in valid:
             v = vq[cp]
             data=discord.Embed(color=discord.Color.gold(),title=v['title'],description=v['description'])
             data.set_footer(text='CollectorDevTeam + 2002ƦƆ51', icon_url=self.COLLECTOR_ICON)
