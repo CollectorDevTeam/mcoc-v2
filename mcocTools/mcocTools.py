@@ -1023,7 +1023,7 @@ class MCOCTools:
         for v in vq.keys():
             valid.append(v)
         valid = sorted(valid)
-        print(join('\n',valid))
+        print('\n'.join(valid))
         page_number = valid.index(chapter+'A')
         page_list = []
         for cp in valid:
