@@ -592,22 +592,27 @@ class MCOCMaps:
             else:
                 response = await self.jm_send_request(AWD_API_URL, data=data)
                 response2 = await self.jm_send_request(AWD_API_URL, data=data2)
-
-            if 'error' in response and 'error' not in response2:
+            if 'error' in response:
                 response = response2
                 data = data2
                 await self.bot.say('Switching to Fringe')
 
             if 'error' in response and default['debug'] == 1:
+                if data == data2:
+                    em.add_fie(name='Response check', value='Switched to Fringe')
                 em.add_field(name='Transmitting:', value=json.dumps(data))
                 em.add_field(name='Scout API Error & Debug', value=str(response['error']))
                 # em.add_field(name='Full Reponse', value=json.dumps(reponse))
                 await self.bot.say(embed=em)
                 return
             elif default['debug'] == 1:
+                if data == data2:
+                    em.add_fie(name='Response check', value='Switched to Fringe')
                 em.add_field(name='Transmitting:', value=json.dumps(data))
                 em.add_field(name='Scout API Debug', value=json.dumps(response))
             elif 'error' in response:
+                if data == data2:
+                    em.add_fie(name='Response check', value='Switched to Fringe')
                 em.add_field(name='Scout API Error', value='unknown error')
                 await self.bot.say(embed=em)
                 return
