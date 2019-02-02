@@ -572,6 +572,7 @@ class MCOCMaps:
                 url = AWD_API_URL
 
             response = await self.jm_send_request(url, data=data)
+            fringe = None
             if not response:
                 tier = int(default['tier'])
                 if tier > 1 and self.aw_tiers[tier - 1]['diff'] != self.aw_tiers[tier]['diff']:
@@ -581,6 +582,7 @@ class MCOCMaps:
                         data['difficulty'] = default['difficulty'].lower()
                     else:
                         data['tier'] = tier - 1
+                        fringe = 'Opponent in higher tier'
                 elif tier < 22 and self.aw_tiers[tier + 1]['diff'] != self.aw_tiers[tier]['diff']:
                     data['difficulty'] = self.aw_tiers[tier + 1]['diff'].lower()
                     response = await self.jm_send_request(url, data=data)
@@ -588,6 +590,7 @@ class MCOCMaps:
                         data['difficulty'] = default['difficulty'].lower()
                     else:
                         data['tier'] = tier + 1
+                        fringe = 'Opponent in lower tier'
 
             pathdata = self.aw_maps[data['difficulty'].lower()]
             # nodedetails = pathdata['boosts'][str(default['node'])]
@@ -597,26 +600,21 @@ class MCOCMaps:
                 desc = 'Tier {} | {} Bracket | Node {}'.format(data['tier'],data['difficulty'].title(), default['node'])
             em.description=desc
             if 'error' in response and default['debug'] == 1:
-                # if data == data2:
-                #     em.add_field(name='Response check', value='Switched to Fringe')
+                if fringe is not None:
+                    em.add_field(name='Fringe check', value=fringe)
                 em.add_field(name='Transmitting:', value=json.dumps(data))
-# <<<<<<< jm/fringe_tier
-#                 em.add_field(name='Scout API Error', value=str(response['error']))
-# =======
                 em.add_field(name='Scout API Error & Debug', value=str(response['error']))
-# >>>>>>> master
-                # em.add_field(name='Full Reponse', value=json.dumps(reponse))
                 await self.bot.say(embed=em)
                 return
             elif default['debug'] == 1:
-                if data == data2:
-                    em.add_field(name='Response check', value='Switched to Fringe')
+                if fringe is not None:
+                    em.add_field(name='Fringe check', value=fringe)
                 em.add_field(name='Transmitting:', value=json.dumps(data))
                 em.add_field(name='Scout API Debug', value=json.dumps(response))
 
             elif 'error' in response:
-                if data == data2:
-                    em.add_fie(name='Response check', value='Switched to Fringe')
+                if fringe is not None:
+                    em.add_field(name='Fringe check', value=fringe)
                 em.add_field(name='Scout API Error', value='unknown error')
                 await self.bot.say(embed=em)
                 return
