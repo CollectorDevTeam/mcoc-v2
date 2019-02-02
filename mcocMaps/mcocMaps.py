@@ -571,10 +571,12 @@ class MCOCMaps:
                     data[d] = default[d] #stringify all data?
                 data['node'] = 'n{}'.format(default['node'])
             data2 = data
-            fringe = {3:'challenger',5:'hard',9:'intermediate',12:'normal',15:'easy'}
+            data2['difficulty'].pop
+            # fringe = {3:'challenger',5:'hard',9:'intermediate',12:'normal',15:'easy'}
             if default['node'] in (3, 5, 9, 12, 15,):
-                data2['node'] = int(default['node'])+1
-                data2['difficulty'] = finge[int(default['node'])]
+                data2['node'] = 'n{}'.format(default['node']+1)
+            elif default['node'] in (4, 6, 10, 13, 16):
+                data2['node'] = 'n{}'.format(default['node']-1)
                 # data['hp'] = 'hp{}'.format(default['hp'])
                 # data['atk'] = 'atk{}'.format(default['atk'])
             if default['test'] == True:
