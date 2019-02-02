@@ -568,9 +568,9 @@ class MCOCMaps:
 
             if default['test'] == True:
                 url = AWD_API_URL_TEST
-            else
+            else:
                 url = AWD_API_URL
-            
+
             response = await self.jm_send_request(url, data=data)
             if not response:
                 tier = int(default['tier'])
