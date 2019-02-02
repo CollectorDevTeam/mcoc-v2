@@ -566,7 +566,7 @@ class MCOCMaps:
             # calls to jm service
             # only send jm's keys & values
             data = {}
-            for d in {'difficulty', 'star_filter','class_filter', 'hp', 'atk'}:
+            for d in {'difficulty', 'star_filter', 'class_filter', 'hp', 'atk'}:
                 if d in keys:
                     data[d] = default[d] #stringify all data?
                 data['node'] = 'n{}'.format(default['node'])
@@ -591,17 +591,19 @@ class MCOCMaps:
                 response = await self.jm_send_request(AWD_API_URL, data=data)
                 response2 = await self.jm_send_request(AWD_API_URL, data=data2)
                 if default['debug']==1:
+                    await self.bot.say('sending'+json.dumps(data))
                     await self.bot.say('response\n'+json.dumps(response))
+                    await self.bot.say('sending'+json.dumps(data2))
                     await self.bot.say('response2\n'+json.dumps(response2))
                 # print(response2['text'])
-            if json.dumps(response) == {}:
+            if json.dumps(response) == '{}' and data != data2:
                 response = response2
                 data = data2
                 await self.bot.say('Switching to Fringe')
 
             if 'error' in response and default['debug'] == 1:
-                if data == data2:
-                    em.add_field(name='Response check', value='Switched to Fringe')
+                # if data == data2:
+                #     em.add_field(name='Response check', value='Switched to Fringe')
                 em.add_field(name='Transmitting:', value=json.dumps(data))
                 em.add_field(name='Scout API Error & Debug', value=str(response['error']))
                 # em.add_field(name='Full Reponse', value=json.dumps(reponse))
