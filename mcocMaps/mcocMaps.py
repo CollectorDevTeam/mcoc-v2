@@ -571,7 +571,7 @@ class MCOCMaps:
                     data[d] = default[d] #stringify all data?
                 data['node'] = 'n{}'.format(default['node'])
             data2 = data
-            data2['difficulty'].pop
+            data2.pop('difficulty')
             # fringe = {3:'challenger',5:'hard',9:'intermediate',12:'normal',15:'easy'}
             if default['node'] in (3, 5, 9, 12, 15,):
                 data2['node'] = 'n{}'.format(default['node']+1)
