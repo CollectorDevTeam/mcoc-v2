@@ -566,22 +566,23 @@ class MCOCMaps:
 
 
             if default['test'] == True:
-                response = await self.jm_send_request(AWD_API_URL_TEST, data=data)
-            else:
-                response = await self.jm_send_request(AWD_API_URL, data=data)
- 
+                url = AWD_API_URL_TEST
+            else
+                url = AWD_API_URL
+            
+            response = await self.jm_send_request(url, data=data)
             if not response:
                 tier = int(default['tier'])
                 if tier > 1 and self.aw_tiers[tier - 1]['diff'] != self.aw_tiers[tier]['diff']:
                     data['difficulty'] = self.aw_tiers[tier - 1]['diff'].lower()
-                    response = await self.jm_send_request(AWD_API_URL, data=data)
+                    response = await self.jm_send_request(url, data=data)
                     if not response:
                         data['difficulty'] = default['difficulty'].lower()
                     else:
                         data['tier'] = tier - 1
                 elif tier < 22 and self.aw_tiers[tier + 1]['diff'] != self.aw_tiers[tier]['diff']:
                     data['difficulty'] = self.aw_tiers[tier + 1]['diff'].lower()
-                    response = await self.jm_send_request(AWD_API_URL, data=data)
+                    response = await self.jm_send_request(url, data=data)
                     if not response:
                         data['difficulty'] = default['difficulty'].lower()
                     else:
