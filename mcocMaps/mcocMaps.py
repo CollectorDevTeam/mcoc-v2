@@ -576,12 +576,12 @@ class MCOCMaps:
             if default['tier'] in (3, 5, 9, 12, 15,):
                 fringe = default['tier']+1
                 # data2['tier'] = fringe
-                data2['difficulty'] = self.aw_tiers[fringe]['diff']
+                data2['difficulty'] = self.aw_tiers[fringe]['diff'].lower()
                 pass
             elif default['tier'] (4, 6, 10, 13, 16,):
                 fringe = default['tier']-1
                 # data2['tier'] = fringe
-                data2['difficulty'] = self.aw_tiers[fringe]['diff']
+                data2['difficulty'] = self.aw_tiers[fringe]['diff'].lower()
                 pass# data['hp'] = 'hp{}'.format(default['hp'])
                 # data['atk'] = 'atk{}'.format(default['atk'])
             if default['test'] == True:
@@ -590,13 +590,19 @@ class MCOCMaps:
             else:
                 response = await self.jm_send_request(AWD_API_URL, data=data)
                 response2 = await self.jm_send_request(AWD_API_URL, data=data2)
-                if default['debug']==1:
-                    await self.bot.say('sending'+json.dumps(data))
-                    await self.bot.say('response\n'+json.dumps(response))
-                    await self.bot.say('sending'+json.dumps(data2))
-                    await self.bot.say('response2\n'+json.dumps(response2))
+            if default['debug']==1:
+                await self.bot.say('sending'+json.dumps(data))
+                await self.bot.say('response\n'+json.dumps(response))
+                await self.bot.say('sending2'+json.dumps(data2))
+                await self.bot.say('response2\n'+json.dumps(response2))
                 # print(response2['text'])
-            if json.dumps(response) == '{}' and data != data2:
+            r1 = json.dumps(response)
+            r2 = json.dumps(response2)
+            if r1 == '{}':
+                await self.bot.say('response 1 empty')
+            if r2 == '{}':
+                await self.bot.say('response 2 empty')
+            if r1 == '{}' and r2 != '{}' and data != data2:
                 response = response2
                 data = data2
                 await self.bot.say('Switching to Fringe')
