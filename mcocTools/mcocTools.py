@@ -1059,6 +1059,9 @@ class MCOCTools:
                     data.description=v['comments']
                 elif 'description' in v:
                     data.description=v['description']
+                c = chapter[0]
+                data.add_field(name='MVPs',value=vq[c+'MVP']['description'])
+                data.add_field(name='Options',value=vq[c+'MVP']['comments'])
                 await self.bot.say(embed=data)
                 return
         if chapter in chapters:
@@ -1082,8 +1085,8 @@ class MCOCTools:
             elif 'description' in v:
                 data.description=v['description']
             c = cp[0]
-            data.add_field(name='MVPs',value=v[c+'MVP']['description'])
-            data.add_field(name='Options',value=v[c+'MVP']['comments'])
+            data.add_field(name='MVPs',value=vq[c+'MVP']['description'])
+            data.add_field(name='Options',value=vq[c+'MVP']['comments'])
 
             page_list.append(data)
         menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
