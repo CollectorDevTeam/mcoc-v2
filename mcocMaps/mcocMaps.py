@@ -566,25 +566,23 @@ class MCOCMaps:
             # calls to jm service
             # only send jm's keys & values
             data = {}
-            for d in {'difficulty', 'star_filter','class_filter', 'hp', 'atk'}:
+            for d in {'tier','difficulty', 'star_filter','class_filter', 'hp', 'atk'}:
                 if d in keys:
                     data[d] = default[d] #stringify all data?
                 data['node'] = 'n{}'.format(default['node'])
             data2 = data
             # data2.pop('difficulty')
             # fringe = {3:'challenger',5:'hard',9:'intermediate',12:'normal',15:'easy'}
-            for x in (3, 5, 9, 12, 15,):
-                if int(default['tier']) == x:
-                    fringe = x+1
-                    # data2['tier'] = 'n{}'.format(fringe)
-                    data2['difficulty'] = self.aw_tiers[fringe]['diff']
-                    pass
-            for x in (4, 6, 10, 13, 16,):
-                if int(default['tier']) == x:
-                    fringe = x-1
-                    # data2['tier'] = 'n{}'.format(fringe)
-                    data2['difficulty'] = self.aw_tiers[fringe]['diff']
-                    pass# data['hp'] = 'hp{}'.format(default['hp'])
+            if data['tier'] in (3, 5, 9, 12, 15,):
+                fringe = data['tier']+1
+                data2['tier'] = fringe
+                data2['difficulty'] = self.aw_tiers[fringe]['diff']
+                pass
+            elif data['tier'] (4, 6, 10, 13, 16,):
+                fringe = data['tier']-1
+                data2['tier'] = fringe
+                data2['difficulty'] = self.aw_tiers[fringe]['diff']
+                pass# data['hp'] = 'hp{}'.format(default['hp'])
                 # data['atk'] = 'atk{}'.format(default['atk'])
             if default['test'] == True:
                 response = await self.jm_send_request(AWD_API_URL_TEST, data=data)
