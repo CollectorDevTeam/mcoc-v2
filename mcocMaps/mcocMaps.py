@@ -593,7 +593,7 @@ class MCOCMaps:
                 if default['debug']==1:
                     await self.bot.say(response['text'])
                     await self.bot.say(response2['text'])
-                print(response2['text'])
+                # print(response2['text'])
             if json.dumps(response) == {}:
                 response = response2
                 data = data2
