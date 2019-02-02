@@ -600,13 +600,13 @@ class MCOCMaps:
 
             if 'error' in response and default['debug'] == 1:
                 em.add_field(name='Transmitting:', value=json.dumps(data))
-                em.add_field(name='Scout API Error', value=str(response['error']))
+                em.add_field(name='Scout API Error & Debug', value=str(response['error']))
                 # em.add_field(name='Full Reponse', value=json.dumps(reponse))
                 await self.bot.say(embed=em)
                 return
             elif default['debug'] == 1:
                 em.add_field(name='Transmitting:', value=json.dumps(data))
-                em.add_field(name='Scout API Error', value=json.dumps(response))
+                em.add_field(name='Scout API Debug', value=json.dumps(response))
             elif 'error' in response:
                 em.add_field(name='Scout API Error', value='unknown error')
                 await self.bot.say(embed=em)
