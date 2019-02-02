@@ -79,6 +79,7 @@ GSHEET_ICON='https://d2jixqqjqj5d23.cloudfront.net/assets/developer/imgs/icons/g
 SPOTLIGHT_DATASET='https://docs.google.com/spreadsheets/d/e/2PACX-1vRFLWYdFMyffeOzKiaeQeqoUgaESknK-QpXTYV2GdJgbxQkeCjoSajuLjafKdJ5imE1ADPYeoh8QkAr/pubhtml?gid=1483787822&single=true'
 SPOTLIGHT_SURVEY='https://docs.google.com/forms/d/e/1FAIpQLSe4JYzU5CsDz2t0gtQ4QKV8IdVjE5vaxJBrp-mdfKxOG8fYiA/viewform?usp=sf_link'
 PRESTIGE_SURVEY='https://docs.google.com/forms/d/e/1FAIpQLSeo3YhZ70PQ4t_I4i14jX292CfBM8DMb5Kn2API7O8NAsVpRw/viewform?usp=sf_link'
+DUEL_SPREADSHEET='https://docs.google.com/spreadsheets/d/1FZdJPB8sayzrXkE3F2z3b1VzFsNDhh-_Ukl10OXRN6Q/view#gid=61189525'
 MODOKSAYS = ['alien', 'buffoon', 'charlatan', 'creature', 'die', 'disintegrate',
         'evaporate', 'feelmypower', 'fool', 'fry', 'haha', 'iamscience', 'idiot',
         'kill', 'oaf', 'peabrain', 'pretender', 'sciencerules', 'silence',
@@ -128,6 +129,8 @@ gsheet_files = {
             'local': local_files['synergy'],
             },
 }
+
+duel_sheet_gkey = '1FZdJPB8sayzrXkE3F2z3b1VzFsNDhh-_Ukl10OXRN6Q'
 
 star_glyph = "★"
 lolmap_path="data/mcoc/maps/lolmap.png"
@@ -1178,45 +1181,52 @@ class MCOC(ChampionFactory):
     async def champ_duel(self, ctx, champ : ChampConverter):
         '''Duel & Spar Targets'''
         #dataset=data_files['duelist']['local']
-        released = await self.check_release(ctx, champ)
-        if released:
-            gc = pygsheets.authorize(service_file=gapi_service_creds, no_cache=True)
-            sh = gc.open_by_key('1FZdJPB8sayzrXkE3F2z3b1VzFsNDhh-_Ukl10OXRN6Q')
-            ws = sh.worksheet('title', 'DataExport')
-            data = ws.get_all_records()
-            if not len(data):
-                await self.bot.say("Data did not get retrieved")
-                raise IndexError
+        em = discord.Embed(color=champ.class_color, title='Duel & Spar Targets',url=DUEL_SPREADSHEET)
+        em.set_author(name='{0.full_name}'.format(champ), icon_url=champ.get_avatar())
+        em.set_thumbnail(url=champ.get_featured())
+        em.set_footer(text='2OO2RC51\' Duel Targets',
+                icon_url=GSHEET_ICON)
 
-            DUEL_SPREADSHEET='https://docs.google.com/spreadsheets/d/1FZdJPB8sayzrXkE3F2z3b1VzFsNDhh-_Ukl10OXRN6Q/view#gid=61189525'
-            em = discord.Embed(color=champ.class_color, title='Duel & Spar Targets',url=DUEL_SPREADSHEET)
-            em.set_author(name='{0.full_name}'.format(champ), icon_url=champ.get_avatar())
-            em.set_thumbnail(url=champ.get_featured())
-            em.set_footer(text='2OO2RC51\' Duel Targets',
-                    icon_url=GSHEET_ICON)
-
-            targets = []
-            for duel in data:    # single iteration through the data
-                uniq = duel['unique']
-                star, duel_champ, rank = int(uniq[:1]), uniq[2:-2], int(uniq[-1:])
-                if duel_champ == champ.full_name:
-                    targets.append('{}{} {} {} : {}'.format(star, champ.star_char,
-                                duel['maxlevel'],
-                                champ.full_name,
-                                duel['username']))
-            targets.sort()
             #for star in range(3,7):
                 #for rank in range(1,6):
                     #key = '{0}-{1}-{2}'.format(star, champ.full_name, rank)
                     #for data in get_csv_rows(dataset, 'unique', key):#champ.unique):
                         #targets.append( '{}{} {} {} : {}'.format(star, champ.star_char, data['maxlevel'], champ.full_name, data['username']))
-            if len(targets) > 0:
-                em.description='\n'.join(targets)
-            else:
-                em.description='Target not found!\nAdd one to the Community Spreadhseet!\n[bit.ly/DuelTargetForm](http://bit.ly/DuelTargetForm)'
-                em.url='http://bit.ly/DuelTargetForm'
-            em.add_field(name='Shortcode', value=champ.short, inline=False)
-            await self.bot.say(embed=em)
+        duel_data = await self.get_duel_target_data(ctx, champ)
+        if duel_data:
+            targets = []
+            for duel in duel_data:    # single iteration through the data
+                uniq = duel['unique']
+                star, duel_champ, rank = int(uniq[:1]), uniq[2:-2], int(uniq[-1:])
+                if duel_champ == champ.full_name:
+                    targets.append('{}{} {} {} : {}'.format(star, champ.star_char,
+                        duel['maxlevel'],
+                        champ.full_name,
+                        duel['username']))
+            targets.sort()        
+        if targets:
+            em.description='\n'.join(targets)
+        else:
+            em.description='Target not found!\nAdd one to the Community Spreadhseet!\n[bit.ly/DuelTargetForm](http://bit.ly/DuelTargetForm)'
+            em.url='http://bit.ly/DuelTargetForm'
+        em.add_field(name='Shortcode', value=champ.short, inline=False)
+        await self.bot.say(embed=em)
+
+
+    async def get_duel_target_data(self, ctx, champ : ChampConverter):
+        targets = []
+        released = await self.check_release(ctx, champ)
+        if released:
+            gc = pygsheets.authorize(service_file=gapi_service_creds, no_cache=True)
+            sh = gc.open_by_key(duel_sheet_gkey)
+            ws = sh.worksheet('title', 'DataExport')
+            data = ws.get_all_records()
+            if not data:
+                await self.bot.say("Duel Target Data did not get retrieved")
+                raise IndexError
+
+            return data
+        return targets
 
     @champ.command(pass_context=True, name='about', aliases=('about_champ',))
     async def champ_about(self, ctx, *, champ : ChampConverterRank):
@@ -2151,7 +2161,7 @@ class MCOC(ChampionFactory):
                     await self.bot.say('Submission canceled.')
                 elif react.reaction.emoji == '🆗':
                     # GKEY = '1VOqej9o4yLAdMoZwnWbPY-fTFynbDb_Lk8bXDNeonuE'
-                    GKEY = '1FZdJPB8sayzrXkE3F2z3b1VzFsNDhh-_Ukl10OXRN6Q'
+                    GKEY = duel_sheet_gkey
                     message2 = await self.bot.say('Submission in progress.')
                     author = ctx.message.author
                     star = '{0.star}{0.star_char}'.format(champ)
