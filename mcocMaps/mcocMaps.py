@@ -574,12 +574,12 @@ class MCOCMaps:
             # data2.pop('difficulty')
             # fringe = {3:'challenger',5:'hard',9:'intermediate',12:'normal',15:'easy'}
             if default['tier'] in (3, 5, 9, 12, 15,):
-                fringe = data['tier']+1
+                fringe = default['tier']+1
                 # data2['tier'] = fringe
                 data2['difficulty'] = self.aw_tiers[fringe]['diff']
                 pass
             elif default['tier'] (4, 6, 10, 13, 16,):
-                fringe = data['tier']-1
+                fringe = default['tier']-1
                 # data2['tier'] = fringe
                 data2['difficulty'] = self.aw_tiers[fringe]['diff']
                 pass# data['hp'] = 'hp{}'.format(default['hp'])
