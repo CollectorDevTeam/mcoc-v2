@@ -571,8 +571,8 @@ class MCOCMaps:
                 if d in keys:
                     data[d] = default[d] #stringify all data?
                 data['node'] = 'n{}'.format(default['node'])
-                fringe = (3:'challenger',5:'hard',9:'intermediate',12:'normal',15:'easy')
-                if default['node'] in fringe.keys():
+                fringe = {3:'challenger',5:'hard',9:'intermediate',12:'normal',15:'easy'}
+                if default['node'] in fringe:
                     data2 = data
                     data2['node'] = default['node']+1
                     data2['difficulty'] = finge[default['node']]
