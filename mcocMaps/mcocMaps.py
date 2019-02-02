@@ -559,6 +559,7 @@ class MCOCMaps:
             # calls to jm service
             # only send jm's keys & values
             data = {}
+# <<<<<<< jm/fringe_tier
             for d in {'difficulty', 'star_filter','class_filter', 'hp', 'atk', 'tier'}:
                 if d in keys:
                     data[d] = default[d] #stringify all data?
@@ -595,17 +596,27 @@ class MCOCMaps:
             else:
                 desc = 'Tier {} | {} Bracket | Node {}'.format(data['tier'],data['difficulty'].title(), default['node'])
             em.description=desc
-
             if 'error' in response and default['debug'] == 1:
+                # if data == data2:
+                #     em.add_field(name='Response check', value='Switched to Fringe')
                 em.add_field(name='Transmitting:', value=json.dumps(data))
-                em.add_field(name='Scout API Error', value=str(response['error']))
+# <<<<<<< jm/fringe_tier
+#                 em.add_field(name='Scout API Error', value=str(response['error']))
+# =======
+                em.add_field(name='Scout API Error & Debug', value=str(response['error']))
+# >>>>>>> master
                 # em.add_field(name='Full Reponse', value=json.dumps(reponse))
                 await self.bot.say(embed=em)
                 return
             elif default['debug'] == 1:
+                if data == data2:
+                    em.add_field(name='Response check', value='Switched to Fringe')
                 em.add_field(name='Transmitting:', value=json.dumps(data))
-                em.add_field(name='Scout API Error', value=json.dumps(response))
+                em.add_field(name='Scout API Debug', value=json.dumps(response))
+
             elif 'error' in response:
+                if data == data2:
+                    em.add_fie(name='Response check', value='Switched to Fringe')
                 em.add_field(name='Scout API Error', value='unknown error')
                 await self.bot.say(embed=em)
                 return
