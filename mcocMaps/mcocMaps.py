@@ -573,14 +573,15 @@ class MCOCMaps:
             data2 = data
             fringe = {3:'challenger',5:'hard',9:'intermediate',12:'normal',15:'easy'}
             if default['node'] in (3, 5, 9, 12, 15,):
-                data2['node'] = default['node']+1
-                data2['difficulty'] = finge[default['node']]
+                data2['node'] = int(default['node'])+1
+                data2['difficulty'] = finge[int(default['node'])]
                 # data['hp'] = 'hp{}'.format(default['hp'])
                 # data['atk'] = 'atk{}'.format(default['atk'])
             if default['test'] == True:
                 response = await self.jm_send_request(AWD_API_URL_TEST, data=data)
                 if 'error' in response:
                     response2 = await self.jm_send_request(AWD_API_URL_TEST, data=data2)
+                    print(json.dumps(data2))
                     if 'error' not in response2:
                         response = response2
             else:
