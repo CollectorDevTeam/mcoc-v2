@@ -591,8 +591,8 @@ class MCOCMaps:
                 response = await self.jm_send_request(AWD_API_URL, data=data)
                 response2 = await self.jm_send_request(AWD_API_URL, data=data2)
                 if default['debug']==1:
-                    await self.bot.say(response['text'])
-                    await self.bot.say(response2['text'])
+                    await self.bot.say('response\n'+json.dumps(response))
+                    await self.bot.say('response2\n'+json.dumps(response2))
                 # print(response2['text'])
             if json.dumps(response) == {}:
                 response = response2
