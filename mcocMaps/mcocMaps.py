@@ -577,13 +577,13 @@ class MCOCMaps:
             for x in (3, 5, 9, 12, 15,):
                 if int(default['tier']) == x:
                     fringe = x+1
-                    data2['tier'] = 'n{}'.format(fringe)
+                    # data2['tier'] = 'n{}'.format(fringe)
                     data2['difficulty'] = self.aw_tiers[fringe]['diff']
                     pass
             for x in (4, 6, 10, 13, 16,):
                 if int(default['tier']) == x:
                     fringe = x-1
-                    data2['tier'] = 'n{}'.format(fringe)
+                    # data2['tier'] = 'n{}'.format(fringe)
                     data2['difficulty'] = self.aw_tiers[fringe]['diff']
                     pass# data['hp'] = 'hp{}'.format(default['hp'])
                 # data['atk'] = 'atk{}'.format(default['atk'])
