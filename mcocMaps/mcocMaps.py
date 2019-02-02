@@ -599,6 +599,19 @@ class MCOCMaps:
                     champ = await self.jm_format_champ(x['champ'])
                     if len(response) == 1:
                         em.set_thumbnail(url=champ.get_avatar())
+                    
+                    mcoc = self.bot.get_cog('MCOC')
+                    duel_target_data = await mcoc.get_duel_target_data(ctx, champ)
+                    if duel_target_data:
+                        targets = []
+                        for duel in duel_target_data:
+                            uniq = duel['unique']
+                            star, duel_champ, rank = int(uniq[:1]), uniq[2:-2], int(uniq[-1:])
+                            if duel_champ == champ.full_name:
+                                targets.append('{} {}{} {}'.format(duel['username'], star, champ.star_char, duel['maxlevel']))
+                            
+                        targets.sort(reverse=True)
+                        em.add_field(name='Duel Targets', value='{}'.format('\n'.join(targets), inline=False))
 
                     v2 = 'V:{0} GV:{1} S:{2} GS:{3} GC:{4} LCDE:{5}'.format(
                     # v2 = 'v:{0} gv:{1} str:{2} gstr:{3} gc:{4} lcde:{5}'.format(
