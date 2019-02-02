@@ -573,7 +573,6 @@ class MCOCMaps:
             data2 = data
             # data2.pop('difficulty')
             # fringe = {3:'challenger',5:'hard',9:'intermediate',12:'normal',15:'easy'}
-            print(json.dumps(default))
             for x in (3, 5, 9, 12, 15,):
                 if int(default['tier']) == x:
                     fringe = x+1
@@ -591,7 +590,7 @@ class MCOCMaps:
                 response = await self.jm_send_request(AWD_API_URL_TEST, data=data)
                 if 'error' in response or response == {}:
                     response2 = await self.jm_send_request(AWD_API_URL_TEST, data=data2)
-                    print(json.dumps(data2))
+                    # print(json.dumps(data2))
                     if 'error' not in response2 and response2 != {}:
                         response = response2
             else:
