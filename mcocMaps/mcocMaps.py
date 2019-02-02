@@ -581,13 +581,13 @@ class MCOCMaps:
                 response = await self.jm_send_request(AWD_API_URL_TEST, data=data)
                 if 'error' in response:
                     response2 = await self.jm_send_request(AWD_API_URL_TEST, data=data2)
-                    if 'error' not in resposne2:
+                    if 'error' not in response2:
                         response = response2
             else:
                 response = await self.jm_send_request(AWD_API_URL, data=data)
                 if 'error' in response:
                     response2 = await self.jm_send_request(AWD_API_URL, data=data2)
-                    if 'error' not in resposne2:
+                    if 'error' not in response2:
                         response = response2
 
             if 'error' in response and default['debug'] == 1:
