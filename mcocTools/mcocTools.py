@@ -1082,8 +1082,8 @@ class MCOCTools:
             elif 'description' in v:
                 data.description=v['description']
             c = cp[0]
-            em.add_field(name='MVPs',value=v[c+'MVP']['description'])
-            em.add_field(name='Options',value=v[c+'MVP']['comments'])
+            data.add_field(name='MVPs',value=v[c+'MVP']['description'])
+            data.add_field(name='Options',value=v[c+'MVP']['comments'])
 
             page_list.append(data)
         menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
