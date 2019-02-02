@@ -1081,7 +1081,7 @@ class MCOCTools:
                 data.description=v['comments']
             elif 'description' in v:
                 data.description=v['description']
-            c = cp.split('',1)
+            c = cp[0]
             em.add_field(name='MVPs',value=v[c+'MVP']['description'])
             em.add_field(name='Options',value=v[c+'MVP']['comments'])
 
