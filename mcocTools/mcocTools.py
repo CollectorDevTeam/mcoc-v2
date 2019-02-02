@@ -1019,7 +1019,7 @@ class MCOCTools:
     #     event = 'eq_'
     #     await self.format_eventquest(event, tier.lower())
 
-    @commands.command(name='variant', pass_context=True, hidden=True)
+    @commands.command(name='variant', pass_context=True, hidden=False)
     async def eq_variant(self, ctx, chapter: str):
         '''Variant Quest
         1.1 : Dark Portents (Power Reserve)
@@ -1032,6 +1032,7 @@ class MCOCTools:
         3.2 : Heroes Arise (Pilfer Global)
         3.3 : Avengers Assemble (Fisticuffs Global - no de/buffs for first 10s)
         '''
+
         chapters = ('1.1', '1.2', '1.3', ' 2.1', '2.2', '2.3', '3.1', '3.2', '3.3')
         if chapter not in chapters:
             return
@@ -1054,13 +1055,13 @@ class MCOCTools:
                 if 'boosts' in v:
                     data.add_field(name='Boosts', value=v['boosts'])
                 if 'comments' in v and 'description' in v:
-                    data.description='{}\n{}'.format(v['description'],v['comments'])
+                    data.description='{}\n\n2002ƦƆ51#4587:{}'.format(v['description'],v['comments'])
                 elif 'comments' in v:
-                    data.description=v['comments']
+                    data.description='2002ƦƆ51#4587:{}'.format(v['comments'])
                 elif 'description' in v:
                     data.description=v['description']
                 c = chapter[0]
-                data.add_field(name='MVPs',value=vq[c+'MVP']['description'])
+                data.add_field(name='MVP Champions',value=vq[c+'MVP']['description'])
                 data.add_field(name='Options',value=vq[c+'MVP']['comments'])
                 await self.bot.say(embed=data)
                 return
@@ -1079,9 +1080,9 @@ class MCOCTools:
             if 'boosts' in v:
                 data.add_field(name='Boosts', value=v['boosts'])
             if 'comments' in v and 'description' in v:
-                data.description='{}\n{}'.format(v['description'],v['comments'])
+                data.description='{}\n\n2002ƦƆ51#4587:{}'.format(v['description'],v['comments'])
             elif 'comments' in v:
-                data.description=v['comments']
+                data.description='2002ƦƆ51#4587:{}'.format(v['comments'])
             elif 'description' in v:
                 data.description=v['description']
             c = cp[0]
