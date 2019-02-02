@@ -573,14 +573,18 @@ class MCOCMaps:
             data2 = data
             # data2.pop('difficulty')
             # fringe = {3:'challenger',5:'hard',9:'intermediate',12:'normal',15:'easy'}
-            if default['node'] in (3, 5, 9, 12, 15,):
-                fringe = default['node']+1
-                data2['node'] = 'n{}'.format(fringe)
-            elif default['node'] in (4, 6, 10, 13, 16):
-                fringe = default['node']-1
-                data2['node'] = 'n{}'.format(fringe)
-            data2['difficulty'] = self.aw_tiers[fringe]['diff']
-                # data['hp'] = 'hp{}'.format(default['hp'])
+            for x in (3, 5, 9, 12, 15,):
+                if int(default['node']) = x:
+                    fringe = x+1
+                    data2['node'] = 'n{}'.format(fringe)
+                    data2['difficulty'] = self.aw_tiers[fringe]['diff']
+                    pass
+            for x in (4, 6, 10, 13, 16,):
+                if int(default['node']) = x:
+                    fringe = x-1
+                    data2['node'] = 'n{}'.format(fringe)
+                    data2['difficulty'] = self.aw_tiers[fringe]['diff']
+                    pass# data['hp'] = 'hp{}'.format(default['hp'])
                 # data['atk'] = 'atk{}'.format(default['atk'])
             if default['test'] == True:
                 response = await self.jm_send_request(AWD_API_URL_TEST, data=data)
