@@ -554,64 +554,57 @@ class MCOCMaps:
             await self.bot.say(embed=em)
             return
         else:
-            pathdata = self.aw_maps[default['difficulty'].lower()]
-            # nodedetails = pathdata['boosts'][str(default['node'])]
-            if default['tier'] == 0:
-                desc = '{} Bracket | Node {}'.format(default['difficulty'].title(),default['node'])
-            else:
-                desc = 'Tier {} | {} Bracket | Node {}'.format(default['tier'],default['difficulty'].title(), default['node'])
-            em.description=desc
             # response = [{'champ':'4-electro-5','class':'science','masteries':{'v':1, 'gv':1,'s':1, 'gs':1, 'gc':1, 'lcde':0}},{'champ':'4-diablo-5','class':'mystic','masteries':{'v':1, 'gv':1,'s':1, 'gs':1, 'gc':1, 'lcde':0}}]
 
             # calls to jm service
             # only send jm's keys & values
             data = {}
-            for d in {'difficulty', 'star_filter', 'class_filter', 'hp', 'atk'}:
+# <<<<<<< jm/fringe_tier
+            for d in {'difficulty', 'star_filter','class_filter', 'hp', 'atk', 'tier'}:
                 if d in keys:
                     data[d] = default[d] #stringify all data?
                 data['node'] = 'n{}'.format(default['node'])
-            data2 = data
-            # data2.pop('difficulty')
-            # fringe = {3:'challenger',5:'hard',9:'intermediate',12:'normal',15:'easy'}
-            if default['tier'] in (3, 5, 9, 12, 15,):
-                fringe = default['tier']+1
-                # data2['tier'] = fringe
-                data2['difficulty'] = self.aw_tiers[fringe]['diff'].lower()
-                pass
-            elif default['tier'] (4, 6, 10, 13, 16,):
-                fringe = default['tier']-1
-                # data2['tier'] = fringe
-                data2['difficulty'] = self.aw_tiers[fringe]['diff'].lower()
-                pass# data['hp'] = 'hp{}'.format(default['hp'])
-                # data['atk'] = 'atk{}'.format(default['atk'])
-            if default['test'] == True:
-                response = await self.jm_send_request(AWD_API_URL_TEST, data=data)
-                response2 = await self.jm_send_request(AWD_API_URL_TEST, data=data2)
-            else:
-                response = await self.jm_send_request(AWD_API_URL, data=data)
-                response2 = await self.jm_send_request(AWD_API_URL, data=data2)
-            if default['debug']==1:
-                await self.bot.say('sending'+json.dumps(data))
-                await self.bot.say('response\n'+json.dumps(response))
-                await self.bot.say('sending2'+json.dumps(data2))
-                await self.bot.say('response2\n'+json.dumps(response2))
-                # print(response2['text'])
-            r1 = json.dumps(response)
-            r2 = json.dumps(response2)
-            if r1 == '{}':
-                await self.bot.say('response 1 empty')
-            if r2 == '{}':
-                await self.bot.say('response 2 empty')
-            if r1 == '{}' and r2 != '{}' and data != data2:
-                response = response2
-                data = data2
-                await self.bot.say('Switching to Fringe')
 
+
+            if default['test'] == True:
+                url = AWD_API_URL_TEST
+            else
+                url = AWD_API_URL
+            
+            response = await self.jm_send_request(url, data=data)
+            if not response:
+                tier = int(default['tier'])
+                if tier > 1 and self.aw_tiers[tier - 1]['diff'] != self.aw_tiers[tier]['diff']:
+                    data['difficulty'] = self.aw_tiers[tier - 1]['diff'].lower()
+                    response = await self.jm_send_request(url, data=data)
+                    if not response:
+                        data['difficulty'] = default['difficulty'].lower()
+                    else:
+                        data['tier'] = tier - 1
+                elif tier < 22 and self.aw_tiers[tier + 1]['diff'] != self.aw_tiers[tier]['diff']:
+                    data['difficulty'] = self.aw_tiers[tier + 1]['diff'].lower()
+                    response = await self.jm_send_request(url, data=data)
+                    if not response:
+                        data['difficulty'] = default['difficulty'].lower()
+                    else:
+                        data['tier'] = tier + 1
+
+            pathdata = self.aw_maps[data['difficulty'].lower()]
+            # nodedetails = pathdata['boosts'][str(default['node'])]
+            if data['tier'] == 0:
+                desc = '{} Bracket | Node {}'.format(data['difficulty'].title(),default['node'])
+            else:
+                desc = 'Tier {} | {} Bracket | Node {}'.format(data['tier'],data['difficulty'].title(), default['node'])
+            em.description=desc
             if 'error' in response and default['debug'] == 1:
                 # if data == data2:
                 #     em.add_field(name='Response check', value='Switched to Fringe')
                 em.add_field(name='Transmitting:', value=json.dumps(data))
+# <<<<<<< jm/fringe_tier
+#                 em.add_field(name='Scout API Error', value=str(response['error']))
+# =======
                 em.add_field(name='Scout API Error & Debug', value=str(response['error']))
+# >>>>>>> master
                 # em.add_field(name='Full Reponse', value=json.dumps(reponse))
                 await self.bot.say(embed=em)
                 return
@@ -699,8 +692,8 @@ class MCOCMaps:
             em2.add_field(name='Scout observed Health & Attack', value='{}, {}'.format(default['hp'], default['atk']), inline=False)
 
             if pathdata is not None:
-                em = await self.get_awnode_details(ctx, default['node'], default['difficulty'], em)
-                em2 = await self.get_awnode_details(ctx, default['node'], default['difficulty'], em2)
+                em = await self.get_awnode_details(ctx, default['node'], data['difficulty'], em)
+                em2 = await self.get_awnode_details(ctx, default['node'], data['difficulty'], em2)
 
             pages=[]
             pages.append(em)
