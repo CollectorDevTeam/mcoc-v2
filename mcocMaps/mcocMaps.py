@@ -579,7 +579,7 @@ class MCOCMaps:
             elif default['node'] in (4, 6, 10, 13, 16):
                 fringe = default['node']-1
                 data2['node'] = 'n{}'.format(fringe)
-            data2['difficulty'] = aw_tiers[data2[fringe]][fringe]
+            data2['difficulty'] = self.aw_tiers[fringe]['diff']
                 # data['hp'] = 'hp{}'.format(default['hp'])
                 # data['atk'] = 'atk{}'.format(default['atk'])
             if default['test'] == True:
