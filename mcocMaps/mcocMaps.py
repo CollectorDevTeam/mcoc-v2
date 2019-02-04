@@ -256,7 +256,7 @@ class MCOCMaps:
                     em3.add_field(name=miniboss[0],value=miniboss[1])
                 embeds.append(em3)
             menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
-            menu.menu_start(pages=embeds)
+            await menu.menu_start(pages=embeds)
 
 
 
@@ -284,7 +284,7 @@ class MCOCMaps:
                 em.set_footer(text='Art: CollectorDevTeam, Plan: LabyrinthTeam',)
                 pages.append(em)
             menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
-            menu.menu_start(pages=pages, page=int(maptype))
+            await menu.menu_start(pages=pages, page=int(maptype))
                 #await self.bot.say(embed=em)
 
     @commands.command(pass_context=True, aliases=['lolteam, kiryu'])
@@ -301,7 +301,7 @@ class MCOCMaps:
             em.set_footer(text='Art: CollectorDevTeam Plan: LabyrinthTeam',)
             pages.append(em)
         menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
-        menu.menu_start(pages=pages, page=team-1)
+        await menu.menu_start(pages=pages, page=team-1)
 
     @commands.command(pass_context=True)
     async def warmap(self, ctx, *, maptype: str = 'expert'):
@@ -390,7 +390,7 @@ class MCOCMaps:
                 # await self.bot.say(embed=em)
             if len(pages) > 0:
                 menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
-                menu.menu_start(pages=pages, page=0)
+                await menu.menu_start(pages=pages, page=0)
         else:
             await self.bot.say('Valid tiers include: {}'.format(', '.join(self.aw_maps.keys())))
 
@@ -492,7 +492,7 @@ class MCOCMaps:
     #         pages.append(em)
     #
     #     menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
-        # menu.menu_start(ctx=ctx, pages=pages, timeout=60, page=tracks[track]-1)
+        # await menu.menu_start(ctx=ctx, pages=pages, timeout=60, page=tracks[track]-1)
 
     @alliancewar.command(pass_context=False, hidden=False, name="tiers", aliases=['tier'])
     async def _tiers(self):
