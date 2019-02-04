@@ -1053,7 +1053,7 @@ class MCOCTools:
                 data.add_field(name=v['af1_name'], value=v['af1_value'])
                 data.add_field(name='Fights', value=v['fights'])
                 data.add_field(name='Boosts', value=v['boosts'])
-                desc = 'MCPs\n{}\nAlternatives\n{}'.format(v['mvps'], v['options'])
+                desc = 'MVPs\n{}\n\nAlternatives\n{}'.format(v['mvps'], v['options'])
                 if 'commends' in v:
                     desc = desc+'\n\n2002ƦƆ51:\n{}'.format(v['comments'])
                 data.description=desc
