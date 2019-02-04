@@ -1043,12 +1043,12 @@ class MCOCTools:
         elif chapter in valid:
             v = vq[chapter]
             data=discord.Embed(color=discord.Color.gold(),title=v['title'])
-            data.set_footer(text='CollectorDevTeam + 2002ƦƆ51', icon_url=self.COLLECTOR_ICON)
+            data.set_footer(text='CollectorDevTeam + ƦƆ51', icon_url=self.COLLECTOR_ICON)
             if 'imageurl' in v:
                 data.set_image(url=v['imageurl'])
                 data.url=v['imageurl']
             if 'comments' in v:
-                data.description='2002ƦƆ51 Coments:\n{}'.format(v['comments'])
+                data.description='ƦƆ51 Coments:\n{}'.format(v['comments'])
             data.add_field(name='Fights', value=v['fights'])
             data.add_field(name='Boosts', value=v['boosts'])
             data.add_field(name='MVPs',value=v['mvps'])
@@ -1063,12 +1063,12 @@ class MCOCTools:
             for cp in valid:
                 v = vq[cp]
                 data=discord.Embed(color=discord.Color.gold(),title=v['title'])
-                data.set_footer(text='CollectorDevTeam + 2002ƦƆ51', icon_url=self.COLLECTOR_ICON)
+                data.set_footer(text='CollectorDevTeam + ƦƆ51', icon_url=self.COLLECTOR_ICON)
                 if 'imageurl' in v:
                     data.set_image(url=v['imageurl'])
                     data.url=v['imageurl']
                 if 'comments' in v:
-                    data.description='2002ƦƆ51 Coments:\n{}'.format(v['comments'])
+                    data.description='ƦƆ51 Coments:\n{}'.format(v['comments'])
                 data.add_field(name='Fights', value=v['fights'])
                 data.add_field(name='Boosts', value=v['boosts'])
                 data.add_field(name='MVPs',value=v['mvps'])
