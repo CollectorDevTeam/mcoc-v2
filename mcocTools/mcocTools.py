@@ -1068,7 +1068,7 @@ class MCOCTools:
                     data.set_image(url=v['imageurl'])
                     data.url=v['imageurl']
                 if 'comments' in v:
-                    data.description='2002ƦƆ51 Coments:\n{}'.format(v['comments']))
+                    data.description='2002ƦƆ51 Coments:\n{}'.format(v['comments'])
                 data.add_field(name='Fights', value=v['fights'])
                 data.add_field(name='Boosts', value=v['boosts'])
                 data.add_field(name='MVPs',value=v['mvps'])
