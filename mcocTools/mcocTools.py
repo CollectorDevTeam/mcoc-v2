@@ -1043,7 +1043,7 @@ class MCOCTools:
         # valid = vq.keys()
         valid = ['1.1A','1.1B','1.1C','1.1D','1.1E','1.1F','1.1Boss','1.2A','1.2B','1.2C','1.2D','1.2E','1.2Boss','1.3A','1.3B','1.3C','1.3D','1.3E','1.3Boss','2.1A','2.1B','2.1C','2.1D','2.1E','2.1F','2.1Boss','2.2A','2.2B','2.2C','2.2D','2.2Boss','2.3A','2.3B','2.3C','2.3D','2.3E','2.3F','2.3Boss','3.1A','3.1B','3.1C','3.1D','3.1E','3.1F','3.1Boss','3.2A','3.2B','3.2C','3.2D','3.2E','3.2F','3.2Boss','3.3A','3.3B','3.3C','3.3D','3.3E','3.3F','3.3Boss']
         for x in valid:
-            if chapter == valid:
+            if chapter == x:
                 v = vq[chapter]
                 data=discord.Embed(color=discord.Color.gold(),title=v['title'])
                 data.set_footer(text='CollectorDevTeam + 2002ƦƆ51', icon_url=self.COLLECTOR_ICON)
@@ -1072,25 +1072,19 @@ class MCOCTools:
             page_number = valid.index(chapter+'A')
         page_list = []
         for cp in valid:
-            v = vq[cp]
+            v = vq[chapter]
             data=discord.Embed(color=discord.Color.gold(),title=v['title'])
             data.set_footer(text='CollectorDevTeam + 2002ƦƆ51', icon_url=self.COLLECTOR_ICON)
             if 'imageurl' in v:
                 data.set_image(url=v['imageurl'])
                 data.url=v['imageurl']
-            if 'fights' in v:
-                data.add_field(name='Fights', value=v['fights'])
-            if 'boosts' in v:
-                data.add_field(name='Boosts', value=v['boosts'])
-            if 'comments' in v and 'description' in v:
-                data.description='{}\n\n2002ƦƆ51#4587:{}'.format(v['description'],v['comments'])
-            elif 'comments' in v:
-                data.description='2002ƦƆ51#4587:{}'.format(v['comments'])
-            elif 'description' in v:
-                data.description=v['description']
-            c = cp[0]
-            data.add_field(name='MVPs',value=vq[c+'MVP']['description'])
-            data.add_field(name='Options',value=vq[c+'MVP']['comments'])
+            data.add_field(name=v['af1_name'], value=v['af1_value'])
+            data.add_field(name='Fights', value=v['fights'])
+            data.add_field(name='Boosts', value=v['boosts'])
+            desc = 'MVPs\n{}\n\nAlternatives\n{}'.format(v['mvps'], v['options'])
+            if 'commends' in v:
+                desc = desc+'\n\n2002ƦƆ51:\n{}'.format(v['comments'])
+            data.description=desc
 
             page_list.append(data)
         menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
