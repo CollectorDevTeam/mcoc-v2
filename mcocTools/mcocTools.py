@@ -1070,8 +1070,8 @@ class MCOCTools:
                 data.add_field(name='Boosts', value=v['boosts'])
                 data.add_field(name=v['af1_name'], value=v['af1_value'])
                 desc = '__MVPs__\n{}\n\n__Alternatives__\n{}'.format(v['mvps'], v['options'])
-                if 'commends' in v:
-                    desc = desc+'\n\n2002ƦƆ51:\n{}'.format(v['comments'])
+                if 'comments' in v:
+                    data.add_field(name='2002ƦƆ51 Coments',value=v['comments'])
                 data.description=desc
 
                 page_list.append(data)
