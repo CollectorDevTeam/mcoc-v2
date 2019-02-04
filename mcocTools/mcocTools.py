@@ -1047,13 +1047,13 @@ class MCOCTools:
             if 'imageurl' in v:
                 data.set_image(url=v['imageurl'])
                 data.url=v['imageurl']
-            data.add_field(name='2002ƦƆ51 Coments',value=v['comments'])
+            if 'comments' in v:
+                data.description='2002ƦƆ51 Coments:\n{}'.format(v['comments']))
             data.add_field(name='Fights', value=v['fights'])
             data.add_field(name='Boosts', value=v['boosts'])
-            desc = '__MVPs__\n{}\n\n__Alternatives__\n{}'.format(v['mvps'], v['options'])
-            if 'comments' in v:
-                data.add_field(name=v['af1_name'], value=v['af1_value'])
-            data.description=desc
+            data.add_field(name='MVPs',value=v['mvps'])
+            data.add_field(name='Alternatives',value=v['options'])
+            data.add_field(name=v['af1_name'], value=v['af1_value'])
 
             await self.bot.say(embed=data)
             return
@@ -1067,14 +1067,13 @@ class MCOCTools:
                 if 'imageurl' in v:
                     data.set_image(url=v['imageurl'])
                     data.url=v['imageurl']
-                data.add_field(name='2002ƦƆ51 Coments',value=v['comments'])
+                if 'comments' in v:
+                    data.description='2002ƦƆ51 Coments:\n{}'.format(v['comments']))
                 data.add_field(name='Fights', value=v['fights'])
                 data.add_field(name='Boosts', value=v['boosts'])
-                desc = '__MVPs__\n{}\n\n__Alternatives__\n{}'.format(v['mvps'], v['options'])
-                if 'comments' in v:
-                    data.add_field(name=v['af1_name'], value=v['af1_value'])
-                data.description=desc
-
+                data.add_field(name='MVPs',value=v['mvps'])
+                data.add_field(name='Alternatives',value=v['options'])
+                data.add_field(name=v['af1_name'], value=v['af1_value'])
                 page_list.append(data)
             menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
             await menu.menu_start(page_list, page_number)
