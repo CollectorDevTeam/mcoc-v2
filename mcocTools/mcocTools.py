@@ -1066,12 +1066,12 @@ class MCOCTools:
                 if 'imageurl' in v:
                     data.set_image(url=v['imageurl'])
                     data.url=v['imageurl']
+                data.add_field(name='2002ƦƆ51 Coments',value=v['comments'])
                 data.add_field(name='Fights', value=v['fights'])
                 data.add_field(name='Boosts', value=v['boosts'])
-                data.add_field(name=v['af1_name'], value=v['af1_value'])
                 desc = '__MVPs__\n{}\n\n__Alternatives__\n{}'.format(v['mvps'], v['options'])
                 if 'comments' in v:
-                    data.add_field(name='2002ƦƆ51 Coments',value=v['comments'])
+                data.add_field(name=v['af1_name'], value=v['af1_value'])
                 data.description=desc
 
                 page_list.append(data)
