@@ -1050,19 +1050,22 @@ class MCOCTools:
                 if 'imageurl' in v:
                     data.set_image(url=v['imageurl'])
                     data.url=v['imageurl']
-                if 'fights' in v:
-                    data.add_field(name='Fights', value=v['fights'])
-                if 'boosts' in v:
-                    data.add_field(name='Boosts', value=v['boosts'])
-                if 'comments' in v and 'description' in v:
-                    data.description='{}\n\n2002ƦƆ51#4587:{}'.format(v['description'],v['comments'])
-                elif 'comments' in v:
-                    data.description='2002ƦƆ51#4587:{}'.format(v['comments'])
-                elif 'description' in v:
-                    data.description=v['description']
+                data.add_field(name=v['af1_name'], value=v['af1_value'])
+                data.add_field(name='Fights', value=v['fights'])
+                data.add_field(name='Boosts', value=v['boosts'])
+                desc = 'MCPs\n{}\nAlternatives\n{}'.format(v['mvps'], v['options'])
+                if 'commends' in v:
+                    desc = desc+'\n\n2002ƦƆ51:\n{}'.format(v['comments'])
+                data.description=desc
+                # if 'comments' in v and 'description' in v:
+                #     data.description='{}\n\n2002ƦƆ51#4587:{}'.format(v['description'],v['comments'])
+                # elif 'comments' in v:
+                #     data.description='2002ƦƆ51#4587:{}'.format(v['comments'])
+                # elif 'description' in v:
+                #     data.description=v['description']
                 c = chapter[0]
-                data.add_field(name='MVP Champions',value=vq[c+'MVP']['description'])
-                data.add_field(name='Options',value=vq[c+'MVP']['comments'])
+                # data.add_field(name='MVP Champions',value=vq[c+'MVP']['description'])
+                # data.add_field(name='Options',value=vq[c+'MVP']['comments'])
                 await self.bot.say(embed=data)
                 return
         if chapter in chapters:
