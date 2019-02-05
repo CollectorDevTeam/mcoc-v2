@@ -20,7 +20,7 @@ class Account:
         self.bot = bot
         self.profile = "data/account/accounts.json"
         self.nerdie = dataIO.load_json(self.profile)
-        self.umcoc = discord.Client.get_server('378035654736609280')
+        self.umcoc = discord.Client.get_server(self, '378035654736609280')
         self.uroles = []
         for role in self.umcoc:
             if role.name == "Blockbuster":
