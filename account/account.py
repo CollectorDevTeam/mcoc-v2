@@ -20,24 +20,36 @@ class Account:
         self.bot = bot
         self.profile = "data/account/accounts.json"
         self.nerdie = dataIO.load_json(self.profile)
-        # for servers in discord.client.servers:
-        #     if server.id == '378035654736609280':
-        #         self.umcoc = server
         self.umcoc = self.bot.get_server('378035654736609280')
-        self.uroles = []
+        # self.uroles = []
         # for role in self.umcoc.roles:
-        #     if role.name == "Blockbuster"
-        #         keycolor == role.color
-        #         print('found blockbuster')
-        #         continue
-        for role in self.umcoc.roles:
-            if role.color == discord.Color(0x3498db): # or role.color == keycolor:
-                self.uroles.append(role)
+        #     if role.color == discord.Color(0x3498db): # or role.color == keycolor:
+        #         self.uroles.append(role)
 
 
-    @commands.command(name='getrolecolor',hidden=True)
-    async def get_role_color(self, role: discord.Role):
+    @commands.command(name='getrolecolor', pass_context=True, hidden=True)
+    async def set_keyrole(self, ctx, role: discord.Role):
+        if 'umcoc' not in self.nerdie.keys():
+            self.nerdie.update('umcoc', '378035654736609280')
+        self.nerdie['umcoc'].update('color', role.color)
+        dataIO.save_json(self.profile, self.nerdie)
         await self.bot.say('role code: {}'.format(role.color))
+
+    @commands.command(name='titles', pass_context=True, hidden=True)
+    async def _titles(self, ctx, user: discord.User = None):
+        if user is None:
+            user = ctx.message.author
+        if 'umcoc' in self.nerdie.keys():
+            umcoc = self.bot.get_server(self.nerdie['umcoc'])
+            print('got server')
+            umember = umcoc.get_member(user.id)
+            titles = []
+            for userrole in umember.roles:
+                if userrole.color == self.nerdie['umcoc']['color']:
+                    titles.append('\n{}'.format(userrole.name))
+            await self.bot.say(''.join(titles))
+        else:
+            return
 
     @commands.group(name='account', aliases=('profile',), pass_context=True, invoke_without_command=True)
     async def _account(self, ctx, user : discord.Member=None):
@@ -80,19 +92,24 @@ class Account:
                 data.set_author(name=ingame)
             data.add_field(name='Join the UMCOC community',value='https://discord.gg/umcoc', inline=False)
             data.set_footer(text='CollectorDevTeam - customize with /account update', icon_url=COLLECTOR_ICON)
-            uroles = []
-            for role in self.uroles:
-                if role in user.roles:
-                    uroles.append(role.name)
-                    print(role.name)
-            if len(uroles) > 0:
-                data2 = discord.Embed(title="CollectorVerse Profile", colour=get_color(ctx), description='Discord user: {}#{}'.format(user.name, user.discriminator), url='https://discord.gg/umcoc')
-                data2.add_field(name='UMCOC Verfied Titles', value='\n'.join(uroles), inline=True)
-                data2.add_field(name='Join the UMCOC community',value='https://discord.gg/umcoc', inline=False)
-                data2.set_footer(text='CollectorDevTeam - customize with /account update', icon_url=COLLECTOR_ICON)
-                await PagesMenu.menu_start(self, [data, data2])
-            else:
-                await PagesMenu.menu_start(self, [data])
+            # umcoc = self.bot.get_server('378035654736609280')
+            # uroles = umcoc.roles
+            #
+            #
+            #
+            # uroles = []
+            # for role in self.uroles:
+            #     if role in user.roles:
+            #         uroles.append(role.name)
+            #         print(role.name)
+            # if len(uroles) > 0:
+            #     data2 = discord.Embed(title="CollectorVerse Profile", colour=get_color(ctx), description='Discord user: {}#{}'.format(user.name, user.discriminator), url='https://discord.gg/umcoc')
+            #     data2.add_field(name='UMCOC Verfied Titles', value='\n'.join(uroles), inline=True)
+            #     data2.add_field(name='Join the UMCOC community',value='https://discord.gg/umcoc', inline=False)
+            #     data2.set_footer(text='CollectorDevTeam - customize with /account update', icon_url=COLLECTOR_ICON)
+            #     await PagesMenu.menu_start(self, [data, data2])
+            # else:
+            await PagesMenu.menu_start(self, [data])
         else:
             pass
 
