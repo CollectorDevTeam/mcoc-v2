@@ -35,7 +35,7 @@ class Account:
 
 
     @commands.command(name='getrolecolor',hidden=True)
-    async def get_role_color(self, ctx, role: discord.Role):
+    async def get_role_color(self, role: discord.Role):
         await self.bot.say('role code: {}'.format(role.color))
 
     @commands.group(name='account', aliases=('profile',), pass_context=True, invoke_without_command=True)
