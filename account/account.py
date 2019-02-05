@@ -20,18 +20,14 @@ class Account:
         self.bot = bot
         self.profile = "data/account/accounts.json"
         self.nerdie = dataIO.load_json(self.profile)
-        # for servers in self.bot.servers:
+        # for servers in discord.client.servers:
         #     if server.id == '378035654736609280':
         #         self.umcoc = server
-        # self.uroles = []
-        # for role in self.umcoc:
-        #     if role.name == "Blockbuster":
-        #         print('umcoc key role color: {}'.format(role.color))
-        #         keycolor = role.color
-        #         continue
-        # for role in role:
-        #     if role.color == keycolor:
-        #         self.uroles.append(role)
+        self.umcoc = self.discord.Client.get_server('378035654736609280')
+        self.uroles = []
+        for role in self.umcoc.roles:
+            if role.color == '#3498db':
+                self.uroles.append(role)
 
 
     @commands.command(name='getrolecolor',hidden=True)
