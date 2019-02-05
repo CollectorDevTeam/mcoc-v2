@@ -20,6 +20,18 @@ class Account:
         self.bot = bot
         self.profile = "data/account/accounts.json"
         self.nerdie = dataIO.load_json(self.profile)
+        self.umcoc = discord.Client.get_server('378035654736609280')
+        self.uroles = []
+        for role in self.umcoc:
+            if role.name == "Blockbuster":
+                print('umcoc key role color: {}'.format(role.color))
+                keycolor = role.color
+                continue
+        for role in role:
+            if role.color == keycolor:
+                self.uroles.append(role)
+
+
 
 
     @commands.group(name='account', aliases=('profile',), pass_context=True, invoke_without_command=True)
@@ -63,7 +75,18 @@ class Account:
                 data.set_author(name=ingame)
             data.add_field(name='Join the UMCOC community',value='https://discord.gg/umcoc', inline=False)
             data.set_footer(text='CollectorDevTeam - customize with /account update', icon_url=COLLECTOR_ICON)
-            await PagesMenu.menu_start(self, [data])
+            uroles = []
+            for role in self.uroles:
+                if role in user.roles:
+                    uroles.append(role.name)
+            if len(uroles) > 0:
+                data2 = discord.Embed(title="CollectorVerse Profile", colour=get_color(ctx), description='Discord user: {}#{}'.format(user.name, user.discriminator), url='https://discord.gg/umcoc')
+                data2.add_field(name='UMCOC Verfied Titles', value='\n'.join(uroles), inline=True)
+                data2.add_field(name='Join the UMCOC community',value='https://discord.gg/umcoc', inline=False)
+                data2.set_footer(text='CollectorDevTeam - customize with /account update', icon_url=COLLECTOR_ICON)
+                await PagesMenu.menu_start(self, [data, data2])
+            else:
+                await PagesMenu.menu_start(self, [data])
         else:
             pass
 
@@ -267,7 +290,7 @@ class Account:
         self.nerdie[user.id] = {}
         dataIO.save_json(self.profile, self.nerdie)
         data = discord.Embed(colour=get_color(ctx))
-        data.add_field(name="Congrats!:sparkles:", value="You have officaly created your CollectorVerse account, {}.".format(user.mention))
+        data.add_field(name="Congrats!:sparkles:", value="You have officaly created your CollectorVerse , {}.".format(user.mention))
         data.set_footer(text='CollectorDevTeam',
                 icon_url=COLLECTOR_ICON)
         return data
