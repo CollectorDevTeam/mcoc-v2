@@ -28,7 +28,7 @@ class Account:
 
 
     @commands.command(name='getrolecolor', pass_context=True, hidden=True)
-    async def set_keyrole(self, role: discord.Role):
+    async def set_keyrole(self, ctx, role: discord.Role):
         if 'umcoc' not in self.nerdie.keys():
             self.nerdie['umcoc'] = {'server' : '378035654736609280',}
             await self.bot.say('added umcoc')
