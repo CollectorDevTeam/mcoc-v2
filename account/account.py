@@ -79,6 +79,7 @@ class Account:
             for role in self.uroles:
                 if role in user.roles:
                     uroles.append(role.name)
+                    print(role.name)
             if len(uroles) > 0:
                 data2 = discord.Embed(title="CollectorVerse Profile", colour=get_color(ctx), description='Discord user: {}#{}'.format(user.name, user.discriminator), url='https://discord.gg/umcoc')
                 data2.add_field(name='UMCOC Verfied Titles', value='\n'.join(uroles), inline=True)
