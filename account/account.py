@@ -30,9 +30,9 @@ class Account:
     @commands.command(name='getrolecolor', pass_context=True, hidden=True)
     async def set_keyrole(self, role: discord.Role):
         if 'umcoc' not in self.nerdie.keys():
-            self.nerdie['umcoc'] = {'server' : '378035654736609280'}
+            self.nerdie['umcoc'] = {'server' : '378035654736609280',}
             await self.bot.say('added umcoc')
-        self.nerdie['umcoc'].update({'color' : role.color})
+        self.nerdie['umcoc'].update({'rolecolor' : role.color})
         dataIO.save_json(self.profile, self.nerdie)
         await self.bot.say('role code: {}'.format(role.color))
 
@@ -46,14 +46,14 @@ class Account:
             umember = umcoc.get_member(user.id)
             titles = []
             for userrole in umember.roles:
-                if userrole.color == self.nerdie['umcoc']['color']:
+                if userrole.color == self.nerdie['umcoc']['rolecolor']:
                     titles.append('\n{}'.format(userrole.name))
             await self.bot.say(''.join(titles))
         else:
             return
 
     @commands.group(name='account', aliases=('profile',), pass_context=True, invoke_without_command=True)
-    async def _account(self, ctx, user : discord.Member=None):
+    async def _account(self, ctx, user: discord.Member = None):
         """CollectorVerse Account
 
         In-Game username
