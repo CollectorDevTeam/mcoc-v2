@@ -23,7 +23,7 @@ class Account:
         # for servers in discord.client.servers:
         #     if server.id == '378035654736609280':
         #         self.umcoc = server
-        self.umcoc = self.discord.Client.get_server('378035654736609280')
+        self.umcoc = discord.Client.get_server(self.bot, '378035654736609280')
         self.uroles = []
         for role in self.umcoc.roles:
             if role.color == '#3498db':
