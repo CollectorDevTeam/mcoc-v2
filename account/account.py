@@ -31,11 +31,12 @@ class Account:
     async def set_keyrole(self, ctx, role: discord.Role):
         if 'umcoc' not in self.nerdie.keys():
             self.nerdie.update('umcoc', '378035654736609280')
+            await self.bot.say('added umcoc')
         self.nerdie['umcoc'].update('color', role.color)
         dataIO.save_json(self.profile, self.nerdie)
         await self.bot.say('role code: {}'.format(role.color))
 
-    @commands.command(name='titles', pass_context=True, hidden=True)
+    @commands.command(name='testtitles', pass_context=True, hidden=True)
     async def _titles(self, ctx, user: discord.User = None):
         if user is None:
             user = ctx.message.author
