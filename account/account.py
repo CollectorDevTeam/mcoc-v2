@@ -26,7 +26,7 @@ class Account:
         self.umcoc = self.bot.get_server('378035654736609280')
         self.uroles = []
         for role in self.umcoc.roles:
-            if role.color in ('0x3498db'):
+            if role.color in ('0x3498db',):
                 self.uroles.append(role)
 
 
