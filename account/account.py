@@ -28,9 +28,9 @@ class Account:
 
 
     @commands.command(name='getrolecolor', pass_context=True, hidden=True)
-    async def set_keyrole(self, ctx, role: discord.Role):
+    async def set_keyrole(self, role: discord.Role):
         if 'umcoc' not in self.nerdie.keys():
-            self.nerdie.update('umcoc', '378035654736609280')
+            self.nerdie['umcoc'] = {'server': '378035654736609280'}
             await self.bot.say('added umcoc')
         self.nerdie['umcoc'].update('color', role.color)
         dataIO.save_json(self.profile, self.nerdie)
@@ -41,7 +41,7 @@ class Account:
         if user is None:
             user = ctx.message.author
         if 'umcoc' in self.nerdie.keys():
-            umcoc = self.bot.get_server(self.nerdie['umcoc'])
+            umcoc = self.bot.get_server(self.nerdie['umcoc']['server'])
             print('got server')
             umember = umcoc.get_member(user.id)
             titles = []
