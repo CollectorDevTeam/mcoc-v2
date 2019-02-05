@@ -25,8 +25,13 @@ class Account:
         #         self.umcoc = server
         self.umcoc = self.bot.get_server('378035654736609280')
         self.uroles = []
+        # for role in self.umcoc.roles:
+        #     if role.name == "Blockbuster"
+        #         keycolor == role.color
+        #         print('found blockbuster')
+        #         continue
         for role in self.umcoc.roles:
-            if role.color in ('0x3498db',):
+            if role.color == discord.Color(0x3498db): # or role.color == keycolor:
                 self.uroles.append(role)
 
 
