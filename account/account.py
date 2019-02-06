@@ -29,10 +29,10 @@ class Account:
 
     @commands.command(name='getrolecolor', pass_context=True, hidden=True)
     async def set_keyrole(self, ctx, role: discord.Role):
-        if 'umcoc' not in self.nerdie.keys():
-            self.nerdie['umcoc'] = {'server' : '378035654736609280',}
-            await self.bot.say('added umcoc')
-        self.nerdie['umcoc'].update({'rolecolor' : role.color})
+        if 'umcoc' not in self.nerdie:
+            self.nerdie['umcoc'] = {'server' : '378035654736609280', 'rolecolor' : role.color}}
+        else:
+            self.nerdie['umcoc'].update({'rolecolor' : role.color})
         dataIO.save_json(self.profile, self.nerdie)
         await self.bot.say('role code: {}'.format(role.color))
 
