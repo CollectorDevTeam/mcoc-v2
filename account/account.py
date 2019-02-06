@@ -26,31 +26,34 @@ class Account:
         #     if role.color == discord.Color(0x3498db): # or role.color == keycolor:
         #         self.uroles.append(role)
 
-
-    @commands.command(name='getrolecolor', pass_context=True, hidden=True)
-    async def set_keyrole(self, ctx, role: discord.Role):
-        if 'umcoc' not in self.nerdie:
-            self.nerdie['umcoc'] = {'server' : '378035654736609280', 'rolecolor' : role.color}
-        else:
-            self.nerdie['umcoc'].update({'rolecolor' : role.color})
-        dataIO.save_json(self.profile, self.nerdie)
-        await self.bot.say('role code: {}'.format(role.color))
-
-    @commands.command(name='testtitles', pass_context=True, hidden=True)
-    async def _titles(self, ctx, user: discord.User = None):
-        if user is None:
-            user = ctx.message.author
-        if 'umcoc' in self.nerdie.keys():
-            umcoc = self.bot.get_server(self.nerdie['umcoc']['server'])
-            print('got server')
-            umember = umcoc.get_member(user.id)
-            titles = []
-            for userrole in umember.roles:
-                if userrole.color == self.nerdie['umcoc']['rolecolor']:
-                    titles.append('\n{}'.format(userrole.name))
-            await self.bot.say(''.join(titles))
-        else:
-            return
+    # 
+    # @commands.command(name='getrolecolor', pass_context=True, hidden=True)
+    # async def set_keyrole(self, ctx, role: discord.Role):
+    #     if 'umcoc' not in self.nerdie:
+    #         self.nerdie['umcoc'] = {'server' : '378035654736609280', 'rolecolor' : role.color}
+    #         dataIO.save_json(self.profile, self.nerdie)
+    #         await self.bot.say('umcoc stored')
+    #     else:
+    #         self.nerdie['umcoc'].update({'rolecolor' : role.colour})
+    #         dataIO.save_json(self.profile, self.nerdie)
+    #         await self.bot.say('umococ updated')
+    #     await self.bot.say('role code: {}'.format(role.colour))
+    #
+    # @commands.command(name='testtitles', pass_context=True, hidden=True)
+    # async def _titles(self, ctx, user: discord.User = None):
+    #     if user is None:
+    #         user = ctx.message.author
+    #     if 'umcoc' in self.nerdie.keys():
+    #         umcoc = self.bot.get_server(self.nerdie['umcoc']['server'])
+    #         print('got server')
+    #         umember = umcoc.get_member(user.id)
+    #         titles = []
+    #         for userrole in umember.roles:
+    #             if userrole.color == self.nerdie['umcoc']['rolecolor']:
+    #                 titles.append('\n{}'.format(userrole.name))
+    #         await self.bot.say(''.join(titles))
+    #     else:
+    #         return
 
     @commands.group(name='account', aliases=('profile',), pass_context=True, invoke_without_command=True)
     async def _account(self, ctx, user: discord.Member = None):
