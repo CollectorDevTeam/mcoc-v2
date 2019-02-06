@@ -1013,6 +1013,12 @@ class MCOCTools:
         event = 'eq_21.2'
         await self.format_eventquest(event, tier.lower())
 
+    @eventquest.command(name='21.3', pass_context=True, aliases=('xenoclast','mrsinister','sinister','havok',))
+    async def eq_xenoclast(self, ctx, tier='Uncollected'):
+        '''X-Men Xenoclast'''
+        event = 'eq_21.3'
+        await self.format_eventquest(event, tier.lower())
+
     # @eventquest.command(name='', pass_context=True, aliases=(,))
     # async def eq_(self, ctx, tier='Uncollected'):
     #     '''TITLE'''
@@ -1032,7 +1038,6 @@ class MCOCTools:
         3.2 : Heroes Arise
         3.3 : Avengers Assemble
         '''
-
 
         sgd=StaticGameData()
         vq = await sgd.get_gsheets_data('variant')
