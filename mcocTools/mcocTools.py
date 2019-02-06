@@ -100,7 +100,7 @@ class StaticGameData:
         )
 
         # Update this list to add Events
-        events = ['13','13.1','14','14.1','15','15.1','16','16.1','17','17.1','17.2','18','18.1', '19.1', '20', '20.1', '21', '21.1', '21.2']
+        events = ['13','13.1','14','14.1','15','15.1','16','16.1','17','17.1','17.2','18','18.1', '19.1', '20', '20.1', '21', '21.1', '21.2', '21.3']
 
         for event in events:
             self.gsheet_handler.register_gsheet(
@@ -1096,7 +1096,7 @@ class MCOCTools:
             page_number = list(tiers).index(tier)
             for row in tiers:
                 em = discord.Embed(color=sgd.tiercolors[row], title=cdt_eq['event_title']['value'],
-                    url=cdt_eq['event_url']['value'], description='')
+                    url=cdt_eq['event_url']['value'], description=cdt_eq['date']['value'])
                 em.add_field(name=cdt_eq['story_title']['value'], value=cdt_eq['story_value']['value'])
                 em.add_field(name='{} Rewards'.format(row.title()), value=cdt_eq[row]['rewardsregex'])
                 em.add_field(name='Introducing', value=cdt_eq['champions']['value'])
