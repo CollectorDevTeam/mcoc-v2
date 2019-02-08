@@ -1978,8 +1978,8 @@ class MCOC(ChampionFactory):
             await self.bot.say('Residual keys:\n\t' + '\n\t'.join(dump))
         await self.bot.say('Done')
 
-    @commands.has_any_role('DataDonors','CollectorDevTeam','CollectorSupportTeam','CollectorPartners')
-    @commands.group(pass_context=True, aliases=['donate',], hidden=True)
+    # @commands.has_any_role('DataDonors','CollectorDevTeam','CollectorSupportTeam','CollectorPartners')
+    @commands.group(pass_context=True, aliases=['donate',])
     async def submit(self, ctx):
         if ctx.invoked_subcommand is None:
             await send_cmd_help(ctx)
@@ -2082,55 +2082,48 @@ class MCOC(ChampionFactory):
             else:
                 await self.bot.say('Ambiguous response.  Submission canceled')
 
-    @submit.command(pass_context=True, name='defenders', aliases=['awd'])
-    async def submit_awd(self, ctx, target_user: str, *, champs : ChampConverterMult):
-
-        message_text = ['Alliance War Defender Registration','Target User: ' + target_user]
-        author = ctx.message.author
-        # star = '{0.star}{0.star_char}'.format(champ)
-        # if pi == 0:
-        #     if champ.has_prestige:
-        #         pi=champ.prestige
-        now = str(ctx.message.timestamp)
-        if len(champs) > 5:
-            await self.bot.say('Defense Error: No more than 5 Defenders permitted.')
-            return
-        for champ in champs:
-            message_text.append('{0.star_name_str}'.format(champ))
-
-        print('package built')
-        message_text.append('Press OK to confirm.')
-        message = await self.bot.say('\n'.join(message_text))
-        await self.bot.add_reaction(message, '❌')
-        await self.bot.add_reaction(message, '🆗')
-        react = await self.bot.wait_for_reaction(message=message, user=ctx.message.author, timeout=30, emoji=['❌', '🆗'])
-
-        # message = await self.bot.say('Alliance War Defender Registration.\nChampion: ' +
-        #         '{0.star_name_str}\nTarget: {1}\nPress OK to confirm.'.format(
-        #         champ, observation))
-
-
-        if react is not None:
-            if react.reaction.emoji == '❌':
-                await self.bot.say('Submission canceled.')
-            elif react.reaction.emoji == '🆗':
-                # GKEY = '1VOqej9o4yLAdMoZwnWbPY-fTFynbDb_Lk8bXDNeonuE'
-                GKEY = '19yPuvT2Vld81RJlp4XD33kSEM-fsW8co5dN9uJkZ908'
-                message2 = await self.bot.say('Submission in progress.')
-
-                for champ in champs:
-                    package = [now, author.name, author.id, target_user, champ.unique]
-                    check = await self._process_submission(package=package, GKEY=GKEY, sheet='collector_submit')
-                if check:
-                    await self.bot.edit_message(message2, 'Submission complete.')
-                    async with aiohttp.ClientSession() as s:
-                        await asyncio.sleep(10)
-                        # await self.cache_remote_file('alliancewardefenders', s, force_cache=True, verbose=True)
-                        await self.bot.edit_message(message2, 'Submission complete.\nAlliance War Defenders refreshed.')
-                else:
-                    await self.bot.edit_message(message2, 'Submission failed.')
-        else:
-            await self.bot.say('Ambiguous response.  Submission canceled')
+    # # @submit.command(pass_context=True, name='defenders', aliases=['awd'], hidden=true)
+    # # async def submit_awd(self, ctx, target_user: str, *, champs : ChampConverterMult):
+    # #
+    # #     message_text = ['Alliance War Defender Registration','Target User: ' + target_user]
+    # #     author = ctx.message.author
+    # #     now = str(ctx.message.timestamp)
+    # #     if len(champs) > 5:
+    # #         await self.bot.say('Defense Error: No more than 5 Defenders permitted.')
+    # #         return
+    # #     for champ in champs:
+    # #         message_text.append('{0.star_name_str}'.format(champ))
+    # #
+    # #     print('package built')
+    # #     message_text.append('Press OK to confirm.')
+    # #     message = await self.bot.say('\n'.join(message_text))
+    # #     await self.bot.add_reaction(message, '❌')
+    # #     await self.bot.add_reaction(message, '🆗')
+    # #     react = await self.bot.wait_for_reaction(message=message, user=ctx.message.author, timeout=30, emoji=['❌', '🆗'])
+    # #
+    #
+    #
+    #     if react is not None:
+    #         if react.reaction.emoji == '❌':
+    #             await self.bot.say('Submission canceled.')
+    #         elif react.reaction.emoji == '🆗':
+    #             # GKEY = '1VOqej9o4yLAdMoZwnWbPY-fTFynbDb_Lk8bXDNeonuE'
+    #             GKEY = '19yPuvT2Vld81RJlp4XD33kSEM-fsW8co5dN9uJkZ908'
+    #             message2 = await self.bot.say('Submission in progress.')
+    #
+    #             for champ in champs:
+    #                 package = [now, author.name, author.id, target_user, champ.unique]
+    #                 check = await self._process_submission(package=package, GKEY=GKEY, sheet='collector_submit')
+    #             if check:
+    #                 await self.bot.edit_message(message2, 'Submission complete.')
+    #                 async with aiohttp.ClientSession() as s:
+    #                     await asyncio.sleep(10)
+    #                     # await self.cache_remote_file('alliancewardefenders', s, force_cache=True, verbose=True)
+    #                     await self.bot.edit_message(message2, 'Submission complete.\nAlliance War Defenders refreshed.')
+    #             else:
+    #                 await self.bot.edit_message(message2, 'Submission failed.')
+    #     else:
+    #         await self.bot.say('Ambiguous response.  Submission canceled')
 
 
     @submit.command(pass_context=True, name='duel', aliases=['duels','target'])
@@ -2173,6 +2166,7 @@ class MCOC(ChampionFactory):
             else:
                 await self.bot.say('Ambiguous response.  Submission canceled')
 
+    # @commands.has_any_role('DataDonors','CollectorDevTeam','CollectorSupportTeam','CollectorPartners')
     @submit.command(pass_context=True, name='defkill', aliases=['defko',])
     async def submit_awkill(self, ctx, champ : ChampConverter, node:int, ko: int):
         message = await self.bot.say('Defender Kill registered.\nChampion: {0.verbose_str}\nAW Node: {1}\nKills: {2}\nPress OK to confirm.'.format(champ, node, ko))
@@ -2207,6 +2201,7 @@ class MCOC(ChampionFactory):
             else:
                 await self.bot.edit_message(message2, 'Submission failed.')
 
+    @commands.has_any_role('DataDonors','CollectorDevTeam','CollectorSupportTeam','CollectorPartners')
     @submit.command(pass_context=True, name='100hits', aliases=['50hits',])
     async def submit_100hitchallenge(self, ctx, champ : ChampConverter, hits : int, wintersoldier_hp : int, author : discord.User = None):
         if author is None:
