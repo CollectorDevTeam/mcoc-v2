@@ -556,7 +556,7 @@ class MCOCTools:
         await self.bot.say(embed=self.present(lookup))
         # await self.bot.say('iOS dumblink:\n{}'.format(lookup[0]))
 
-    @commands.command(hidden=True, pass_context=True, name='parse_search', aliases=('ps',))
+    @commands.command(hidden=True, pass_context=True, name='parse_search', aliases=('ps','dm'))
     async def kabam_search2(self, ctx, *, phrase: str):
         '''Enter a search term or a JSON key'''
         kdata = StaticGameData()
@@ -586,57 +586,57 @@ class MCOCTools:
         await menu.menu_start(page_list)
 
 
-    @commands.command(hidden=True, pass_context=True, name='datamine', aliases=('dm', 'search'))
-    async def kabam_search(self, ctx, *, term: str):
-        '''Enter a search term or a JSON key'''
-        kdata = StaticGameData()
-        cdt_data, cdt_versions = kdata.cdt_data, kdata.cdt_versions
-        ksearchlist = []
-        is_number = term.replace('.', '').isdigit()
-        if is_number:
-            for k,v in cdt_versions.items():
-                if term == v:
-                    ksearchlist.append('\n**{}**\n{}\nvn: {}'.format(k,
-                            self._bcg_recompile(cdt_data[k]), v))
-        elif term.upper() in cdt_data:
-            term = term.upper()
-            if term in cdt_versions:
-                ver = '\nvn: {}'.format(cdt_versions[term])
-            else:
-                ver = ''
-            em = discord.Embed(title='Data Search',
-                    description='\n**{}**\n{}{}'.format(term,
-                            self._bcg_recompile(cdt_data[term]),
-                            ver)
-                )
-            # em.set_thumbnail(url=COLLECTOR_ICON)
-            em.set_footer(text='MCOC Game Files', icon_url=KABAM_ICON)
-            ## term is a specific JSON key
-            # await self.bot.say('\n**{}**\n{}'.format(term, self._bcg_recompile(cdt_data[term])))
-            await self.bot.say(embed=em)
-            return
-        else:
-            ## search for term in json
-            for k,v in cdt_data.items():
-                if term.lower() in v.lower():
-                    if k in cdt_versions:
-                        ver = '\nvn: {}'.format(cdt_versions[k])
-                    else:
-                        ver = ''
-                    ksearchlist.append('\n**{}**\n{}{}'.format(k,
-                            self._bcg_recompile(v), ver)
-                    )
-        if len(ksearchlist) > 0:
-            pages = chat.pagify('\n'.join(s for s in ksearchlist))
-            page_list = []
-            for page in pages:
-                em = discord.Embed(title='Data Search',  description = page)
-                # em.set_thumbnail(url=COLLECTOR_ICON)
-                em.set_footer(text='MCOC Game Files', icon_url=KABAM_ICON)
-                page_list.append(em)
-                # page_list.append(page)
-            menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
-            await menu.menu_start(page_list)
+    # @commands.command(hidden=True, pass_context=True, name='datamine', aliases=('dm', 'search'))
+    # async def kabam_search(self, ctx, *, term: str):
+    #     '''Enter a search term or a JSON key'''
+    #     kdata = StaticGameData()
+    #     cdt_data, cdt_versions = kdata.cdt_data, kdata.cdt_versions
+    #     ksearchlist = []
+    #     is_number = term.replace('.', '').isdigit()
+    #     if is_number:
+    #         for k,v in cdt_versions.items():
+    #             if term == v:
+    #                 ksearchlist.append('\n**{}**\n{}\nvn: {}'.format(k,
+    #                         self._bcg_recompile(cdt_data[k]), v))
+    #     elif term.upper() in cdt_data:
+    #         term = term.upper()
+    #         if term in cdt_versions:
+    #             ver = '\nvn: {}'.format(cdt_versions[term])
+    #         else:
+    #             ver = ''
+    #         em = discord.Embed(title='Data Search',
+    #                 description='\n**{}**\n{}{}'.format(term,
+    #                         self._bcg_recompile(cdt_data[term]),
+    #                         ver)
+    #             )
+    #         # em.set_thumbnail(url=COLLECTOR_ICON)
+    #         em.set_footer(text='MCOC Game Files', icon_url=KABAM_ICON)
+    #         ## term is a specific JSON key
+    #         # await self.bot.say('\n**{}**\n{}'.format(term, self._bcg_recompile(cdt_data[term])))
+    #         await self.bot.say(embed=em)
+    #         return
+    #     else:
+    #         ## search for term in json
+    #         for k,v in cdt_data.items():
+    #             if term.lower() in v.lower():
+    #                 if k in cdt_versions:
+    #                     ver = '\nvn: {}'.format(cdt_versions[k])
+    #                 else:
+    #                     ver = ''
+    #                 ksearchlist.append('\n**{}**\n{}{}'.format(k,
+    #                         self._bcg_recompile(v), ver)
+    #                 )
+    #     if len(ksearchlist) > 0:
+    #         pages = chat.pagify('\n'.join(s for s in ksearchlist))
+    #         page_list = []
+    #         for page in pages:
+    #             em = discord.Embed(title='Data Search',  description = page)
+    #             # em.set_thumbnail(url=COLLECTOR_ICON)
+    #             em.set_footer(text='MCOC Game Files', icon_url=KABAM_ICON)
+    #             page_list.append(em)
+    #             # page_list.append(page)
+    #         menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
+    #         await menu.menu_start(page_list)
 
     def _bcg_recompile(self, str_data):
         hex_re = re.compile(r'\[[0-9a-f]{6,8}\](.+?)\[-\]', re.I)
