@@ -248,7 +248,7 @@ class Alliance:
 
     async def _updaterole(self, ctx, key, role):
         server = ctx.message.server
-        members = server.members
+        # members = server.members
         data = discord.Embed(colour=get_color(ctx))
         if role is None:
             question = '{}, do you want to remove this ``{}`` registration?'.format(
@@ -261,7 +261,7 @@ class Alliance:
             members = []
             memberids = []
             for m in server.members:
-                if role in m:
+                if role in m.roles:
                     members.append(m.name)
                     memberids.append(m.id)
 
