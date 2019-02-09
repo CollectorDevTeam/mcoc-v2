@@ -264,17 +264,6 @@ class Alliance:
         data = await self._updaterole(ctx, key='alliance', role=role)
         menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
         await menu.menu_start(pages=[data])
-     #
-    # @_update.command(pass_context=True, name='memberrole', aliases=('members','alliance',))
-    # async def _memberrole(self, ctx, value: discord.Role):
-    #     """Which role represents all members of your alliance (up to 30)?"""
-    #     key = "memberrole"
-    #     server = ctx.message.server
-    #     if server.id not in self.guilds:
-    #         data = self._unknownguild(ctx, server)
-    #     else:
-    #         data = self._updateguilds(ctx, key, {value.id})
-    #     await PagesMenu.menu_start(pages=[data])
 #
     def _createalliance(self, ctx, server):
 
@@ -306,6 +295,7 @@ class Alliance:
                 answer, confirmation = await PagesMenu.confirm(self, ctx, question)
                 if answer is True:
                     self.guilds[server.id].pop(key, None)
+                    await self.bot.delete_message(confirmation)
                     data.add_field(name="Congrats!:sparkles:", value="You have unregistered ``{}`` from your Alliance.".format(key))
             else:
                 member_names = []
