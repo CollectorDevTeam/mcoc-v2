@@ -20,7 +20,7 @@ class Alliance:
         self.bot = bot
         self.alliances = "data/account/alliances.json"
         self.guilds = dataIO.load_json(self.alliances)
-        self.alliancekeys =('officers', 'bg1', 'bg2', 'bg3', 'alliance',)
+        self.alliancekeys = ('officers', 'bg1', 'bg2', 'bg3', 'alliance',)
         self.advancedkeys = ('officers', 'bg1', 'bg2', 'bg3', 'alliance', 'bg1aq', 'bg2aq', 'bg3aq', 'bg1aw', 'bg2aw', 'bg3aw',)
 
     @commands.group(name='alliance', aliases=('clan', 'guild'), pass_context=True, invoke_without_command=True, hidden=False)
@@ -29,6 +29,7 @@ class Alliance:
 
         """
         # server = ctx.message.server
+        await self.bot.say('debug: alliance group')
         if ctx.invoked_subcommand is None:
             await self.bot.say('_present_alliance placeholder')
             if user is None:
@@ -62,24 +63,24 @@ class Alliance:
         ##      if ctx.server != alliance:
         ##         present public info
         await self.bot.say('testing alliance presentation')
-        alliances = self._find_alliance(user.id) #list
+        alliances, message = await self._find_alliance(user) #list
         pages = []
         if alliances is None:
-            data = discord.Embed(color=get_color(ctx), title='CollectorVerse Alliances', description='User is not regisered with a Collectorverse alliance.', url='https://discord.gg/umcoc')
+            data = discord.Embed(color=get_color(ctx), title='CollectorVerse Alliances', description=message, url='https://discord.gg/umcoc')
             pages.append(data)
         else:
             for alliance in alliances:
                 guild = self.guilds[alliance]
                 server = self.bot.get_server(alliance)
+
                 await self.bot.say('debug: {}'.format(server.name))
-                # members = discord.Client._get_members(s)
 
                 ## need a function to update all alliance roles + members
                 if server.id == alliance.id and user.id in guild:  #Alliance server & Alliance member
                     data = discord.Embed(color=get_color(ctx), title='CollectorVerse Alliances', description='Display private profile ~ All kinds of info stored', url='https://discord.gg/umcoc')
                     for s in standard.keys():
                         if s in guild:
-                            data.add_field(name=s.title(), value=guild[standard[s]])
+                            data.add_field(name=s.title(), value=guild)
 
                 if server.id == alliance.id: #Alliance server visitor
                     data = discord.Embed(color=get_color(ctx), title='CollectorVerse Alliances', description='Display Alliance Server recruiting profile', url='https://discord.gg/umcoc')
@@ -94,18 +95,23 @@ class Alliance:
                 menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
         await menu.menu_start(pages=[data])
 
-    def _find_alliance(self, user):
+    async def _find_alliance(self, user):
         '''Returns a list of Server IDs or None'''
         alliances = []
-        guilds = self.guilds
-        for g in guilds.keys():
-            if user in self.guilds[g].items():
+        for g in self.guilds.keys():
+            if user.id in self.guilds[g].items():
                 # discord.Client.get_server(g)
                 alliances.append(g)
-                print('debug: found user\'s alliances')
-                return alliances
-        print('debug: found no alliance')
-        return None
+                continue
+        if len(alliances) == 1:
+            message = '{} is registered with the following CollectorVerse alliance.'.format(user.display_name)
+            return alliances, message
+        elif len(alliances) > 1:
+            message = '{} is registered with the following CollectorVerse alliances.'.format(user.display_name)
+            return alliances, message
+        else:
+            message = '{} is not registered with a CollectorVerse alliance.'.format(user.display_name)
+            return None, message
 
     def _get_members(self, server, key, role):
         '''For known Server and Role, find all server.members with role'''
