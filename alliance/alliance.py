@@ -20,6 +20,8 @@ class Alliance:
         self.bot = bot
         self.alliances = "data/account/alliances.json"
         self.guilds = dataIO.load_json(self.alliances)
+        self.alliancekeys =('officers', 'bg1', 'bg2', 'bg3', 'alliance',)
+        self.advancedkeys = ('officers', 'bg1', 'bg2', 'bg3', 'alliance', 'bg1aq', 'bg2aq', 'bg3aq', 'bg1aw', 'bg2aw', 'bg3aw',)
 
     @commands.group(name='alliance', aliases=('clan', 'guild'), pass_context=True, invoke_without_command=True, hidden=False)
     async def _alliance(self, ctx, user: discord.Member = None):
@@ -28,7 +30,7 @@ class Alliance:
         """
         # server = ctx.message.server
         if ctx.invoked_subcommand is None:
-            # await self.bot.say('_present_alliance placeholder')
+            await self.bot.say('_present_alliance placeholder')
             if user is None:
                 user = ctx.message.author
             await self._present_alliance(ctx, user)
@@ -61,17 +63,18 @@ class Alliance:
         ##         present public info
         await self.bot.say('testing alliance presentation')
         alliances = self._find_alliance(user.id) #list
-
+        pages = []
         if alliances is None:
             data = discord.Embed(color=get_color(ctx), title='CollectorVerse Alliances', description='User is not regisered with a Collectorverse alliance.', url='https://discord.gg/umcoc')
+            pages.append(data)
         else:
             for alliance in alliances:
                 guild = self.guilds[alliance]
-                # s = discord.Client.get_server(alliance)
+                server = self.bot.get_server(alliance)
+                await self.bot.say('debug: {}'.format(server.name))
                 # members = discord.Client._get_members(s)
 
                 ## need a function to update all alliance roles + members
-                standard = {'officers':'officersnames','bg1':'bg1names','bg2':'bg2names','bg3':'bg3names'}
                 if server.id == alliance.id and user.id in guild:  #Alliance server & Alliance member
                     data = discord.Embed(color=get_color(ctx), title='CollectorVerse Alliances', description='Display private profile ~ All kinds of info stored', url='https://discord.gg/umcoc')
                     for s in standard.keys():
@@ -87,8 +90,9 @@ class Alliance:
                 else: #Alliance stranger
                     data = discord.Embed(color=get_color(ctx), title='CollectorVerse Alliances', description='Display public profile.\nInclude server join link, if set.\nInclude Alliance Prestige\nInclude About\n etc', url='https://discord.gg/umcoc')
                 data.set_footer(text='CollectorDevTeam', icon_url=COLLECTOR_ICON)
+                pages.append(data)
                 menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
-                await menu.menu_start(pages=[data])
+        await menu.menu_start(pages=[data])
 
     def _find_alliance(self, user):
         '''Returns a list of Server IDs or None'''
@@ -132,21 +136,21 @@ class Alliance:
                 roles = server.roles
                 for role in roles:
                     #add default roles
-                    for key in ('officers', 'bg1', 'bg2', 'bg3', 'alliance'):
+                    for key in self.alliancekeys:
                         if role.name.lower() == key:
                             # await self._updaterole(ctx, key, role)
                             data = await self._updaterole(ctx, key, role)
                             await self.bot.say('{} role recognized and auto-registered.'.format(role.name))
-                            # datapages.append(data)
+                            datapages.append(data)
             else:
                 data = discord.Embed(colour=get_color(ctx))
                 data.add_field(name="Error:warning:", value="Opps, it seems like you already have an guild registered, {}.".format(user.mention))
                 data.set_footer(text='CollectorDevTeam', icon_url=COLLECTOR_ICON)
                 datapages.append(data)
             if len(datapages)>0:
-                menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
                 await self.bot.delete_message(confirmation)
-                await menu.menu_start(pages=datapages, page_number=len(datapages)-1)
+            menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
+            await menu.menu_start(pages=datapages, page_number=len(datapages)-1)
         else:
             return
 #
@@ -322,7 +326,7 @@ class Alliance:
         return data
 
     async def _updatemembers(self, ctx, server):
-        for key in ('officers', 'alliance', 'bg1', 'bg2', 'bg3', 'bg1aw', 'bg1aq', 'bg2aw', 'bg2aq', 'bg3aw', 'bg3aq'):
+        for key in self.advancedkeys:
             if key in self.guilds:
                 for role in server.roles:
                     if self.guilds[key]['role_id'] == role.id:
