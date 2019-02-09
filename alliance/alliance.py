@@ -1,6 +1,6 @@
-# import re
+import re
 import os
-# import datetime
+import datetime
 import discord
 from discord.ext import commands
 from dateutil.parser import parse as dateParse
@@ -11,6 +11,7 @@ from .utils import checks
 from .mcocTools import (KABAM_ICON, COLLECTOR_ICON, PagesMenu)
 from .hook import RosterUserConverter
 # import cogs.mcocTools
+
 
 class Alliance:
     """The CollectorVerse Alliance Cog"""
@@ -27,7 +28,8 @@ class Alliance:
         """
         # server = ctx.message.server
         if ctx.invoked_subcommand is None:
-            await self._present_alliance(ctx, user)
+            await self.bot.say('_present_alliance placeholder')
+            # await self._present_alliance(ctx, user)
 
     @checks.admin_or_permissions(manage_server=True)
     @_alliance.command(name='delete', pass_context=True, aliases=('remove', 'del','rm'), invoke_without_command=True, no_pm=True)
@@ -130,8 +132,9 @@ class Alliance:
                     #add default roles
                     for key in ('officers', 'bg1', 'bg2', 'bg3', 'alliance'):
                         if role.name.lower() == key:
-                            self.guilds[server.id].update({key : {'role': role}})
-                            self._get_members(server, key, role)
+                            self.guilds[server.id].update({key: {'role': role.id}})
+                            await self.bot.say('{} role recognized and auto-registered.'.format(role.name))
+                            # self._get_members(server, key, role)
             else:
                 data = discord.Embed(colour=get_color(ctx))
                 data.add_field(name="Error:warning:", value="Opps, it seems like you already have an guild registered, {}.".format(user.mention))
@@ -177,22 +180,9 @@ class Alliance:
 
     @checks.admin_or_permissions(manage_server=True)
     @_update.command(pass_context=True, name='officers')
-    async def _officers(self, ctx, role: discord.Role):
+    async def _officers(self, ctx, role: discord.Role = None):
         """Which role are your Alliance Officers?"""
-        key = "officers"
-        server = ctx.message.server
-
-        if server.id not in self.guilds:
-            data = self._unknownguild(ctx, server)
-            await PagesMenu.menu_start(self, [data])
-        else:
-            # self._get_members(server, key, role)
-            # data = self._updateguilds(ctx, key, value.id)
-            # pacakge.update('role', role)
-
-            # members = self._get_members(server, value)
-            # data2 = self._updateguilds(ctx, 'officersids', '\n'.join(package))
-            # data3 = self._updateguilds(ctx, 'officersnames', '\n'.join(package2))
+        data = self._updaterole(ctx, key='officers', role=role)
             await PagesMenu.menu_start(self, [data], 0)
 
     # @_update.command(pass_context=True, name='bg1', aliases=('battlegroup1',))
@@ -255,6 +245,46 @@ class Alliance:
         data.set_footer(text='CollectorDevTeam',
                 icon_url=COLLECTOR_ICON)
         return data
+
+    def _updaterole(self, ctx, key, role):
+        server = ctx.message.server
+        members = server.members
+        data = discord.Embed(colour=get_color(ctx))
+        if role is None:
+            question = '{}, do you want to remove this ``{}`` registration?'.format(
+                ctx.message.author.mention, key)
+            answer = await PagesMenu.confirm(self, ctx, question)
+            if answer is True:
+                self.guilds[server.id].pop(key, None)
+                data.add_field(name="Congrats!:sparkles:", value="You have unregistered ``{}`` from your Alliance.".format(key))
+        else:
+            members = []
+            memberids = []
+            for m in server.members:
+                if role in m:
+                    members.append(m.name)
+                    memberids.append(m.id)
+
+            if server.id not in self.guilds:
+                data = self._unknownguild(ctx, server)
+                await PagesMenu.menu_start(self, [data])
+            else:
+                package = {'id': role.id,
+                            'name': role.name,
+                            'memberids': memberids,
+                            'members': members}
+            if key in ('bg1', 'bg2', 'bg3', 'bg1aw', 'bg1aq', 'bg2aw', 'bg2aq', 'bg3aw', 'bg3aq'):
+                if len(members) > 10:
+                    await self.bot.say('Warning: Battlegroups are limited to 10 members. Check your {} assignments'.format(role.name))
+            self.guilds[server.id].update({key: package})
+            data.add_field(name="Congrats!:sparkles:",value="You have set your {} to {}".format(key, value))
+        dataIO.save_json(self.alliances, self.guilds)
+        data.set_footer(text='CollectorDevTeam',
+                icon_url=COLLECTOR_ICON)
+        return data
+
+
+
 
     def _updateguilds(self, ctx, key, value):
         server = ctx.message.server
