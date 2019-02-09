@@ -183,7 +183,7 @@ class Alliance:
     async def _officers(self, ctx, role: discord.Role = None):
         """Which role are your Alliance Officers?"""
         data = self._updaterole(ctx, key='officers', role=role)
-            await PagesMenu.menu_start(self, [data], 0)
+        await PagesMenu.menu_start(self, [data], 0)
 
     # @_update.command(pass_context=True, name='bg1', aliases=('battlegroup1',))
     # async def _bg1(self, ctx, *, value: discord.Role):
