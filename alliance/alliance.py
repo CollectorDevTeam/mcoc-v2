@@ -43,11 +43,11 @@ class Alliance:
                 self.guilds.pop(server.id, None)
                 # dropped = self.guilds.pop(server.id, None)
                 dataIO.save_json(self.alliances, self.guilds)
-                data=discord.Embed(title="Congrats!:sparkles:", description="You have deleted your CollectorVerse Alliance.", color=get_color(ctx))
+                data = discord.Embed(title="Congrats!:sparkles:", description="You have deleted your CollectorVerse Alliance.", color=get_color(ctx))
             else:
-                data=discord.Embed(title="Sorry!:sparkles:", description="You have no CollectorVerse Alliance.", color=get_color(ctx))
+                data = discord.Embed(title="Sorry!:sparkles:", description="You have no CollectorVerse Alliance.", color=get_color(ctx))
             menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
-            await menu.menu_start(self, pages=[data])
+            await menu.menu_start(pages=[data])
 
     async def _present_alliance(self, ctx, user):
         ## 1 search for user in registered alliances
@@ -88,7 +88,7 @@ class Alliance:
                     data = discord.Embed(color=get_color(ctx), title='CollectorVerse Alliances', description='Display public profile.\nInclude server join link, if set.\nInclude Alliance Prestige\nInclude About\n etc', url='https://discord.gg/umcoc')
                 data.set_footer(text='CollectorDevTeam', icon_url=COLLECTOR_ICON)
                 menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
-                await menu.menu_start(self, pages=[data])
+                await menu.menu_start(pages=[data])
 
     def _find_alliance(self, user:discord.User):
         '''Returns a list of Server IDs or None'''
@@ -147,7 +147,7 @@ class Alliance:
                 datapages.append(data)
             if len(datapages)>0:
                 menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
-                await menu.menu_start(self, pages=datapages, page_number=len(datapages)-1)
+                await menu.menu_start(pages=datapages, page_number=len(datapages)-1)
         else:
             return
 #
@@ -169,7 +169,7 @@ class Alliance:
         else:
             data = self._updateguilds(ctx, key, value)
         menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
-        await menu.menu_start(self, [data])
+        await menu.menu_start(pages=[data])
 
     @_update.command(pass_context=True, name='tag')
     async def _alliancetag(self, ctx, *, value):
@@ -184,7 +184,7 @@ class Alliance:
         else:
             data = self._updateguilds(ctx, key, value)
         menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
-        await menu.menu_start(self, [data])
+        await menu.menu_start(pages=[data])
 
     @checks.admin_or_permissions(manage_server=True)
     @_update.command(pass_context=True, name='officers')
@@ -192,7 +192,7 @@ class Alliance:
         """Which role are your Alliance Officers?"""
         data = await self._updaterole(ctx, key='officers', role=role)
         menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
-        await menu.menu_start(self, [data])
+        await menu.menu_start(pages=[data])
 
     # @_update.command(pass_context=True, name='bg1', aliases=('battlegroup1',))
     # async def _bg1(self, ctx, *, value: discord.Role):
@@ -203,7 +203,7 @@ class Alliance:
     #         data = self._unknownguild(ctx, server)
     #     else:
     #         data = self._updateguilds(ctx, key, {value.id})
-    #     await PagesMenu.menu_start(self, [data])
+    #     await PagesMenu.menu_start(pages=[data])
     #
     # @_update.command(pass_context=True, name='bg2', aliases=('battlegroup2',))
     # async def _bg2(self, ctx, *, value: discord.Role):
@@ -214,7 +214,7 @@ class Alliance:
     #         data = self._unknownguild(ctx, server)
     #     else:
     #         data = self._updateguilds(ctx, key, {value.id})
-    #     await PagesMenu.menu_start(self, [data])
+    #     await PagesMenu.menu_start(pages=[data])
     #
     # @_update.command(pass_context=True, name='bg3', aliases=('battlegroup3',))
     # async def _bg3(self, ctx, *, value: discord.Role):
@@ -225,7 +225,7 @@ class Alliance:
     #         data = self._unknownguild(ctx, server)
     #     else:
     #         data = self._updateguilds(ctx, key, {value.id})
-    #     await PagesMenu.menu_start(self, [data])
+    #     await PagesMenu.menu_start(pages=[data])
     #
     # @_update.command(pass_context=True, name='memberrole', aliases=('members','alliance',))
     # async def _memberrole(self, ctx, value: discord.Role):
@@ -236,7 +236,7 @@ class Alliance:
     #         data = self._unknownguild(ctx, server)
     #     else:
     #         data = self._updateguilds(ctx, key, {value.id})
-    #     await PagesMenu.menu_start(self, [data])
+    #     await PagesMenu.menu_start(pages=[data])
 #
     def _createalliance(self, ctx, server):
 
