@@ -28,8 +28,10 @@ class Alliance:
         """
         # server = ctx.message.server
         if ctx.invoked_subcommand is None:
-            await self.bot.say('_present_alliance placeholder')
-            # await self._present_alliance(ctx, user)
+            # await self.bot.say('_present_alliance placeholder')
+            if user is None:
+                user = ctx.message.author
+            await self._present_alliance(ctx, user)
 
     @checks.admin_or_permissions(manage_server=True)
     @_alliance.command(name='delete', pass_context=True, aliases=('remove', 'del','rm'), invoke_without_command=True, no_pm=True)
@@ -58,10 +60,7 @@ class Alliance:
         ##      if ctx.server != alliance:
         ##         present public info
         await self.bot.say('testing alliance presentation')
-        if user is None:
-            user = ctx.message.author
-        server = ctx.message.server
-        alliances = self._find_alliance(user) #list
+        alliances = self._find_alliance(user.id) #list
 
         if alliances is None:
             data = discord.Embed(color=get_color(ctx), title='CollectorVerse Alliances', description='User is not regisered with a Collectorverse alliance.', url='https://discord.gg/umcoc')
@@ -91,14 +90,13 @@ class Alliance:
                 menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
                 await menu.menu_start(pages=[data])
 
-    def _find_alliance(self, user:discord.User):
+    def _find_alliance(self, user):
         '''Returns a list of Server IDs or None'''
         alliances = []
         guilds = self.guilds
-        for g in guilds.items():
-            if user.id in g:
-            # if user.id in guilds[g]['officersids'] or user.id in guilds[g]['bg1ids'] or user.id in guilds[g]['bg2ids'] or user.id in guilds[g]['bg3ids']:
-                discord.Client.get_server(g)
+        for g in guilds.keys():
+            if user in self.guilds[g].items():
+                # discord.Client.get_server(g)
                 alliances.append(g)
                 print('debug: found user\'s alliances')
                 return alliances
@@ -324,25 +322,22 @@ class Alliance:
         return data
 
     async def _updatemembers(self, ctx, server):
-        if ctx.message.server != server:
-            await self.bot.say('server missmatch, to be solved')
-        else:
-            for key in ('bg1', 'bg2', 'bg3', 'bg1aw', 'bg1aq', 'bg2aw', 'bg2aq', 'bg3aw', 'bg3aq'):
-                if key in self.guilds:
-                    for role in server.roles:
-                        if self.guilds[key]['role_id'] == role.id:
-                            member_names = []
-                            member_ids = []
-                            for m in server.members:
-                                if role in m.roles:
-                                    member_names.append(m.name)
-                                    member_ids.append(m.id)
-                            package = {'id': role.id,
-                                       'name': role.name,
-                                       'member_ids': member_ids,
-                                       'member_names': member_names}
-                            self.guilds[server.id].update({key: package})
-                            continue
+        for key in ('officers', 'alliance', 'bg1', 'bg2', 'bg3', 'bg1aw', 'bg1aq', 'bg2aw', 'bg2aq', 'bg3aw', 'bg3aq'):
+            if key in self.guilds:
+                for role in server.roles:
+                    if self.guilds[key]['role_id'] == role.id:
+                        member_names = []
+                        member_ids = []
+                        for m in server.members:
+                            if role in m.roles:
+                                member_names.append(m.name)
+                                member_ids.append(m.id)
+                        package = {'id': role.id,
+                                   'name': role.name,
+                                   'member_ids': member_ids,
+                                   'member_names': member_names}
+                        self.guilds[server.id].update({key: package})
+                        continue
         await self.bot.say('Debug: Alliance details refreshed')
         return
 
