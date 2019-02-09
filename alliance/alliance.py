@@ -71,29 +71,30 @@ class Alliance:
         else:
             for alliance in alliances:
                 guild = self.guilds[alliance]
-                server = self.bot.get_server(alliance)
+                server = await self.bot.get_server(alliance)
 
-                await self.bot.say('debug: {}'.format(server.name))
+                pages.append('debug: Server {}'.format(server.name))
+                pages.append('debut: User {}.'format(user.display_name))
 
                 ## need a function to update all alliance roles + members
-                if server.id == alliance.id and user.id in guild:  #Alliance server & Alliance member
-                    data = discord.Embed(color=get_color(ctx), title='CollectorVerse Alliances', description='Display private profile ~ All kinds of info stored', url='https://discord.gg/umcoc')
-                    for s in standard.keys():
-                        if s in guild:
-                            data.add_field(name=s.title(), value=guild)
-
-                if server.id == alliance.id: #Alliance server visitor
-                    data = discord.Embed(color=get_color(ctx), title='CollectorVerse Alliances', description='Display Alliance Server recruiting profile', url='https://discord.gg/umcoc')
-                    publiclist = ['name','tag','founded','leader','invitation','recruiting']
-                    for public in publiclist:
-                        if public in guild:
-                            data.add_field(name=public.title(),value=guild[public])
-                else: #Alliance stranger
-                    data = discord.Embed(color=get_color(ctx), title='CollectorVerse Alliances', description='Display public profile.\nInclude server join link, if set.\nInclude Alliance Prestige\nInclude About\n etc', url='https://discord.gg/umcoc')
-                data.set_footer(text='CollectorDevTeam', icon_url=COLLECTOR_ICON)
-                pages.append(data)
-                menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
-        await menu.menu_start(pages=[data])
+                # if server.id == alliance.id and user.id in guild:  #Alliance server & Alliance member
+                #     data = discord.Embed(color=get_color(ctx), title='CollectorVerse Alliances', description='Display private profile ~ All kinds of info stored', url='https://discord.gg/umcoc')
+                #     for s in standard.keys():
+                #         if s in guild:
+                #             data.add_field(name=s.title(), value=guild)
+                #
+                # if server.id == alliance.id: #Alliance server visitor
+                #     data = discord.Embed(color=get_color(ctx), title='CollectorVerse Alliances', description='Display Alliance Server recruiting profile', url='https://discord.gg/umcoc')
+                #     publiclist = ['name','tag','founded','leader','invitation','recruiting']
+                #     for public in publiclist:
+                #         if public in guild:
+                #             data.add_field(name=public.title(),value=guild[public])
+                # else: #Alliance stranger
+                #     data = discord.Embed(color=get_color(ctx), title='CollectorVerse Alliances', description='Display public profile.\nInclude server join link, if set.\nInclude Alliance Prestige\nInclude About\n etc', url='https://discord.gg/umcoc')
+                # data.set_footer(text='CollectorDevTeam', icon_url=COLLECTOR_ICON)
+                # pages.append(data)
+        menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
+        await menu.menu_start(pages=pages)
 
     async def _find_alliance(self, user):
         '''Returns a list of Server IDs or None'''
@@ -113,19 +114,19 @@ class Alliance:
             message = '{} is not registered with a CollectorVerse alliance.'.format(user.display_name)
             return None, message
 
-    def _get_members(self, server, key, role):
-        '''For known Server and Role, find all server.members with role'''
-        servermembers = server.members
-        members = []
-        for m in servermembers:
-            if role in m.roles:
-                members.append(m)
-        package = {key: {'role':role, 'members':members}}
-        self.guilds[server.id].update(package)
-        dataIO.save_json(self.alliances, self.guilds)
-        print('Members saved for {}'.format(role.name))
-        print(json.dumps(package))
-        return
+    # def _get_members(self, server, key, role):
+    #     '''For known Server and Role, find all server.members with role'''
+    #     servermembers = server.members
+    #     members = []
+    #     for m in servermembers:
+    #         if role in m.roles:
+    #             members.append(m)
+    #     package = {key: {'role':role, 'members':members}}
+    #     self.guilds[server.id].update(package)
+    #     dataIO.save_json(self.alliances, self.guilds)
+    #     print('Members saved for {}'.format(role.name))
+    #     print(json.dumps(package))
+    #     return
 
     @checks.admin_or_permissions(manage_server=True)
     @_alliance.command(name="register", pass_context=True, invoke_without_command=True, no_pm=True)
@@ -390,5 +391,4 @@ def check_file():
 def setup(bot):
     check_folder()
     check_file()
-    # bot.add_cog(Account(bot))
     bot.add_cog(Alliance(bot))
