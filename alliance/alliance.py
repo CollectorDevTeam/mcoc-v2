@@ -74,7 +74,7 @@ class Alliance:
                 server = await self.bot.get_server(alliance)
 
                 pages.append('debug: Server {}'.format(server.name))
-                pages.append('debut: User {}.'format(user.display_name))
+                pages.append('debug: User {}'.format(user.display_name))
 
                 ## need a function to update all alliance roles + members
                 # if server.id == alliance.id and user.id in guild:  #Alliance server & Alliance member
