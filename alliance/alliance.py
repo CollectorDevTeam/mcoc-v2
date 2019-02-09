@@ -124,6 +124,7 @@ class Alliance:
         server = ctx.message.server
         question = '{}, do you want to register this Discord Server as your Alliance Server?'.format(ctx.message.author.mention)
         answer = await PagesMenu.confirm(self, ctx, question)
+        datapages = []
         if answer is True:
             if server.id not in self.guilds:
                 data = self._createalliance(ctx, server)
@@ -134,6 +135,8 @@ class Alliance:
                         if role.name.lower() == key:
                             await self._updaterole(ctx, key, role)
                             await self.bot.say('{} role recognized and auto-registered.'.format(role.name))
+                            data = self._updaterole(ctx, key, role)
+                            datapages.append(data)
                             # self._get_members(server, key, role)
             else:
                 data = discord.Embed(colour=get_color(ctx))
@@ -141,7 +144,9 @@ class Alliance:
 
             data.set_footer(text='CollectorDevTeam',
                     icon_url=COLLECTOR_ICON)
-            await PagesMenu.menu_start(self, [data])
+            datapages.append(data)
+
+            await PagesMenu.menu_start(self, pages=datapages, page_number=len(datapages))
         else:
             return
 #
@@ -248,7 +253,6 @@ class Alliance:
 
     async def _updaterole(self, ctx, key, role):
         server = ctx.message.server
-        # members = server.members
         data = discord.Embed(colour=get_color(ctx))
         if role is None:
             question = '{}, do you want to remove this ``{}`` registration?'.format(
@@ -275,16 +279,13 @@ class Alliance:
                             'members': members}
             if key in ('bg1', 'bg2', 'bg3', 'bg1aw', 'bg1aq', 'bg2aw', 'bg2aq', 'bg3aw', 'bg3aq'):
                 if len(members) > 10:
-                    await self.bot.say('Warning: Battlegroups are limited to 10 members. Check your {} assignments'.format(role.name))
+                    data.add_field(name='Warning - Overloaded Battlegroup:', value='Battlegroups are limited to 10 members.\nCheck your {} assignments'.format(role.name))
             self.guilds[server.id].update({key: package})
             data.add_field(name="Congrats!:sparkles:",value="You have set your {} to {}".format(key, value))
         dataIO.save_json(self.alliances, self.guilds)
         data.set_footer(text='CollectorDevTeam',
                 icon_url=COLLECTOR_ICON)
         return data
-
-
-
 
     def _updateguilds(self, ctx, key, value):
         server = ctx.message.server
