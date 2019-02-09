@@ -38,7 +38,7 @@ class Alliance:
         server = ctx.message.server
         if server.id in self.guilds:
             question = '{}, are you sure you want to deregsister {} as your CollectorVerse Alliance?'.format(ctx.message.author.mention, server.name)
-            answer = await PagesMenu.confirm(self, ctx, question)
+            answer, confirmation = await PagesMenu.confirm(self, ctx, question)
             if answer:
                 self.guilds.pop(server.id, None)
                 # dropped = self.guilds.pop(server.id, None)
@@ -125,7 +125,7 @@ class Alliance:
         user = ctx.message.author
         server = ctx.message.server
         question = '{}, do you want to register this Discord Server as your Alliance Server?'.format(ctx.message.author.mention)
-        answer = await PagesMenu.confirm(self, ctx, question)
+        answer, confirmation = await PagesMenu.confirm(self, ctx, question)
         datapages = []
         if answer is True:
             if server.id not in self.guilds:
@@ -135,9 +135,9 @@ class Alliance:
                     #add default roles
                     for key in ('officers', 'bg1', 'bg2', 'bg3', 'alliance'):
                         if role.name.lower() == key:
-                            await self._updaterole(ctx, key, role)
+                            # await self._updaterole(ctx, key, role)
+                            data = await self._updaterole(ctx, key, role)
                             await self.bot.say('{} role recognized and auto-registered.'.format(role.name))
-                            data = self._updaterole(ctx, key, role)
                             datapages.append(data)
                             # self._get_members(server, key, role)
             else:
@@ -265,7 +265,7 @@ class Alliance:
             if role is None:
                 question = '{}, do you want to remove this ``{}`` registration?'.format(
                     ctx.message.author.mention, key)
-                answer = await PagesMenu.confirm(self, ctx, question)
+                answer, confirmation = await PagesMenu.confirm(self, ctx, question)
                 if answer is True:
                     self.guilds[server.id].pop(key, None)
                     data.add_field(name="Congrats!:sparkles:", value="You have unregistered ``{}`` from your Alliance.".format(key))
