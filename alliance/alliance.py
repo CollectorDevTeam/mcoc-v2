@@ -47,6 +47,7 @@ class Alliance:
             else:
                 data = discord.Embed(title="Sorry!:sparkles:", description="You have no CollectorVerse Alliance.", color=get_color(ctx))
             menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
+            await self.bot.delete_message(confirmation)
             await menu.menu_start(pages=[data])
 
     async def _present_alliance(self, ctx, user):
@@ -138,8 +139,7 @@ class Alliance:
                             # await self._updaterole(ctx, key, role)
                             data = await self._updaterole(ctx, key, role)
                             await self.bot.say('{} role recognized and auto-registered.'.format(role.name))
-                            datapages.append(data)
-                            # self._get_members(server, key, role)
+                            # datapages.append(data)
             else:
                 data = discord.Embed(colour=get_color(ctx))
                 data.add_field(name="Error:warning:", value="Opps, it seems like you already have an guild registered, {}.".format(user.mention))
@@ -147,6 +147,7 @@ class Alliance:
                 datapages.append(data)
             if len(datapages)>0:
                 menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
+                await self.bot.delete_message(confirmation)
                 await menu.menu_start(pages=datapages, page_number=len(datapages)-1)
         else:
             return
@@ -286,6 +287,7 @@ class Alliance:
                         data.add_field(name='Warning - Overloaded Battlegroup:', value='Battlegroups are limited to 10 members.\nCheck your {} assignments'.format(role.name))
                 self.guilds[server.id].update({key: package})
                 data.add_field(name="Congrats!:sparkles:",value="You have set your {} to {}".format(key, role.name))
+                data.add_field(name='{} members', value='\n'.join(member_names))
             dataIO.save_json(self.alliances, self.guilds)
             data.set_footer(text='CollectorDevTeam',
                     icon_url=COLLECTOR_ICON)
