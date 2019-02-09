@@ -195,39 +195,76 @@ class Alliance:
         menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
         await menu.menu_start(pages=[data])
 
-    # @_update.command(pass_context=True, name='bg1', aliases=('battlegroup1',))
-    # async def _bg1(self, ctx, *, value: discord.Role):
-    #     """Which role is your Battlegroup 1?"""
-    #     key = "bg1"
-    #     server = ctx.message.server
-    #     if server.id not in self.guilds:
-    #         data = self._unknownguild(ctx, server)
-    #     else:
-    #         data = self._updateguilds(ctx, key, {value.id})
-    #     await PagesMenu.menu_start(pages=[data])
-    #
-    # @_update.command(pass_context=True, name='bg2', aliases=('battlegroup2',))
-    # async def _bg2(self, ctx, *, value: discord.Role):
-    #     """Which role is your Battlegroup 2?"""
-    #     key = "bg2"
-    #     server = ctx.message.server
-    #     if server.id not in self.guilds:
-    #         data = self._unknownguild(ctx, server)
-    #     else:
-    #         data = self._updateguilds(ctx, key, {value.id})
-    #     await PagesMenu.menu_start(pages=[data])
-    #
-    # @_update.command(pass_context=True, name='bg3', aliases=('battlegroup3',))
-    # async def _bg3(self, ctx, *, value: discord.Role):
-    #     """Which role is your Battlegroup 3?"""
-    #     key = "bg3"
-    #     server = ctx.message.server
-    #     if server.id not in self.guilds:
-    #         data = self._unknownguild(ctx, server)
-    #     else:
-    #         data = self._updateguilds(ctx, key, {value.id})
-    #     await PagesMenu.menu_start(pages=[data])
-    #
+    @_update.command(pass_context=True, name='bg1')
+    async def _bg1(self, ctx, role: discord.Role = None):
+        """Which role is your Battlegroup 1?"""
+        data = await self._updaterole(ctx, key='bg1', role=role)
+        menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
+        await menu.menu_start(pages=[data])
+
+    @_update.command(pass_context=True, name='bg1aq')
+    async def _bg1aq(self, ctx, role: discord.Role = None):
+        """Which role is your Battlegroup 1 for Alliance Quest?"""
+        data = await self._updaterole(ctx, key='bg1aq', role=role)
+        menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
+        await menu.menu_start(pages=[data])
+
+    @_update.command(pass_context=True, name='bg1aw')
+    async def _bg1aw(self, ctx, role: discord.Role = None):
+        """Which role is your Battlegroup 1 for Alliance War?"""
+        data = await self._updaterole(ctx, key='bg1aw', role=role)
+        menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
+        await menu.menu_start(pages=[data])
+
+    @_update.command(pass_context=True, name='bg2')
+    async def _bg1(self, ctx, role: discord.Role = None):
+        """Which role is your Battlegroup 2?"""
+        data = await self._updaterole(ctx, key='bg2', role=role)
+        menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
+        await menu.menu_start(pages=[data])
+
+    @_update.command(pass_context=True, name='bg2aq')
+    async def _bg1aq(self, ctx, role: discord.Role = None):
+        """Which role is your Battlegroup 2 for Alliance Quest?"""
+        data = await self._updaterole(ctx, key='bg2aq', role=role)
+        menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
+        await menu.menu_start(pages=[data])
+
+    @_update.command(pass_context=True, name='bg2aw')
+    async def _bg1aw(self, ctx, role: discord.Role = None):
+        """Which role is your Battlegroup 2 for Alliance War?"""
+        data = await self._updaterole(ctx, key='bg2aw', role=role)
+        menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
+        await menu.menu_start(pages=[data])
+
+    @_update.command(pass_context=True, name='bg3')
+    async def _bg1(self, ctx, role: discord.Role = None):
+        """Which role is your Battlegroup 3?"""
+        data = await self._updaterole(ctx, key='bg3', role=role)
+        menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
+        await menu.menu_start(pages=[data])
+
+    @_update.command(pass_context=True, name='bg3aq')
+    async def _bg1aq(self, ctx, role: discord.Role = None):
+        """Which role is your Battlegroup 3 for Alliance Quest?"""
+        data = await self._updaterole(ctx, key='bg3aq', role=role)
+        menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
+        await menu.menu_start(pages=[data])
+
+    @_update.command(pass_context=True, name='bg3aw')
+    async def _bg1aw(self, ctx, role: discord.Role = None):
+        """Which role is your Battlegroup 3 for Alliance War?"""
+        data = await self._updaterole(ctx, key='bg3aw', role=role)
+        menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
+        await menu.menu_start(pages=[data])
+
+    @_update.command(pass_context=True, name='alliance', aliases=('members','memberrole',))
+    async def _alliance(self, ctx, role: discord.Role = None):
+        """Which role represents all members of your alliance (up to 30)?"""
+        data = await self._updaterole(ctx, key='alliance', role=role)
+        menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
+        await menu.menu_start(pages=[data])
+     #
     # @_update.command(pass_context=True, name='memberrole', aliases=('members','alliance',))
     # async def _memberrole(self, ctx, value: discord.Role):
     #     """Which role represents all members of your alliance (up to 30)?"""
@@ -279,19 +316,45 @@ class Alliance:
                         member_ids.append(m.id)
                 else:
                     package = {'id': role.id,
-                                'name': role.name,
-                                'member_ids': member_ids,
-                                'member_names': member_names}
+                               'name': role.name,
+                               'member_ids': member_ids,
+                               'member_names': member_names}
                 if key in ('bg1', 'bg2', 'bg3', 'bg1aw', 'bg1aq', 'bg2aw', 'bg2aq', 'bg3aw', 'bg3aq'):
                     if len(member_ids) > 10:
-                        data.add_field(name='Warning - Overloaded Battlegroup:', value='Battlegroups are limited to 10 members.\nCheck your {} assignments'.format(role.name))
+                        data.add_field(name=':warning: Warning - Overloaded Battlegroup:', value='Battlegroups are limited to 10 members.\nCheck your {} assignments'.format(role.name))
+                elif key == 'alliance':
+                    if len(member_ids) > 30:
+                        data.add_field(name=':warning: Warning - Overloaded Alliance', value='Alliances are limited to 30 members.\nCheck your {} members'.format(role.name))
                 self.guilds[server.id].update({key: package})
                 data.add_field(name="Congrats!:sparkles:",value="You have set your {} to {}".format(key, role.name))
-                data.add_field(name='{} members', value='\n'.join(member_names))
+                data.add_field(name='{} members'.format(role.name), value='\n'.join(member_names))
             dataIO.save_json(self.alliances, self.guilds)
             data.set_footer(text='CollectorDevTeam',
                     icon_url=COLLECTOR_ICON)
         return data
+
+    async def _updatemembers(self, ctx, server):
+        if ctx.message.server != server:
+            await self.bot.say('server missmatch, to be solved')
+        else:
+            for key in ('bg1', 'bg2', 'bg3', 'bg1aw', 'bg1aq', 'bg2aw', 'bg2aq', 'bg3aw', 'bg3aq'):
+                if key in self.guilds:
+                    for role in server.roles:
+                        if self.guilds[key]['role_id'] == role.id:
+                            member_names = []
+                            member_ids = []
+                            for m in server.members:
+                                if role in m.roles:
+                                    member_names.append(m.name)
+                                    member_ids.append(m.id)
+                            package = {'id': role.id,
+                                       'name': role.name,
+                                       'member_ids': member_ids,
+                                       'member_names': member_names}
+                            self.guilds[server.id].update({key: package})
+                            continue
+        await self.bot.say('Debug: Alliance details refreshed')
+        return
 
     def _updateguilds(self, ctx, key, value):
         server = ctx.message.server
