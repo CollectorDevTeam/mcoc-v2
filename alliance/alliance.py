@@ -29,12 +29,12 @@ class Alliance:
 
         """
         # server = ctx.message.server
-        await self.bot.say('debug: alliance group')
+        print('debug: alliance group')
         if ctx.invoked_subcommand is None:
-            await self.bot.say('_present_alliance placeholder')
-            if user is None:
-                user = ctx.message.author
-            await self._present_alliance(ctx, user)
+            print('_present_alliance placeholder')
+            # if user is None:
+            #     user = ctx.message.author
+            # await self._present_alliance(ctx, user)
 
     @checks.admin_or_permissions(manage_server=True)
     @_alliance.command(name='delete', pass_context=True, aliases=('remove', 'del','rm'), invoke_without_command=True, no_pm=True)
@@ -54,6 +54,12 @@ class Alliance:
             menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
             await self.bot.delete_message(confirmation)
             await menu.menu_start(pages=[data])
+
+    @_alliance.command(name='show', pass_context=True, invoke_without_command=True, no_pm=True)
+    async def _show(self, ctx, user: discord.Member = None):
+        if user is None:
+            user = ctx.message.author
+        await self._present_alliance(ctx, user)
 
     async def _present_alliance(self, ctx, user):
         ## 1 search for user in registered alliances
