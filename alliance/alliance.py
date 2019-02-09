@@ -46,7 +46,8 @@ class Alliance:
                 data=discord.Embed(title="Congrats!:sparkles:", description="You have deleted your CollectorVerse Alliance.", color=get_color(ctx))
             else:
                 data=discord.Embed(title="Sorry!:sparkles:", description="You have no CollectorVerse Alliance.", color=get_color(ctx))
-            await PagesMenu.menu_start(self, [data])
+            menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
+            await menu.menu_start(self, pages=[data])
 
     async def _present_alliance(self, ctx, user):
         ## 1 search for user in registered alliances
@@ -86,7 +87,8 @@ class Alliance:
                 else: #Alliance stranger
                     data = discord.Embed(color=get_color(ctx), title='CollectorVerse Alliances', description='Display public profile.\nInclude server join link, if set.\nInclude Alliance Prestige\nInclude About\n etc', url='https://discord.gg/umcoc')
                 data.set_footer(text='CollectorDevTeam', icon_url=COLLECTOR_ICON)
-                await PagesMenu.menu_start(self, [data])
+                menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
+                await menu.menu_start(self, pages=[data])
 
     def _find_alliance(self, user:discord.User):
         '''Returns a list of Server IDs or None'''
@@ -144,7 +146,8 @@ class Alliance:
                 data.set_footer(text='CollectorDevTeam', icon_url=COLLECTOR_ICON)
                 datapages.append(data)
             if len(datapages)>0:
-                await PagesMenu.menu_start(self, pages=datapages, page_number=len(datapages))
+                menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
+                await menu.menu_start(self, pages=datapages, page_number=len(datapages)-1)
         else:
             return
 #
@@ -165,7 +168,8 @@ class Alliance:
             data = self._unknownguild(ctx, server)
         else:
             data = self._updateguilds(ctx, key, value)
-        await PagesMenu.menu_start(self, [data])
+        menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
+        await menu.menu_start(self, [data])
 
     @_update.command(pass_context=True, name='tag')
     async def _alliancetag(self, ctx, *, value):
@@ -179,14 +183,16 @@ class Alliance:
             data = self._unknownguild(ctx, server)
         else:
             data = self._updateguilds(ctx, key, value)
-        await PagesMenu.menu_start(self, [data])
+        menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
+        await menu.menu_start(self, [data])
 
     @checks.admin_or_permissions(manage_server=True)
     @_update.command(pass_context=True, name='officers')
     async def _officers(self, ctx, role: discord.Role = None):
         """Which role are your Alliance Officers?"""
         data = await self._updaterole(ctx, key='officers', role=role)
-        await PagesMenu.menu_start(self, [data], 0)
+        menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
+        await menu.menu_start(self, [data])
 
     # @_update.command(pass_context=True, name='bg1', aliases=('battlegroup1',))
     # async def _bg1(self, ctx, *, value: discord.Role):
@@ -250,39 +256,39 @@ class Alliance:
         return data
 
     async def _updaterole(self, ctx, key, role):
+        '''For a given context, key, and role, search message server for role and set role for that alliance key'''
         server = ctx.message.server
-        data = discord.Embed(colour=get_color(ctx))
-        if role is None:
-            question = '{}, do you want to remove this ``{}`` registration?'.format(
-                ctx.message.author.mention, key)
-            answer = await PagesMenu.confirm(self, ctx, question)
-            if answer is True:
-                self.guilds[server.id].pop(key, None)
-                data.add_field(name="Congrats!:sparkles:", value="You have unregistered ``{}`` from your Alliance.".format(key))
+        if server.id not in self.guilds:
+            data = self._unknownguild(ctx, server)
         else:
-            members = []
-            memberids = []
-            for m in server.members:
-                if role in m.roles:
-                    members.append(m.name)
-                    memberids.append(m.id)
-
-            if server.id not in self.guilds:
-                data = self._unknownguild(ctx, server)
-                await PagesMenu.menu_start(self, [data])
+            data = discord.Embed(colour=get_color(ctx))
+            if role is None:
+                question = '{}, do you want to remove this ``{}`` registration?'.format(
+                    ctx.message.author.mention, key)
+                answer = await PagesMenu.confirm(self, ctx, question)
+                if answer is True:
+                    self.guilds[server.id].pop(key, None)
+                    data.add_field(name="Congrats!:sparkles:", value="You have unregistered ``{}`` from your Alliance.".format(key))
             else:
-                package = {'id': role.id,
-                            'name': role.name,
-                            'memberids': memberids,
-                            'members': members}
-            if key in ('bg1', 'bg2', 'bg3', 'bg1aw', 'bg1aq', 'bg2aw', 'bg2aq', 'bg3aw', 'bg3aq'):
-                if len(members) > 10:
-                    data.add_field(name='Warning - Overloaded Battlegroup:', value='Battlegroups are limited to 10 members.\nCheck your {} assignments'.format(role.name))
-            self.guilds[server.id].update({key: package})
-            data.add_field(name="Congrats!:sparkles:",value="You have set your {} to {}".format(key, role.name))
-        dataIO.save_json(self.alliances, self.guilds)
-        data.set_footer(text='CollectorDevTeam',
-                icon_url=COLLECTOR_ICON)
+                member_names = []
+                member_ids = []
+                for m in server.members:
+                    if role in m.roles:
+                        member_names.append(m.name)
+                        member_ids.append(m.id)
+                else:
+                    package = {'id': role.id,
+                                'name': role.name,
+                                'member_ids': member_ids,
+                                'member_names': member_names}
+                if key in ('bg1', 'bg2', 'bg3', 'bg1aw', 'bg1aq', 'bg2aw', 'bg2aq', 'bg3aw', 'bg3aq'):
+                    if len(member_ids) > 10:
+                        data.add_field(name='Warning - Overloaded Battlegroup:', value='Battlegroups are limited to 10 members.\nCheck your {} assignments'.format(role.name))
+                self.guilds[server.id].update({key: package})
+                data.add_field(name="Congrats!:sparkles:",value="You have set your {} to {}".format(key, role.name))
+            dataIO.save_json(self.alliances, self.guilds)
+            data.set_footer(text='CollectorDevTeam',
+                    icon_url=COLLECTOR_ICON)
         return data
 
     def _updateguilds(self, ctx, key, value):

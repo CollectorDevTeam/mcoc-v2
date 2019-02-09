@@ -383,11 +383,15 @@ class PagesMenu:
                 data.description = '{} has canceled confirmation'.format(ctx.message.author.name)
                 # data.add_field(name='Confirmation', value='{} has canceled confirmation'.format(ctx.message.author.name))
                 await self.bot.edit_message(message, embed=data)
+                await asyncio.sleep(delay=20)
+                await self.bot.delete_message(message)
                 return False
             elif react.reaction.emoji == '🆗':
                 data.description='{} has confirmed.'.format(ctx.message.author.name)
                 # data.add_field(name='Confirmation', value='{} has confirmed.'.format(ctx.message.author.name))
                 await self.bot.edit_message(message, embed=data)
+                await asyncio.sleep(delay=20)
+                await self.bot.delete_message(message)
                 return True
         else:
             data.description='{} has not responded'.format(ctx.message.author.name)
