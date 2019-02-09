@@ -132,7 +132,7 @@ class Alliance:
                     #add default roles
                     for key in ('officers', 'bg1', 'bg2', 'bg3', 'alliance'):
                         if role.name.lower() == key:
-                            self.guilds[server.id].update({key: {'role': role.id}})
+                            await self._updaterole(ctx, key, role)
                             await self.bot.say('{} role recognized and auto-registered.'.format(role.name))
                             # self._get_members(server, key, role)
             else:
