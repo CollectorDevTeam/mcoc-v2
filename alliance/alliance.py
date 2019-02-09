@@ -182,7 +182,7 @@ class Alliance:
     @_update.command(pass_context=True, name='officers')
     async def _officers(self, ctx, role: discord.Role = None):
         """Which role are your Alliance Officers?"""
-        data = self._updaterole(ctx, key='officers', role=role)
+        data = await self._updaterole(ctx, key='officers', role=role)
         await PagesMenu.menu_start(self, [data], 0)
 
     # @_update.command(pass_context=True, name='bg1', aliases=('battlegroup1',))
@@ -246,7 +246,7 @@ class Alliance:
                 icon_url=COLLECTOR_ICON)
         return data
 
-    def _updaterole(self, ctx, key, role):
+    async def _updaterole(self, ctx, key, role):
         server = ctx.message.server
         members = server.members
         data = discord.Embed(colour=get_color(ctx))
