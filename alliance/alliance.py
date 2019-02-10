@@ -407,7 +407,7 @@ def find_mime_type(d, mime_type):
         return key_chains
     else:
     # if we haven't returned by this point, we've exhausted all the contents
-    raise KeyError
+        raise KeyError
 
 
 def get_color(ctx):
