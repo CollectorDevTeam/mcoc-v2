@@ -38,6 +38,12 @@ class Alliance:
                 data = discord.Embed(color=get_color(ctx), title='CollectorVerse Alliances', description=message,
                                      url='https://discord.gg/umcoc')
                 await self.bot.say(embed=data)
+            elif ctx.message.server.id in self.guilds:
+                #refresh server data
+                self._updatemembers(ctx.server)
+                data = discord.Embed(color=get_color(ctx), title='CollectorVerse Alliances', description=message,
+                                     url='https://discord.gg/umcoc')
+                await self.bot.say(embed=data)
             else:
                 data = discord.Embed(color=get_color(ctx), title='CollectorVerse Alliances', description=message,
                                      url='https://discord.gg/umcoc')
@@ -64,6 +70,12 @@ class Alliance:
             menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
             await self.bot.delete_message(confirmation)
             await menu.menu_start(pages=[data])
+
+    @checks.admin_or_permissions(manage_server=True)
+    @alliance.command(name='report', pass_context=True, aliases=('remove', 'del','rm'), invoke_without_command=True, no_pm=True)
+    async def _reort(self, ctx, alliances:list):
+        if ctx.message.server.id not in alliances:
+
 
     @alliance.command(name='show', pass_context=True, invoke_without_command=True, no_pm=True)
     async def _show(self, ctx, user: discord.Member = None):
@@ -356,6 +368,7 @@ class Alliance:
                                    'member_names': member_names}
                         self.guilds[server.id].update({key: package})
                         continue
+        dataIO.save_json(self.alliances, self.guilds)
         print('Debug: Alliance details refreshed')
         return
 
