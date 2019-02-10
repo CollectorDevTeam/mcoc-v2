@@ -55,7 +55,7 @@ class Alliance:
             # print('_present_alliance placeholder')
 
     @checks.admin_or_permissions(manage_server=True)
-    @alliance.command(name='unregister', aliases=('delete',), pass_context=True, aliases=('remove', 'del','rm'), invoke_without_command=True, no_pm=True)
+    @alliance.command(name='unregister', aliases=('delete', 'del' 'remove', 'rm',), pass_context=True, invoke_without_command=True, no_pm=True)
     async def _delete(self, ctx):
         '''Delete CollectorVerse Alliance'''
         server = ctx.message.server
@@ -184,7 +184,7 @@ class Alliance:
     #     return
 
     @checks.admin_or_permissions(manage_server=True)
-    @alliance.command(name="register", aliases=('create',), pass_context=True, invoke_without_command=True, no_pm=True)
+    @alliance.command(name="register", aliases=('create', 'add'), pass_context=True, invoke_without_command=True, no_pm=True)
     async def _reg(self, ctx):
         """[ALPHA] Sign up to register your Alliance server!"""
         user = ctx.message.author
