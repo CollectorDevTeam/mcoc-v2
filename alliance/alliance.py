@@ -73,8 +73,15 @@ class Alliance:
 
     @checks.admin_or_permissions(manage_server=True)
     @alliance.command(name='report', pass_context=True, aliases=('remove', 'del','rm'), invoke_without_command=True, no_pm=True)
-    async def _reort(self, ctx, alliances:list):
-        if ctx.message.server.id not in alliances:
+    async def _report(self, ctx):
+        user = ctx.message.author
+        alliances, message = self._find_alliance(user)  # list
+        if alliances is None:
+            return
+        elif ctx.message.server.id in alliances:
+            #report alliance
+        else:
+            return
 
 
     @alliance.command(name='show', pass_context=True, invoke_without_command=True, no_pm=True)
@@ -194,11 +201,45 @@ class Alliance:
         server = ctx.message.server
 
         if server.id not in self.guilds:
-            data = self._unknownguild(ctx, server)
+            data = self._unknownguild(ctx)
         else:
             data = self._updateguilds(ctx, key, value)
         menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
         await menu.menu_start(pages=[data])
+
+    @update.command(pass_context=True, name='type', no_pm=True)
+    async def _type(self, ctx, *, value):
+        """Update your Alliance type:
+        basic (default)
+        advanced (uncommon)
+
+        A 'basic' alliance with up to 3 roles defined for Battlegroups: bg1, bg2, bg3
+        An 'advanced' alliance has up to 6 roles Battlegroups when Alliance War and Alliance Quest assignments are different: bg1aq, bg1aw, bg2aq, bg2aw, bg3aq, bg3aw"""
+        if value in ('basic', 'advanced',):
+            key = "type"
+            server = ctx.message.server
+            if server.id not in self.guilds:
+                data = self._unknownguild(ctx)
+            else:
+                data = self._updateguilds(ctx, key, value)
+        else:
+            # send definitions
+            message =
+            '''basic (default)
+            advanced (uncommon)
+            
+            A 'basic' alliance can have up to 3 roles defined for AQ & AW Battlegroups: 
+            bg1, bg2, bg3
+            
+            An 'advanced' alliance has up to 6 roles defined for AQ & AW Battlegroups when assignments are different: 
+            bg1aq, bg1aw, bg2aq, bg2aw, bg3aq, bg3aw'''
+            data = discord.Embed(color=get_color(ctx), title='CollectorVerse Alliances', description=message,
+                                 url='https://discord.gg/umcoc')
+
+        menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
+        await menu.menu_start(pages=[data])
+
+
 
     @update.command(pass_context=True, name='tag')
     async def _alliancetag(self, ctx, *, value):
@@ -209,7 +250,7 @@ class Alliance:
             await self.bot.say('Clan Tag must be <= 5 characters.\nDo not include the [ or ] brackets.')
         server = ctx.message.server
         if server.id not in self.guilds:
-            data = self._unknownguild(ctx, server)
+            data = self._unknownguild(ctx)
         else:
             data = self._updateguilds(ctx, key, value)
         menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
@@ -295,15 +336,15 @@ class Alliance:
 #
     def _createalliance(self, ctx, server):
 
-        self.guilds[server.id] = {}
+        self.guilds[server.id] = {'type': 'basic'}
         dataIO.save_json(self.alliances, self.guilds)
         data = discord.Embed(colour=get_color(ctx))
-        data.add_field(name="Congrats!:sparkles:", value="{}, you have officaly registered {} as a CollectorVerse Alliance.".format(ctx.message.author.mention, server.name))
+        data.add_field(name="Congrats!:sparkles:", value="{}, you have officially registered {} as a CollectorVerse Alliance.".format(ctx.message.author.mention, server.name))
         data.set_footer(text='CollectorDevTeam',
                 icon_url=COLLECTOR_ICON)
         return data
 
-    def _unknownguild(self, ctx, server):
+    def _unknownguild(self, ctx):
         data = discord.Embed(colour=get_color(ctx))
         data.add_field(name="Error:warning:",value="Sadly, this feature is only available for Discord server owners who registerd for an Alliance. \n\nYou can register for a account today for free. All you have to do is:\nCreate a Discord server.\nInvite Collector\nOn your Alliance server say `{} alliance signup` and you'll be all set.".format(ctx.prefix))
         data.set_footer(text='CollectorDevTeam',
@@ -314,7 +355,7 @@ class Alliance:
         '''For a given context, key, and role, search message server for role and set role for that alliance key'''
         server = ctx.message.server
         if server.id not in self.guilds:
-            data = self._unknownguild(ctx, server)
+            data = self._unknownguild(ctx)
         else:
             data = discord.Embed(colour=get_color(ctx))
             if role is None:
