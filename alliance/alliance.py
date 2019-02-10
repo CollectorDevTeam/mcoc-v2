@@ -108,11 +108,13 @@ class Alliance:
             return
 
 
-    @alliance.command(name='show', pass_context=True, invoke_without_command=True, no_pm=True)
+    @alliance.command(name='show', pass_context=True, invoke_without_command=True, no_pm=True, hidden=True)
     async def _show(self, ctx, user: discord.Member = None):
         if user is None:
             user = ctx.message.author
-        await self._present_alliance(ctx, user)
+        alliances, message = self._find_alliance(user)
+        if len(alliances) > 0:
+            await self._present_alliance(ctx, alliances, user)
 
     async def _present_alliance(self, ctx, alliances:list, user):
         ## 1 search for user in registered alliances
@@ -130,6 +132,9 @@ class Alliance:
             # need a function to update all alliance roles + members
             if server.id == alliance and user.id in guild:  #Alliance server & Alliance member
                 data = discord.Embed(color=get_color(ctx), title='CollectorVerse Alliances', description='Display private profile ~ All kinds of info stored', url='https://discord.gg/umcoc')
+                if 'about' in guild.keys():
+                    data.description=guild['about']
+
                 # for s in self.alliancekeys:
                 #     if s in guild:
                 #         data.add_field(name=s.title(), value=guild)
