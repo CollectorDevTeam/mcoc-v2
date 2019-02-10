@@ -76,7 +76,8 @@ class Alliance:
         ##         present public info
         await self.bot.say('testing alliance presentation')
         pages = []
-        for alliance in alliances:
+        for key_chain in alliances:
+            alliance = key_chain[0]
             guild = self.guilds[alliance]
             server = await self.bot.get_server(alliance)
 
@@ -103,6 +104,20 @@ class Alliance:
     def _find_alliance(self, user):
         '''Returns a list of Server IDs or None'''
         alliances = []
+        mime_type = user.id
+        try:
+            key_chains = find_mime_type(self.guilds, mime_type)
+        except KeyError:
+            print('Could not find this mime type: {0}'.format(mime_type))
+            exit()
+        print('Found {0} mime type here: {1}'.format(mime_type, key_chain))
+        for key_chain in key_chains:
+            for key in key_chain:
+                nested = nested[key]
+            print('Confirmation lookup: {0}'.format(nested))
+
+        alliances = key_chains
+
         for g in self.guilds.keys():
             if user.id in self.guilds[g].items():
                 # discord.Client.get_server(g)
@@ -369,6 +384,31 @@ class Alliance:
         data.set_footer(text='CollectorDevTeam',
                 icon_url=COLLECTOR_ICON)
         return data
+
+def find_mime_type(d, mime_type):
+    reverse_linked_q = list()
+    reverse_linked_q.append((list(), d))
+    key_chains = []
+    while reverse_linked_q:
+        this_key_chain, this_v = reverse_linked_q.pop()
+        # finish search if found the mime type
+        if this_v == mime_type:
+            # return this_key_chain
+            key_chains.append(this_key_chain)
+        # not found. keep searching
+        # queue dicts for checking / ignore anything that's not a dict
+        try:
+            items = this_v.items()
+        except AttributeError:
+            continue  # this was not a nested dict. ignore it
+        for k, v in items:
+            reverse_linked_q.append((this_key_chain + [k], v))
+    if len(key_chains) > 0:
+        return key_chains
+    else:
+    # if we haven't returned by this point, we've exhausted all the contents
+    raise KeyError
+
 
 def get_color(ctx):
     if ctx.message.channel.is_private:
