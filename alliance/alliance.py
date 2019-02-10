@@ -232,42 +232,42 @@ class Alliance:
         await menu.menu_start(pages=[data])
 
     @_update.command(pass_context=True, name='bg2')
-    async def _bg1(self, ctx, role: discord.Role = None):
+    async def _bg2(self, ctx, role: discord.Role = None):
         """Which role is your Battlegroup 2?"""
         data = await self._updaterole(ctx, key='bg2', role=role)
         menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
         await menu.menu_start(pages=[data])
 
     @_update.command(pass_context=True, name='bg2aq')
-    async def _bg1aq(self, ctx, role: discord.Role = None):
+    async def _bg2aq(self, ctx, role: discord.Role = None):
         """Which role is your Battlegroup 2 for Alliance Quest?"""
         data = await self._updaterole(ctx, key='bg2aq', role=role)
         menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
         await menu.menu_start(pages=[data])
 
     @_update.command(pass_context=True, name='bg2aw')
-    async def _bg1aw(self, ctx, role: discord.Role = None):
+    async def _bg2aw(self, ctx, role: discord.Role = None):
         """Which role is your Battlegroup 2 for Alliance War?"""
         data = await self._updaterole(ctx, key='bg2aw', role=role)
         menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
         await menu.menu_start(pages=[data])
 
     @_update.command(pass_context=True, name='bg3')
-    async def _bg1(self, ctx, role: discord.Role = None):
+    async def _bg3(self, ctx, role: discord.Role = None):
         """Which role is your Battlegroup 3?"""
         data = await self._updaterole(ctx, key='bg3', role=role)
         menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
         await menu.menu_start(pages=[data])
 
     @_update.command(pass_context=True, name='bg3aq')
-    async def _bg1aq(self, ctx, role: discord.Role = None):
+    async def _bg3aq(self, ctx, role: discord.Role = None):
         """Which role is your Battlegroup 3 for Alliance Quest?"""
         data = await self._updaterole(ctx, key='bg3aq', role=role)
         menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
         await menu.menu_start(pages=[data])
 
     @_update.command(pass_context=True, name='bg3aw')
-    async def _bg1aw(self, ctx, role: discord.Role = None):
+    async def _bg3aw(self, ctx, role: discord.Role = None):
         """Which role is your Battlegroup 3 for Alliance War?"""
         data = await self._updaterole(ctx, key='bg3aw', role=role)
         menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
