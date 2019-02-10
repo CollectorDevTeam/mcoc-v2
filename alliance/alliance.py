@@ -466,9 +466,9 @@ class Alliance:
         return data
 
     def _updatemembers(self, server):
+        self.guilds[server.id].update({'thumbnail':server.icon})
         for key in self.advancedkeys:
             if key in self.guilds:
-                self.guilds[server.id]['thumbnail']=server.icon
                 for role in server.roles:
                     if self.guilds[key]['role_id'] == role.id:
                         member_names = []
