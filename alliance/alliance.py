@@ -89,7 +89,7 @@ class Alliance:
                 data.description=guild['about']
             if self.guilds[guild]['type'] == 'basic':
                 rolekeys= ('officers','bg1','bg2','bg3')
-            elif self.guilds[guild]'type'] == 'advanced':
+            elif self.guilds[guild]['type'] == 'advanced':
                 rolekeys=('officers', 'bg1aq', 'bg2aq', 'bg3aq', 'bg1aw', 'bg2aw', 'bg3aw')
             else:
                 await self.bot.say('Error: Alliance Type is not set\n``/alliance set type (basic | advanced)``')
