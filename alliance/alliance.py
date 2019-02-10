@@ -98,7 +98,7 @@ class Alliance:
             alliancekeys = guild.keys()
             for key in alliancekeys:
                 if key not in self.advancedkeys and key != 'about':
-                    data.add_field(name=key, value='\n'.join(guild[key][name]))
+                    data.add_field(name=key, value='\n'.join(guild[key]['name']))
             await self.bot.say(embed=data)
         else:
             return
