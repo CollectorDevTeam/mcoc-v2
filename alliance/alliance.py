@@ -186,14 +186,14 @@ class Alliance:
         if answer is True:
             if server.id not in self.guilds:
                 data = self._createalliance(ctx, server)
-                roles = server.roles
-                for role in roles:
+                datapages.append(data)
+                for role in server.roles:
                     #add default roles
                     for key in self.alliancekeys:
                         if role.name.lower() == key:
                             # await self._updaterole(ctx, key, role)
                             data = await self._updaterole(ctx, key, role)
-                            await self.bot.say('{} role recognized and auto-registered.'.format(role.name))
+                            # await self.bot.say('{} role recognized and auto-registered.'.format(role.name))
                             datapages.append(data)
             else:
                 data = discord.Embed(colour=get_color(ctx))
@@ -385,7 +385,7 @@ class Alliance:
         if server.id not in self.guilds:
             data = self._unknownguild(ctx)
         else:
-            data = discord.Embed(colour=get_color(ctx))
+            data = discord.Embed(colour=get_color(ctx), title='Role Registration')
             if role is None:
                 question = '{}, do you want to remove this ``{}`` registration?'.format(
                     ctx.message.author.mention, key)
