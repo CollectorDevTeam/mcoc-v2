@@ -114,6 +114,7 @@ class Alliance:
                     if user.id in self.guilds[guild][key]['member_ids']:
                         user_alliances.append(guild)
                         print('keys: '.join([guild, key, 'member_ids']))
+                        continue
 
         if len(user_alliances) > 0:
             return user_alliances, '{} found'.format(user.name)
@@ -156,7 +157,7 @@ class Alliance:
                             datapages.append(data)
             else:
                 data = discord.Embed(colour=get_color(ctx))
-                data.add_field(name="Error:warning:", value="Opps, it seems like you already have an guild registered, {}.".format(user.mention))
+                data.add_field(name="Error:warning:", value="Opps, it seems like you have already registered this guild, {}.".format(user.mention))
                 data.set_footer(text='CollectorDevTeam', icon_url=COLLECTOR_ICON)
                 datapages.append(data)
             if len(datapages)>0:
