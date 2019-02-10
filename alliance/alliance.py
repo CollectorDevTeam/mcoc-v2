@@ -371,10 +371,6 @@ class Alliance:
         return data
 
 
-    # if we haven't returned by this point, we've exhausted all the contents
-    raise KeyError
-
-
 def get_color(ctx):
     if ctx.message.channel.is_private:
         return discord.Color.gold()
