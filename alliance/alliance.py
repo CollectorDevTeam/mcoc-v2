@@ -112,7 +112,8 @@ class Alliance:
             for key in keys:
                 if key in self.advancedkeys:
                     if user.id in self.guilds[guild][key]['member_ids']:
-                        user_alliances.append(guild)
+                        if guild not in user_alliances:
+                            user_alliances.append(guild)
                         print('keys: '.join([guild, key, 'member_ids']))
                         continue
 
