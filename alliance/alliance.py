@@ -38,7 +38,8 @@ class Alliance:
                 data = discord.Embed(color=get_color(ctx), title='CollectorVerse Alliances', description=message,
                                      url='https://discord.gg/umcoc')
                 await self.bot.say(embed=data)
-            await self._present_alliance(ctx, alliances, user)
+            else:
+                await self._present_alliance(ctx, alliances, user)
             print('_present_alliance placeholder')
 
     @checks.admin_or_permissions(manage_server=True)
