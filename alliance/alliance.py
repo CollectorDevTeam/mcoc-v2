@@ -437,7 +437,7 @@ class Alliance:
                     if len(member_ids) > 30:
                         data.add_field(name=':warning: Warning - Overloaded Alliance', value='Alliances are limited to 30 members.\nCheck your {} members'.format(role.name))
                 self.guilds[server.id].update({key: package})
-                data.add_field(name="Congrats!:sparkles:",value="You have set your {} to {}".format(key, role.name))
+                data.add_field(name="Congrats!:sparkles:",value="You have set your {} to {}".format(key, role.name), inline=False)
                 data.add_field(name='{} members'.format(role.name), value='\n'.join(member_names))
             dataIO.save_json(self.alliances, self.guilds)
             data.set_footer(text='CollectorDevTeam',
