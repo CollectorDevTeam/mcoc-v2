@@ -40,7 +40,7 @@ class Alliance:
                 await self.bot.say(embed=data)
             elif ctx.message.server.id in self.guilds:
                 #refresh server data
-                self._updatemembers(ctx.server)
+                self._updatemembers(ctx.message.server)
                 data = discord.Embed(color=get_color(ctx), title='CollectorVerse Alliances', description=message,
                                      url='https://discord.gg/umcoc')
                 await self.bot.say(embed=data)
