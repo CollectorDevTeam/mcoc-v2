@@ -41,6 +41,7 @@ class Alliance:
             else:
                 data = discord.Embed(color=get_color(ctx), title='CollectorVerse Alliances', description=message,
                                      url='https://discord.gg/umcoc')
+                data.add_field(name='Alliance codes', value=', '.join(alliances))
                 await self.bot.say(embed=data)
                 # await self._present_alliance(ctx, alliances, user)
             # print('_present_alliance placeholder')
