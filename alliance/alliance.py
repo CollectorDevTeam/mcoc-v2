@@ -22,7 +22,8 @@ class Alliance:
         self.guilds = dataIO.load_json(self.alliances)
         self.alliancekeys = ('officers', 'bg1', 'bg2', 'bg3', 'alliance',)
         self.advancedkeys = ('officers', 'bg1', 'bg2', 'bg3', 'alliance', 'bg1aq', 'bg2aq', 'bg3aq', 'bg1aw', 'bg2aw', 'bg3aw',)
-        self.infokeys('name', 'tag', 'started')
+        self.infokeys = ('name', 'tag', 'started',)
+
     @commands.group(aliases=('clan', 'guild'), pass_context=True, invoke_without_command=True, hidden=False)
     async def alliance(self, ctx, user: discord.Member = None):
         """[ALPHA] CollectorVerse Alliance tools
