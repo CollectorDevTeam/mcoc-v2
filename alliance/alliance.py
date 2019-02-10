@@ -164,7 +164,7 @@ class Alliance:
             if len(datapages)>0:
                 await self.bot.delete_message(confirmation)
             menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
-            await menu.menu_start(pages=datapages, page_number=len(datapages)-1)
+            await menu.menu_start(pages=datapages)
         else:
             return
 #
