@@ -86,10 +86,10 @@ class Alliance:
             data.set_thumbnail(url=ctx.message.server.icon)
             if 'about' in guild:
                 data.description=guild['about']
-            if guild['type']=='basic':
+            if guild['type'] == 'basic':
                 rolekeys= ('officers','bg1','bg2','bg3')
-            elif guild['type']=='advanced':
-                rolekeys=('officers','bg1aq','bg2aq','bg3aq','bg1aw','bg2aw','bg3aw')
+            elif guild['type'] == 'advanced':
+                rolekeys=('officers', 'bg1aq', 'bg2aq', 'bg3aq', 'bg1aw', 'bg2aw', 'bg3aw')
             else:
                 await self.bot.say('Error: Alliance Type is not set\n``/alliance set type (basic | advanced)``')
                 return
@@ -98,7 +98,7 @@ class Alliance:
             alliancekeys = guild.keys()
             for key in alliancekeys:
                 if key not in self.advancedkeys and key != 'about':
-                    data.add_field(name=key, value='\n'.join(guild[key]))
+                    data.add_field(name=key, value='\n'.join(guild[key][name]))
             await self.bot.say(embed=data)
         else:
             return
@@ -355,7 +355,7 @@ class Alliance:
         menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
         await menu.menu_start(pages=[data])
 
-    @update.command(pass_context=True, name='alliance', aliases=('members','memberrole',))
+    @update.command(pass_context=True, name='alliance', aliases=('members', 'memberrole',))
     async def _alliance(self, ctx, role: discord.Role = None):
         """Which role represents all members of your alliance (up to 30)?"""
         data = await self._updaterole(ctx, key='alliance', role=role)
