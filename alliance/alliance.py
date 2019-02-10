@@ -79,7 +79,27 @@ class Alliance:
         if alliances is None:
             return
         elif ctx.message.server.id in alliances:
-            #report alliance
+            #report
+            guild = self.guilds[ctx.messaage.server.id]
+            data = discord.Embed(color=get_color(ctx), title='CollectorVerse Alliance Report', description='',
+                                 url='https://discord.gg/umcoc')
+            data.thumbnail(url=ctx.message.server.icon)
+            if 'about' in guild:
+                data.description=guild['about']
+            if guild['type']=='basic'
+                rolekeys= ('officers','bg1','bg2','bg3')
+            elif guild['type']=='advanced':
+                rolekeys=('officers','bg1aq','bg2aq','bg3aq','bg1aw','bg2aw','bg3aw')
+            else:
+                await self.bot.say('Error: Alliance Type is not set\n``/alliance set type (basic | advanced)``')
+                return
+            for key in rolekeys:
+                data.add_field(name=key, value='\n'.join(guild[key]))
+            alliancekeys = guild.keys()
+            for key in alliancekeys:
+                if key not in self.advancedkeys and key != 'about':
+                    data.add_field(name=key, value='\n'.join(guild[key]))
+            await self.bot.say(embed=data)
         else:
             return
 
@@ -239,8 +259,6 @@ class Alliance:
         menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
         await menu.menu_start(pages=[data])
 
-
-
     @update.command(pass_context=True, name='tag')
     async def _alliancetag(self, ctx, *, value):
         """What's your Alliance tag? Only include the 5 tag characters."""
@@ -250,6 +268,17 @@ class Alliance:
             await self.bot.say('Clan Tag must be <= 5 characters.\nDo not include the [ or ] brackets.')
         server = ctx.message.server
         if server.id not in self.guilds:
+            data = self._unknownguild(ctx)
+        else:
+            data = self._updateguilds(ctx, key, value)
+        menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
+        await menu.menu_start(pages=[data])
+
+    @update.command(pass_context=True, name='about')
+    async def _allianceabout(self, ctx, *, value):
+        '''Alliance About page'''
+        key = 'about'
+        if ctx.message.server.id not in self.guilds:
             data = self._unknownguild(ctx)
         else:
             data = self._updateguilds(ctx, key, value)
