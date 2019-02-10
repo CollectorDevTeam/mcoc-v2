@@ -86,7 +86,7 @@ class Alliance:
             data.thumbnail(url=ctx.message.server.icon)
             if 'about' in guild:
                 data.description=guild['about']
-            if guild['type']=='basic'
+            if guild['type']=='basic':
                 rolekeys= ('officers','bg1','bg2','bg3')
             elif guild['type']=='advanced':
                 rolekeys=('officers','bg1aq','bg2aq','bg3aq','bg1aw','bg2aw','bg3aw')
