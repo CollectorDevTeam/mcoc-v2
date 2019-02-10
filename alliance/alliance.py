@@ -72,7 +72,7 @@ class Alliance:
             await menu.menu_start(pages=[data])
 
     @checks.admin_or_permissions(manage_server=True)
-    @alliance.command(name='report', pass_context=True, aliases=('remove', 'del','rm'), invoke_without_command=True, no_pm=True)
+    @alliance.command(name='report', pass_context=True, invoke_without_command=True, no_pm=True)
     async def _report(self, ctx):
         user = ctx.message.author
         alliances, message = self._find_alliance(user)  # list
