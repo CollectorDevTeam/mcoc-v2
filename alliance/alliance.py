@@ -80,7 +80,7 @@ class Alliance:
             return
         elif ctx.message.server.id in alliances:
             #report
-            guild = self.guilds[ctx.messaage.server.id]
+            guild = self.guilds[ctx.message.server.id]
             data = discord.Embed(color=get_color(ctx), title='CollectorVerse Alliance Report', description='',
                                  url='https://discord.gg/umcoc')
             data.thumbnail(url=ctx.message.server.icon)
