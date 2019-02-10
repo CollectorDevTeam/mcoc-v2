@@ -423,11 +423,13 @@ class Alliance:
                     if role in m.roles:
                         member_names.append(m.name)
                         member_ids.append(m.id)
-                else:
-                    package = {'id': role.id,
-                               'name': role.name,
-                               'member_ids': member_ids,
-                               'member_names': member_names}
+                if len(member_ids)==0:
+                    member_ids.append('n/a')
+                    member_names.append('n/a')
+                package = {'id': role.id,
+                           'name': role.name,
+                           'member_ids': member_ids,
+                           'member_names': member_names}
                 if key in ('bg1', 'bg2', 'bg3', 'bg1aw', 'bg1aq', 'bg2aw', 'bg2aq', 'bg3aw', 'bg3aq'):
                     if len(member_ids) > 10:
                         data.add_field(name=':warning: Warning - Overloaded Battlegroup:', value='Battlegroups are limited to 10 members.\nCheck your {} assignments'.format(role.name))
