@@ -39,8 +39,11 @@ class Alliance:
                                      url='https://discord.gg/umcoc')
                 await self.bot.say(embed=data)
             else:
-                await self._present_alliance(ctx, alliances, user)
-            print('_present_alliance placeholder')
+                data = discord.Embed(color=get_color(ctx), title='CollectorVerse Alliances', description=message,
+                                     url='https://discord.gg/umcoc')
+                await self.bot.say(embed=data)
+                # await self._present_alliance(ctx, alliances, user)
+            # print('_present_alliance placeholder')
 
     @checks.admin_or_permissions(manage_server=True)
     @alliance.command(name='delete', pass_context=True, aliases=('remove', 'del','rm'), invoke_without_command=True, no_pm=True)
@@ -76,8 +79,7 @@ class Alliance:
         ##         present public info
         await self.bot.say('testing alliance presentation')
         pages = []
-        for key_chain in alliances:
-            alliance = key_chain[0]
+        for alliance in alliances:
             guild = self.guilds[alliance]
             server = await self.bot.get_server(alliance)
 
@@ -103,36 +105,19 @@ class Alliance:
 
     def _find_alliance(self, user):
         '''Returns a list of Server IDs or None'''
-        alliances = []
-        mime_type = user.id
-        try:
-            key_chains = find_mime_type(self.guilds, mime_type)
-        except KeyError:
-            print('Could not find this mime type: {0}'.format(mime_type))
-            exit()
-        print('Found {0} mime type here: {1}'.format(mime_type, key_chain))
-        for key_chain in key_chains:
-            for key in key_chain:
-                nested = nested[key]
-            print('Confirmation lookup: {0}'.format(nested))
+        user_alliances = []
+        for guild in self.guilds.keys():
+            keys = self.guilds[guild].keys()
+            for key in keys:
+                if key in self.advancedkeys:
+                    if user.id in self.guilds[guild][key]['member_ids']:
+                        user_alliances.append(guild)
+                        print('keys: '.join([guild, key, 'member_ids']))
 
-        alliances = key_chains
-
-        for g in self.guilds.keys():
-            if user.id in self.guilds[g].items():
-                # discord.Client.get_server(g)
-                alliances.append(g)
-                continue
-        if len(alliances) == 1:
-            message = '{} is registered with the following CollectorVerse alliance.'.format(user.display_name)
-            return alliances, message
-        elif len(alliances) > 1:
-            message = '{} is registered with the following CollectorVerse alliances.'.format(user.display_name)
-            return alliances, message
+        if len(user_alliances) > 0:
+            return user_alliances, '{} found'.format(user.name)
         else:
-            message = '{} is not registered with a CollectorVerse alliance.'.format(user.display_name)
-            return None, message
-
+            return None, '{} not found'.format(user.name)
     # def _get_members(self, server, key, role):
     #     '''For known Server and Role, find all server.members with role'''
     #     servermembers = server.members
@@ -385,29 +370,9 @@ class Alliance:
                 icon_url=COLLECTOR_ICON)
         return data
 
-def find_mime_type(d, mime_type):
-    reverse_linked_q = list()
-    reverse_linked_q.append((list(), d))
-    key_chains = []
-    while reverse_linked_q:
-        this_key_chain, this_v = reverse_linked_q.pop()
-        # finish search if found the mime type
-        if this_v == mime_type:
-            # return this_key_chain
-            key_chains.append(this_key_chain)
-        # not found. keep searching
-        # queue dicts for checking / ignore anything that's not a dict
-        try:
-            items = this_v.items()
-        except AttributeError:
-            continue  # this was not a nested dict. ignore it
-        for k, v in items:
-            reverse_linked_q.append((this_key_chain + [k], v))
-    if len(key_chains) > 0:
-        return key_chains
-    else:
+
     # if we haven't returned by this point, we've exhausted all the contents
-        raise KeyError
+    raise KeyError
 
 
 def get_color(ctx):
