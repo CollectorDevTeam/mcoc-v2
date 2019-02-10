@@ -1,5 +1,6 @@
 import re
 import os
+import json
 import datetime
 import discord
 from discord.ext import commands
@@ -81,26 +82,28 @@ class Alliance:
             return
         elif ctx.message.server.id in alliances:
             #report
-            guild = ctx.message.server.id
-            # guild = self.guilds[ctx.message.server.id]
-            data = discord.Embed(color=get_color(ctx), title='CollectorVerse Alliance Report', description='',
-                                 url='https://discord.gg/umcoc')
-            data.set_thumbnail(url=ctx.message.server.icon)
-            if 'about' in self.guilds[guild]:
-                data.description=guild['about']
-            if self.guilds[guild]['type'] == 'basic':
-                rolekeys= ('officers','bg1','bg2','bg3')
-            elif self.guilds[guild]['type'] == 'advanced':
-                rolekeys=('officers', 'bg1aq', 'bg2aq', 'bg3aq', 'bg1aw', 'bg2aw', 'bg3aw')
-            else:
-                await self.bot.say('Error: Alliance Type is not set\n``/alliance set type (basic | advanced)``')
-                return
-            for key in rolekeys:
-                data.add_field(name=key, value='\n'.join(self.guilds[guild][key]))
-            for key in self.infokeys:
-                if key in self.guilds[guild]:
-                    data.add_field(name=key, value=self.guilds[guild][key]['name'])
-            await self.bot.say(embed=data)
+            # guild = ctx.message.server.id
+            # # guild = self.guilds[ctx.message.server.id]
+            # data = discord.Embed(color=get_color(ctx), title='CollectorVerse Alliance Report', description='',
+            #                      url='https://discord.gg/umcoc')
+            # data.set_thumbnail(url=ctx.message.server.icon)
+            # if 'about' in self.guilds[guild]:
+            #     data.description=guild['about']
+            # if self.guilds[guild]['type'] == 'basic':
+            #     rolekeys= ('officers','bg1','bg2','bg3')
+            # elif self.guilds[guild]['type'] == 'advanced':
+            #     rolekeys=('officers', 'bg1aq', 'bg2aq', 'bg3aq', 'bg1aw', 'bg2aw', 'bg3aw')
+            # else:
+            #     await self.bot.say('Error: Alliance Type is not set\n``/alliance set type (basic | advanced)``')
+            #     return
+            # for key in rolekeys:
+            #     data.add_field(name=key, value='\n'.join(self.guilds[guild][key]))
+            # for key in self.infokeys:
+            #     if key in self.guilds[guild]:
+            #         data.add_field(name=key, value=self.guilds[guild][key]['name'])
+            # await self.bot.say(embed=data)
+            message = json.dumps(self.guilds[ctx.message.server.id])
+            await self.bot.say('Alliance Debug Report'+message)
         else:
             return
 
