@@ -22,7 +22,7 @@ class Alliance:
         self.guilds = dataIO.load_json(self.alliances)
         self.alliancekeys = ('officers', 'bg1', 'bg2', 'bg3', 'alliance',)
         self.advancedkeys = ('officers', 'bg1', 'bg2', 'bg3', 'alliance', 'bg1aq', 'bg2aq', 'bg3aq', 'bg1aw', 'bg2aw', 'bg3aw',)
-
+        self.infokeys('name', 'tag', 'started')
     @commands.group(aliases=('clan', 'guild'), pass_context=True, invoke_without_command=True, hidden=False)
     async def alliance(self, ctx, user: discord.Member = None):
         """[ALPHA] CollectorVerse Alliance tools
@@ -80,25 +80,25 @@ class Alliance:
             return
         elif ctx.message.server.id in alliances:
             #report
-            guild = self.guilds[ctx.message.server.id]
+            guild = ctx.message.server.id
+            # guild = self.guilds[ctx.message.server.id]
             data = discord.Embed(color=get_color(ctx), title='CollectorVerse Alliance Report', description='',
                                  url='https://discord.gg/umcoc')
             data.set_thumbnail(url=ctx.message.server.icon)
-            if 'about' in guild:
+            if 'about' in self.guilds[guild]:
                 data.description=guild['about']
-            if guild['type'] == 'basic':
+            if self.guilds[guild]['type'] == 'basic':
                 rolekeys= ('officers','bg1','bg2','bg3')
-            elif guild['type'] == 'advanced':
+            elif self.guilds[guild]'type'] == 'advanced':
                 rolekeys=('officers', 'bg1aq', 'bg2aq', 'bg3aq', 'bg1aw', 'bg2aw', 'bg3aw')
             else:
                 await self.bot.say('Error: Alliance Type is not set\n``/alliance set type (basic | advanced)``')
                 return
             for key in rolekeys:
-                data.add_field(name=key, value='\n'.join(guild[key]))
-            alliancekeys = guild.keys()
-            for key in alliancekeys:
-                if key not in self.advancedkeys and key != 'about':
-                    data.add_field(name=key, value=guild[key]['name'])
+                data.add_field(name=key, value='\n'.join(self.guilds[guild][key]))
+            for key in self.infokeys:
+                if key in self.guilds[guild]:
+                    data.add_field(name=key, value=self.guilds[guild][key]['name'])
             await self.bot.say(embed=data)
         else:
             return
@@ -209,12 +209,12 @@ class Alliance:
 #
 #     # @commands.group(name="update", pass_context=True, invoke_without_command=True)
     @checks.admin_or_permissions(manage_server=True)
-    @alliance.group(name="set", aliases='update', pass_context=True, invoke_without_command=True, no_pm=True)
+    @alliance.group(name="set", aliases=('update',), pass_context=True, invoke_without_command=True, no_pm=True)
     async def update(self, ctx):
         """Update your CollectorVerse Alliance"""
         await send_cmd_help(ctx)
 #
-    @update.command(pass_context=True, name='name', aliases=('clanname','guildname',) ,no_pm=True)
+    @update.command(pass_context=True, name='name', no_pm=True)
     async def _alliancename(self, ctx, *, value):
         """What's your Alliance name?"""
         key = "guildname"
@@ -272,6 +272,24 @@ class Alliance:
             data = self._updateguilds(ctx, key, value)
         menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
         await menu.menu_start(pages=[data])
+
+    @update.command(pass_context=True)
+    async def started(self, ctx, *, started:str):
+        """When did you start playing Contest of Champions?"""
+        key = "Started"
+        value = 'started'
+        started = dateParse(started)
+        print(value)
+
+        if isinstance(started, datetime.datetime):
+            user = ctx.message.author
+            if ctx.message.author.id not in self.nerdie:
+                data = self._unknownguild(ctx)
+            else:
+                data = self._updateguilds(ctx, key, value)
+            await PagesMenu.menu_start(self, [data])
+        else:
+            await self.bot.say('Enter a valid date.')
 
     @update.command(pass_context=True, name='about')
     async def _allianceabout(self, ctx, *, value):
