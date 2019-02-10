@@ -127,10 +127,10 @@ class Alliance:
         pages = []
         for alliance in alliances:
             guild = self.guilds[alliance]
-            server = await self.bot.get_server(alliance)
+            # server = await self.bot.get_server(alliance)
 
             # need a function to update all alliance roles + members
-            if server.id == alliance and user.id in guild:  #Alliance server & Alliance member
+            if ctx.message.server.id == alliance and ctx.message.author.id == user.id:  #Alliance server & Alliance member
                 data = discord.Embed(color=get_color(ctx), title='CollectorVerse Alliances', description='Display private profile ~ All kinds of info stored', url='https://discord.gg/umcoc')
                 if 'about' in guild.keys():
                     data.description=guild['about']
