@@ -244,8 +244,7 @@ class Alliance:
                 data = self._updateguilds(ctx, key, value)
         else:
             # send definitions
-            message =
-            '''basic (default)
+            message ='''basic (default)
             advanced (uncommon)
             
             A 'basic' alliance can have up to 3 roles defined for AQ & AW Battlegroups: 
