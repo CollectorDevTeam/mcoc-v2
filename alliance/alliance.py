@@ -25,7 +25,7 @@ class Alliance:
         self.advancedkeys = ('officers', 'bg1', 'bg2', 'bg3', 'alliance', 'bg1aq', 'bg2aq', 'bg3aq', 'bg1aw', 'bg2aw', 'bg3aw',)
         self.infokeys = ('name', 'tag', 'started',)
 
-    @commands.group(aliases=('clan', 'guild'), pass_context=True, invoke_without_command=True, hidden=False)
+    @commands.group(aliases=('clan', 'guild'), pass_context=True, invoke_without_command=True, hidden=False, no_pm=True)
     async def alliance(self, ctx, user: discord.Member = None):
         """[ALPHA] CollectorVerse Alliance tools
 
@@ -134,19 +134,25 @@ class Alliance:
                 data = discord.Embed(color=get_color(ctx), title='CollectorVerse Alliances', description='Display private profile ~ All kinds of info stored', url='https://discord.gg/umcoc')
                 if 'about' in guild.keys():
                     data.description=guild['about']
-
+                    data.add_field(name = 'debug private on server',value='This message is presented when the Message Author is a member of the Alliance AND the message is on the Slliance Server.')
                 # for s in self.alliancekeys:
                 #     if s in guild:
                 #         data.add_field(name=s.title(), value=guild)
 
-            elif server.id == alliance.id: #Alliance server visitor
+            elif ctx.message.server.id == alliance: #Alliance server visitor
                 data = discord.Embed(color=get_color(ctx), title='CollectorVerse Alliances', description='Display Alliance Server recruiting profile', url='https://discord.gg/umcoc')
+                if 'about' in guild.keys():
+                    data.description=guild['about']
+                    data.add_field(name='debug public on server', value='This message is presented when the Message Author is NOT a member of the Alliance, and the message is on the Alliance Server.')
                 # publiclist = ['name','tag','founded','leader','invitation','recruiting']
                 # for public in publiclist:
                 #     if public in guild:
                 #         data.add_field(name=public.title(),value=guild[public])
             else: #Alliance stranger
                 data = discord.Embed(color=get_color(ctx), title='CollectorVerse Alliances', description='Display public profile.\nInclude server join link, if set.\nInclude Alliance Prestige\nInclude About\n etc', url='https://discord.gg/umcoc')
+                if 'about' in guild.keys():
+                    data.description=guild['about']
+                    data.add_field(name='public debug', value='This message is a public call to a User\'s alliance.')
             data.set_footer(text='CollectorDevTeam', icon_url=COLLECTOR_ICON)
             pages.append(data)
         menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
