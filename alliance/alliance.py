@@ -83,7 +83,7 @@ class Alliance:
             guild = self.guilds[ctx.message.server.id]
             data = discord.Embed(color=get_color(ctx), title='CollectorVerse Alliance Report', description='',
                                  url='https://discord.gg/umcoc')
-            data.thumbnail(url=ctx.message.server.icon)
+            data.set_thumbnail(url=ctx.message.server.icon)
             if 'about' in guild:
                 data.description=guild['about']
             if guild['type']=='basic':
