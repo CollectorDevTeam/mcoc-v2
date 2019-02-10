@@ -23,21 +23,26 @@ class Alliance:
         self.alliancekeys = ('officers', 'bg1', 'bg2', 'bg3', 'alliance',)
         self.advancedkeys = ('officers', 'bg1', 'bg2', 'bg3', 'alliance', 'bg1aq', 'bg2aq', 'bg3aq', 'bg1aw', 'bg2aw', 'bg3aw',)
 
-    @commands.group(name='alliance', aliases=('clan', 'guild'), pass_context=True, invoke_without_command=True, hidden=False)
-    async def _alliance(self, ctx, user: discord.Member = None):
+    @commands.group(aliases=('clan', 'guild'), pass_context=True, invoke_without_command=True, hidden=False)
+    async def alliance(self, ctx, user: discord.Member = None):
         """[ALPHA] CollectorVerse Alliance tools
 
         """
         # server = ctx.message.server
         print('debug: alliance group')
         if ctx.invoked_subcommand is None:
+            if user is None:
+                user = ctx.message.author
+            alliances, message = self._find_alliance(user)  # list
+            if alliances is None:
+                data = discord.Embed(color=get_color(ctx), title='CollectorVerse Alliances', description=message,
+                                     url='https://discord.gg/umcoc')
+                await self.bot.say(embed=data)
+            await self._present_alliance(ctx, alliances, user)
             print('_present_alliance placeholder')
-            # if user is None:
-            #     user = ctx.message.author
-            # await self._present_alliance(ctx, user)
 
     @checks.admin_or_permissions(manage_server=True)
-    @_alliance.command(name='delete', pass_context=True, aliases=('remove', 'del','rm'), invoke_without_command=True, no_pm=True)
+    @alliance.command(name='delete', pass_context=True, aliases=('remove', 'del','rm'), invoke_without_command=True, no_pm=True)
     async def _delete(self, ctx):
         '''Delete CollectorVerse Alliance'''
         server = ctx.message.server
@@ -55,13 +60,13 @@ class Alliance:
             await self.bot.delete_message(confirmation)
             await menu.menu_start(pages=[data])
 
-    @_alliance.command(name='show', pass_context=True, invoke_without_command=True, no_pm=True)
+    @alliance.command(name='show', pass_context=True, invoke_without_command=True, no_pm=True)
     async def _show(self, ctx, user: discord.Member = None):
         if user is None:
             user = ctx.message.author
         await self._present_alliance(ctx, user)
 
-    async def _present_alliance(self, ctx, user):
+    async def _present_alliance(self, ctx, alliances:list, user):
         ## 1 search for user in registered alliances
         ## 2 if user in alliance:
         ##    if ctx.server == alliance:
@@ -69,40 +74,32 @@ class Alliance:
         ##      if ctx.server != alliance:
         ##         present public info
         await self.bot.say('testing alliance presentation')
-        alliances, message = await self._find_alliance(user) #list
         pages = []
-        if alliances is None:
-            data = discord.Embed(color=get_color(ctx), title='CollectorVerse Alliances', description=message, url='https://discord.gg/umcoc')
+        for alliance in alliances:
+            guild = self.guilds[alliance]
+            server = await self.bot.get_server(alliance)
+
+            # need a function to update all alliance roles + members
+            if server.id == alliance and user.id in guild:  #Alliance server & Alliance member
+                data = discord.Embed(color=get_color(ctx), title='CollectorVerse Alliances', description='Display private profile ~ All kinds of info stored', url='https://discord.gg/umcoc')
+                # for s in self.alliancekeys:
+                #     if s in guild:
+                #         data.add_field(name=s.title(), value=guild)
+
+            elif server.id == alliance.id: #Alliance server visitor
+                data = discord.Embed(color=get_color(ctx), title='CollectorVerse Alliances', description='Display Alliance Server recruiting profile', url='https://discord.gg/umcoc')
+                # publiclist = ['name','tag','founded','leader','invitation','recruiting']
+                # for public in publiclist:
+                #     if public in guild:
+                #         data.add_field(name=public.title(),value=guild[public])
+            else: #Alliance stranger
+                data = discord.Embed(color=get_color(ctx), title='CollectorVerse Alliances', description='Display public profile.\nInclude server join link, if set.\nInclude Alliance Prestige\nInclude About\n etc', url='https://discord.gg/umcoc')
+            data.set_footer(text='CollectorDevTeam', icon_url=COLLECTOR_ICON)
             pages.append(data)
-        else:
-            for alliance in alliances:
-                guild = self.guilds[alliance]
-                server = await self.bot.get_server(alliance)
-
-                pages.append('debug: Server {}'.format(server.name))
-                pages.append('debug: User {}'.format(user.name))
-
-                ## need a function to update all alliance roles + members
-                # if server.id == alliance.id and user.id in guild:  #Alliance server & Alliance member
-                #     data = discord.Embed(color=get_color(ctx), title='CollectorVerse Alliances', description='Display private profile ~ All kinds of info stored', url='https://discord.gg/umcoc')
-                #     for s in standard.keys():
-                #         if s in guild:
-                #             data.add_field(name=s.title(), value=guild)
-                #
-                # if server.id == alliance.id: #Alliance server visitor
-                #     data = discord.Embed(color=get_color(ctx), title='CollectorVerse Alliances', description='Display Alliance Server recruiting profile', url='https://discord.gg/umcoc')
-                #     publiclist = ['name','tag','founded','leader','invitation','recruiting']
-                #     for public in publiclist:
-                #         if public in guild:
-                #             data.add_field(name=public.title(),value=guild[public])
-                # else: #Alliance stranger
-                #     data = discord.Embed(color=get_color(ctx), title='CollectorVerse Alliances', description='Display public profile.\nInclude server join link, if set.\nInclude Alliance Prestige\nInclude About\n etc', url='https://discord.gg/umcoc')
-                # data.set_footer(text='CollectorDevTeam', icon_url=COLLECTOR_ICON)
-                # pages.append(data)
         menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
         await menu.menu_start(pages=pages)
 
-    async def _find_alliance(self, user):
+    def _find_alliance(self, user):
         '''Returns a list of Server IDs or None'''
         alliances = []
         for g in self.guilds.keys():
@@ -135,7 +132,7 @@ class Alliance:
     #     return
 
     @checks.admin_or_permissions(manage_server=True)
-    @_alliance.command(name="register", pass_context=True, invoke_without_command=True, no_pm=True)
+    @alliance.command(name="register", pass_context=True, invoke_without_command=True, no_pm=True)
     async def _reg(self, ctx):
         """[ALPHA] Sign up to register your Alliance server!"""
         user = ctx.message.author
@@ -169,12 +166,12 @@ class Alliance:
 #
 #     # @commands.group(name="update", pass_context=True, invoke_without_command=True)
     @checks.admin_or_permissions(manage_server=True)
-    @_alliance.group(name="set", aliases='update', pass_context=True, invoke_without_command=True, no_pm=True)
-    async def _update(self, ctx):
+    @alliance.group(name="set", aliases='update', pass_context=True, invoke_without_command=True, no_pm=True)
+    async def update(self, ctx):
         """Update your CollectorVerse Alliance"""
         await send_cmd_help(ctx)
 #
-    @_update.command(pass_context=True, name='name', aliases=('clanname','guildname',) ,no_pm=True)
+    @update.command(pass_context=True, name='name', aliases=('clanname','guildname',) ,no_pm=True)
     async def _alliancename(self, ctx, *, value):
         """What's your Alliance name?"""
         key = "guildname"
@@ -187,7 +184,7 @@ class Alliance:
         menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
         await menu.menu_start(pages=[data])
 
-    @_update.command(pass_context=True, name='tag')
+    @update.command(pass_context=True, name='tag')
     async def _alliancetag(self, ctx, *, value):
         """What's your Alliance tag? Only include the 5 tag characters."""
         key = "guildtag"
@@ -203,77 +200,77 @@ class Alliance:
         await menu.menu_start(pages=[data])
 
     @checks.admin_or_permissions(manage_server=True)
-    @_update.command(pass_context=True, name='officers')
+    @update.command(pass_context=True, name='officers')
     async def _officers(self, ctx, role: discord.Role = None):
         """Which role are your Alliance Officers?"""
         data = await self._updaterole(ctx, key='officers', role=role)
         menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
         await menu.menu_start(pages=[data])
 
-    @_update.command(pass_context=True, name='bg1')
+    @update.command(pass_context=True, name='bg1')
     async def _bg1(self, ctx, role: discord.Role = None):
         """Which role is your Battlegroup 1?"""
         data = await self._updaterole(ctx, key='bg1', role=role)
         menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
         await menu.menu_start(pages=[data])
 
-    @_update.command(pass_context=True, name='bg1aq')
+    @update.command(pass_context=True, name='bg1aq')
     async def _bg1aq(self, ctx, role: discord.Role = None):
         """Which role is your Battlegroup 1 for Alliance Quest?"""
         data = await self._updaterole(ctx, key='bg1aq', role=role)
         menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
         await menu.menu_start(pages=[data])
 
-    @_update.command(pass_context=True, name='bg1aw')
+    @update.command(pass_context=True, name='bg1aw')
     async def _bg1aw(self, ctx, role: discord.Role = None):
         """Which role is your Battlegroup 1 for Alliance War?"""
         data = await self._updaterole(ctx, key='bg1aw', role=role)
         menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
         await menu.menu_start(pages=[data])
 
-    @_update.command(pass_context=True, name='bg2')
+    @update.command(pass_context=True, name='bg2')
     async def _bg2(self, ctx, role: discord.Role = None):
         """Which role is your Battlegroup 2?"""
         data = await self._updaterole(ctx, key='bg2', role=role)
         menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
         await menu.menu_start(pages=[data])
 
-    @_update.command(pass_context=True, name='bg2aq')
+    @update.command(pass_context=True, name='bg2aq')
     async def _bg2aq(self, ctx, role: discord.Role = None):
         """Which role is your Battlegroup 2 for Alliance Quest?"""
         data = await self._updaterole(ctx, key='bg2aq', role=role)
         menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
         await menu.menu_start(pages=[data])
 
-    @_update.command(pass_context=True, name='bg2aw')
+    @update.command(pass_context=True, name='bg2aw')
     async def _bg2aw(self, ctx, role: discord.Role = None):
         """Which role is your Battlegroup 2 for Alliance War?"""
         data = await self._updaterole(ctx, key='bg2aw', role=role)
         menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
         await menu.menu_start(pages=[data])
 
-    @_update.command(pass_context=True, name='bg3')
+    @update.command(pass_context=True, name='bg3')
     async def _bg3(self, ctx, role: discord.Role = None):
         """Which role is your Battlegroup 3?"""
         data = await self._updaterole(ctx, key='bg3', role=role)
         menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
         await menu.menu_start(pages=[data])
 
-    @_update.command(pass_context=True, name='bg3aq')
+    @update.command(pass_context=True, name='bg3aq')
     async def _bg3aq(self, ctx, role: discord.Role = None):
         """Which role is your Battlegroup 3 for Alliance Quest?"""
         data = await self._updaterole(ctx, key='bg3aq', role=role)
         menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
         await menu.menu_start(pages=[data])
 
-    @_update.command(pass_context=True, name='bg3aw')
+    @update.command(pass_context=True, name='bg3aw')
     async def _bg3aw(self, ctx, role: discord.Role = None):
         """Which role is your Battlegroup 3 for Alliance War?"""
         data = await self._updaterole(ctx, key='bg3aw', role=role)
         menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
         await menu.menu_start(pages=[data])
 
-    @_update.command(pass_context=True, name='alliance', aliases=('members','memberrole',))
+    @update.command(pass_context=True, name='alliance', aliases=('members','memberrole',))
     async def _alliance(self, ctx, role: discord.Role = None):
         """Which role represents all members of your alliance (up to 30)?"""
         data = await self._updaterole(ctx, key='alliance', role=role)
@@ -338,7 +335,7 @@ class Alliance:
                     icon_url=COLLECTOR_ICON)
         return data
 
-    async def _updatemembers(self, ctx, server):
+    def _updatemembers(self, server):
         for key in self.advancedkeys:
             if key in self.guilds:
                 for role in server.roles:
@@ -355,7 +352,7 @@ class Alliance:
                                    'member_names': member_names}
                         self.guilds[server.id].update({key: package})
                         continue
-        await self.bot.say('Debug: Alliance details refreshed')
+        print('Debug: Alliance details refreshed')
         return
 
     def _updateguilds(self, ctx, key, value):
