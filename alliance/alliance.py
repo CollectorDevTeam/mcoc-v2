@@ -23,7 +23,7 @@ class Alliance:
         self.guilds = dataIO.load_json(self.alliances)
         self.alliancekeys = ('officers', 'bg1', 'bg2', 'bg3', 'alliance',)
         self.advancedkeys = ('officers', 'bg1', 'bg2', 'bg3', 'alliance', 'bg1aq', 'bg2aq', 'bg3aq', 'bg1aw', 'bg2aw', 'bg3aw',)
-        self.infokeys = ('name', 'tag', 'started', 'joinlink')
+        self.infokeys = ('name', 'tag', 'started', 'invite')
 
     @commands.group(aliases=('clan', 'guild'), pass_context=True, invoke_without_command=True, hidden=False, no_pm=True)
     async def alliance(self, ctx, user: discord.Member = None):
@@ -74,37 +74,42 @@ class Alliance:
 
     @checks.admin_or_permissions(manage_server=True)
     @alliance.command(name='report', pass_context=True, invoke_without_command=True, hidden=True, no_pm=True)
-    async def _report(self, ctx):
-        user = ctx.message.author
-        alliances, message = self._find_alliance(user)  # list
-        if alliances is None:
-            return
-        elif ctx.message.server.id in alliances:
-            #report
-            # guild = ctx.message.server.id
-            # # guild = self.guilds[ctx.message.server.id]
-            # data = discord.Embed(color=get_color(ctx), title='CollectorVerse Alliance Report', description='',
-            #                      url='https://discord.gg/umcoc')
-            # data.set_thumbnail(url=ctx.message.server.icon)
-            # if 'about' in self.guilds[guild]:
-            #     data.description=guild['about']
-            # if self.guilds[guild]['type'] == 'basic':
-            #     rolekeys= ('officers','bg1','bg2','bg3')
-            # elif self.guilds[guild]['type'] == 'advanced':
-            #     rolekeys=('officers', 'bg1aq', 'bg2aq', 'bg3aq', 'bg1aw', 'bg2aw', 'bg3aw')
-            # else:
-            #     await self.bot.say('Error: Alliance Type is not set\n``/alliance set type (basic | advanced)``')
-            #     return
-            # for key in rolekeys:
-            #     data.add_field(name=key, value='\n'.join(self.guilds[guild][key]))
-            # for key in self.infokeys:
-            #     if key in self.guilds[guild]:
-            #         data.add_field(name=key, value=self.guilds[guild][key]['name'])
-            # await self.bot.say(embed=data)
-            message = json.dumps(self.guilds[ctx.message.server.id])
-            await self.bot.say('Alliance Debug Report'+message)
+    async def _report(self, ctx, alliance = None):
+        if alliance is not None:
+            server = self.bot.get_server(alliance)
+            await self.bot.say('server name: '+server.name)
+
         else:
-            return
+            user = ctx.message.author
+            alliances, message = self._find_alliance(user)  # list
+            if alliances is None:
+                return
+            elif ctx.message.server.id in alliances:
+                #report
+                # guild = ctx.message.server.id
+                # # guild = self.guilds[ctx.message.server.id]
+                # data = discord.Embed(color=get_color(ctx), title='CollectorVerse Alliance Report', description='',
+                #                      url='https://discord.gg/umcoc')
+                # data.set_thumbnail(url=ctx.message.server.icon)
+                # if 'about' in self.guilds[guild]:
+                #     data.description=guild['about']
+                # if self.guilds[guild]['type'] == 'basic':
+                #     rolekeys= ('officers','bg1','bg2','bg3')
+                # elif self.guilds[guild]['type'] == 'advanced':
+                #     rolekeys=('officers', 'bg1aq', 'bg2aq', 'bg3aq', 'bg1aw', 'bg2aw', 'bg3aw')
+                # else:
+                #     await self.bot.say('Error: Alliance Type is not set\n``/alliance set type (basic | advanced)``')
+                #     return
+                # for key in rolekeys:
+                #     data.add_field(name=key, value='\n'.join(self.guilds[guild][key]))
+                # for key in self.infokeys:
+                #     if key in self.guilds[guild]:
+                #         data.add_field(name=key, value=self.guilds[guild][key]['name'])
+                # await self.bot.say(embed=data)
+                message = json.dumps(self.guilds[ctx.message.server.id])
+                await self.bot.say('Alliance Debug Report'+message)
+            else:
+                return
 
     @alliance.command(name='show', pass_context=True, invoke_without_command=True, no_pm=True, hidden=True)
     async def _show(self, ctx, user: discord.Member = None):
@@ -116,38 +121,41 @@ class Alliance:
         else:
             pages = []
             for alliance in alliances:
-                server = self.bot.get_server(alliance)
-                guild = self.guilds[alliance]
-                keys = guild.keys()
-                if 'name' in keys and 'tag' in keys:
-                    title = '[{}] {}'.format(guild['tag'], guild['name'])
-                elif 'name' in keys:
-                    title = guild['name']
-                elif 'tag' in keys:
-                    title = '{} {}'.format(guild['tag'], server.name)
+               server = self.bot.get_server(alliance)
+                if server is None:
+                    await self.bot.say('/alliance show: server not found')
                 else:
-                    title = server.name
-                print('title '+title)
-                data = discord.Embed(colour=get_color(ctx), title=title)
-                data.set_author(name='A CollectorVerse Alliance', icon_url=COLLECTOR_ICON)
-                data.set_thumbnail(url=server.icon)
-                if 'joinlink' in keys:
-                    data.url = guild['joinlink']
-                    print('joinlink '+guild['joinlink'])
-                if 'about' in keys:
-                    data.description = guild['about']
-                    print('about '+guild['about'])
-                if 'poster' in keys:
-                    data.set_image(url=guild['poster'])
-                    print('poster '+guild['poster'])
-                if 'prestige' in keys:
-                    data.add_field(name='Alliance Prestige', value=guild['prestige'])
-                    print('prestige '+guild['prestige'])
-                data.add_field(name='Testing', value='Alliances Cog is currently in Alpha.\nSome or all features may be revised at any time.')
-                data.add_field(name='Alpha Warning', value='Alliance Data may be scrubbed at any time during Alpha')
-                # pages.append(data)
-                # print('/alliance show: page appended')
-                await self.bot.say(embed=data)
+                    # guild = self.guilds[alliance]
+                    keys = self.guilds[alliance].keys()
+                    if 'name' in keys and 'tag' in keys:
+                        title = '[{}] {}'.format(self.guilds[alliance]['tag'], self.guilds[alliance]['name'])
+                    elif 'name' in keys:
+                        title = self.guilds[alliance]['name']
+                    elif 'tag' in keys:
+                        title = '{} {}'.format(self.guilds[alliance]['tag'], server.name)
+                    else:
+                        title = server.name
+                    print('title '+title)
+                    data = discord.Embed(colour=get_color(ctx), title=title)
+                    data.set_author(name='A CollectorVerse Alliance', icon_url=COLLECTOR_ICON)
+                    data.set_thumbnail(url=server.icon)
+                    if 'invite' in keys:
+                        data.url = self.guilds[alliance]['invite']
+                        print('invite '+self.guilds[alliance]['invite'])
+                    if 'about' in keys:
+                        data.description = self.guilds[alliance]['about']
+                        print('about '+self.guilds[alliance]['about'])
+                    if 'poster' in keys:
+                        data.set_image(url=self.guilds[alliance]['poster'])
+                        print('poster '+self.guilds[alliance]['poster'])
+                    if 'prestige' in keys:
+                        data.add_field(name='Alliance Prestige', value=self.guilds[alliance]['prestige'])
+                        print('prestige '+self.guilds[alliance]['prestige'])
+                    data.add_field(name='Testing', value='Alliances Cog is currently in Alpha.\nSome or all features may be revised at any time.')
+                    data.add_field(name='Alpha Warning', value='Alliance Data may be scrubbed at any time during Alpha')
+                    # pages.append(data)
+                    # print('/alliance show: page appended')
+                    await self.bot.say(embed=data)
             # menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
             # await menu.menu_start(pages=pages)
     # async def _present_alliance(self, ctx, alliances:list, user):
@@ -375,10 +383,10 @@ class Alliance:
         menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
         await menu.menu_start(pages=[data])
 
-    @update.command(pass_context=True, name='joinlink')
-    async def _joinlink(self, ctx, *, value):
+    @update.command(pass_context=True, name='invite')
+    async def _invite(self, ctx, *, value):
         '''Alliance Server permanent join link'''
-        key = 'joinlink'
+        key = 'invite'
         if ctx.message.server.id not in self.guilds:
             data = self._unknownguild(ctx)
         else:
@@ -466,7 +474,8 @@ class Alliance:
 #
     def _createalliance(self, ctx, server):
 
-        self.guilds[server.id] = {'type': 'basic'}
+        self.guilds[server.id] = {'type': 'basic', 'invite': 'Join Link not set',
+                                  'poster': 'Poster URL not set', 'name': server.name}
         dataIO.save_json(self.alliances, self.guilds)
         data = discord.Embed(colour=get_color(ctx))
         data.add_field(name="Congrats!:sparkles:", value="{}, you have officially registered {} as a CollectorVerse Alliance.".format(ctx.message.author.mention, server.name))
