@@ -128,7 +128,8 @@ class Alliance:
                 else:
                     title = server.name
                 print('title '+title)
-                data = discord.Embed(colour=get_color(ctx), title=title, icon_url=COLLECTOR_ICON)
+                data = discord.Embed(colour=get_color(ctx), title=title)
+                data.set_author(name='A CollectorVerse Alliance', icon_url=COLLECTOR_ICON)
                 data.set_thumbnail(url=server.icon)
                 if 'joinlink' in keys:
                     data.url = guild['joinlink']
@@ -142,7 +143,8 @@ class Alliance:
                 if 'prestige' in keys:
                     data.add_field(name='Alliance Prestige', value=guild['prestige'])
                     print('prestige '+guild['prestige'])
-                data.add_field(name='Testing', value='Alliances Cog is currently in Alpha. \nSome or all features may be revised at any time.\nAlliance Data may be scrubbed at any time during Alpha')
+                data.add_field(name='Testing', value='Alliances Cog is currently in Alpha.\nSome or all features may be revised at any time.')
+                data.add_field(name='Alpha Warning', value='Alliance Data may be scrubbed at any time during Alpha')
                 # pages.append(data)
                 # print('/alliance show: page appended')
                 await self.bot.say(embed=data)
