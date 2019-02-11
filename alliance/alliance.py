@@ -112,37 +112,43 @@ class Alliance:
             user = ctx.message.author
         alliances, message = self._find_alliance(user)
         if alliances is None:
-            await self.bot.say('No alliance registered')
-            return
+            await self.bot.say(message)
         else:
             pages = []
             for alliance in alliances:
                 guild = self.guilds[alliance]
-                if 'name' in guild and 'tag' in guild:
+                keys = guild.keys()
+                if 'name' in keys and 'tag' in keys:
                     title = '[{}] {}'.format(guild['tag'], guild['name'])
-                elif 'name' in guild:
+                elif 'name' in keys:
                     title = guild['name']
-                elif 'tag' in guild:
+                elif 'tag' in keys:
                     title = guild['tag']
                 else:
                     title = 'A CollectorVerse Alliance'
+                print(title)
                 data = discord.Embed(colour=get_color(ctx), title=title, icon_url=COLLECTOR_ICON)
 
-                if 'thumbnail' in guild:
+                if 'thumbnail' in keys:
                     data.set_thumbnail(url=guild['thumbnail'])
-                if 'joinlink' in guild:
+                    print(guild['thumbnail'])
+                if 'joinlink' in keys:
                     data.url = guild['joinlink']
-                if 'about' in guild:
+                    print(guild['joinlink'])
+                if 'about' in keys:
                     data.description = guild['about']
-                if 'poster' in guild:
+                    print(guild['about'])
+                if 'poster' in keys:
                     data.set_image(url=guild['poster'])
-                if 'prestige' in guild:
+                    print(guild['poster'])
+                if 'prestige' in keys:
                     data.add_field(name='Alliance Prestige', value=guild['prestige'])
+                    print(guild['prestige'])
                 data.add_field(name='Testing', value='Alliances Cog is currently in Alpha. \nSome or all features may be revised at any time.\nAlliance Data may be scrubbed at any time during Alpha')
                 pages.append(data)
+                print('/alliance show: page appended')
             menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
             await menu.menu_start(pages=pages)
-            return
     # async def _present_alliance(self, ctx, alliances:list, user):
     #     # 1 search for user in registered alliances
     #     # 2 if user in alliance:
