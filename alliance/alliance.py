@@ -41,13 +41,13 @@ class Alliance:
             if alliances is None:
                 data = discord.Embed(color=get_color(ctx), title='CollectorVerse Alliances', description=message,
                                      url='https://discord.gg/umcoc')
-                data.set_thumbnail(url=ctx.message.server.icon)
+                data.set_thumbnail(url=ctx.message.server.icon_url)
                 await self.bot.say(embed=data)
             elif ctx.message.server.id in self.guilds:
                 self._updatemembers(ctx.message.server)
                 data = discord.Embed(color=get_color(ctx), title='CollectorVerse Alliances', description=message,
                                      url='https://discord.gg/umcoc')
-                data.set_thumbnail(url=ctx.message.server.icon)
+                data.set_thumbnail(url=ctx.message.server.icon_url)
                 await self.bot.say(embed=data)
             else:
                 data = discord.Embed(color=get_color(ctx), title='CollectorVerse Alliances', description=message,
@@ -92,7 +92,7 @@ class Alliance:
                 # # guild = self.guilds[ctx.message.server.id]
                 # data = discord.Embed(color=get_color(ctx), title='CollectorVerse Alliance Report', description='',
                 #                      url='https://discord.gg/umcoc')
-                # data.set_thumbnail(url=ctx.message.server.icon)
+                # data.set_thumbnail(url=ctx.message.server.icon_url)
                 # if 'about' in self.guilds[guild]:
                 #     data.description=guild['about']
                 # if self.guilds[guild]['type'] == 'basic':
