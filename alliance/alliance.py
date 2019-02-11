@@ -121,7 +121,7 @@ class Alliance:
         else:
             pages = []
             for alliance in alliances:
-               server = self.bot.get_server(alliance)
+                server = self.bot.get_server(alliance)
                 if server is None:
                     await self.bot.say('/alliance show: server not found')
                 else:
