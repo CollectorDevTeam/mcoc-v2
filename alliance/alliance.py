@@ -113,6 +113,7 @@ class Alliance:
         alliances, message = self._find_alliance(user)
         if alliances is None:
             await self.bot.say('No alliance registered')
+            return
         else:
             pages = []
             for alliance in alliances:
@@ -141,6 +142,7 @@ class Alliance:
                 pages.append(data)
             menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
             await menu.menu_start(page_list=pages)
+            return
     # async def _present_alliance(self, ctx, alliances:list, user):
     #     # 1 search for user in registered alliances
     #     # 2 if user in alliance:
