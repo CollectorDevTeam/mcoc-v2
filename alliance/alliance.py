@@ -32,6 +32,8 @@ class Alliance:
         """
         # server = ctx.message.server
         print('debug: alliance group')
+        self._updatemembers(ctx.message.server)
+
         if ctx.invoked_subcommand is None:
             if user is None:
                 user = ctx.message.author
@@ -442,31 +444,32 @@ class Alliance:
                 member_ids = []
                 for m in server.members:
                     if role in m.roles:
-                        member_names.append(m.name)
+                        member_names.append(m.display_name)
                         member_ids.append(m.id)
-                if len(member_ids)==0:
-                    member_ids.append('n/a')
-                    member_names.append('n/a')
                 package = {'id': role.id,
                            'name': role.name,
                            'member_ids': member_ids,
                            'member_names': member_names}
                 if key in ('bg1', 'bg2', 'bg3', 'bg1aw', 'bg1aq', 'bg2aw', 'bg2aq', 'bg3aw', 'bg3aq'):
                     if len(member_ids) > 10:
-                        data.add_field(name=':warning: Warning - Overloaded Battlegroup:', value='Battlegroups are limited to 10 members.\nCheck your {} assignments'.format(role.name))
+                        data.add_field(name=':warning: Warning - Overloaded Battlegroup:',
+                                       value='Battlegroups are limited to 10 members.\nCheck your {} assignments'.format(role.name))
                 elif key == 'alliance':
                     if len(member_ids) > 30:
-                        data.add_field(name=':warning: Warning - Overloaded Alliance', value='Alliances are limited to 30 members.\nCheck your {} members'.format(role.name))
+                        data.add_field(name=':warning: Warning - Overloaded Alliance',
+                                       value='Alliances are limited to 30 members.\nCheck your {} members'.format(role.name))
                 self.guilds[server.id].update({key: package})
-                data.add_field(name="Congrats!:sparkles:",value="You have set your {} to {}".format(key, role.name), inline=False)
-                data.add_field(name='{} members'.format(role.name), value='\n'.join(member_names))
+                data.add_field(name="Congrats!:sparkles:", value="You have set your {} to {}".format(key, role.name), inline=False)
+                if len(member_names)>0:
+                    data.add_field(name='{} members'.format(role.name), value='\n'.join(member_names))
+                else:
+                    data.add_field(name='{} members'.format(role.name), value='No Members assigned')
             dataIO.save_json(self.alliances, self.guilds)
-            data.set_footer(text='CollectorDevTeam',
-                    icon_url=COLLECTOR_ICON)
+            data.set_footer(text='CollectorDevTeam', icon_url=COLLECTOR_ICON)
         return data
 
     def _updatemembers(self, server):
-        self.guilds[server.id].update({'thumbnail':server.icon})
+        self.guilds[server.id].update({'thumbnail': server.icon})
         for key in self.advancedkeys:
             if key in self.guilds:
                 for role in server.roles:
