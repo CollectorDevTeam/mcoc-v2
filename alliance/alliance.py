@@ -141,7 +141,7 @@ class Alliance:
                 data.add_field(name='Testing', value='Alliances Cog is currently in Alpha. \nSome or all features may be revised at any time.\nAlliance Data may be scrubbed at any time during Alpha')
                 pages.append(data)
             menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
-            await menu.menu_start(page_list=pages)
+            await menu.menu_start(pages=pages)
             return
     # async def _present_alliance(self, ctx, alliances:list, user):
     #     # 1 search for user in registered alliances
