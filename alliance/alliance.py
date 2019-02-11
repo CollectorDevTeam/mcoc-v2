@@ -118,29 +118,27 @@ class Alliance:
             for alliance in alliances:
                 guild = self.guilds[alliance]
                 if 'name' in guild and 'tag' in guild:
-                    author = '[{}] {}'.format(guild['tag'], guild['name'])
+                    title = '[{}] {}'.format(guild['tag'], guild['name'])
                 elif 'name' in guild:
-                    author = guild['name']
+                    title = guild['name']
                 elif 'tag' in guild:
-                    author = guild['tag']
+                    title = guild['tag']
                 else:
-                    author = 'A CollectorVerse Alliance'
-                data = discord.Embed(colour=get_color(ctx), title='CollectorVerse Alliance')
-                data.set_author(author)
+                    title = 'A CollectorVerse Alliance'
+                data = discord.Embed(colour=get_color(ctx), title=title, icon_url=COLLECTOR_ICON)
+
+                if 'thumbnail' in guild:
+                    data.set_thumbnail(url=guild['thumbnail'])
                 if 'joinlink' in guild:
                     data.url = guild['joinlink']
                 if 'about' in guild:
                     data.description = guild['about']
-                if 'thumbnail' in guild:
-                    data.set_thumbnail(url=guild['thumbnail'])
                 if 'poster' in guild:
                     data.set_image(url=guild['poster'])
                 if 'prestige' in guild:
                     data.add_field(name='Alliance Prestige', value=guild['prestige'])
                 data.add_field(name='Testing', value='Alliances Cog is currently in Alpha. \nSome or all features may be revised at any time.\nAlliance Data may be scrubbed at any time during Alpha')
                 pages.append(data)
-
-
 
     # async def _present_alliance(self, ctx, alliances:list, user):
     #     # 1 search for user in registered alliances
