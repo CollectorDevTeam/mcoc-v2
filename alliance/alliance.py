@@ -116,6 +116,7 @@ class Alliance:
         else:
             pages = []
             for alliance in alliances:
+                server = self.bot.get_server(alliance)
                 guild = self.guilds[alliance]
                 keys = guild.keys()
                 if 'name' in keys and 'tag' in keys:
@@ -123,27 +124,24 @@ class Alliance:
                 elif 'name' in keys:
                     title = guild['name']
                 elif 'tag' in keys:
-                    title = guild['tag']
+                    title = '{} {}'.format(guild['tag'], server.name)
                 else:
-                    title = 'A CollectorVerse Alliance'
-                print(title)
+                    title = server.name
+                print('title '+title)
                 data = discord.Embed(colour=get_color(ctx), title=title, icon_url=COLLECTOR_ICON)
-
-                if 'thumbnail' in keys:
-                    data.set_thumbnail(url=guild['thumbnail'])
-                    print(guild['thumbnail'])
+                data.set_thumbnail(url=server.icon)
                 if 'joinlink' in keys:
                     data.url = guild['joinlink']
-                    print(guild['joinlink'])
+                    print('joinlink '+guild['joinlink'])
                 if 'about' in keys:
                     data.description = guild['about']
-                    print(guild['about'])
+                    print('about '+guild['about'])
                 if 'poster' in keys:
                     data.set_image(url=guild['poster'])
-                    print(guild['poster'])
+                    print('poster '+guild['poster'])
                 if 'prestige' in keys:
                     data.add_field(name='Alliance Prestige', value=guild['prestige'])
-                    print(guild['prestige'])
+                    print('prestige '+guild['prestige'])
                 data.add_field(name='Testing', value='Alliances Cog is currently in Alpha. \nSome or all features may be revised at any time.\nAlliance Data may be scrubbed at any time during Alpha')
                 pages.append(data)
                 print('/alliance show: page appended')
@@ -465,7 +463,7 @@ class Alliance:
 #
     def _createalliance(self, ctx, server):
 
-        self.guilds[server.id] = {'type': 'basic', 'thumbnail': server.icon}
+        self.guilds[server.id] = {'type': 'basic'}
         dataIO.save_json(self.alliances, self.guilds)
         data = discord.Embed(colour=get_color(ctx))
         data.add_field(name="Congrats!:sparkles:", value="{}, you have officially registered {} as a CollectorVerse Alliance.".format(ctx.message.author.mention, server.name))
@@ -525,7 +523,6 @@ class Alliance:
         return data
 
     def _updatemembers(self, server):
-        self.guilds[server.id].update({'thumbnail': server.icon})
         for key in self.advancedkeys:
             if key in self.guilds:
                 for role in server.roles:
