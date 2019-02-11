@@ -32,7 +32,7 @@ class Alliance:
         """
         # server = ctx.message.server
         print('debug: alliance group')
-        self._updatemembers(ctx.message.server)
+        # self._updatemembers(ctx.message.server)
 
         if ctx.invoked_subcommand is None:
             if user is None:
@@ -43,7 +43,6 @@ class Alliance:
                                      url='https://discord.gg/umcoc')
                 await self.bot.say(embed=data)
             elif ctx.message.server.id in self.guilds:
-                #refresh server data
                 self._updatemembers(ctx.message.server)
                 data = discord.Embed(color=get_color(ctx), title='CollectorVerse Alliances', description=message,
                                      url='https://discord.gg/umcoc')
@@ -109,7 +108,6 @@ class Alliance:
         else:
             return
 
-
     @alliance.command(name='show', pass_context=True, invoke_without_command=True, no_pm=True, hidden=True)
     async def _show(self, ctx, user: discord.Member = None):
         if user is None:
@@ -119,12 +117,12 @@ class Alliance:
             await self._present_alliance(ctx, alliances, user)
 
     async def _present_alliance(self, ctx, alliances:list, user):
-        ## 1 search for user in registered alliances
-        ## 2 if user in alliance:
-        ##    if ctx.server == alliance:
-        ##         present full info
-        ##      if ctx.server != alliance:
-        ##         present public info
+        # 1 search for user in registered alliances
+        # 2 if user in alliance:
+        #    if ctx.server == alliance:
+        #         present full info
+        #      if ctx.server != alliance:
+        #         present public info
         await self.bot.say('testing alliance presentation')
         pages = []
         for alliance in alliances:
@@ -137,12 +135,14 @@ class Alliance:
                 if 'about' in guild.keys():
                     data.description = guild['about']
                 data.add_field(name = 'debug private on server',value='This message is presented when the Message Author is a member of the Alliance AND the message is on the Slliance Server.')
-                data.set_thumbnail(url=guild['thumbnail'])
+                if 'thumbnail' in guild:
+                    data.set_thumbnail(url=guild['thumbnail'])
                 data2 = discord.Embed(color=get_color(ctx), title='Battlegroup Assignments',description='', url='https://discord.gg/umcoc')
-                data2.set_thumbnail(url=guild['thumbnail'])
-                for key in ('bg1','bg2','bg3'):
+                if 'thumbnail' in guild:
+                    data2.set_thumbnail(url=guild['thumbnail'])
+                for key in ('bg1', 'bg2', 'bg3'):
                     if key in guild and len(guild[key]) > 0:
-                        data2.add_field(name='Battlegroup Assignment: '+key, value='\n'.join(guild[key]), inline=False)
+                        data2.add_field(name='Battlegroup Assignment: {}'.format(key), value='\n'.join(guild[key]), inline=False)
                 pages.append(data2)
                 pass
 
@@ -409,7 +409,7 @@ class Alliance:
 #
     def _createalliance(self, ctx, server):
 
-        self.guilds[server.id] = {'type': 'basic'}
+        self.guilds[server.id] = {'type': 'basic', 'thumbnail': server.icon}
         dataIO.save_json(self.alliances, self.guilds)
         data = discord.Embed(colour=get_color(ctx))
         data.add_field(name="Congrats!:sparkles:", value="{}, you have officially registered {} as a CollectorVerse Alliance.".format(ctx.message.author.mention, server.name))
