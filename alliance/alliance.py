@@ -113,7 +113,7 @@ class Alliance:
         if user is None:
             user = ctx.message.author
         alliances, message = self._find_alliance(user)
-        if len(alliances) > 0:
+        if alliances is not None:
             await self._present_alliance(ctx, alliances, user)
 
     async def _present_alliance(self, ctx, alliances:list, user):
