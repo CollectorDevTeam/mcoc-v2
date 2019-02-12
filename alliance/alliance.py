@@ -10,7 +10,7 @@ from .utils.dataIO import dataIO
 from .utils import checks
 # from .utils import chat_formatting as chat
 from .mcocTools import (KABAM_ICON, COLLECTOR_ICON, PagesMenu)
-from .hook import RosterUserConverter
+from .hook import RosterUserConverter, ChampionRoster
 # import cogs.mcocTools
 
 
@@ -54,6 +54,94 @@ class Alliance:
                                      url='https://discord.gg/umcoc')
                 data.add_field(name='Alliance codes', value=', '.join(self.guilds[a]['name'] for a in alliances))
                 await self.bot.say(embed=data)
+
+    @alliance.command(name='public', pass_context=True, invoke_without_command=True, no_pm=True)
+    async def _show_public(self, ctx, user: discord.Member = None):
+        '''Display Alliance public profile'''
+        if user is None:
+            user = ctx.message.author
+        alliances = self._find_alliance(user)
+        pages = []
+        if alliances is None:
+            data = self._get_embed(ctx)
+            data.title='{} is not registered in a CollectorVerse Alliance'.format(user.display_name)
+            await self.bot.say(embed=data)
+            return
+        for alliance in alliances:
+            server = self.bot.get_server(alliance)
+            guild = self.guilds[alliance]
+            data = self._get_embed(ctx, alliance, user.id)
+            if 'name' in guild and 'tag' in guild:
+                data.title = '{0.name} {0.tag}'.format(guild)
+            elif 'tag' in guild:
+                data.title = '{0.name} {1.tag}'.format(server, guild)
+            else:
+                data.title = server.name
+            if 'invite' in guild:
+                data.url = guild['invite']
+            if 'alliance' in guild:
+                cp, vp = self._get_prestige(alliance, guild['alliance']['role_id'])
+                if cp is None:
+                    data.add_field(name='Alliance Prestige', value=vp)
+                else:
+                    data.add_field(name='Alliance Prestige : {}'.format(cp), value='')
+            pages.append(data)
+        menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
+        await menu.menu_start(pages=pages)
+
+    def _get_embed(self, ctx, alliance=None, userid=None):
+        if alliance is not None:
+            server = self.bot.get_server(alliance)
+            for member in members:
+                if userid == member.id:
+                    color = member.color
+                    continue
+        else:
+            server = ctx.message.server
+            color = get_color(ctx)
+        data = discord.Embed(color=color, title='', description='')
+        data.set_author(name='A CollectorVerse Alliance', icon_url=COLLECTOR_ICON)
+        data.set_thumbnail(url=server.icon_url)
+        data.set_footer(name='CollectorDevTeam', icon_url=COLLECTOR_ICON)
+        return data
+
+    def _get_prestige(self, ctx, alliance, roleid):
+        '''Pull User Prestige for all users in Role'''
+        member_ids = self.guilds[alliance][roleid]['member_ids']
+        ## pull Roster record & get prestige
+        if len(member_ids) == 0:
+            return None, 'No members assigned to {}'.format(self.guilds[alliance][role]['name'])
+        elif len(member_ids) > 30:
+            return None, 'An Alliance cannot exceed 30 members.\nCheck your role assignments.'
+        else:
+            server = self.bot.get_server(alliance)
+            role = discord.utils.get(server.roles, id=roleid)
+            if role is not None:
+                width = 20
+                prestige = 0
+                cnt = 0
+                line_out = []
+                for member in server.members:
+                    if role in member.roles:
+                        roster = ChampionRoster(self.bot, member)
+                        await roster.load_champions()
+                        if roster.prestige > 0:
+                            prestige += roster.prestige
+                            cnt += 1
+                        # if verbose is 1:
+                        #     line_out.append('{:{width}} p = {}'.format(
+                        #         member.name, roster.prestige, width=width))
+                        # elif verbose is 2:
+                        line_out.append('{:{width}} p = {}'.format(member.display_name, roster.prestige, width=width))
+                line_out.append('_' * (width + 11))
+                if cnt > 0:
+                    line_out.append('{0:{width}} p = {1}  from {2} members'.format(
+                        role.name, round(prestige / cnt, 0), cnt, width=width))
+                    clan_prestige = round(prestige / cnt, 0)
+                    verbose_prestige = '```{}```'.format('\n'.join(line_out))
+                    return clan_prestige, verbose_prestige
+            else:
+                return None, 'Role not found'
 
     @checks.admin_or_permissions(manage_server=True)
     @alliance.command(name='unregister', aliases=('delete', 'del' 'remove', 'rm',), pass_context=True, invoke_without_command=True, no_pm=True)
