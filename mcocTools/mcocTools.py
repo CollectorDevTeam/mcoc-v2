@@ -102,7 +102,7 @@ class StaticGameData:
 
         # Update this list to add Events
         events = ['13', '13.1', '14', '14.1', '15', '15.1', '16', '16.1', '17', '17.1', '17.2', '18', '18.1', '19.1',
-                  '20', '20.1', '21', '21.1', '21.2', '21.3', 'love3']
+                  '20', '20.1', '21', '21.1', '21.2', '21.3', 'love3', 'cmcc']
 
         for event in events:
             self.gsheet_handler.register_gsheet(
@@ -1052,6 +1052,12 @@ class MCOCTools:
     async def eq_love3(self, tier='Epic'):
         '''Love is a Battlefield 3'''
         event = 'eq_love3'
+        await self.format_eventquest(event, tier.lower())
+
+    @eventquest.command(name='cmcc', aliases=('cmclash','captainmarvelclash',))
+    async def eq_cmcc(self, tier='Act'):
+        '''Captain Marvel\'s Combat Clash'''
+        event = 'eq_cmcc'
         await self.format_eventquest(event, tier.lower())
 
     # @eventquest.command(name='', aliases=(,))
