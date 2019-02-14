@@ -125,8 +125,8 @@ class Alliance:
                 line_out = []
                 for member in server.members:
                     if role in member.roles:
-                        roster = ChampionRoster(self.bot, member)
-                        await roster.load_champions()
+                        roster = await ChampionRoster(self.bot, member).load_champions()
+                        # await roster.load_champions(self.bot)
                         if roster.prestige > 0:
                             prestige += roster.prestige
                             cnt += 1
