@@ -82,7 +82,7 @@ class Alliance:
             if 'invite' in guild:
                 data.url = guild['invite']
             if 'alliance' in guild:
-                cp, vp = await self._get_prestige(alliance, guild[alliance]['alliance'])
+                cp, vp = await self._get_prestige(server, guild[alliance]['alliance'])
                 if cp is None:
                     data.add_field(name='Alliance Prestige', value=vp)
                 else:
@@ -108,46 +108,38 @@ class Alliance:
         data.set_footer(text='CollectorDevTeam', icon_url=COLLECTOR_ICON)
         return data
 
-    async def _get_prestige(self, alliance, group):
+    async def _get_prestige(self, server, group):
         """Pull User Prestige for all users in Role"""
-        member_ids = self.guilds[alliance][group]['member_ids']
+        member_ids = self.guilds[server.id][group]['member_ids']
+        role = discord.utils.find(lambda r: r.id == group, server.roles)
+
         # pull Roster record & get prestige
         if len(member_ids) == 0:
-            return None, 'No members assigned to {}'.format(self.guilds[alliance][group]['name'])
+            return None, 'No members assigned to {}'.format(self.guilds[server.id][group]['name'])
         elif len(member_ids) > 30:
             return None, 'An Alliance cannot exceed 30 members.\nCheck your role assignments.'
+        elif role is not None:
+            width = 20
+            prestige = 0
+            cnt = 0
+            line_out = []
+            for member in server.members:
+                if role in member.roles:
+                    roster = ChampionRoster(member)
+                    await roster.load_champions()
+                    if roster.prestige > 0:
+                        prestige += roster.prestige
+                        cnt += 1
+                    line_out.append('{:{width}} p = {}'.format(member.display_name, roster.prestige, width=width))
+            line_out.append('_' * (width + 11))
+            if cnt > 0:
+                line_out.append('{0:{width}} p = {1}  from {2} members'.format(
+                    role.name, round(prestige / cnt, 0), cnt, width=width))
+                clan_prestige = round(prestige / cnt, 0)
+                verbose_prestige = '```{}```'.format('\n'.join(line_out))
+                return clan_prestige, verbose_prestige
         else:
-            server = self.bot.get_server(alliance)
-            # for s in discord.Client.servers:
-            #     if server.id == alliance:
-            #         server = s
-            role = discord.utils.get(server.roles, id=self.guilds[alliance][group]['id'])
-            if role is not None:
-                width = 20
-                prestige = 0
-                cnt = 0
-                line_out = []
-                for member in server.members:
-                    if role in member.roles:
-                        roster = ChampionRoster(member)
-                        await roster.load_champions()
-                        if roster.prestige > 0:
-                            prestige += roster.prestige
-                            cnt += 1
-                        # if verbose is 1:
-                        #     line_out.append('{:{width}} p = {}'.format(
-                        #         member.name, roster.prestige, width=width))
-                        # elif verbose is 2:
-                        line_out.append('{:{width}} p = {}'.format(member.display_name, roster.prestige, width=width))
-                line_out.append('_' * (width + 11))
-                if cnt > 0:
-                    line_out.append('{0:{width}} p = {1}  from {2} members'.format(
-                        role.name, round(prestige / cnt, 0), cnt, width=width))
-                    clan_prestige = round(prestige / cnt, 0)
-                    verbose_prestige = '```{}```'.format('\n'.join(line_out))
-                    return clan_prestige, verbose_prestige
-            else:
-                return None, 'Role not found'
+            return None, 'Role not found'
 
     @checks.admin_or_permissions(manage_server=True)
     @alliance.command(name='unregister', aliases=('delete', 'del' 'remove', 'rm',), pass_context=True,
