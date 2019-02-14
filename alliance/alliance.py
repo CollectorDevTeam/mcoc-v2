@@ -10,7 +10,8 @@ from .utils.dataIO import dataIO
 from .utils import checks
 # from .utils import chat_formatting as chat
 from .mcocTools import (KABAM_ICON, COLLECTOR_ICON, PagesMenu)
-from .hook import RosterUserConverter, ChampionRoster
+# from cogs import .hook
+# from .hook import RosterUserConverter, ChampionRoster
 # import cogs.mcocTools
 
 
@@ -25,6 +26,7 @@ class Alliance:
         self.advanced_keys = ('officers', 'bg1', 'bg2', 'bg3', 'alliance',
                               'bg1aq', 'bg2aq', 'bg3aq', 'bg1aw', 'bg2aw', 'bg3aw',)
         self.infokeys = ('name', 'tag', 'started', 'invite')
+        self.hook = bot.get_cog('Hook')
 
     @commands.group(aliases=('clan', 'guild'), pass_context=True, invoke_without_command=True, hidden=False, no_pm=True)
     async def alliance(self, ctx, user: discord.Member = None):
@@ -125,8 +127,8 @@ class Alliance:
                 line_out = []
                 for member in server.members:
                     if role in member.roles:
-                        roster = ChampionRoster(self.bot, member)
-                        await roster.load_champions(self.bot)
+                        roster = self.hook.ChampionRoster(member)
+                        await roster.load_champions()
                         if roster.prestige > 0:
                             prestige += roster.prestige
                             cnt += 1
