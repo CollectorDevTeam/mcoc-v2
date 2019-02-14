@@ -650,7 +650,7 @@ class Hook:
 
 
     @commands.command(pass_context=True, no_pm=True)
-    async def clan_prestige(self, ctx, role : discord.Role, verbose=0):
+    async def clan_prestige(self, ctx, role: discord.Role, verbose=0):
         '''Report Clan Prestige.
         Specify clan-role or battlegroup-role.'''
         server = ctx.message.server
