@@ -1,4 +1,4 @@
-import re
+# import re
 import os
 import json
 import datetime
@@ -10,8 +10,7 @@ from .utils.dataIO import dataIO
 from .utils import checks
 # from .utils import chat_formatting as chat
 from .mcocTools import (KABAM_ICON, COLLECTOR_ICON, PagesMenu)
-# from cogs import .hook
-# from .hook import RosterUserConverter, ChampionRoster
+from .hook import RosterUserConverter, ChampionRoster
 # import cogs.mcocTools
 
 
@@ -83,7 +82,7 @@ class Alliance:
             if 'invite' in guild:
                 data.url = guild['invite']
             if 'alliance' in guild:
-                cp, vp = self._get_prestige(alliance, guild[alliance]['alliance'])
+                cp, vp = await self._get_prestige(alliance, guild[alliance]['alliance'])
                 if cp is None:
                     data.add_field(name='Alliance Prestige', value=vp)
                 else:
@@ -109,7 +108,7 @@ class Alliance:
         data.set_footer(text='CollectorDevTeam', icon_url=COLLECTOR_ICON)
         return data
 
-    def _get_prestige(self, alliance, group):
+    async def _get_prestige(self, alliance, group):
         """Pull User Prestige for all users in Role"""
         member_ids = self.guilds[alliance][group]['member_ids']
         # pull Roster record & get prestige
@@ -119,6 +118,9 @@ class Alliance:
             return None, 'An Alliance cannot exceed 30 members.\nCheck your role assignments.'
         else:
             server = self.bot.get_server(alliance)
+            # for s in discord.Client.servers:
+            #     if server.id == alliance:
+            #         server = s
             role = discord.utils.get(server.roles, id=self.guilds[alliance][group]['id'])
             if role is not None:
                 width = 20
@@ -127,8 +129,8 @@ class Alliance:
                 line_out = []
                 for member in server.members:
                     if role in member.roles:
-                        roster = self.hook.ChampionRoster(member)
-                        roster.load_champions()
+                        roster = ChampionRoster(member)
+                        await roster.load_champions()
                         if roster.prestige > 0:
                             prestige += roster.prestige
                             cnt += 1
