@@ -1150,7 +1150,7 @@ class MCOCTools:
                 em.description = '{}\n\n{}'.format(cdt_eq['story_title']['value'], cdt_eq['story_value']['value'])
                 # em.add_field(name=cdt_eq['story_title']['value'], value=cdt_eq['story_value']['value'])
                 em.add_field(name='{} Rewards'.format(row.title()), value=cdt_eq[row]['rewardsregex'])
-                if 'champions' in cdt_eq:
+                if 'champions' in cdt_eq and cdt_eq['champions']['value'] != "":
                     em.add_field(name='Introducing', value=cdt_eq['champions']['value'])
                 em.set_image(url=cdt_eq['story_image']['value'])
                 em.set_footer(text='CollectorDevTeam', icon_url=self.COLLECTOR_ICON)
