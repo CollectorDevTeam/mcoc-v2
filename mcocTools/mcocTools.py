@@ -1132,7 +1132,7 @@ class MCOCTools:
         sgd = StaticGameData()
         # sgd = self.sgd
         cdt_eq = await sgd.get_gsheets_data(event)
-        rows = set(cdt_eq.keys()) - {'_headers'}
+        # rows = set(cdt_eq.keys()) - {'_headers'}
         # print(', '.join(rows))
         tiers = cdt_eq['tiers']['value'].split(", ")
         print(tiers)
@@ -1144,7 +1144,11 @@ class MCOCTools:
             page_list = []
             page_number = list(tiers).index(tier)
             for row in tiers:
-                em = discord.Embed(color=sgd.tiercolors[row], title=cdt_eq['event_title']['value'],
+                if row in sgd.tiercolors:
+                    color = sgd.tiercolors[row]
+                else:
+                    color = discord.Color.gold()
+                em = discord.Embed(color=color, title=cdt_eq['event_title']['value'],
                                    url=cdt_eq['event_url']['value'])
                 em.set_author(name=cdt_eq['date']['value'])
                 em.description = '{}\n\n{}'.format(cdt_eq['story_title']['value'], cdt_eq['story_value']['value'])
