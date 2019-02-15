@@ -82,7 +82,7 @@ class Alliance:
             if 'invite' in guild:
                 data.url = guild['invite']
             if 'alliance' in guild:
-                cp, vp = await self._get_prestige(server, guild[alliance]['alliance']['id'])
+                cp, vp = await self._get_prestige(server, 'alliance')
                 if cp is None:
                     data.add_field(name='Alliance Prestige', value=vp)
                 else:
