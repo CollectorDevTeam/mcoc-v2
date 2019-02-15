@@ -209,12 +209,12 @@ class Alliance:
         alliances = []
         for alliance in self.guilds.keys():
             if 'alliance' in self.guilds[alliance]:
-                if user.id in self.guilds[alliance]['alliance']:
+                if user.id in self.guilds[alliance]['alliance']['member_ids']:
                     alliances.append(alliance)
                     continue
             else:
                 for group in self.advanced_keys:
-                    if user.id in self.guilds[alliance][group]:
+                    if user.id in self.guilds[alliance][group]['member_ids']:
                         alliances.append(alliance)
                         continue
         # if len(alliances) > 0:
