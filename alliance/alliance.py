@@ -62,7 +62,7 @@ class Alliance:
         """Display Alliance public profile"""
         if user is None:
             user = ctx.message.author
-        alliances = self._find_alliance(user)
+        alliances, message = self._find_alliance(user)
         pages = []
         if alliances is None:
             data = self._get_embed(ctx)
@@ -206,19 +206,24 @@ class Alliance:
 
     def _find_alliance(self, user):
         """Returns a list of Server IDs or None"""
-        user_alliances = []
-        for guild in self.guilds.keys():
-            keys = self.guilds[guild].keys()
-            for key in keys:
-                if key in self.advanced_keys:
-                    if user.id in self.guilds[guild][key]['member_ids']:
-                        if guild not in user_alliances:
-                            user_alliances.append(guild)
-                        print('keys: '.join([guild, key, 'member_ids']))
+        alliances = []
+        for alliance in self.guilds.keys():
+            if 'alliance' in self.guilds[alliance]:
+                if user.id in self.guilds[alliance]['alliance']:
+                    alliances.append(alliance)
+                    continue
+            else:
+                for group in self.advanced_keys:
+                    if user.id in self.guilds[alliance][group]:
+                        alliances.append(alliance)
                         continue
+        # if len(alliances) > 0:
+        #     return alliances
+        # else:
+        #     return None
 
-        if len(user_alliances) > 0:
-            return user_alliances, '{} found'.format(user.name)
+        if len(alliances) > 0:
+            return alliances, '{} found'.format(user.name)
         else:
             return None, '{} not found'.format(user.name)
     # def _get_members(self, server, key, role):
