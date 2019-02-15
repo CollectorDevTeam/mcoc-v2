@@ -113,33 +113,40 @@ class Alliance:
     async def _get_prestige(self, server, group):
         """Pull User Prestige for all users in Role"""
         member_ids = self.guilds[server.id][group]['member_ids']
-        role = discord.utils.find(lambda r: r.id == group, server.roles)
+        role = None
+        for r in server.roles:
+            if r.id == self.guilds[server.id][group]['id']:
+                role = r
+                print('_get_prestige: role identified')
+                continue
+        # role = discord.utils.find(lambda r: r.id == group, server.roles)
 
         # pull Roster record & get prestige
-        if len(member_ids) == 0:
-            return None, 'No members assigned to {}'.format(self.guilds[server.id][group]['name'])
-        elif len(member_ids) > 30:
-            return None, 'An Alliance cannot exceed 30 members.\nCheck your role assignments.'
-        elif role is not None:
-            width = 20
-            prestige = 0
-            cnt = 0
-            line_out = []
-            for member in server.members:
-                if role in member.roles:
-                    roster = ChampionRoster(member)
-                    await roster.load_champions()
-                    if roster.prestige > 0:
-                        prestige += roster.prestige
-                        cnt += 1
-                    line_out.append('{:{width}} p = {}'.format(member.display_name, roster.prestige, width=width))
-            line_out.append('_' * (width + 11))
-            if cnt > 0:
-                line_out.append('{0:{width}} p = {1}  from {2} members'.format(
-                    role.name, round(prestige / cnt, 0), cnt, width=width))
-                clan_prestige = round(prestige / cnt, 0)
-                verbose_prestige = '```{}```'.format('\n'.join(line_out))
-                return clan_prestige, verbose_prestige
+        if role is not None:
+            if len(member_ids) == 0:
+                return None, 'No members assigned to {}'.format(self.guilds[server.id][group]['name'])
+            elif len(member_ids) > 30:
+                return None, 'An Alliance cannot exceed 30 members.\nCheck your role assignments.'
+            else:
+                width = 20
+                prestige = 0
+                cnt = 0
+                line_out = []
+                for member in server.members:
+                    if role in member.roles:
+                        roster = ChampionRoster(member)
+                        await roster.load_champions()
+                        if roster.prestige > 0:
+                            prestige += roster.prestige
+                            cnt += 1
+                        line_out.append('{:{width}} p = {}'.format(member.display_name, roster.prestige, width=width))
+                line_out.append('_' * (width + 11))
+                if cnt > 0:
+                    line_out.append('{0:{width}} p = {1}  from {2} members'.format(
+                        role.name, round(prestige / cnt, 0), cnt, width=width))
+                    clan_prestige = round(prestige / cnt, 0)
+                    verbose_prestige = '```{}```'.format('\n'.join(line_out))
+                    return clan_prestige, verbose_prestige
         else:
             return None, 'Role not found'
 
