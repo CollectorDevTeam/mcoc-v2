@@ -73,21 +73,21 @@ class Alliance:
             server = self.bot.get_server(alliance)
             guild = self.guilds[alliance]
             data = self._get_embed(ctx, alliance, user.id)
-            if 'name' in guild and 'tag' in guild:
+            if 'name' in guild.keys() and 'tag' in guild.keys():
                 data.title = '{0.name} {0.tag}'.format(guild)
-            elif 'tag' in guild:
+            elif 'tag' in guild.keys():
                 data.title = '{0.name} {1.tag}'.format(server, guild)
             else:
                 data.title = server.name
-            if 'invite' in guild:
+            if 'invite' in guild.keys():
                 data.url = guild['invite']
-            if 'alliance' in guild:
+            if 'alliance' in guild.keys():
                 cp, vp = await self._get_prestige(server, 'alliance')
                 if cp is None:
                     data.add_field(name='Alliance Prestige', value=vp)
                 else:
                     data.add_field(name='Alliance Prestige : {}'.format(cp), value='')
-            if 'poster' in guild:
+            if 'poster' in guild.keys():
                 data.set_image(url=guild['poster'])
             pages.append(data)
         menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
