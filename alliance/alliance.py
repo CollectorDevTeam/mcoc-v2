@@ -66,7 +66,7 @@ class Alliance:
         pages = []
         if alliances is None:
             data = self._get_embed(ctx)
-            data.title = '{} is not registered in a CollectorVerse Alliance'.format(user.display_name)
+            data.title = message
             await self.bot.say(embed=data)
             return
         for alliance in alliances:
@@ -206,26 +206,21 @@ class Alliance:
 
     def _find_alliance(self, user):
         """Returns a list of Server IDs or None"""
-        alliances = []
-        for alliance in self.guilds.keys():
-            if 'alliance' in self.guilds[alliance]:
-                if user.id in self.guilds[alliance]['alliance']['member_ids']:
-                    alliances.append(alliance)
-                    continue
-            else:
-                for group in self.advanced_keys:
-                    if user.id in self.guilds[alliance][group]['member_ids']:
-                        alliances.append(alliance)
+        user_alliances = []
+        for guild in self.guilds.keys():
+            keys = self.guilds[guild].keys()
+            for key in keys:
+                if key in self.advanced_keys:
+                    if user.id in self.guilds[guild][key]['member_ids']:
+                        if guild not in user_alliances:
+                            user_alliances.append(guild)
+                        print('keys: '.join([guild, key, 'member_ids']))
                         continue
-        # if len(alliances) > 0:
-        #     return alliances
-        # else:
-        #     return None
 
-        if len(alliances) > 0:
-            return alliances, '{} found'.format(user.name)
+        if len(user_alliances) > 0:
+            return user_alliances, '{} found.'.format(user.name)
         else:
-            return None, '{} not found'.format(user.name)
+            return None, '{} not found in a registered CollectorVerse Alliance.'.format(user.name)
     # def _get_members(self, server, key, role):
     #     """For known Server and Role, find all server.members with role"""
     #     servermembers = server.members
