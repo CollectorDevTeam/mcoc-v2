@@ -87,6 +87,8 @@ class Alliance:
                     data.add_field(name='Alliance Prestige', value=vp)
                 else:
                     data.add_field(name='Alliance Prestige : {}'.format(cp), value='')
+            if 'poster' in guild:
+                data.set_image(url=guild['poster'])
             pages.append(data)
         menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
         await menu.menu_start(pages=pages)
@@ -376,6 +378,7 @@ class Alliance:
             data = _unknown_guild(ctx)
         else:
             data = self._update_guilds(ctx, key, value)
+            data.set_image(url=value)
         menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
         await menu.menu_start(pages=[data])
 
