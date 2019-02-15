@@ -57,7 +57,7 @@ class Alliance:
                 data.add_field(name='Alliance codes', value=', '.join(self.guilds[a]['name'] for a in alliances))
                 await self.bot.say(embed=data)
 
-    @alliance.command(name='public', pass_context=True, invoke_without_command=True, no_pm=True)
+    @alliance.command(name='show', pass_context=True, invoke_without_command=True, no_pm=True)
     async def _show_public(self, ctx, user: discord.Member = None):
         """Display Alliance public profile"""
         if user is None:
@@ -82,7 +82,7 @@ class Alliance:
             if 'invite' in guild:
                 data.url = guild['invite']
             if 'alliance' in guild:
-                cp, vp = await self._get_prestige(server, guild[alliance]['alliance'])
+                cp, vp = await self._get_prestige(server, guild[alliance]['alliance']['id'])
                 if cp is None:
                     data.add_field(name='Alliance Prestige', value=vp)
                 else:
