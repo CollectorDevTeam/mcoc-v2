@@ -105,7 +105,8 @@ class Alliance:
             if 'started' in keys:
                 since = date_parse(self.guilds[alliance]['started'])
                 days_since = (datetime.datetime.utcnow() - since).days
-                data.add_field(name='Alliance founded: {}'.format(since.date()), value="Playing for {} days!".format(days_since))
+                data.add_field(name='Alliance founded: {}'.format(since.date()), value="Playing for {} days!"
+                               .format(days_since))
             if 'poster' in keys:
                 data.set_image(url=self.guilds[alliance]['poster'])
             pages.append(data)
@@ -175,7 +176,8 @@ class Alliance:
                 return clan_prestige
         else:
             if verbose and len(role_members) <= 30:
-                data.add_field(name='{} prestige: {}'.format(role.name, clan_prestige), value=verbose_prestige, inline=False)
+                data.add_field(name='{} prestige: {}'.format(role.name, clan_prestige), value=verbose_prestige,
+                               inline=False)
             elif verbose:
                 data.add_field(name='{} prestige {}'.format(role.name, clan_prestige),
                                value='{}\n\nVerbose prestige details restricted for roles with more than 30 members.'
