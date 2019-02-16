@@ -122,6 +122,8 @@ class Alliance:
         prestige = 0
         cnt = 0
         for member in server.members:
+            print(member.display_name)
+            print('\n'.join(r.name for r in member.roles))
             if role in member.roles:
                 print('role in member.roles')
                 members.append(member)
