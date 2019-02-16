@@ -113,6 +113,7 @@ class Alliance:
 
     async def _get_prestige(self, server, role, verbose=False):
         """Pull User Prestige for all users in Role"""
+        print('_get_prestige activated')
         members = []
         line_out = []
         width = 20
@@ -132,7 +133,9 @@ class Alliance:
                 line_out.append('{0:{width}} p = {1}  from {2} members'.format(
                     role.name, round(prestige / cnt, 0), cnt, width=width))
                 clan_prestige = round(prestige / cnt, 0)
+                print(clan_prestige)
                 verbose_prestige = '```{}```'.format('\n'.join(line_out))
+                print(verbose_prestige)
             if len(members) == 0 or len(members) > 30:
                 return None
             elif verbose:
