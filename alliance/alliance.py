@@ -82,6 +82,8 @@ class Alliance:
                 data.title = '{}'.format(server.name)
             else:
                 data.title = server.name
+            if 'about' in keys:
+                data.description=self.guilds[alliance]['about']
             if 'invite' in keys:
                 data.url = self.guilds[alliance]['invite']
             if 'alliance' in keys:
