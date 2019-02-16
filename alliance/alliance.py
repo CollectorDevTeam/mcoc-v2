@@ -287,19 +287,15 @@ class Alliance:
         if ctx.message.server.id in alliances:
             alliance = ctx.message.server.id
             roles = ctx.message.server.roles
-            members = ctx.message.server.members
             if self.guilds[alliance]['type'] == 'basic':
                 data = self._get_embed(ctx)
                 data.title = 'Battlegroup Assignments'
                 for bg in ('bg1', 'bg2', 'bg3'):
                     group_id = self.guilds[alliance][bg]['id']
-                    bg_members = []
                     for r in roles:
                         if r.id == group_id:
-                            for m in members:
-                                if r in m.roles:
-                                    bg_members.append(m)
-                            data.add_field(name=r.name, value='\n'.join(m.name for m in bg_members))
+                            bg_members = await self._get_prestige(ctx.message.server, r, verbose=True)
+                            data.add_field(name=r.name, value=bg_members)
                             continue
                 await self.bot.say(embed=data)
             else:
@@ -308,26 +304,20 @@ class Alliance:
                 data.title = 'Alliance Quest Battlegroup Assignments'
                 for bg in ('bg1aq', 'bg2aq', 'bg3aq'):
                     group_id = self.guilds[alliance][bg]['id']
-                    bg_members = []
                     for r in roles:
                         if r.id == group_id:
-                            for m in members:
-                                if r in m.roles:
-                                    bg_members.append(m)
-                            data.add_field(name=r.name, value='\n'.join(m.name for m in bg_members))
+                            bg_members = await self._get_prestige(ctx.message.server, r, verbose=True)
+                            data.add_field(name=r.name, value=bg_members)
                             continue
                 data_pages.append(data)
                 data2 = self._get_embed(ctx)
                 data2.title = 'Alliance War Battlegroup Assignments'
                 for bg in ('bg1aw', 'bg2aw', 'bg3aw'):
                     group_id = self.guilds[alliance][bg]['id']
-                    bg_members = []
                     for r in roles:
                         if r.id == group_id:
-                            for m in members:
-                                if r in m.roles:
-                                    bg_members.append(m)
-                            data2.add_field(name=r.name, value='\n'.join(m.name for m in bg_members))
+                            bg_members = await self._get_prestige(ctx.message.server, r, verbose=True)
+                            data2.add_field(name=r.name, value=bg_members)
                             continue
                 data_pages.append(data2)
                 menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
