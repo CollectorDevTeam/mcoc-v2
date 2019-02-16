@@ -121,7 +121,7 @@ class Alliance:
         for member in server.members:
             if role in member.roles:
                 members.append(member)
-                roster = ChampionRoster(member)
+                roster = self.ChampionRoster(member)
                 await roster.load_champions()
                 if roster.prestige > 0:
                     prestige += roster.prestige
