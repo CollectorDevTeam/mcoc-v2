@@ -114,6 +114,8 @@ class Alliance:
     async def _get_prestige(self, server, role, verbose=False):
         """Pull User Prestige for all users in Role"""
         print('_get_prestige activated')
+        print('server: '+server.name)
+        print('role: '+role.name)
         members = []
         line_out = []
         width = 20
@@ -121,6 +123,7 @@ class Alliance:
         cnt = 0
         for member in server.members:
             if role in member.roles:
+                print('role in member.roles')
                 members.append(member)
                 roster = ChampionRoster(self.bot, member)
                 await roster.load_champions()
