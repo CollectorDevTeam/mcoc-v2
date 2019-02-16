@@ -69,7 +69,7 @@ class Alliance:
             data.title = message
             await self.bot.say(embed=data)
             return
-        for alliance in alliances
+        for alliance in alliances:
             keys = self.guilds[alliance].keys()
             server = self.bot.get_server(alliance)
             data = self._get_embed(ctx, alliance, user.id)
