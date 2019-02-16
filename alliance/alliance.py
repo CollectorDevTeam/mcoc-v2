@@ -39,23 +39,24 @@ class Alliance:
         if ctx.invoked_subcommand is None:
             if user is None:
                 user = ctx.message.author
-            alliances, message = self._find_alliance(user)  # list
-            if alliances is None:
-                data = discord.Embed(color=get_color(ctx), title='CollectorVerse Alliances', description=message,
-                                     url='https://discord.gg/umcoc')
-                data.set_thumbnail(url=ctx.message.server.icon_url)
-                await self.bot.say(embed=data)
-            elif ctx.message.server.id in self.guilds:
-                self._update_members(ctx.message.server)
-                data = discord.Embed(color=get_color(ctx), title='CollectorVerse Alliances', description=message,
-                                     url='https://discord.gg/umcoc')
-                data.set_thumbnail(url=ctx.message.server.icon_url)
-                await self.bot.say(embed=data)
-            else:
-                data = discord.Embed(color=get_color(ctx), title='CollectorVerse Alliances', description=message,
-                                     url='https://discord.gg/umcoc')
-                data.add_field(name='Alliance codes', value=', '.join(self.guilds[a]['name'] for a in alliances))
-                await self.bot.say(embed=data)
+            await self._show_public(ctx, user)
+            # alliances, message = self._find_alliance(user)  # list
+            # if alliances is None:
+            #     data = discord.Embed(color=get_color(ctx), title='CollectorVerse Alliances', description=message,
+            #                          url='https://discord.gg/umcoc')
+            #     data.set_thumbnail(url=ctx.message.server.icon_url)
+            #     await self.bot.say(embed=data)
+            # elif ctx.message.server.id in self.guilds:
+            #     self._update_members(ctx.message.server)
+            #     data = discord.Embed(color=get_color(ctx), title='CollectorVerse Alliances', description=message,
+            #                          url='https://discord.gg/umcoc')
+            #     data.set_thumbnail(url=ctx.message.server.icon_url)
+            #     await self.bot.say(embed=data)
+            # else:
+            #     data = discord.Embed(color=get_color(ctx), title='CollectorVerse Alliances', description=message,
+            #                          url='https://discord.gg/umcoc')
+            #     data.add_field(name='Alliance codes', value=', '.join(self.guilds[a]['name'] for a in alliances))
+            #     await self.bot.say(embed=data)
 
     @alliance.command(name='show', pass_context=True, invoke_without_command=True, no_pm=True)
     async def _show_public(self, ctx, user: discord.Member = None):
@@ -80,12 +81,13 @@ class Alliance:
                     data.title = '[{}] {}'.format(self.guilds[alliance]['tag'], server.name)
             elif 'name' in keys:
                 data.title = '{}'.format(server.name)
+                data.add_field(name='Alliance Tag', value='Alliance Tag not set\n``/alliance set tag <tag>``')
             else:
                 data.title = server.name
             if 'about' in keys:
-                data.description=self.guilds[alliance]['about']
-            if 'invite' in keys:
-                data.url = self.guilds[alliance]['invite']
+                data.description = self.guilds[alliance]['about']
+            else:
+                data.description = 'Alliance About is not set\n``/alliance set about <about>``'
             if 'alliance' in keys:
                 for r in server.roles:
                     if r.id == self.guilds[alliance]['alliance']['id']:
@@ -95,6 +97,12 @@ class Alliance:
                         data = await self._get_prestige(server=server, role=r, verbose=verbose, data=data)
                         # data.add_field(name='Alliance Prestige', value=clan_prestige)
                         continue
+            if 'invite' in keys:
+                data.url = self.guilds[alliance]['invite']
+                data.add_field(name='Join server', value=self.guilds[alliance]['invite'])
+            else:
+                data.add_field(name='Join server', value='Invitation not set\n``/alliance set invite <link>``')
+
             if 'poster' in keys:
                 data.set_image(url=self.guilds[alliance]['poster'])
             pages.append(data)
@@ -143,9 +151,9 @@ class Alliance:
             if roster.prestige > 0:
                 prestige += roster.prestige
                 cnt += 1
-            tmpline = '{:{width}} p = {}'.format(member.display_name, roster.prestige, width=width)
-            print(tmpline)
-            line_out.append(tmpline)
+            temp_line = '{:{width}} p = {}'.format(member.display_name, roster.prestige, width=width)
+            print(temp_line)
+            line_out.append(temp_line)
         verbose_prestige = '```{}```'.format('\n'.join(line_out))
         # line_out.append('_' * (width + 11))
         clan_prestige = 0
@@ -163,12 +171,15 @@ class Alliance:
             else:
                 return clan_prestige
         else:
-            if verbose:
+            if verbose and len(role_members) <= 30:
                 data.add_field(name='{} prestige: {}'.format(role.name, clan_prestige), value=verbose_prestige, inline=False)
+            elif verbose:
+                data.add_field(name='{} prestige {}'.format(role.name, clan_prestige),
+                               value='{}\n\nVerbose prestige details restricted for roles with more than 30 members.'
+                               .format(summary), inline=False)
             else:
                 data.add_field(name='{} prestige {}'.format(role.name, clan_prestige), value=summary, inline=False)
             return data
-
 
     @checks.admin_or_permissions(manage_server=True)
     @alliance.command(name='unregister', aliases=('delete', 'del' 'remove', 'rm',), pass_context=True,
