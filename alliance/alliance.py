@@ -395,7 +395,7 @@ class Alliance:
             if ctx.message.server.id not in self.guilds:
                 data = _unknown_guild(ctx)
             else:
-                data = self._update_guilds(ctx, key, value)
+                data = self._update_guilds(ctx, key, date)
             await self.bot.say(embed=data)
         else:
             await self.bot.say('Enter a valid date.')
