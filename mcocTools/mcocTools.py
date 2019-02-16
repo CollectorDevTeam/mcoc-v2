@@ -490,7 +490,7 @@ class MCOCTools:
             "creates content for everyone to enjoy. [Join us today]({2}) "
             "and help us improve!\n\n"
             "★ If you would like to support the Collector, please visit {3}.\n"
-            "★ Patrons and Collaborators recieve priority support and secrety stuff.\n\n~ JJW"
+            "★ Patrons and Collaborators receive priority support and secrety stuff.\n\n~ JJW"
             "".format(red_repo, author_repo, server_url, collectorpatreon))
         devteam = ("DeltaSigma#8530\n"
                    "JJW#8071\n"
