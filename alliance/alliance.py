@@ -296,6 +296,7 @@ class Alliance:
             roles = ctx.message.server.roles
             if self.guilds[alliance]['type'] == 'basic':
                 data = self._get_embed(ctx)
+                data.color = discord.Color.gold()
                 data.title = 'Battlegroup Assignments'
                 for bg in ('bg1', 'bg2', 'bg3'):
                     group_id = self.guilds[alliance][bg]['id']
@@ -308,6 +309,7 @@ class Alliance:
             else:
                 data_pages = []
                 data = self._get_embed(ctx)
+                data.color = discord.Color.gold()
                 data.title = 'Alliance Quest Battlegroup Assignments'
                 for bg in ('bg1aq', 'bg2aq', 'bg3aq'):
                     group_id = self.guilds[alliance][bg]['id']
@@ -318,6 +320,7 @@ class Alliance:
                             continue
                 data_pages.append(data)
                 data2 = self._get_embed(ctx)
+                data2.color = discord.Color.gold()
                 data2.title = 'Alliance War Battlegroup Assignments'
                 for bg in ('bg1aw', 'bg2aw', 'bg3aw'):
                     group_id = self.guilds[alliance][bg]['id']
