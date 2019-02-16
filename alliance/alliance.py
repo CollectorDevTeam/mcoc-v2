@@ -282,8 +282,8 @@ class Alliance:
     #     return
 
     @alliance.command(name='bg', aliases=('battlegroups', 'bgs'), pass_context=True, no_pm=True)
-    """Report Alliance Battlegroups"""
     async def _battle_groups(self, ctx):
+        """Report Alliance Battlegroups"""
         alliances, message = self._find_alliance(ctx.message.author)
         if alliances is None:
             data = self._get_embed(ctx)
