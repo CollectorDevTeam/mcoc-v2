@@ -281,10 +281,17 @@ class Alliance:
     #     print(json.dumps(package))
     #     return
 
-    @alliance.command(name='bg', aliases=('battlegroups','bgs'), pass_context=True, no_pm=True)
+    @alliance.command(name='bg', aliases=('battlegroups', 'bgs'), pass_context=True, no_pm=True)
+    """Report Alliance Battlegroups"""
     async def _battle_groups(self, ctx):
-        alliances = self._find_alliance(ctx.message.author)
-        if ctx.message.server.id in alliances:
+        alliances, message = self._find_alliance(ctx.message.author)
+        if alliances is None:
+            data = self._get_embed(ctx)
+            data.title='Access Denied'
+            data.description = 'This tool is only available for members of this alliance.'
+            await self.bot.say(embed=data)
+            return
+        elif ctx.message.server.id in alliances:
             alliance = ctx.message.server.id
             roles = ctx.message.server.roles
             if self.guilds[alliance]['type'] == 'basic':
