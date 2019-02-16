@@ -121,7 +121,7 @@ class Alliance:
         for member in server.members:
             if role in member.roles:
                 members.append(member)
-                roster = self.ChampionRoster(member)
+                roster = ChampionRoster(self.bot, member)
                 await roster.load_champions()
                 if roster.prestige > 0:
                     prestige += roster.prestige
@@ -133,7 +133,6 @@ class Alliance:
                     role.name, round(prestige / cnt, 0), cnt, width=width))
                 clan_prestige = round(prestige / cnt, 0)
                 verbose_prestige = '```{}```'.format('\n'.join(line_out))
-        if role is not None:
             if len(members) == 0 or len(members) > 30:
                 return None
             elif verbose:
