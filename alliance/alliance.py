@@ -74,7 +74,12 @@ class Alliance:
             server = self.bot.get_server(alliance)
             data = self._get_embed(ctx, alliance, user.id)
             if 'tag' in keys:
-                data.title = '{} {}'.format(server.name, self.guilds[alliance]['tag'])
+                if 'name' in keys:
+                    data.title = '[{}] {}'.format(self.guilds[alliance]['tag'], self.guilds[alliance]['name'])
+                else:
+                    data.title = '[{}] {}'.format(self.guilds[alliance]['tag'], server.name)
+            elif 'name' in keys:
+                data.title = '{}'.format(server.name)
             else:
                 data.title = server.name
             if 'invite' in keys:
@@ -85,8 +90,8 @@ class Alliance:
                         verbose = False
                         if ctx.message.server == server:
                             verbose = True
-                        clan_prestige = await self._get_prestige(server, r, verbose)
-                        data.add_field(name='Alliance Prestige', value=clan_prestige)
+                        data = await self._get_prestige(server=server, role=r, verbose=verbose, data=data)
+                        # data.add_field(name='Alliance Prestige', value=clan_prestige)
                         continue
             if 'poster' in keys:
                 data.set_image(url=self.guilds[alliance]['poster'])
@@ -111,7 +116,7 @@ class Alliance:
         data.set_footer(text='CollectorDevTeam', icon_url=COLLECTOR_ICON)
         return data
 
-    async def _get_prestige(self, server, role, verbose=False):
+    async def _get_prestige(self, server, role, verbose=False, data=None):
         """Pull User Prestige for all users in Role"""
         print('_get_prestige activated')
         print('server: '+server.name)
@@ -139,20 +144,29 @@ class Alliance:
             tmpline = '{:{width}} p = {}'.format(member.display_name, roster.prestige, width=width)
             print(tmpline)
             line_out.append(tmpline)
-        line_out.append('_' * (width + 11))
+        verbose_prestige = '```{}```'.format('\n'.join(line_out))
+        # line_out.append('_' * (width + 11))
+        clan_prestige = 0
+        summary = 0
         if cnt > 0:
-            line_out.append('{0:{width}} p = {1}  from {2} members'.format(
-                role.name, round(prestige / cnt, 0), cnt, width=width))
+            summary = '{0:{width}} p = {1}  from {2} members'.format(
+                role.name, round(prestige / cnt, 0), cnt, width=width)
             clan_prestige = round(prestige / cnt, 0)
             print(clan_prestige)
-            verbose_prestige = '```{}```'.format('\n'.join(line_out))
-            print(verbose_prestige)
-        if len(members) == 0 or len(members) > 30:
-            return None
-        elif verbose:
-            return verbose_prestige
+        if data is None:
+            if len(members) == 0 or len(members) > 30:
+                return None
+            elif verbose:
+                return verbose_prestige
+            else:
+                return clan_prestige
         else:
-            return clan_prestige
+            if verbose:
+                data.add_field(name='{} prestige: {}'.format(role.name, clan_prestige), value=verbose_prestige, inline=False)
+            else:
+                data.add_field(name='{} prestige {}'.format(role.name, clan_prestige), value=summary, inline=False)
+            return data
+
 
     @checks.admin_or_permissions(manage_server=True)
     @alliance.command(name='unregister', aliases=('delete', 'del' 'remove', 'rm',), pass_context=True,
