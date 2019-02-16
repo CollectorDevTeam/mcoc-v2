@@ -114,6 +114,7 @@ class Alliance:
         await menu.menu_start(pages=pages)
 
     def _get_embed(self, ctx, alliance=None, user_id=None):
+        """Return a color styled embed with no title or description"""
         color = discord.Color.gold()
         if alliance is not None:
             server = self.bot.get_server(alliance)
@@ -280,6 +281,58 @@ class Alliance:
     #     print(json.dumps(package))
     #     return
 
+    @alliance.command(name='bg', aliases=('battlegroups','bgs'), pass_context=True, no_pm=True)
+    async def _battle_groups(self, ctx):
+        alliances = self._find_alliance(ctx.message.author)
+        if ctx.message.server.id in alliances:
+            alliance = ctx.message.server.id
+            roles = ctx.message.server.roles
+            members = ctx.message.server.members
+            if self.guilds[alliance]['type'] == 'basic':
+                data = self._get_embed(ctx)
+                data.title = 'Battlegroup Assignments'
+                for bg in ('bg1', 'bg2', 'bg3'):
+                    group_id = self.guilds[alliance][bg]['id']
+                    bg_members = []
+                    for r in roles:
+                        if r.id == group_id:
+                            for m in members:
+                                if r in m.roles:
+                                    bg_members.append(m)
+                            data.add_field(name=r.name, value='\n'.join(m.name for m in bg_members))
+                            continue
+                await self.bot.say(embed=data)
+            else:
+                data_pages = []
+                data = self._get_embed(ctx)
+                data.title = 'Alliance Quest Battlegroup Assignments'
+                for bg in ('bg1aq', 'bg2aq', 'bg3aq'):
+                    group_id = self.guilds[alliance][bg]['id']
+                    bg_members = []
+                    for r in roles:
+                        if r.id == group_id:
+                            for m in members:
+                                if r in m.roles:
+                                    bg_members.append(m)
+                            data.add_field(name=r.name, value='\n'.join(m.name for m in bg_members))
+                            continue
+                data_pages.append(data)
+                data2 = self._get_embed(ctx)
+                data2.title = 'Alliance War Battlegroup Assignments'
+                for bg in ('bg1aw', 'bg2aw', 'bg3aw'):
+                    group_id = self.guilds[alliance][bg]['id']
+                    bg_members = []
+                    for r in roles:
+                        if r.id == group_id:
+                            for m in members:
+                                if r in m.roles:
+                                    bg_members.append(m)
+                            data2.add_field(name=r.name, value='\n'.join(m.name for m in bg_members))
+                            continue
+                data_pages.append(data2)
+                menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
+                await menu.menu_start(pages=data_pages)
+
     @checks.admin_or_permissions(manage_server=True)
     @alliance.command(name="register", aliases=('create', 'add'),
                       pass_context=True, invoke_without_command=True, no_pm=True)
@@ -414,10 +467,13 @@ class Alliance:
         await menu.menu_start(pages=[data])
 
     @update.command(pass_context=True, name='poster')
-    async def _poster(self, ctx, *, value):
-        """Alliance recruitment poster url"""
+    async def _poster(self, ctx, *, value=None):
+        """Alliance recruitment poster url or upload image"""
         key = 'poster'
         # test key for url
+        if value is None:
+            if len(ctx.message.attachments) > 0:
+                value = ctx.message.attachments[0]
         if ctx.message.server.id not in self.guilds:
             data = _unknown_guild(ctx)
         else:
