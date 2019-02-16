@@ -121,32 +121,38 @@ class Alliance:
         width = 20
         prestige = 0
         cnt = 0
+        role_members = []
         for member in server.members:
             print(member.display_name)
             print('\n'.join(r.name for r in member.roles))
             if role in member.roles:
+                role_members.append(member)
                 print('role in member.roles')
-                members.append(member)
-                roster = ChampionRoster(self.bot, member)
-                await roster.load_champions()
-                if roster.prestige > 0:
-                    prestige += roster.prestige
-                    cnt += 1
-                line_out.append('{:{width}} p = {}'.format(member.display_name, roster.prestige, width=width))
-            line_out.append('_' * (width + 11))
-            if cnt > 0:
-                line_out.append('{0:{width}} p = {1}  from {2} members'.format(
-                    role.name, round(prestige / cnt, 0), cnt, width=width))
-                clan_prestige = round(prestige / cnt, 0)
-                print(clan_prestige)
-                verbose_prestige = '```{}```'.format('\n'.join(line_out))
-                print(verbose_prestige)
-            if len(members) == 0 or len(members) > 30:
-                return None
-            elif verbose:
-                return verbose_prestige
-            else:
-                return clan_prestige
+        print('role_member count {}'.format(len(role_members)))
+        for member in role_members:
+            members.append(member)
+            roster = ChampionRoster(self.bot, member)
+            await roster.load_champions()
+            if roster.prestige > 0:
+                prestige += roster.prestige
+                cnt += 1
+            tmpline = '{:{width}} p = {}'.format(member.display_name, roster.prestige, width=width)
+            print(tmpline)
+            line_out.append(tmpline)
+        line_out.append('_' * (width + 11))
+        if cnt > 0:
+            line_out.append('{0:{width}} p = {1}  from {2} members'.format(
+                role.name, round(prestige / cnt, 0), cnt, width=width))
+            clan_prestige = round(prestige / cnt, 0)
+            print(clan_prestige)
+            verbose_prestige = '```{}```'.format('\n'.join(line_out))
+            print(verbose_prestige)
+        if len(members) == 0 or len(members) > 30:
+            return None
+        elif verbose:
+            return verbose_prestige
+        else:
+            return clan_prestige
 
     @checks.admin_or_permissions(manage_server=True)
     @alliance.command(name='unregister', aliases=('delete', 'del' 'remove', 'rm',), pass_context=True,
