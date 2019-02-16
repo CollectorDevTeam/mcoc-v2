@@ -102,7 +102,10 @@ class Alliance:
                 data.add_field(name='Join server', value=self.guilds[alliance]['invite'])
             else:
                 data.add_field(name='Join server', value='Invitation not set\n``/alliance set invite <link>``')
-
+            if 'started' in keys:
+                since = dateParse(self.guilds[alliance]['started'])
+                days_since = (datetime.datetime.utcnow() - since).days
+                data.add_field(name='Alliance founded: {}'.format(since.date()), value="Playing for {} days!".format(days_since))
             if 'poster' in keys:
                 data.set_image(url=self.guilds[alliance]['poster'])
             pages.append(data)
@@ -159,7 +162,7 @@ class Alliance:
         clan_prestige = 0
         summary = 0
         if cnt > 0:
-            summary = '{0:{width}} p = {1}  from {2} members'.format(
+            summary = '{0:{width}}   = {1} from {2} members'.format(
                 role.name, round(prestige / cnt, 0), cnt, width=width)
             clan_prestige = round(prestige / cnt, 0)
             print(clan_prestige)
@@ -188,7 +191,7 @@ class Alliance:
         """Delete CollectorVerse Alliance"""
         server = ctx.message.server
         if server.id in self.guilds:
-            question = '{}, are you sure you want to un-regsister {} as your CollectorVerse Alliance?'\
+            question = '{}, are you sure you want to un-register {} as your CollectorVerse Alliance?'\
                 .format(ctx.message.author.mention, server.name)
             answer, confirmation = await PagesMenu.confirm(self, ctx, question)
             if answer:
@@ -321,7 +324,7 @@ class Alliance:
     @update.command(pass_context=True, name='name', no_pm=True)
     async def _alliancename(self, ctx, *, value):
         """What's your Alliance name?"""
-        key = "guildname"
+        key = "name"
         server = ctx.message.server
 
         if server.id not in self.guilds:
@@ -381,13 +384,13 @@ class Alliance:
         await menu.menu_start(pages=[data])
 
     @update.command(name='started', pass_context=True)
-    async def _started(self, ctx, *, started: str):
-        """When did you start playing Contest of Champions?"""
+    async def _started(self, ctx, *, date: str):
+        """When did you create this Alliance?"""
         key = "started"
-        value = date_parse(started)
+        value = date_parse(date)
         print(value)
 
-        if isinstance(started, datetime.datetime):
+        if isinstance(date, datetime.datetime):
             if ctx.message.server.id not in self.guilds:
                 data = _unknown_guild(ctx)
             else:
@@ -426,6 +429,9 @@ class Alliance:
         key = 'invite'
         if ctx.message.server.id not in self.guilds:
             data = _unknown_guild(ctx)
+        elif 'discord.gg' not in value:
+            data = self._get_embed(ctx)
+            data.add_field(name='Warning:sparkles:', value='Only Discord server links are supported.')
         else:
             data = self._update_guilds(ctx, key, value)
         menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
