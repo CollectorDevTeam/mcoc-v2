@@ -103,7 +103,7 @@ class Alliance:
             else:
                 data.add_field(name='Join server', value='Invitation not set\n``/alliance set invite <link>``')
             if 'started' in keys:
-                since = await date_parse(self.guilds[alliance]['started'])
+                since = dateParse(self.guilds[alliance]['started'])
                 days_since = (datetime.datetime.utcnow() - since).days
                 data.add_field(name='Alliance founded: {}'.format(since.date()), value="Playing for {} days!".format(days_since))
             if 'poster' in keys:
@@ -387,15 +387,16 @@ class Alliance:
     async def _started(self, ctx, *, date: str):
         """When did you create this Alliance?"""
         key = "started"
-        value = await date_parse(date)
+        value = date
         print(value)
+        started = date_parse(date)
 
-        if isinstance(date, datetime.datetime):
+        if isinstance(started, datetime.datetime):
             if ctx.message.server.id not in self.guilds:
                 data = _unknown_guild(ctx)
             else:
                 data = self._update_guilds(ctx, key, value)
-            await PagesMenu.menu_start(self, [data])
+            await self.bot.say(embed=data)
         else:
             await self.bot.say('Enter a valid date.')
 
