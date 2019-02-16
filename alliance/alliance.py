@@ -103,7 +103,7 @@ class Alliance:
             else:
                 data.add_field(name='Join server', value='Invitation not set\n``/alliance set invite <link>``')
             if 'started' in keys:
-                since = dateParse(self.guilds[alliance]['started'])
+                since = date_parse(self.guilds[alliance]['started'])
                 days_since = (datetime.datetime.utcnow() - since).days
                 data.add_field(name='Alliance founded: {}'.format(since.date()), value="Playing for {} days!".format(days_since))
             if 'poster' in keys:
