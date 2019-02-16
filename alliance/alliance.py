@@ -69,26 +69,27 @@ class Alliance:
             data.title = message
             await self.bot.say(embed=data)
             return
-        for alliance in alliances:
+        for alliance in alliances
+            keys = self.guilds[alliance].keys()
             server = self.bot.get_server(alliance)
-            guild = self.guilds[alliance]
             data = self._get_embed(ctx, alliance, user.id)
-            if 'name' in guild.keys() and 'tag' in guild.keys():
-                data.title = '{0.name} {0.tag}'.format(guild)
-            elif 'tag' in guild.keys():
-                data.title = '{0.name} {1.tag}'.format(server, guild)
+            if 'tag' in keys:
+                data.title = '{} {}'.format(server.name, self.guilds[alliance]['tag'])
             else:
                 data.title = server.name
-            if 'invite' in guild.keys():
-                data.url = guild['invite']
-            if 'alliance' in guild.keys():
-                cp, vp = await self._get_prestige(server, 'alliance')
-                if cp is None:
-                    data.add_field(name='Alliance Prestige', value=vp)
-                else:
-                    data.add_field(name='Alliance Prestige : {}'.format(cp), value='')
-            if 'poster' in guild.keys():
-                data.set_image(url=guild['poster'])
+            if 'invite' in keys:
+                data.url = self.guilds[alliance]['invite']
+            if 'alliance' in keys:
+                for r in server.roles:
+                    if r.id == self.guilds[alliance]['alliance']['id']:
+                        verbose = False
+                        if ctx.message.server == server:
+                            verbose = True
+                        clan_prestige = await self._get_prestige(server, r, verbose)
+                        data.add_field(name='Alliance Prestige', value=clan_prestige)
+                        continue
+            if 'poster' in keys:
+                data.set_image(url=self.guilds[alliance]['poster'])
             pages.append(data)
         menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
         await menu.menu_start(pages=pages)
@@ -110,45 +111,35 @@ class Alliance:
         data.set_footer(text='CollectorDevTeam', icon_url=COLLECTOR_ICON)
         return data
 
-    async def _get_prestige(self, server, group):
+    async def _get_prestige(self, server, role, verbose=False):
         """Pull User Prestige for all users in Role"""
-        member_ids = self.guilds[server.id][group]['member_ids']
-        role = None
-        for r in server.roles:
-            if r.id == self.guilds[server.id][group]['id']:
-                role = r
-                print('_get_prestige: role identified')
-                continue
-        # role = discord.utils.find(lambda r: r.id == group, server.roles)
-
-        # pull Roster record & get prestige
+        members = []
+        line_out = []
+        width = 20
+        prestige = 0
+        cnt = 0
+        for member in server.members:
+            if role in member.roles:
+                members.append(member)
+                roster = ChampionRoster(member)
+                await roster.load_champions()
+                if roster.prestige > 0:
+                    prestige += roster.prestige
+                    cnt += 1
+                line_out.append('{:{width}} p = {}'.format(member.display_name, roster.prestige, width=width))
+            line_out.append('_' * (width + 11))
+            if cnt > 0:
+                line_out.append('{0:{width}} p = {1}  from {2} members'.format(
+                    role.name, round(prestige / cnt, 0), cnt, width=width))
+                clan_prestige = round(prestige / cnt, 0)
+                verbose_prestige = '```{}```'.format('\n'.join(line_out))
         if role is not None:
-            if len(member_ids) == 0:
-                return None, 'No members assigned to {}'.format(self.guilds[server.id][group]['name'])
-            elif len(member_ids) > 30:
-                return None, 'An Alliance cannot exceed 30 members.\nCheck your role assignments.'
+            if len(members) == 0 or len(members) > 30:
+                return None
+            elif verbose:
+                return verbose_prestige
             else:
-                width = 20
-                prestige = 0
-                cnt = 0
-                line_out = []
-                for member in server.members:
-                    if role in member.roles:
-                        roster = ChampionRoster(member)
-                        await roster.load_champions()
-                        if roster.prestige > 0:
-                            prestige += roster.prestige
-                            cnt += 1
-                        line_out.append('{:{width}} p = {}'.format(member.display_name, roster.prestige, width=width))
-                line_out.append('_' * (width + 11))
-                if cnt > 0:
-                    line_out.append('{0:{width}} p = {1}  from {2} members'.format(
-                        role.name, round(prestige / cnt, 0), cnt, width=width))
-                    clan_prestige = round(prestige / cnt, 0)
-                    verbose_prestige = '```{}```'.format('\n'.join(line_out))
-                    return clan_prestige, verbose_prestige
-        else:
-            return None, 'Role not found'
+                return clan_prestige
 
     @checks.admin_or_permissions(manage_server=True)
     @alliance.command(name='unregister', aliases=('delete', 'del' 'remove', 'rm',), pass_context=True,
