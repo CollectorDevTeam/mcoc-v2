@@ -372,8 +372,8 @@ class Alliance:
                 if len(temp) > 0:
                     data.add_field(name='AW Battlegroups Overloaded', value='\n'.join(temp))
                 pages.append(data)
-                menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
-                await menu.menu_start(pages=pages)
+            menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
+            await menu.menu_start(pages=pages)
 
     @checks.admin_or_permissions(manage_server=True)
     @alliance.command(name="register", aliases=('create', 'add'),
