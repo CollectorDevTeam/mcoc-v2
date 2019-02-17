@@ -297,9 +297,9 @@ class Alliance:
             return
         elif ctx.message.server.id in alliances:
             server = ctx.message.serer
-            alliance = ctx.message.server.id
-            roles = ctx.message.server.roles
-            members = ctx.message.server.members
+            alliance = server.id
+            roles = server.roles
+            members = server.members
             aq_overload = []
             aw_overload = []
             temp = []
