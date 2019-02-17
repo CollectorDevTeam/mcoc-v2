@@ -296,84 +296,85 @@ class Alliance:
             await self.bot.say(embed=data)
             return
         elif ctx.message.server.id in alliances:
+            server = ctx.message.serer
             alliance = ctx.message.server.id
             roles = ctx.message.server.roles
-            members = ctx.server.members
-            aq_roles = []
-            aw_roles = []
-            overload = []
+            members = ctx.message.server.members
+            aq_overload = []
+            aw_overload = []
+            temp = []
+            pages = []
+            basic = {'bg1': [], 'bg2': [], 'bg3': []}
+            advanced = {'bg1aq': [], 'bg2aq': [], 'bg3aq': [],
+                        'bg1aw': [], 'bg2aw': [], 'bg3aw': [],}
+            data = self._get_embed(ctx)
+            data.color = discord.Color.gold()
             if self.guilds[alliance]['type'] == 'basic':
-                for bg in ('bg1', 'bg2', 'bg3'):
-                    for r in roles:
-                        if r.id == self.guilds[alliance][bg]['id']:
-                            aq_roles.append(r)
-                            aw_roles.append(r)
-            else:
-                for bg in ('bg1aq', 'bg2aq', 'bg3aq'):
-                    for r in roles:
-                        if r.id == self.guilds[alliance][bg]['id']:
-                            aq_roles.append(r)
-                for bg in ('bg1aw', 'bg2aw', 'bg3aw'):
-                    for r in roles:
-                        if r.id == self.guilds[alliance][bg]['id']:
-                            aw_roles.append(r)
-
-            aqdata = self._get_embed(ctx)
-            aqdata.color = discord.Color.gold()
-            aqdata.title = 'Alliance Quest Battlegroup Assignments'
-            for role in aq_roles:
-                cnt = 0
-
-            if self.guilds[alliance]['type'] == 'basic':
-                data = self._get_embed(ctx)
-                data.color = discord.Color.gold()
                 data.title = 'Battlegroup Assignments'
-                for bg in ('bg1', 'bg2', 'bg3'):
-                    cnt = 0
-                    group_id = self.guilds[alliance][bg]['id']
-                    for r in roles:
-                        if r.id == group_id:
-                            bg_members = await self._get_prestige(ctx.message.server, r, verbose=True)
+                for bg in basic.keys():
+                    if bg in self.guilds.keys():
+                        for r in roles:
+                            temp = []
+                            if r.id == self.guilds[alliance][bg]['id']:
+                                vp = await self._get_prestige(server, r, verbose=True)
+                                basic.update({bg: temp})
+                                data.add_field(name='{} - {} members'.format(bg.upper(), len(basic[bg])),
+                                               value=vp)
                             for m in members:
                                 if r in m.roles:
-                                    cnt += 1
-                            data.add_field(name='{} {} members'.format(r.name, cnt), value=bg_members)
-                            continue
-                await self.bot.say(embed=data)
+                                    aq_overload.append(m)
+                temp = []
+                for m in aq_overload:
+                    if aq_overload.count(m) > 1:
+                        temp.append(m.display_name)
+                if len(temp) > 0:
+                    data.add_field(name='Battlegroups Overloaded', value='\n'.join(temp))
+                pages.append(data)
             else:
-                data_pages = []
-                data = self._get_embed(ctx)
-                data.color = discord.Color.gold()
                 data.title = 'Alliance Quest Battlegroup Assignments'
-                for bg in ('bg1aq', 'bg2aq', 'bg3aq'):
-                    cnt = 0
-                    group_id = self.guilds[alliance][bg]['id']
-                    for r in roles:
-                        if r.id == group_id:
-                            bg_members = await self._get_prestige(ctx.message.server, r, verbose=True)
+                for bg in ('bg1aq', 'bg2aq', 'bg3aq',):
+                    if bg in self.guilds.keys():
+                        for r in roles:
+                            temp = []
+                            if r.id == self.guilds[alliance][bg]['id']:
+                                vp = await self._get_prestige(server, r, verbose=True)
+                                advanced.update({bg: temp})
+                                data.add_field(name='{} - {} members'.format(bg.upper(), len(advanced[bg])),
+                                               value=vp)
                             for m in members:
                                 if r in m.roles:
-                                    cnt += 1
-                            data.add_field(name='{} {} members'.format(r.name, cnt), value=bg_members)
-                            continue
-                data_pages.append(data)
-                data2 = self._get_embed(ctx)
-                data2.color = discord.Color.gold()
-                data2.title = 'Alliance War Battlegroup Assignments'
-                for bg in ('bg1aw', 'bg2aw', 'bg3aw'):
-                    cnt = 0
-                    group_id = self.guilds[alliance][bg]['id']
-                    for r in roles:
-                        if r.id == group_id:
-                            bg_members = await self._get_prestige(ctx.message.server, r, verbose=True)
+                                    aq_overload.append(m)
+                temp = []
+                for m in aq_overload:
+                    if aq_overload.count(m) > 1:
+                        temp.append(m.display_name)
+                if len(temp) > 0:
+                    data.add_field(name='AQ Battlegroups Overloaded', value='\n'.join(temp))
+                pages.append(data)
+                data = self._get_embed(ctx)
+                data.color=discord.Color.gold()
+                data.title = 'Alliance War Battlegroup Assignments'
+                for bg in ('bg1aw', 'bg2aw', 'bg3aw',):
+                    if bg in self.guilds.keys():
+                        for r in roles:
+                            temp = []
+                            if r.id == self.guilds[alliance][bg]['id']:
+                                vp = await self._get_prestige(server, r, verbose=True)
+                                advanced.update({bg: temp})
+                                data.add_field(name='{} - {} members'.format(bg.upper(), len(advanced[bg])),
+                                               value=vp)
                             for m in members:
                                 if r in m.roles:
-                                    cnt += 1
-                            data.add_field(name='{} {} members'.format(r.name, cnt), value=bg_members)
-                            continue
-                data_pages.append(data2)
+                                    aw_overload.append(m)
+                temp = []
+                for m in aw_overload:
+                    if aw_overload.count(m) > 1:
+                        temp.append(m.display_name)
+                if len(temp) > 0:
+                    data.add_field(name='AW Battlegroups Overloaded', value='\n'.join(temp))
+                pages.append(data)
                 menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
-                await menu.menu_start(pages=data_pages)
+                await menu.menu_start(pages=pages)
 
     @checks.admin_or_permissions(manage_server=True)
     @alliance.command(name="register", aliases=('create', 'add'),
