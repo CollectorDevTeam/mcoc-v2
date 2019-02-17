@@ -70,48 +70,52 @@ class Alliance:
             data.title = message
             await self.bot.say(embed=data)
             return
-        for alliance in alliances:
-            keys = self.guilds[alliance].keys()
-            server = self.bot.get_server(alliance)
-            data = self._get_embed(ctx, alliance, user.id)
-            if 'tag' in keys:
-                if 'name' in keys:
-                    data.title = '[{}] {}'.format(self.guilds[alliance]['tag'], self.guilds[alliance]['name'])
+        else:
+            for alliance in alliances:
+                keys = self.guilds[alliance].keys()
+                server = self.bot.get_server(alliance)
+                data = self._get_embed(ctx, alliance, user.id)
+                if 'tag' in keys:
+                    if 'name' in keys:
+                        data.title = '[{}] {}'.format(self.guilds[alliance]['tag'], self.guilds[alliance]['name'])
+                    else:
+                        data.title = '[{}] {}'.format(self.guilds[alliance]['tag'], server.name)
+                elif 'name' in keys:
+                    data.title = '{}'.format(server.name)
+                    data.add_field(name='Alliance Tag', value='Alliance Tag not set\n``/alliance set tag <tag>``')
                 else:
-                    data.title = '[{}] {}'.format(self.guilds[alliance]['tag'], server.name)
-            elif 'name' in keys:
-                data.title = '{}'.format(server.name)
-                data.add_field(name='Alliance Tag', value='Alliance Tag not set\n``/alliance set tag <tag>``')
+                    data.title = server.name
+                if 'about' in keys:
+                    data.description = self.guilds[alliance]['about']
+                else:
+                    data.description = 'Alliance About is not set\n``/alliance set about <about>``'
+                if 'alliance' in keys:
+                    for r in server.roles:
+                        if r.id == self.guilds[alliance]['alliance']['id']:
+                            verbose = False
+                            if ctx.message.server == server:
+                                verbose = True
+                            data = await self._get_prestige(server=server, role=r, verbose=verbose, data=data)
+                            # data.add_field(name='Alliance Prestige', value=clan_prestige)
+                            continue
+                if 'invite' in keys:
+                    data.url = self.guilds[alliance]['invite']
+                    data.add_field(name='Join server', value=self.guilds[alliance]['invite'])
+                else:
+                    data.add_field(name='Join server', value='Invitation not set\n``/alliance set invite <link>``')
+                if 'started' in keys:
+                    since = date_parse(self.guilds[alliance]['started'])
+                    days_since = (datetime.datetime.utcnow() - since).days
+                    data.add_field(name='Alliance founded: {}'.format(since.date()), value="Playing for {} days!"
+                                   .format(days_since))
+                if 'poster' in keys:
+                    data.set_image(url=self.guilds[alliance]['poster'])
+                pages.append(data)
+            if len(pages) > 0:
+                menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
+                await menu.menu_start(pages=pages)
             else:
-                data.title = server.name
-            if 'about' in keys:
-                data.description = self.guilds[alliance]['about']
-            else:
-                data.description = 'Alliance About is not set\n``/alliance set about <about>``'
-            if 'alliance' in keys:
-                for r in server.roles:
-                    if r.id == self.guilds[alliance]['alliance']['id']:
-                        verbose = False
-                        if ctx.message.server == server:
-                            verbose = True
-                        data = await self._get_prestige(server=server, role=r, verbose=verbose, data=data)
-                        # data.add_field(name='Alliance Prestige', value=clan_prestige)
-                        continue
-            if 'invite' in keys:
-                data.url = self.guilds[alliance]['invite']
-                data.add_field(name='Join server', value=self.guilds[alliance]['invite'])
-            else:
-                data.add_field(name='Join server', value='Invitation not set\n``/alliance set invite <link>``')
-            if 'started' in keys:
-                since = date_parse(self.guilds[alliance]['started'])
-                days_since = (datetime.datetime.utcnow() - since).days
-                data.add_field(name='Alliance founded: {}'.format(since.date()), value="Playing for {} days!"
-                               .format(days_since))
-            if 'poster' in keys:
-                data.set_image(url=self.guilds[alliance]['poster'])
-            pages.append(data)
-        menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
-        await menu.menu_start(pages=pages)
+                print('alliance._show_public - no pages')
 
     def _get_embed(self, ctx, alliance=None, user_id=None):
         """Return a color styled embed with no title or description"""
@@ -294,16 +298,46 @@ class Alliance:
         elif ctx.message.server.id in alliances:
             alliance = ctx.message.server.id
             roles = ctx.message.server.roles
+            members = ctx.server.members
+            aq_roles = []
+            aw_roles = []
+            overload = []
+            if self.guilds[alliance]['type'] == 'basic':
+                for bg in ('bg1', 'bg2', 'bg3'):
+                    for r in roles:
+                        if r.id == self.guilds[alliance][bg]['id']:
+                            aq_roles.append(r)
+                            aw_roles.append(r)
+            else:
+                for bg in ('bg1aq', 'bg2aq', 'bg3aq'):
+                    for r in roles:
+                        if r.id == self.guilds[alliance][bg]['id']:
+                            aq_roles.append(r)
+                for bg in ('bg1aw', 'bg2aw', 'bg3aw'):
+                    for r in roles:
+                        if r.id == self.guilds[alliance][bg]['id']:
+                            aw_roles.append(r)
+
+            aqdata = self._get_embed(ctx)
+            aqdata.color = discord.Color.gold()
+            aqdata.title = 'Alliance Quest Battlegroup Assignments'
+            for role in aq_roles:
+                cnt = 0
+
             if self.guilds[alliance]['type'] == 'basic':
                 data = self._get_embed(ctx)
                 data.color = discord.Color.gold()
                 data.title = 'Battlegroup Assignments'
                 for bg in ('bg1', 'bg2', 'bg3'):
+                    cnt = 0
                     group_id = self.guilds[alliance][bg]['id']
                     for r in roles:
                         if r.id == group_id:
                             bg_members = await self._get_prestige(ctx.message.server, r, verbose=True)
-                            data.add_field(name=r.name, value=bg_members)
+                            for m in members:
+                                if r in m.roles:
+                                    cnt += 1
+                            data.add_field(name='{} {} members'.format(r.name, cnt), value=bg_members)
                             continue
                 await self.bot.say(embed=data)
             else:
@@ -312,22 +346,30 @@ class Alliance:
                 data.color = discord.Color.gold()
                 data.title = 'Alliance Quest Battlegroup Assignments'
                 for bg in ('bg1aq', 'bg2aq', 'bg3aq'):
+                    cnt = 0
                     group_id = self.guilds[alliance][bg]['id']
                     for r in roles:
                         if r.id == group_id:
                             bg_members = await self._get_prestige(ctx.message.server, r, verbose=True)
-                            data.add_field(name=r.name, value=bg_members)
+                            for m in members:
+                                if r in m.roles:
+                                    cnt += 1
+                            data.add_field(name='{} {} members'.format(r.name, cnt), value=bg_members)
                             continue
                 data_pages.append(data)
                 data2 = self._get_embed(ctx)
                 data2.color = discord.Color.gold()
                 data2.title = 'Alliance War Battlegroup Assignments'
                 for bg in ('bg1aw', 'bg2aw', 'bg3aw'):
+                    cnt = 0
                     group_id = self.guilds[alliance][bg]['id']
                     for r in roles:
                         if r.id == group_id:
                             bg_members = await self._get_prestige(ctx.message.server, r, verbose=True)
-                            data2.add_field(name=r.name, value=bg_members)
+                            for m in members:
+                                if r in m.roles:
+                                    cnt += 1
+                            data.add_field(name='{} {} members'.format(r.name, cnt), value=bg_members)
                             continue
                 data_pages.append(data2)
                 menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
