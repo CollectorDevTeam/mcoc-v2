@@ -291,18 +291,17 @@ class Alliance:
         alliances, message = self._find_alliance(ctx.message.author)
         if alliances is None:
             data = self._get_embed(ctx)
-            data.title='Access Denied'
+            data.title = 'Access Denied'
             data.description = 'This tool is only available for members of this alliance.'
             await self.bot.say(embed=data)
             return
         elif ctx.message.server.id in alliances:
-            server = ctx.message.serer
+            server = ctx.message.server
             alliance = server.id
             roles = server.roles
             members = server.members
             aq_overload = []
             aw_overload = []
-            temp = []
             pages = []
             basic = {'bg1': [], 'bg2': [], 'bg3': []}
             advanced = {'bg1aq': [], 'bg2aq': [], 'bg3aq': [],
@@ -352,7 +351,7 @@ class Alliance:
                     data.add_field(name='AQ Battlegroups Overloaded', value='\n'.join(temp))
                 pages.append(data)
                 data = self._get_embed(ctx)
-                data.color=discord.Color.gold()
+                data.color = discord.Color.gold()
                 data.title = 'Alliance War Battlegroup Assignments'
                 for bg in ('bg1aw', 'bg2aw', 'bg3aw',):
                     if bg in self.guilds.keys():
