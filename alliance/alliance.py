@@ -329,12 +329,14 @@ class Alliance:
                     data.title = 'Alliance War Battlegroups'
                 for role in a:
                     data = await self._get_prestige(server, role, verbose=True, data=data)
-                    for member in members:
-                        count = 0
-                        if role in member.roles:
-                            count += 1
-                        if count > 1:
-                            overload.append(member.display_name)
+                for member in members:
+                    count = 0
+                    for battlegroups in (aq_roles, aw_roles):
+                        for role in battlegroups:
+                            if role in member.roles:
+                                count += 1
+                            if count > 1:
+                                overload.append(member.display_name)
                 if len(overload) > 0:
                     data.add_field(name='Battlegroup Overload', value='\n'.join(overload))
                 pages.append(data)
