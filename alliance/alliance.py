@@ -307,7 +307,7 @@ class Alliance:
             if self.guilds[alliance]['type'] == 'basic':
                 for bg in basic:
                     for r in roles:
-                        if r.id == self.guilds[server.id][bg]['id']:
+                        if r.id == self.guilds[alliance][bg]['id']:
                             aq_roles.append(r)
                 aw_roles = aq_roles
             elif self.guilds[alliance]['type'] == 'advanced':
