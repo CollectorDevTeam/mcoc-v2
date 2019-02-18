@@ -487,8 +487,8 @@ class Alliance:
         key = 'poster'
         # test key for url
         if value is None:
-            if len(ctx.message.attachments) > 0:
-                value = ctx.message.attachments[0]
+            if len(ctx.message.attachments) == 1:
+                value = ctx.message.attachments[0].url
         if ctx.message.server.id not in self.guilds:
             data = _unknown_guild(ctx)
         else:
@@ -705,18 +705,6 @@ def send_request(url):
         return False
 
     return page
-
-
-def verify(image_url: str):
-    img = send_request(image_url)
-
-    if img is False:
-        return False
-
-    if not img.content[:4] == b'\xff\xd8\xff\xe0':
-        return False
-
-    return True
 
 
 def _unknown_guild(ctx):
