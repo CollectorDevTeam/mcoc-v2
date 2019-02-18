@@ -490,7 +490,8 @@ class Alliance:
             link = ctx.message.attachments
             if len(link) != 0:
                 for image in link:
-                    value = image.url
+                    print(json.dumps(image))
+                    # value = image.url
                     continue
         if ctx.message.server.id not in self.guilds:
             data = _unknown_guild(ctx)
