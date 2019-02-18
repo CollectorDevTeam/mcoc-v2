@@ -591,8 +591,7 @@ class Alliance:
     def _create_alliance(self, ctx, server):
         """Create alliance.
         Set basic information"""
-        self.guilds[server.id] = {'type': 'basic', 'invite': 'Join Link not set',
-                                  'poster': 'Poster URL not set', 'name': server.name}
+        self.guilds[server.id] = {'type': 'basic', 'name': server.name}
         dataIO.save_json(self.alliances, self.guilds)
         data = discord.Embed(colour=get_color(ctx))
         data.add_field(name="Congrats!:sparkles:",
