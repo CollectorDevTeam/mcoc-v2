@@ -86,11 +86,6 @@ class Alliance:
                         continue
             else:
                 data.add_field(name='Alliance Role', value='Alliance role is not set.')
-            if 'invite' in keys:
-                data.url = self.guilds[alliance]['invite']
-                data.add_field(name='Join server', value=self.guilds[alliance]['invite'])
-            else:
-                data.add_field(name='Join server', value='Invitation not set.')
             if 'started' in keys:
                 since = date_parse(self.guilds[alliance]['started'])
                 days_since = (datetime.datetime.utcnow() - since).days
@@ -98,6 +93,11 @@ class Alliance:
                                .format(days_since))
             if 'poster' in keys:
                 data.set_image(url=self.guilds[alliance]['poster'])
+            if 'invite' in keys:
+                data.url = self.guilds[alliance]['invite']
+                data.add_field(name='Join server', value=self.guilds[alliance]['invite'])
+            else:
+                data.add_field(name='Join server', value='Invitation not set.')
             pages.append(data)
         if len(pages) > 0:
             menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
@@ -180,7 +180,7 @@ class Alliance:
             return data
 
     @checks.admin_or_permissions(manage_server=True)
-    @alliance.command(name='unregister', aliases=('delete', 'del' 'remove', 'rm',), pass_context=True,
+    @alliance.command(name='delete', aliases=('unregister', 'del' 'remove', 'rm',), pass_context=True,
                       invoke_without_command=True, no_pm=True)
     async def _delete(self, ctx):
         """Delete CollectorVerse Alliance"""
@@ -323,10 +323,10 @@ class Alliance:
             await menu.menu_start(pages=pages)
 
     @checks.admin_or_permissions(manage_server=True)
-    @alliance.command(name="register", aliases=('create', 'add'),
+    @alliance.command(name="create", aliases=('register', 'add'),
                       pass_context=True, invoke_without_command=True, no_pm=True)
     async def _reg(self, ctx):
-        """[ALPHA] Sign up to register your Alliance server!"""
+        """Sign up to register your Alliance server!"""
         user = ctx.message.author
         server = ctx.message.server
         question = '{}, do you want to register this Discord Server as your Alliance Server?'\
@@ -450,6 +450,29 @@ class Alliance:
         key = 'about'
         if ctx.message.server.id not in self.guilds:
             data = _unknown_guild(ctx)
+        elif 'line.me/' in value:
+            data = self._get_embed(ctx)
+            data.title = 'Discord > Line:sparkles:'
+            data.description = 'Ooh, sorry. Line links are not supported by this Alliance management system. ' \
+                               'Admit it.  You know Line is terrible.'
+        elif 'group.me/' in value:
+            data = self._get_embed(ctx)
+            data.title = 'Discord > GroupMe:sparkles:'
+            data.description = 'Ooh, sorry. GroupMe links are not supported by this Alliance management system. ' \
+                               'Also, GroupMe?  Did you even try?'
+        elif 'wa.me/' in value:
+            data = self._get_embed(ctx)
+            data.title = 'Discord > WhatsApp:sparkles:'
+            data.description = 'Ooh, sorry. WhatsApp links are not supported by this Alliance management system. ' \
+                               'Also, WhatsApp? That is really sad.'
+        elif 'clanhq.app.link/' in value:
+            data = self._get_embed(ctx)
+            data.title = 'Discord > WhatsApp:sparkles:'
+            data.description = 'Ooh, sorry. ClanHQ links are not supported by this Alliance management system. ' \
+                               'Also, Hahahahaha ha ha haa ha ha ' \
+                               '...' \
+                               'whew ' \
+                               'I ran out of breath.'
         else:
             data = self._update_guilds(ctx, key, value)
         menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
@@ -486,6 +509,29 @@ class Alliance:
         key = 'invite'
         if ctx.message.server.id not in self.guilds:
             data = _unknown_guild(ctx)
+        elif 'line.me/' in value:
+            data = self._get_embed(ctx)
+            data.title = 'Discord > Line:sparkles:'
+            data.description = 'Ooh, sorry. Line links are not supported by this Alliance management system. ' \
+                               'Admit it.  You know Line is terrible.'
+        elif 'group.me/' in value:
+            data = self._get_embed(ctx)
+            data.title = 'Discord > GroupMe:sparkles:'
+            data.description = 'Ooh, sorry. GroupMe links are not supported by this Alliance management system. ' \
+                               'Also, GroupMe?  Did you even try?'
+        elif 'wa.me/' in value:
+            data = self._get_embed(ctx)
+            data.title = 'Discord > WhatsApp:sparkles:'
+            data.description = 'Ooh, sorry. WhatsApp links are not supported by this Alliance management system. ' \
+                               'Also, WhatsApp? That is really sad.'
+        elif 'clanhq.app.link/' in value:
+            data = self._get_embed(ctx)
+            data.title = 'Discord > WhatsApp:sparkles:'
+            data.description = 'Ooh, sorry. ClanHQ links are not supported by this Alliance management system. ' \
+                               'Also, Hahahahaha ha ha haa ha ha ' \
+                               '...' \
+                               'whew ' \
+                               'I ran out of breath.'
         elif 'discord.gg' not in value:
             data = self._get_embed(ctx)
             data.add_field(name='Warning:sparkles:', value='Only Discord server links are supported.')
