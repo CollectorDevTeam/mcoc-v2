@@ -487,11 +487,10 @@ class Alliance:
         key = 'poster'
         # test key for url
         if value is None:
-            link = ctx.message.attachments
-            if len(link) != 0:
-                for image in link:
+            if len(ctx.message.attachments) > 0:
+                for image in ctx.message.attachments[0]:
                     print(json.dumps(image))
-                    # value = image.url
+                    value = image['url']
                     continue
         if ctx.message.server.id not in self.guilds:
             data = _unknown_guild(ctx)
