@@ -488,10 +488,9 @@ class Alliance:
         # test key for url
         if value is None:
             if len(ctx.message.attachments) > 0:
-                for image in ctx.message.attachments[0]:
-                    print(json.dumps(image))
-                    value = image['url']
-                    continue
+                image = ctx.message.attachments[0]
+                print(json.dumps(image))
+                value = image['url']
         if ctx.message.server.id not in self.guilds:
             data = _unknown_guild(ctx)
         else:
