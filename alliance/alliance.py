@@ -492,7 +492,7 @@ class Alliance:
         if ctx.message.server.id not in self.guilds:
             data = _unknown_guild(ctx)
         else:
-            verified = await verify(value)
+            verified = verify(str(value))
             if verified:
                 data = self._update_guilds(ctx, key, value)
                 data.set_image(url=value)
@@ -704,7 +704,7 @@ def send_request(url):
     return page
 
 
-async def verify(image_url: str):
+def verify(image_url: str):
     img = send_request(image_url)
 
     if img is False:
