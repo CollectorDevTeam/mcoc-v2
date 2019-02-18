@@ -165,7 +165,7 @@ class Alliance:
             if roster.prestige > 0:
                 prestige += roster.prestige
                 cnt += 1
-            temp_line = '{:{width}} p = {}'.format(member.display_name, roster.prestige, width=width)
+            temp_line = '{:{width}} p = {}'.format(member.display_name, int(roster.prestige), width=width)
             print(temp_line)
             line_out.append(temp_line)
         verbose_prestige = '```{}```'.format('\n'.join(line_out))
@@ -175,7 +175,7 @@ class Alliance:
         if cnt > 0:
             summary = '{0:{width}}   = {1} from {2} members'.format(
                 role.name, round(prestige / cnt, 0), cnt, width=width)
-            clan_prestige = round(prestige / cnt, 0)
+            clan_prestige = int(round(prestige / cnt, 0))
             print(clan_prestige)
         if data is None:
             if len(members) == 0 or len(members) > 30:
