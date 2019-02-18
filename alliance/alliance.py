@@ -25,7 +25,7 @@ class Alliance:
         self.alliance_keys = ('officers', 'bg1', 'bg2', 'bg3', 'alliance',)
         self.advanced_keys = ('officers', 'bg1', 'bg2', 'bg3', 'alliance',
                               'bg1aq', 'bg2aq', 'bg3aq', 'bg1aw', 'bg2aw', 'bg3aw',)
-        self.infokeys = ('name', 'tag', 'about', 'started', 'invite', 'poster')
+        self.info_keys = ('name', 'tag', 'type', 'about', 'started', 'invite', 'poster')
 
     @commands.group(aliases=('clan', 'guild'), pass_context=True, invoke_without_command=True, hidden=False, no_pm=True)
     async def alliance(self, ctx, user: discord.Member = None):
@@ -212,7 +212,7 @@ class Alliance:
             keys = self.guilds[alliance].keys()
             data = self._get_embed(ctx)
             data.title = 'Alliance Settings:sparkles:'
-            for item in self.infokeys:
+            for item in self.info_keys:
                 if item in keys:
                     data.add_field(name='setting : '+item, value=self.guilds[alliance][item])
                 else:
@@ -228,7 +228,7 @@ class Alliance:
                         if r == role.id:
                             data.add_field(name='setting : '+r, value='{} : {}'.format(role.id, role.name))
                 else:
-                    data.add_field(name='setting : '+r, value='Not set.\n``/alliance set {} value``'
+                    data.add_field(name='setting : '+r, value='Role is not set.\n``/alliance set {} value``'
                                    .format(r), inline=False)
             await self.bot.say(embed=data)
 
