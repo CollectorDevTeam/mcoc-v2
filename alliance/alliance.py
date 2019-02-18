@@ -214,9 +214,9 @@ class Alliance:
             data.title = 'Alliance Settings:sparkles:'
             for item in self.info_keys:
                 if item in keys:
-                    data.add_field(name='setting : '+item, value=self.guilds[alliance][item])
+                    data.add_field(name=item, value=self.guilds[alliance][item])
                 else:
-                    data.add_field(name='setting : '+item, value='Not set.\n``/alliance set {} value``'
+                    data.add_field(name=item, value='Not set.\n``/alliance set {} value``'
                                    .format(item), inline=False)
             if self.guilds[alliance]['type'] == 'basic':
                 print('basic alliance')
@@ -227,9 +227,9 @@ class Alliance:
                 if key in keys:
                     for role in server.roles:
                         if self.guilds[alliance][key]['id'] == role.id:
-                            data.add_field(name='setting : '+key, value='{} : {}'.format(role.id, role.name))
+                            data.add_field(name=key, value='{} : {}'.format(role.name, role.id))
                 else:
-                    data.add_field(name='setting : '+key, value='Role is not set.\n``/alliance set {} value``'
+                    data.add_field(name=key, value='Role is not set.\n``/alliance set {} value``'
                                    .format(key), inline=False)
             await self.bot.say(embed=data)
 
