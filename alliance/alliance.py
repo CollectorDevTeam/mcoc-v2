@@ -49,7 +49,7 @@ class Alliance:
         pages = []
         if alliances is None:
             data = self._get_embed(ctx)
-            data.title = message
+            data.title = message+':sparkles:'
             await self.bot.say(embed=data)
             return
         elif ctx.message.server.id in alliances:
@@ -63,14 +63,14 @@ class Alliance:
             data = self._get_embed(ctx, alliance, user.id)
             if 'tag' in keys:
                 if 'name' in keys:
-                    data.title = '[{}] {}'.format(self.guilds[alliance]['tag'], self.guilds[alliance]['name'])
+                    data.title = '[{}] {}:sparkles:'.format(self.guilds[alliance]['tag'], self.guilds[alliance]['name'])
                 else:
-                    data.title = '[{}] {}'.format(self.guilds[alliance]['tag'], server.name)
+                    data.title = '[{}] {}:sparkles:'.format(self.guilds[alliance]['tag'], server.name)
             elif 'name' in keys:
-                data.title = '{}'.format(server.name)
+                data.title = '{}:sparkles:'.format(server.name)
                 data.add_field(name='Alliance Tag', value='Alliance Tag not set.')
             else:
-                data.title = server.name
+                data.title = server.name+':sparkles:'
             if 'about' in keys:
                 data.description = self.guilds[alliance]['about']
             else:
@@ -211,7 +211,7 @@ class Alliance:
         if alliance in self.guilds.keys():
             keys = self.guilds[alliance].keys()
             data = self._get_embed(ctx)
-            data.title = 'Alliance Settings'
+            data.title = 'Alliance Settings:sparkles:'
             for item in self.infokeys:
                 if item in keys:
                     data.add_field(name='setting : '+item, value=self.guilds[alliance][item])
@@ -269,7 +269,7 @@ class Alliance:
         alliances, message = self._find_alliance(ctx.message.author)
         if alliances is None:
             data = self._get_embed(ctx)
-            data.title = 'Access Denied'
+            data.title = 'Access Denied:sparkles:'
             data.description = 'This tool is only available for members of this alliance.'
             await self.bot.say(embed=data)
             return
@@ -302,9 +302,9 @@ class Alliance:
                 data.color = discord.Color.gold()
                 overload = []
                 if a == aq_roles:
-                    data.title = 'Alliance Quest Battlegroups'
+                    data.title = 'Alliance Quest Battlegroups:sparkles:'
                 else:
-                    data.title = 'Alliance War Battlegroups'
+                    data.title = 'Alliance War Battlegroups:sparkles:'
                 for role in a:
                     data = await self._get_prestige(server, role, verbose=True, data=data)
                 # for member in members:
@@ -405,7 +405,7 @@ class Alliance:
             
             An 'advanced' alliance has up to 6 roles defined for AQ & AW Battlegroups when assignments are different: 
             bg1aq, bg1aw, bg2aq, bg2aw, bg3aq, bg3aw"""
-            data = discord.Embed(color=get_color(ctx), title='CollectorVerse Alliances', description=message,
+            data = discord.Embed(color=get_color(ctx), title='CollectorVerse Alliances:sparkles:', description=message,
                                  url='https://discord.gg/umcoc')
 
         menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
@@ -471,7 +471,7 @@ class Alliance:
             img = send_request(value)
             if img is False:
                 data = self._get_embed(ctx)
-                data.title = 'Image Verification Failed'
+                data.title = 'Image Verification Failed:sparkles:'
             else:
                 data = self._update_guilds(ctx, key, value)
                 data.set_image(url=value)
@@ -589,7 +589,7 @@ class Alliance:
         if server.id not in self.guilds:
             data = _unknown_guild(ctx)
         else:
-            data = discord.Embed(colour=get_color(ctx), title='Role Registration')
+            data = discord.Embed(colour=get_color(ctx), title='Role Registration:sparkles:')
             if role is None:
                 question = '{}, do you want to remove this ``{}`` registration?'.format(
                     ctx.message.author.mention, key)
