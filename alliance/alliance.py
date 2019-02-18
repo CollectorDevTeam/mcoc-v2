@@ -25,8 +25,7 @@ class Alliance:
         self.alliance_keys = ('officers', 'bg1', 'bg2', 'bg3', 'alliance',)
         self.advanced_keys = ('officers', 'bg1', 'bg2', 'bg3', 'alliance',
                               'bg1aq', 'bg2aq', 'bg3aq', 'bg1aw', 'bg2aw', 'bg3aw',)
-        self.infokeys = ('name', 'tag', 'started', 'invite')
-        self.hook = bot.get_cog('Hook')
+        self.infokeys = ('name', 'tag', 'about', 'started', 'invite', 'poster')
 
     @commands.group(aliases=('clan', 'guild'), pass_context=True, invoke_without_command=True, hidden=False, no_pm=True)
     async def alliance(self, ctx, user: discord.Member = None):
@@ -41,25 +40,7 @@ class Alliance:
             if user is None:
                 user = ctx.message.author
             await self._show_public(ctx, user)
-            # alliances, message = self._find_alliance(user)  # list
-            # if alliances is None:
-            #     data = discord.Embed(color=get_color(ctx), title='CollectorVerse Alliances', description=message,
-            #                          url='https://discord.gg/umcoc')
-            #     data.set_thumbnail(url=ctx.message.server.icon_url)
-            #     await self.bot.say(embed=data)
-            # elif ctx.message.server.id in self.guilds:
-            #     self._update_members(ctx.message.server)
-            #     data = discord.Embed(color=get_color(ctx), title='CollectorVerse Alliances', description=message,
-            #                          url='https://discord.gg/umcoc')
-            #     data.set_thumbnail(url=ctx.message.server.icon_url)
-            #     await self.bot.say(embed=data)
-            # else:
-            #     data = discord.Embed(color=get_color(ctx), title='CollectorVerse Alliances', description=message,
-            #                          url='https://discord.gg/umcoc')
-            #     data.add_field(name='Alliance codes', value=', '.join(self.guilds[a]['name'] for a in alliances))
-            #     await self.bot.say(embed=data)
 
-    # @alliance.command(name='show', pass_context=True, invoke_without_command=True, no_pm=True)
     async def _show_public(self, ctx, user: discord.Member = None):
         """Display Alliance public profile"""
         if user is None:
@@ -87,13 +68,13 @@ class Alliance:
                     data.title = '[{}] {}'.format(self.guilds[alliance]['tag'], server.name)
             elif 'name' in keys:
                 data.title = '{}'.format(server.name)
-                data.add_field(name='Alliance Tag', value='Alliance Tag not set\n``/alliance set tag <tag>``')
+                data.add_field(name='Alliance Tag', value='Alliance Tag not set.')
             else:
                 data.title = server.name
             if 'about' in keys:
                 data.description = self.guilds[alliance]['about']
             else:
-                data.description = 'Alliance About is not set\n``/alliance set about <about>``'
+                data.description = 'Alliance About is not set.'
             if 'alliance' in keys:
                 for r in server.roles:
                     if r.id == self.guilds[alliance]['alliance']['id']:
@@ -103,11 +84,13 @@ class Alliance:
                         data = await self._get_prestige(server=server, role=r, verbose=verbose, data=data)
                         # data.add_field(name='Alliance Prestige', value=clan_prestige)
                         continue
+            else:
+                data.add_field(name='Alliance Role', value='Alliance role is not set.')
             if 'invite' in keys:
                 data.url = self.guilds[alliance]['invite']
                 data.add_field(name='Join server', value=self.guilds[alliance]['invite'])
             else:
-                data.add_field(name='Join server', value='Invitation not set\n``/alliance set invite <link>``')
+                data.add_field(name='Join server', value='Invitation not set.')
             if 'started' in keys:
                 since = date_parse(self.guilds[alliance]['started'])
                 days_since = (datetime.datetime.utcnow() - since).days
@@ -221,43 +204,33 @@ class Alliance:
             await menu.menu_start(pages=[data])
 
     @checks.admin_or_permissions(manage_server=True)
-    @alliance.command(name='report', pass_context=True, invoke_without_command=True, hidden=True, no_pm=True)
-    async def _report(self, ctx, alliance=None):
-        if alliance is not None:
-            server = self.bot.get_server(alliance)
-            await self.bot.say('server name: '+server.name)
-
-        else:
-            user = ctx.message.author
-            alliances, message = self._find_alliance(user)  # list
-            if alliances is None:
-                return
-            elif ctx.message.server.id in alliances:
-                # report
-                # guild = ctx.message.server.id
-                # # guild = self.guilds[ctx.message.server.id]
-                # data = discord.Embed(color=get_color(ctx), title='CollectorVerse Alliance Report', description='',
-                #                      url='https://discord.gg/umcoc')
-                # data.set_thumbnail(url=ctx.message.server.icon_url)
-                # if 'about' in self.guilds[guild]:
-                #     data.description=guild['about']
-                # if self.guilds[guild]['type'] == 'basic':
-                #     rolekeys= ('officers','bg1','bg2','bg3')
-                # elif self.guilds[guild]['type'] == 'advanced':
-                #     rolekeys=('officers', 'bg1aq', 'bg2aq', 'bg3aq', 'bg1aw', 'bg2aw', 'bg3aw')
-                # else:
-                #     await self.bot.say('Error: Alliance Type is not set\n``/alliance set type (basic | advanced)``')
-                #     return
-                # for key in rolekeys:
-                #     data.add_field(name=key, value='\n'.join(self.guilds[guild][key]))
-                # for key in self.infokeys:
-                #     if key in self.guilds[guild]:
-                #         data.add_field(name=key, value=self.guilds[guild][key]['name'])
-                # await self.bot.say(embed=data)
-                message = json.dumps(self.guilds[ctx.message.server.id])
-                await self.bot.say('Alliance Debug Report'+message)
+    @alliance.command(name='settings', pass_context=True, invoke_without_command=True, hidden=True, no_pm=True)
+    async def _settings(self, ctx):
+        server = ctx.message.server
+        alliance = server.id
+        if alliance in self.guilds.keys():
+            keys = self.guilds[alliance].keys()
+            data = self._get_embed(ctx)
+            data.title = 'Alliance Settings'
+            for item in self.infokeys:
+                if item in keys:
+                    data.add_field(name='setting : '+item, value=self.guilds[alliance][item])
+                else:
+                    data.add_field(name='setting : '+item, value='Not set.\n``/alliance set {} value``'
+                                   .format(item), inline=False)
+            if self.guilds[alliance]['type'] == 'basic':
+                roles = self.alliance_keys
             else:
-                return
+                roles = self.advanced_keys
+            for r in roles:
+                if r in keys:
+                    for role in server.roles:
+                        if r == role.id:
+                            data.add_field(name='setting : '+r, value='{} : {}'.format(role.id, role.name))
+                else:
+                    data.add_field(name='setting : '+r, value='Not set.\n``/alliance set {} value``'
+                                   .format(r), inline=False)
+            await self.bot.say(embed=data)
 
     def _find_alliance(self, user):
         """Returns a list of Server IDs or None"""
@@ -275,7 +248,7 @@ class Alliance:
         if len(user_alliances) > 0:
             return user_alliances, '{} found.'.format(user.name)
         else:
-            return None, '{} not found in a registered CollectorVerse Alliance.\nPerhaps Alliance roles are not registered.'.format(user.name)
+            return None, '{} not found in a registered CollectorVerse Alliance.'.format(user.name)
     # def _get_members(self, server, key, role):
     #     """For known Server and Role, find all server.members with role"""
     #     servermembers = server.members
@@ -304,7 +277,7 @@ class Alliance:
             server = ctx.message.server
             alliance = server.id
             roles = server.roles
-            members = server.members
+            # members = server.members
             aq_roles = []
             aw_roles = []
             pages = []
@@ -440,7 +413,7 @@ class Alliance:
 
     @update.command(pass_context=True, name='tag')
     async def _alliance_tag(self, ctx, *, value):
-        """What's your Alliance tag? Only include the 5 tag characters."""
+        """5 character Alliance Tag."""
         key = "tag"
         # v = value.split('')
         if len(value) > 5:
