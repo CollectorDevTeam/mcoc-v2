@@ -492,12 +492,12 @@ class Alliance:
         if ctx.message.server.id not in self.guilds:
             data = _unknown_guild(ctx)
         else:
-            verified = verify(value)
+            verified = await verify(value)
             if verified:
                 data = self._update_guilds(ctx, key, value)
                 data.set_image(url=value)
             else:
-                data = self._get_embed()
+                data = self._get_embed(ctx)
                 data.title = 'Image Verification Failed'
         menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
         await menu.menu_start(pages=[data])
@@ -689,7 +689,7 @@ class Alliance:
         return data
 
 
-def sendRequest(url):
+def send_request(url):
     try:
         page = requests.get(url)
 
@@ -704,8 +704,8 @@ def sendRequest(url):
     return page
 
 
-def verify(image_url: str):
-    img = sendRequest(image_url)
+async def verify(image_url: str):
+    img = send_request(image_url)
 
     if img is False:
         return False
