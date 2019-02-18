@@ -274,7 +274,7 @@ class Alliance:
         if len(user_alliances) > 0:
             return user_alliances, '{} found.'.format(user.name)
         else:
-            return None, '{} not found in a registered CollectorVerse Alliance.'.format(user.name)
+            return None, '{} not found in a registered CollectorVerse Alliance.\nPerhaps Alliance roles are not registered.'.format(user.name)
     # def _get_members(self, server, key, role):
     #     """For known Server and Role, find all server.members with role"""
     #     servermembers = server.members
