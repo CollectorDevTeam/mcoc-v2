@@ -219,17 +219,18 @@ class Alliance:
                     data.add_field(name='setting : '+item, value='Not set.\n``/alliance set {} value``'
                                    .format(item), inline=False)
             if self.guilds[alliance]['type'] == 'basic':
-                roles = self.alliance_keys
+                print('basic alliance')
+                type_keys = self.alliance_keys
             else:
-                roles = self.advanced_keys
-            for r in roles:
-                if r in keys:
+                type_keys = self.advanced_keys
+            for key in type_keys:
+                if key in keys:
                     for role in server.roles:
-                        if r == role.id:
-                            data.add_field(name='setting : '+r, value='{} : {}'.format(role.id, role.name))
+                        if self.guilds[alliance][key]['id'] == role.id:
+                            data.add_field(name='setting : '+key, value='{} : {}'.format(role.id, role.name))
                 else:
-                    data.add_field(name='setting : '+r, value='Role is not set.\n``/alliance set {} value``'
-                                   .format(r), inline=False)
+                    data.add_field(name='setting : '+key, value='Role is not set.\n``/alliance set {} value``'
+                                   .format(key), inline=False)
             await self.bot.say(embed=data)
 
     def _find_alliance(self, user):
