@@ -3,6 +3,7 @@ import os
 import json
 import datetime
 import discord
+import requests
 from discord.ext import commands
 from dateutil.parser import parse as date_parse
 from __main__ import send_cmd_help
@@ -491,8 +492,13 @@ class Alliance:
         if ctx.message.server.id not in self.guilds:
             data = _unknown_guild(ctx)
         else:
-            data = self._update_guilds(ctx, key, value)
-            data.set_image(url=value)
+            verified = verify(value)
+            if verified:
+                data = self._update_guilds(ctx, key, value)
+                data.set_image(url=value)
+            else:
+                data = self._get_embed()
+                data.title = 'Image Verification Failed'
         menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
         await menu.menu_start(pages=[data])
 
@@ -681,6 +687,33 @@ class Alliance:
         dataIO.save_json(self.alliances, self.guilds)
         data.set_footer(text='CollectorDevTeam', icon_url=COLLECTOR_ICON)
         return data
+
+
+def sendRequest(url):
+    try:
+        page = requests.get(url)
+
+    except Exception as e:
+        print("error:", e)
+        return False
+
+    # check status code
+    if page.status_code != 200:
+        return False
+
+    return page
+
+
+def verify(image_url: str):
+    img = sendRequest(image_url)
+
+    if img is False:
+        return False
+
+    if not img.content[:4] == b'\xff\xd8\xff\xe0':
+        return False
+
+    return True
 
 
 def _unknown_guild(ctx):
