@@ -155,7 +155,8 @@ class Alliance:
         logger.info("Retrieving prestige for role '{}' on guild '{}'".format(
                 role.name, server.name, ))
         members = []
-        line_out = []
+        line_out = {}
+        # line_out = []
         width = 20
         prestige = 0
         cnt = 0
@@ -177,8 +178,11 @@ class Alliance:
             temp_line = '{:{width}} p = {}'.format(
                     member.display_name, int(roster.prestige), width=width)
             # print(temp_line)
-            line_out.append(temp_line)
-        verbose_prestige = '```{}```'.format('\n'.join(line_out))
+            # line_out.append(temp_line)
+            line_out.update({roster.prestige: temp_line})
+        joined = '\n'.join(v for k, v in line_out.items())
+        # verbose_prestige = '```{}```'.format('\n'.join(line_out))
+        verbose_prestige = '```{}```'.format(joined)
         # line_out.append('_' * (width + 11))
         clan_prestige = 0
         summary = 0
