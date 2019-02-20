@@ -1800,7 +1800,7 @@ class MCOC(ChampionFactory):
                     await self.bot.say('Submission canceled.')
                 elif react.reaction.emoji == '🆗':
                     GKEY = '1HXMN7PseaWSvWpNJ3igUkV_VT-w4_7-tqNY7kSk0xoc'
-                    message2 = await self.bot.say('Submission in process.')
+                    message2 = await self.bot.say('Submission in progress.')
                     author = ctx.message.author
                     package = [['{}'.format(champ.mattkraftid), champ.sig, observation, champ.star, champ.rank, champ.max_lvl, author.name, author.id]]
                     check = await self._process_submission(package=package, GKEY=GKEY, sheet='collector_submit')

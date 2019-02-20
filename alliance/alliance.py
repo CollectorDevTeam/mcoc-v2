@@ -18,11 +18,13 @@ from .hook import RosterUserConverter, ChampionRoster
 logger = logging.getLogger('red.mcoc.alliance')
 logger.setLevel(logging.INFO)
 
+
 class EnhancedRoleConverter(commands.RoleConverter):
     def convert(self):
         if self.argument == 'everyone':
             self.argument = '@everyone'
         return super().convert()
+
 
 class Alliance:
     """The CollectorVerse Alliance Cog"""
@@ -69,7 +71,8 @@ class Alliance:
                         continue
                 if role_registered is False:
                     data.add_field(name='This alliance server is registered.',
-                                   value='However, no roles have been registered for ``alliance``, ``officers`` or ``bg1 | bg2 | bg3``')
+                                   value='However, no roles have been registered for '
+                                         '``alliance``, ``officers`` or ``bg1 | bg2 | bg3``')
             await self.bot.say(embed=data)
             return
         elif ctx.message.server.id in alliances:
@@ -123,8 +126,8 @@ class Alliance:
             menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
             await menu.menu_start(pages=pages)
         else:
-            logger.warn('No Pages to display')
-            #print('alliance._show_public - no pages')
+            logger.warning('No Pages to display')
+            # print('alliance._show_public - no pages')
 
     def _get_embed(self, ctx, alliance=None, user_id=None):
         """Return a color styled embed with no title or description"""
@@ -146,9 +149,9 @@ class Alliance:
 
     async def _get_prestige(self, server, role, verbose=False, data=None):
         """Pull User Prestige for all users in Role"""
-        #print('_get_prestige activated')
-        #print('server: '+server.name)
-        #print('role: '+role.name)
+        # print('_get_prestige activated')
+        # print('server: '+server.name)
+        # print('role: '+role.name)
         logger.info("Retrieving prestige for role '{}' on guild '{}'".format(
                 role.name, server.name, ))
         members = []
@@ -158,12 +161,12 @@ class Alliance:
         cnt = 0
         role_members = []
         for member in server.members:
-            #print(member.display_name)
-            #print('\n'.join(r.name for r in member.roles))
+            # print(member.display_name)
+            # print('\n'.join(r.name for r in member.roles))
             if role in member.roles:
                 role_members.append(member)
-                #print('role in member.roles')
-        #print('role_member count {}'.format(len(role_members)))
+                # print('role in member.roles')
+        # print('role_member count {}'.format(len(role_members)))
         for member in role_members:
             members.append(member)
             roster = ChampionRoster(self.bot, member)
@@ -173,7 +176,7 @@ class Alliance:
                 cnt += 1
             temp_line = '{:{width}} p = {}'.format(
                     member.display_name, int(roster.prestige), width=width)
-            #print(temp_line)
+            # print(temp_line)
             line_out.append(temp_line)
         verbose_prestige = '```{}```'.format('\n'.join(line_out))
         # line_out.append('_' * (width + 11))
@@ -183,7 +186,7 @@ class Alliance:
             summary = '{0:{width}}   = {1} from {2} members'.format(
                 role.name, round(prestige / cnt, 0), cnt, width=width)
             clan_prestige = int(round(prestige / cnt, 0))
-            #print("Prestige:  ", clan_prestige)
+            # print("Prestige:  ", clan_prestige)
         if data is None:
             if len(members) == 0 or len(members) > 30:
                 return None
@@ -200,8 +203,8 @@ class Alliance:
             elif verbose:
                 data.add_field(
                         name='{} prestige {}'.format(role.name, clan_prestige),
-                        value=summary + '\n\nVerbose prestige details'
-                            + 'restricted for roles with more than 30 members.',
+                        value=summary + '\n\nVerbose prestige details '
+                                        'restricted for roles with more than 30 members.',
                         inline=False)
             else:
                 data.add_field(
@@ -449,7 +452,8 @@ class Alliance:
         advanced (uncommon)
 
         'officers' : The Officers role will be allowed to set member assignments for Alliance Quest and Alliance War.
-        'advanced' : The role specified will be allowed to set member assignments for Alliance Quest and Alliance War."""
+        'advanced' : The role specified will be allowed to set member assignments for Alliance Quest and Alliance War.
+        """
         if value in ('basic', 'advanced',):
             key = "assign"
             server = ctx.message.server
@@ -502,7 +506,6 @@ class Alliance:
                                  url='https://discord.gg/umcoc')
         await self.bot.say(embed=data)
 
-
     @update.command(pass_context=True, name='tag')
     async def _alliance_tag(self, ctx, *, value):
         """5 character Alliance Tag."""
@@ -517,13 +520,12 @@ class Alliance:
             data = self._update_guilds(ctx, key, value)
         await self.bot.say(embed=data)
 
-
     @update.command(name='started', pass_context=True)
     async def _started(self, ctx, *, date: str):
         """When did you create this Alliance?"""
         key = "started"
         value = date
-        #print(value)
+        # print(value)
         started = date_parse(date)
 
         if isinstance(started, datetime.datetime):
@@ -568,7 +570,6 @@ class Alliance:
             data = self._update_guilds(ctx, key, value)
         await self.bot.say(embed=data)
 
-
     @update.command(pass_context=True, name='poster')
     async def _poster(self, ctx, *, value=None):
         """Alliance recruitment poster url or upload image"""
@@ -591,7 +592,6 @@ class Alliance:
                 data = self._update_guilds(ctx, key, value)
                 data.set_image(url=value)
         await self.bot.say(embed=data)
-
 
     @update.command(pass_context=True, name='invite')
     async def _invite(self, ctx, *, value):
@@ -630,14 +630,12 @@ class Alliance:
         menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
         await menu.menu_start(pages=[data])
 
-
     @checks.admin_or_permissions(manage_server=True)
     @update.command(pass_context=True, name='officers')
     async def _officers(self, ctx, role: EnhancedRoleConverter):
         """Which role are your Alliance Officers?"""
         data = await self._update_role(ctx, key='officers', role=role)
         await self.bot.say(embed=data)
-
 
     @update.command(pass_context=True, name='bg1')
     async def _bg1(self, ctx, role: EnhancedRoleConverter):
@@ -646,25 +644,22 @@ class Alliance:
         data = await self._update_role(ctx, key='bg1', role=role)
         await self.bot.say(embed=data)
 
-
     @update.command(pass_context=True, name='bg1aq')
     async def _bg1aq(self, ctx, role: EnhancedRoleConverter):
         """Which role is your Battlegroup 1 for Alliance Quest?"""
         data = await self._update_role(ctx, key='bg1aq', role=role)
         await self.bot.say(embed=data)
 
-
     @update.command(pass_context=True, name='bg1aw')
     async def _bg1aw(self, ctx, role: EnhancedRoleConverter):
         """Which role is your Battlegroup 1 for Alliance War?"""
-        if role.name == 'everyone':
-            data = self._get_embed(ctx)
-            data.title = 'Alliance Role restriction:sparkles:'
-            data.description = 'The ``@everyone`` role is prohibited from being set as an alliance role.'
-        else:
-            data = await self._update_role(ctx, key='bg1aw', role=role)
+        # if role.name == 'everyone':
+        #     data = self._get_embed(ctx)
+        #     data.title = 'Alliance Role restriction:sparkles:'
+        #     data.description = 'The ``@everyone`` role is prohibited from being set as an alliance role.'
+        # else:
+        data = await self._update_role(ctx, key='bg1aw', role=role)
         await self.bot.say(embed=data)
-
 
     @update.command(pass_context=True, name='bg2')
     async def _bg2(self, ctx, role: EnhancedRoleConverter):
@@ -672,13 +667,11 @@ class Alliance:
         data = await self._update_role(ctx, key='bg2', role=role)
         await self.bot.say(embed=data)
 
-
     @update.command(pass_context=True, name='bg2aq')
     async def _bg2aq(self, ctx, role: EnhancedRoleConverter):
         """Which role is your Battlegroup 2 for Alliance Quest?"""
         data = await self._update_role(ctx, key='bg2aq', role=role)
         await self.bot.say(embed=data)
-
 
     @update.command(pass_context=True, name='bg2aw')
     async def _bg2aw(self, ctx, role: EnhancedRoleConverter):
@@ -686,13 +679,11 @@ class Alliance:
         data = await self._update_role(ctx, key='bg2aw', role=role)
         await self.bot.say(embed=data)
 
-
     @update.command(pass_context=True, name='bg3')
     async def _bg3(self, ctx, role: EnhancedRoleConverter):
         """Which role is your Battlegroup 3?"""
         data = await self._update_role(ctx, key='bg3', role=role)
         await self.bot.say(embed=data)
-
 
     @update.command(pass_context=True, name='bg3aq')
     async def _bg3aq(self, ctx, role: EnhancedRoleConverter):
@@ -700,13 +691,11 @@ class Alliance:
         data = await self._update_role(ctx, key='bg3aq', role=role)
         await self.bot.say(embed=data)
 
-
     @update.command(pass_context=True, name='bg3aw')
     async def _bg3aw(self, ctx, role: EnhancedRoleConverter):
         """Which role is your Battlegroup 3 for Alliance War?"""
         data = await self._update_role(ctx, key='bg3aw', role=role)
         await self.bot.say(embed=data)
-
 
     @update.command(pass_context=True, name='alliance')
     async def _alliance(self, ctx, role: EnhancedRoleConverter):
@@ -731,12 +720,12 @@ class Alliance:
         server = ctx.message.server
         print("update: ", server.name, role.name)
         if server.id not in self.guilds:
-            return self._unknown_guild(ctx)
+            return _unknown_guild(ctx)
         if role.name == '@everyone':
             data = self._get_embed(ctx)
             data.title = 'Alliance Role restriction:sparkles:'
             data.description = 'The ``@everyone`` role is prohibited from ' \
-                    'being set as an alliance role.'
+                               'being set as an alliance role.'
             return data
         data = discord.Embed(colour=get_color(ctx), title='Role Registration:sparkles:')
         if role is None:
@@ -815,7 +804,7 @@ class Alliance:
         return data
 
     @alliance.command(pass_context=True, invoke_without_command=True, hidden=False, no_pm=True)
-    async def assign(self, ctx, user: discord.Member, map: str, *, lanes=None):
+    async def assign(self, ctx, user: discord.Member, alliance_map: str, *, lanes=None):
         """Alliance Assignment tool
         lanes = A, B, C
         lanes = t1 A, t2 B, t3 C
@@ -826,18 +815,18 @@ class Alliance:
         if lanes is None:
             if 'assignments' in self.guilds[alliance].keys():
                 if user.id in self.guilds[alliance]['assignments'].keys():
-                    if map in self.guilds[alliance]['assignments'][user.id]:
+                    if alliance_map in self.guilds[alliance]['assignments'][user.id]:
                         question = 'Do you want to clear the {} assignment for {}?' \
-                            .format(map.upper(), user.id)
+                            .format(alliance_map.upper(), user.id)
                         answer, confirmation = await PagesMenu.confirm(self, ctx, question)
                         if answer:
-                            self.guilds[alliance]['assignments'][user.id].pop(map, None)
+                            self.guilds[alliance]['assignments'][user.id].pop(alliance_map, None)
                             dataIO.save_json(self.alliances, self.guilds)
                         await self.bot.delete_message(confirmation)
         parse_re = re.compile(
             r'''(t[1]|tier(\s?)[1])\s?(?P<t1>[a-jA-J])|(t[2]|tier(\s?)[2])\s?(?P<t2>[a-jA-J])|(t[3]|tier(\s?)[3])\s?(?P<t3>[a-jA-J])''',
             re.X)
-        alanes = parse_re(lanes)
+        alanes = self.parse_re.findall(lanes)
         valid_maps = {'aw': {'t1': 'abcdefghi'},
                       'aq1': {'t1': 'abcdefgh', 't2': 'abcdefgh', 't3': 'abcdefgh'},
                       'aq2': {'t1': 'abcdefgh', 't2': 'abcdefgh'},
@@ -848,12 +837,12 @@ class Alliance:
                       'aq7': {'t1': 'abcdefg', 't2': 'abcdefghi', 't3': 'abcdefghij'}}
         data = self._get_embed(ctx)
         data.title('Member Assignment')
-        if map in valid_maps.keys() and alanes != {}:
+        if alliance_map in valid_maps.keys() and alanes != {}:
             if 'assignments' in self.guilds[alliance].keys():
                 if user.id in self.guilds[alliance]['assignments']:
                     package = json.dumps(self.guilds[alliance]['assignments'][user.id])
                     for key in alanes.keys:
-                        if alanes[key] in valid_maps[map][key]:
+                        if alanes[key] in valid_maps[alliance_map][key]:
                             package.update({'map': {key: alanes[key]}})
 
                     await self.bot.say(package)
@@ -861,11 +850,13 @@ class Alliance:
                     package = {user.id: {map: alanes}}
                     self.guilds[alliance]['assignments'].update(package)
             else:
-                package = {user.id: {map: alanes }}
+                package = {user.id: {map: alanes}}
                 self.guilds[alliance].update({'assignments': package})
-            data.add_field(name=map.upper(), value=json.dumps(self.guilds[alliance]['assignments'][user.id][map]))
+            data.add_field(name=alliance_map.upper(),
+                           value=json.dumps(self.guilds[alliance]['assignments'][user.id][alliance_map]))
         dataIO.save_json(self.alliances, self.guilds)
         await self.bot.send(embed=data)
+
 
 def send_request(url):
     try:
