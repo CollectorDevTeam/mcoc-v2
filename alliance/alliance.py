@@ -347,8 +347,8 @@ class Alliance:
             pages = []
             basic = ('bg1', 'bg2', 'bg3')
             if self.guilds[alliance]['type'] == 'basic':
-                for r in roles:
-                    for bg in basic:
+                for bg in basic:
+                    for r in roles:
                         if bg in self.guilds[alliance].keys():
                             if r.id in self.guilds[alliance][bg]['id']:
                                 aq_roles.append(r)
