@@ -354,12 +354,12 @@ class Alliance:
                                 aq_roles.append(r)
                 aw_roles = aq_roles
             elif self.guilds[alliance]['type'] == 'advanced':
-                for r in roles:
-                    for bg in basic:
+                for bg in basic:
+                    for r in roles:
                         if bg + 'aq' in self.guilds[alliance]:
                             if r.id == self.guilds[alliance][bg+'aq']['id']:
                                 aq_roles.append(r)
-                        elif bg + 'aw' in self.guilds[alliance]:
+                        if bg + 'aw' in self.guilds[alliance]:
                             if r.id == self.guilds[alliance][bg+'aw']['id']:
                                 aw_roles.append(r)
             print("AQ and AW roles", aq_roles, aw_roles)
