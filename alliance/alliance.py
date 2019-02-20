@@ -50,13 +50,13 @@ class Alliance:
         if alliances is None:
             data = self._get_embed(ctx)
             data.title = message+':sparkles:'
-            if ctx.server.id in self.guilds.keys():
-                alliance = ctx.server.id
+            if ctx.message.server.id in self.guilds.keys():
+                alliance = ctx.message.server.id
                 keys = self.guilds[alliance].keys()
                 role_registered = False
                 for key in self.advanced_keys:
                     if key in keys:
-                        role_registered=True
+                        role_registered = True
                         continue
                 if role_registered is False:
                     data.add_field(name='This alliance server is registered.',
@@ -873,7 +873,7 @@ class Alliance:
                 self.guilds[alliance].update({'assignments': package})
             data.add_field(name=map.upper(), value=json.dumps(self.guilds[alliance]['assignments'][user.id][map]))
         dataIO.save_json(self.alliances, self.guilds)
-        await self.bot.say(embed=data)
+        await self.bot.send(embed=data)
 
 def send_request(url):
     try:
