@@ -826,7 +826,7 @@ class Alliance:
         parse_re = re.compile(
             r'''(t[1]|tier(\s?)[1])\s?(?P<t1>[a-jA-J])|(t[2]|tier(\s?)[2])\s?(?P<t2>[a-jA-J])|(t[3]|tier(\s?)[3])\s?(?P<t3>[a-jA-J])''',
             re.X)
-        alanes = self.parse_re.findall(lanes)
+        alanes = parse_re.findall(lanes)
         valid_maps = {'aw': {'t1': 'abcdefghi'},
                       'aq1': {'t1': 'abcdefgh', 't2': 'abcdefgh', 't3': 'abcdefgh'},
                       'aq2': {'t1': 'abcdefgh', 't2': 'abcdefgh'},
