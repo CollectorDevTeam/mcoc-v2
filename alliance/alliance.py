@@ -1,6 +1,7 @@
 import re
 import os
 import json
+import logging
 import datetime
 import discord
 import requests
@@ -14,6 +15,14 @@ from .mcocTools import (KABAM_ICON, COLLECTOR_ICON, PagesMenu)
 from .hook import RosterUserConverter, ChampionRoster
 # import cogs.mcocTools
 
+logger = logging.getLogger('red.mcoc.alliance')
+logger.setLevel(logging.INFO)
+
+class EnhancedRoleConverter(commands.RoleConverter):
+    def convert(self):
+        if self.argument == 'everyone':
+            self.argument = '@everyone'
+        return super().convert()
 
 class Alliance:
     """The CollectorVerse Alliance Cog"""
@@ -114,7 +123,8 @@ class Alliance:
             menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
             await menu.menu_start(pages=pages)
         else:
-            print('alliance._show_public - no pages')
+            logger.warn('No Pages to display')
+            #print('alliance._show_public - no pages')
 
     def _get_embed(self, ctx, alliance=None, user_id=None):
         """Return a color styled embed with no title or description"""
@@ -124,7 +134,7 @@ class Alliance:
             for member in server.members:
                 if user_id == member.id:
                     color = member.color
-                    continue
+                    break
         else:
             server = ctx.message.server
             color = get_color(ctx)
@@ -136,9 +146,11 @@ class Alliance:
 
     async def _get_prestige(self, server, role, verbose=False, data=None):
         """Pull User Prestige for all users in Role"""
-        print('_get_prestige activated')
-        print('server: '+server.name)
-        print('role: '+role.name)
+        #print('_get_prestige activated')
+        #print('server: '+server.name)
+        #print('role: '+role.name)
+        logger.info("Retrieving prestige for role '{}' on guild '{}'".format(
+                role.name, server.name, ))
         members = []
         line_out = []
         width = 20
@@ -146,12 +158,12 @@ class Alliance:
         cnt = 0
         role_members = []
         for member in server.members:
-            print(member.display_name)
-            print('\n'.join(r.name for r in member.roles))
+            #print(member.display_name)
+            #print('\n'.join(r.name for r in member.roles))
             if role in member.roles:
                 role_members.append(member)
-                print('role in member.roles')
-        print('role_member count {}'.format(len(role_members)))
+                #print('role in member.roles')
+        #print('role_member count {}'.format(len(role_members)))
         for member in role_members:
             members.append(member)
             roster = ChampionRoster(self.bot, member)
@@ -159,8 +171,9 @@ class Alliance:
             if roster.prestige > 0:
                 prestige += roster.prestige
                 cnt += 1
-            temp_line = '{:{width}} p = {}'.format(member.display_name, int(roster.prestige), width=width)
-            print(temp_line)
+            temp_line = '{:{width}} p = {}'.format(
+                    member.display_name, int(roster.prestige), width=width)
+            #print(temp_line)
             line_out.append(temp_line)
         verbose_prestige = '```{}```'.format('\n'.join(line_out))
         # line_out.append('_' * (width + 11))
@@ -170,7 +183,7 @@ class Alliance:
             summary = '{0:{width}}   = {1} from {2} members'.format(
                 role.name, round(prestige / cnt, 0), cnt, width=width)
             clan_prestige = int(round(prestige / cnt, 0))
-            print(clan_prestige)
+            #print("Prestige:  ", clan_prestige)
         if data is None:
             if len(members) == 0 or len(members) > 30:
                 return None
@@ -180,14 +193,21 @@ class Alliance:
                 return clan_prestige
         else:
             if verbose and len(role_members) <= 30:
-                data.add_field(name='{} prestige: {}'.format(role.name, clan_prestige), value=verbose_prestige,
-                               inline=False)
+                data.add_field(
+                        name='{} prestige: {}'.format(role.name, clan_prestige),
+                        value=verbose_prestige,
+                        inline=False)
             elif verbose:
-                data.add_field(name='{} prestige {}'.format(role.name, clan_prestige),
-                               value='{}\n\nVerbose prestige details restricted for roles with more than 30 members.'
-                               .format(summary), inline=False)
+                data.add_field(
+                        name='{} prestige {}'.format(role.name, clan_prestige),
+                        value=summary + '\n\nVerbose prestige details'
+                            + 'restricted for roles with more than 30 members.',
+                        inline=False)
             else:
-                data.add_field(name='{} prestige {}'.format(role.name, clan_prestige), value=summary, inline=False)
+                data.add_field(
+                        name='{} prestige {}'.format(role.name, clan_prestige),
+                        value=summary,
+                        inline=False)
             return data
 
     @checks.admin_or_permissions(manage_server=True)
@@ -215,7 +235,12 @@ class Alliance:
             await menu.menu_start(pages=[data])
 
     @checks.admin_or_permissions(manage_server=True)
-    @alliance.command(name='settings', pass_context=True, invoke_without_command=True, hidden=True, no_pm=True)
+    @alliance.command(
+                name='settings',
+                pass_context=True,
+                invoke_without_command=True,
+                hidden=True,
+                no_pm=True)
     async def _settings(self, ctx):
         server = ctx.message.server
         alliance = server.id
@@ -234,7 +259,7 @@ class Alliance:
                 type_keys = self.alliance_keys
             else:
                 type_keys = self.advanced_keys
-            if 'assign' in keys():
+            if 'assign' in keys:
                 if self.guilds[alliance]['assign']['id'] == self.guilds[alliance]['officers']['id']:
                     data.add_field(name='assignment policy',
                                    value='Basic assignment policy: \n{} : {}\nOfficers may set assignments.'
@@ -294,7 +319,12 @@ class Alliance:
     #     print(json.dumps(package))
     #     return
 
-    @alliance.command(name='bg', aliases=('battlegroups', 'bgs'), pass_context=True, no_pm=True)
+    @alliance.command(
+                name='bg',
+                aliases=('battlegroups', 'bgs', 'BG', 'BGs'),
+                pass_context=True,
+                no_pm=True
+        )
     async def _battle_groups(self, ctx):
         """Report Alliance Battlegroups"""
         alliances, message = self._find_alliance(ctx.message.author)
@@ -323,14 +353,13 @@ class Alliance:
             elif self.guilds[alliance]['type'] == 'advanced':
                 for r in roles:
                     for bg in basic:
-                        if bg+'aq' in self.guilds[alliance].keys():
+                        if bg + 'aq' in self.guilds[alliance]:
                             if r.id == self.guilds[alliance][bg+'aq']['id']:
                                 aq_roles.append(r)
-                        if bg + 'aw' in self.guilds[alliance].keys():
+                        elif bg + 'aw' in self.guilds[alliance]:
                             if r.id == self.guilds[alliance][bg+'aw']['id']:
-                                aq_roles.append(r)
-                        else:
-                            pass
+                                aw_roles.append(r)
+            print("AQ and AW roles", aq_roles, aw_roles)
             for a in (aq_roles, aw_roles):
                 data = self._get_embed(ctx)
                 data.color = discord.Color.gold()
@@ -392,7 +421,12 @@ class Alliance:
             return
 
     @checks.admin_or_permissions(manage_server=True)
-    @alliance.group(name="set", aliases=('update',), pass_context=True, invoke_without_command=True, no_pm=True)
+    @alliance.group(
+            name="set",
+            aliases=('update',),
+            pass_context=True,
+            invoke_without_command=True,
+            no_pm=True)
     async def update(self, ctx):
         """Update your CollectorVerse Alliance"""
         await send_cmd_help(ctx)
@@ -409,7 +443,7 @@ class Alliance:
         await self.bot.say(embed=data)
 
     @update.command(pass_context=True, name='assign', no_pm=True)
-    async def _assign(self, ctx, value, role: discord.Role = None):
+    async def _assign(self, ctx, value, role: EnhancedRoleConverter):
         """Alliance assignment policy:
         officers (default)
         advanced (uncommon)
@@ -458,11 +492,11 @@ class Alliance:
             # send definitions
             message = """basic (default)
             advanced (uncommon)
-            
-            A 'basic' alliance can have up to 3 roles defined for AQ & AW Battlegroups: 
+
+            A 'basic' alliance can have up to 3 roles defined for AQ & AW Battlegroups:
             bg1, bg2, bg3
-            
-            An 'advanced' alliance has up to 6 roles defined for AQ & AW Battlegroups when assignments are different: 
+
+            An 'advanced' alliance has up to 6 roles defined for AQ & AW Battlegroups when assignments are different:
             bg1aq, bg1aw, bg2aq, bg2aw, bg3aq, bg3aw"""
             data = discord.Embed(color=get_color(ctx), title='CollectorVerse Alliances:sparkles:', description=message,
                                  url='https://discord.gg/umcoc')
@@ -489,7 +523,7 @@ class Alliance:
         """When did you create this Alliance?"""
         key = "started"
         value = date
-        print(value)
+        #print(value)
         started = date_parse(date)
 
         if isinstance(started, datetime.datetime):
@@ -596,45 +630,32 @@ class Alliance:
         menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
         await menu.menu_start(pages=[data])
 
+
     @checks.admin_or_permissions(manage_server=True)
     @update.command(pass_context=True, name='officers')
-    async def _officers(self, ctx, role: discord.Role = None):
+    async def _officers(self, ctx, role: EnhancedRoleConverter):
         """Which role are your Alliance Officers?"""
-        if role.name == 'everyone':
-            data = self._get_embed(ctx)
-            data.title = 'Alliance Role restriction:sparkles:'
-            data.description = 'The ``@everyone`` role is prohibited from being set as an alliance role.'
-        else:
-            data = await self._update_role(ctx, key='officers', role=role)
+        data = await self._update_role(ctx, key='officers', role=role)
         await self.bot.say(embed=data)
 
 
     @update.command(pass_context=True, name='bg1')
-    async def _bg1(self, ctx, role: discord.Role = None):
+    async def _bg1(self, ctx, role: EnhancedRoleConverter):
         """Which role is your Battlegroup 1?"""
-        if role.name == 'everyone':
-            data = self._get_embed(ctx)
-            data.title = 'Alliance Role restriction:sparkles:'
-            data.description = 'The ``@everyone`` role is prohibited from being set as an alliance role.'
-        else:
-            data = await self._update_role(ctx, key='bg1', role=role)
+        print("updating bg1")
+        data = await self._update_role(ctx, key='bg1', role=role)
         await self.bot.say(embed=data)
 
 
     @update.command(pass_context=True, name='bg1aq')
-    async def _bg1aq(self, ctx, role: discord.Role = None):
+    async def _bg1aq(self, ctx, role: EnhancedRoleConverter):
         """Which role is your Battlegroup 1 for Alliance Quest?"""
-        if role.name == 'everyone':
-            data = self._get_embed(ctx)
-            data.title = 'Alliance Role restriction:sparkles:'
-            data.description = 'The ``@everyone`` role is prohibited from being set as an alliance role.'
-        else:
-            data = await self._update_role(ctx, key='bg1aq', role=role)
+        data = await self._update_role(ctx, key='bg1aq', role=role)
         await self.bot.say(embed=data)
 
 
     @update.command(pass_context=True, name='bg1aw')
-    async def _bg1aw(self, ctx, role: discord.Role = None):
+    async def _bg1aw(self, ctx, role: EnhancedRoleConverter):
         """Which role is your Battlegroup 1 for Alliance War?"""
         if role.name == 'everyone':
             data = self._get_embed(ctx)
@@ -646,86 +667,51 @@ class Alliance:
 
 
     @update.command(pass_context=True, name='bg2')
-    async def _bg2(self, ctx, role: discord.Role = None):
+    async def _bg2(self, ctx, role: EnhancedRoleConverter):
         """Which role is your Battlegroup 2?"""
-        if role.name == 'everyone':
-            data = self._get_embed(ctx)
-            data.title = 'Alliance Role restriction:sparkles:'
-            data.description = 'The ``@everyone`` role is prohibited from being set as an alliance role.'
-        else:
-            data = await self._update_role(ctx, key='bg2', role=role)
+        data = await self._update_role(ctx, key='bg2', role=role)
         await self.bot.say(embed=data)
 
 
     @update.command(pass_context=True, name='bg2aq')
-    async def _bg2aq(self, ctx, role: discord.Role = None):
+    async def _bg2aq(self, ctx, role: EnhancedRoleConverter):
         """Which role is your Battlegroup 2 for Alliance Quest?"""
-        if role.name == 'everyone':
-            data = self._get_embed(ctx)
-            data.title = 'Alliance Role restriction:sparkles:'
-            data.description = 'The ``@everyone`` role is prohibited from being set as an alliance role.'
-        else:
-            data = await self._update_role(ctx, key='bg2aq', role=role)
+        data = await self._update_role(ctx, key='bg2aq', role=role)
         await self.bot.say(embed=data)
 
 
     @update.command(pass_context=True, name='bg2aw')
-    async def _bg2aw(self, ctx, role: discord.Role = None):
+    async def _bg2aw(self, ctx, role: EnhancedRoleConverter):
         """Which role is your Battlegroup 2 for Alliance War?"""
-        if role.name == 'everyone':
-            data = self._get_embed(ctx)
-            data.title = 'Alliance Role restriction:sparkles:'
-            data.description = 'The ``@everyone`` role is prohibited from being set as an alliance role.'
-        else:
-            data = await self._update_role(ctx, key='bg2aw', role=role)
+        data = await self._update_role(ctx, key='bg2aw', role=role)
         await self.bot.say(embed=data)
 
 
     @update.command(pass_context=True, name='bg3')
-    async def _bg3(self, ctx, role: discord.Role = None):
+    async def _bg3(self, ctx, role: EnhancedRoleConverter):
         """Which role is your Battlegroup 3?"""
-        if role.name == 'everyone':
-            data = self._get_embed(ctx)
-            data.title = 'Alliance Role restriction:sparkles:'
-            data.description = 'The ``@everyone`` role is prohibited from being set as an alliance role.'
-        else:
-            data = await self._update_role(ctx, key='bg3', role=role)
+        data = await self._update_role(ctx, key='bg3', role=role)
         await self.bot.say(embed=data)
 
 
     @update.command(pass_context=True, name='bg3aq')
-    async def _bg3aq(self, ctx, role: discord.Role = None):
+    async def _bg3aq(self, ctx, role: EnhancedRoleConverter):
         """Which role is your Battlegroup 3 for Alliance Quest?"""
-        if role.name == 'everyone':
-            data = self._get_embed(ctx)
-            data.title = 'Alliance Role restriction:sparkles:'
-            data.description = 'The ``@everyone`` role is prohibited from being set as an alliance role.'
-        else:
-            data = await self._update_role(ctx, key='bg3aq', role=role)
+        data = await self._update_role(ctx, key='bg3aq', role=role)
         await self.bot.say(embed=data)
 
 
     @update.command(pass_context=True, name='bg3aw')
-    async def _bg3aw(self, ctx, role: discord.Role = None):
+    async def _bg3aw(self, ctx, role: EnhancedRoleConverter):
         """Which role is your Battlegroup 3 for Alliance War?"""
-        if role.name == 'everyone':
-            data = self._get_embed(ctx)
-            data.title = 'Alliance Role restriction:sparkles:'
-            data.description = 'The ``@everyone`` role is prohibited from being set as an alliance role.'
-        else:
-            data = await self._update_role(ctx, key='bg3aw', role=role)
+        data = await self._update_role(ctx, key='bg3aw', role=role)
         await self.bot.say(embed=data)
 
 
     @update.command(pass_context=True, name='alliance')
-    async def _alliance(self, ctx, role: discord.Role = None):
+    async def _alliance(self, ctx, role: EnhancedRoleConverter):
         """Which role represents all members of your alliance (up to 30)?"""
-        if role.name == 'everyone':
-            data = self._get_embed(ctx)
-            data.title = 'Alliance Role restriction:sparkles:'
-            data.description = 'The ``@everyone`` role is prohibited from being set as an alliance role.'
-        else:
-            data = await self._update_role(ctx, key='alliance', role=role)
+        data = await self._update_role(ctx, key='alliance', role=role)
         await self.bot.say(embed=data)
 
     def _create_alliance(self, ctx, server):
@@ -743,49 +729,55 @@ class Alliance:
     async def _update_role(self, ctx, key, role):
         """For a given context, key, and role, search message server for role and set role for that alliance key"""
         server = ctx.message.server
+        print("update: ", server.name, role.name)
         if server.id not in self.guilds:
-            data = _unknown_guild(ctx)
+            return self._unknown_guild(ctx)
+        if role.name == '@everyone':
+            data = self._get_embed(ctx)
+            data.title = 'Alliance Role restriction:sparkles:'
+            data.description = 'The ``@everyone`` role is prohibited from ' \
+                    'being set as an alliance role.'
+            return data
+        data = discord.Embed(colour=get_color(ctx), title='Role Registration:sparkles:')
+        if role is None:
+            question = '{}, do you want to remove this ``{}`` registration?'.format(
+                ctx.message.author.mention, key)
+            answer, confirmation = await PagesMenu.confirm(self, ctx, question)
+            if answer is True:
+                self.guilds[server.id].pop(key, None)
+                await self.bot.delete_message(confirmation)
+                data.add_field(name="Congrats!:sparkles:",
+                               value="You have unregistered ``{}`` from your Alliance.".format(key))
         else:
-            data = discord.Embed(colour=get_color(ctx), title='Role Registration:sparkles:')
-            if role is None:
-                question = '{}, do you want to remove this ``{}`` registration?'.format(
-                    ctx.message.author.mention, key)
-                answer, confirmation = await PagesMenu.confirm(self, ctx, question)
-                if answer is True:
-                    self.guilds[server.id].pop(key, None)
-                    await self.bot.delete_message(confirmation)
-                    data.add_field(name="Congrats!:sparkles:",
-                                   value="You have unregistered ``{}`` from your Alliance.".format(key))
+            member_names = []
+            member_ids = []
+            for m in server.members:
+                if role in m.roles:
+                    member_names.append(m.display_name)
+                    member_ids.append(m.id)
+            package = {'id': role.id,
+                       'name': role.name,
+                       'member_ids': member_ids,
+                       'member_names': member_names}
+            if key in ('bg1', 'bg2', 'bg3', 'bg1aw', 'bg1aq', 'bg2aw', 'bg2aq', 'bg3aw', 'bg3aq'):
+                if len(member_ids) > 10:
+                    data.add_field(name=':warning: Warning - Overloaded Battlegroup:',
+                                   value='Battlegroups are limited to 10 members. '
+                                         'Check your {} assignments'.format(role.name))
+            elif key == 'alliance':
+                if len(member_ids) > 30:
+                    data.add_field(name=':warning: Warning - Overloaded Alliance',
+                                   value='Alliances are limited to 30 members. '
+                                         'Check your {} members'.format(role.name))
+            self.guilds[server.id].update({key: package})
+            data.add_field(name="Congrats!:sparkles:",
+                           value="You have set your {} to {}".format(key, role.name), inline=False)
+            if len(member_names) > 0:
+                data.add_field(name='{} members'.format(role.name), value='\n'.join(member_names))
             else:
-                member_names = []
-                member_ids = []
-                for m in server.members:
-                    if role in m.roles:
-                        member_names.append(m.display_name)
-                        member_ids.append(m.id)
-                package = {'id': role.id,
-                           'name': role.name,
-                           'member_ids': member_ids,
-                           'member_names': member_names}
-                if key in ('bg1', 'bg2', 'bg3', 'bg1aw', 'bg1aq', 'bg2aw', 'bg2aq', 'bg3aw', 'bg3aq'):
-                    if len(member_ids) > 10:
-                        data.add_field(name=':warning: Warning - Overloaded Battlegroup:',
-                                       value='Battlegroups are limited to 10 members. '
-                                             'Check your {} assignments'.format(role.name))
-                elif key == 'alliance':
-                    if len(member_ids) > 30:
-                        data.add_field(name=':warning: Warning - Overloaded Alliance',
-                                       value='Alliances are limited to 30 members. '
-                                             'Check your {} members'.format(role.name))
-                self.guilds[server.id].update({key: package})
-                data.add_field(name="Congrats!:sparkles:", 
-                               value="You have set your {} to {}".format(key, role.name), inline=False)
-                if len(member_names) > 0:
-                    data.add_field(name='{} members'.format(role.name), value='\n'.join(member_names))
-                else:
-                    data.add_field(name='{} members'.format(role.name), value='No Members assigned')
-            dataIO.save_json(self.alliances, self.guilds)
-            data.set_footer(text='CollectorDevTeam', icon_url=COLLECTOR_ICON)
+                data.add_field(name='{} members'.format(role.name), value='No Members assigned')
+        dataIO.save_json(self.alliances, self.guilds)
+        data.set_footer(text='CollectorDevTeam', icon_url=COLLECTOR_ICON)
         return data
 
     def _update_members(self, server):
