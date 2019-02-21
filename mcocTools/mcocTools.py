@@ -727,6 +727,12 @@ class MCOCTools:
             em.set_footer(text='CollectorDevTeam', icon_url=self.COLLECTOR_ICON)
         return em
 
+    @commands.command(pass_context=True, no_pm=True)
+    async def topic(self, ctx):
+        channel = ctx.message.channel
+        topic = channel.topic
+        await self.bot.say(topic)
+
     @commands.command(pass_context=True, aliases={'collector', 'infocollector', 'about'})
     async def aboutcollector(self, ctx):
         """Shows info about Collector"""
