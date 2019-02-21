@@ -50,10 +50,10 @@ class MCOCMaps:
         '5.1':{'map': 's5aq51','maptitle':'5 Tier 1'},
         '5.2':{'map':  's5aq52', 'maptitle':'5 Tier 2'},
         '5.3':{'map': 's5aq53','maptitle':'5 Tier 3'},
-        '6':{'map': 's7aq6', 'maptitle':'6'},
-        '6.1':{'map': 's7aq61','maptitle':'6 Tier 1'},
-        '6.2':{'map':  's7aq62', 'maptitle':'6 Tier 2'},
-        '6.3':{'map': 's7aq63','maptitle':'6 Tier 3'},}
+        '6':{'map': 's7aq6v2', 'maptitle':'6'},
+        '6.1':{'map': 's7aq61v2','maptitle':'6 Tier 1'},
+        '6.2':{'map':  's7aq62v2', 'maptitle':'6 Tier 2'},
+        '6.3':{'map': 's7aq63v2','maptitle':'6 Tier 3'},}
 
     aq_map_tips = {
         'cheatsheet':{
@@ -78,22 +78,52 @@ class MCOCMaps:
         '5.3':{'required':'',
             'energy':'',
             'tips':'',
-            'miniboss':[['Dormamu','+525% Champion Boost\n+100% Health\nDimensional Anchor\nHeal Block\nLimber (0.10s)\n+50% Power Gain\nUnblockable'],]},
+            'miniboss':[['Kingpin','+525% Champion Boost\n+100% Health\nDimensional Anchor\nHeal Block\nLimber (0.10s)\n+50% Power Gain\nUnblockable'],]},
         '6':{'required':'',
             'energy':'',
             'tips':'',},
         '6.1':{'required':'A - 2 players\nB - 2 players\nF - Power Control\nG - 2 players',
             'energy':'D & E move first\nB, C, F, G move next\nA moves last.',
             'tips':'A - Defense Ability Reduction for tile 22.\nD  - Thorns, Degeneration\nE - Thorns, Starburst\nF - All or Nothing 9\nG - Enhanced Raged Specials',
-            'miniboss':[['Void 1','+300% Champion Boost\n+200% Health\nLimber (10%)\nUnblockable Finale (<25% HP)'],]},
+            'miniboss':[['Void 1',
+                          'Champion Boost: 300% Attack & Health\n'
+                          'Health: 200% Health\n'
+                          'Limber: Each time the Defender receives a Stun Debuff, '
+                          'they reduce the Duration of further Stun Debuffs by 0.10 seconds.\n'
+                          'Unblockable Finale: Attacks are unblockable as long as Health remains below 25%.'],
+                        ['Yondu 1',
+                         'Champion Boost: 300% Attack & Health '
+                            'Health: 200% Health\n'
+                            'Enhanced Bleed: Bleed abilities are 40% more effective.\n'
+                            'Collar Tech V: Gives Tech Champions a field that inhibits enemy Power Gain by 18%\n'
+                            'Special 2 Bias: This defender is more likely to activate Special Attack 2'],
+                        ['Mephisto 1',
+                         'Champion Boost: 300% Attack & Health\n '
+                         'Health: 200% Health\n ']]},
         '6.2':{'required':'A - 2 players, Poison Immune\nB - Poison Immune\nG - Power control\nH - Bleed Immune\nI - 2 players, Bleed Immune',
             'energy': 'A, B, E, H, & I move first\nD, F, G move next\nC moves last',
             'tips':'A - Poison\nB - Poison\nC - Immunity, Stun Immunity\nE - Power Gain, Stun Immunity\nA, B, C, D, & E - Daredevil for Enhanced range special tiles 73, 63\nF - Degeneration\nG - Power Gain, All or Nothing\nH - Bleed Immune\nI -Bleed Immune',
-            'miniboss':[['Void 1','+300% Champion Boost\n+300% Health\nLimber (10%)\nUnblockable Finale (<25% HP)'],]},
+            'miniboss':[['Void 1',
+                          'Champion Boost: 300% Attack & Health\n'
+                          'Health: 300% Health\n'
+                          'Limber: Each time the Defender receives a Stun Debuff, '
+                          'they reduce the Duration of further Stun Debuffs by 0.10 seconds.\n'
+                          'Unblockable Finale: Attacks are unblockable as long as Health remains below 25%.'],
+                        ['Mephisto 2',
+                         'Champion Boost: 300% Attack & Health\n'
+                         'Health: 300% Health\n'
+                         '\n'],
+                        ['Yondu 2',
+                         'Champion Boost: 300% Attack & Health\n'
+                         'Health: 300% Health\n'
+                         'Enhanced Bleed: Bleed abilities are 40% more effective.\n'
+                         'Collar Tech V: Gives Tech Champions a field that inhibits enemy Power Gain by 18%\n'
+                         'Enhanced Special 2: Special 2 deals 20% more damage and cannot be Blocked\n'
+                         'Special 2 Bias: This defender is more likely to activate Special Attack 2']]},
         '6.3':{'required':'A - Poison Immune\nB - Bleed Immune\nC - Bleed Immune\nD - Regeneration\nE - Regeneration\nF - Power Control, Regeneration\nG - Power Control\nI - Power control\nJ - Regeneration',
             'energy':'D & E move first\nC & F move second\nA, B, G & I move third\nH & J move last',
             'tips':'A - Poison\nB - Caltrops\nC - Caltrops\nA, B & C - All or Nothing tile 118\nD - Degeneration\nE - Degeneration & Starburst\nF - Starburst & Power Gain\nG - Power Gain\nH \nI - Power Gain\nJ - Starburst',
-            'miniboss':[['Dormamu','+575% Champion Boost\n+200% Health\nDimensional Anchor\nHeal Block\nLimber (20%)\n+50% Power Gain\nUnblockable'],]},
+            'miniboss':[['Kingpin','+575% Champion Boost\n+200% Health\nDimensional Anchor\nHeal Block\nLimber (20%)\n+50% Power Gain\nUnblockable'],]},
     }
 
     lolmaps = {'0':{'map':'0', 'maptitle': 'Completion Path 0'},
