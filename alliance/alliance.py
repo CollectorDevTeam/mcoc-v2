@@ -180,7 +180,7 @@ class Alliance:
             # print(temp_line)
             # line_out.append(temp_line)
             line_out.update({roster.prestige: temp_line})
-        joined = '\n'.join(v for k, v in line_out.sorted().items())
+        joined = '\n'.join(v for k, v in line_out.items())
         # verbose_prestige = '```{}```'.format('\n'.join(line_out))
         verbose_prestige = '```{}```'.format(joined)
         # line_out.append('_' * (width + 11))
