@@ -815,6 +815,14 @@ class Alliance:
         """
         server = ctx.message.server
         alliance = server.id
+        empty_package = {user.id: {'aw': {'t1': ''},
+                                  'aq1': {'t1': '', 't2': '', 't3': ''},
+                                  'aq2': {'t1': '', 't2': ''},
+                                  'aq3': {'t1': '', 't2': '', 't3': ''},
+                                  'aq4': {'t1': '', 't2': '', 't3': ''},
+                                  'aq5': {'t1': '', 't2': '', 't3': ''},
+                                  'aq6': {'t1': '', 't2': '', 't3': ''},
+                                  'aq7': {'t1': '', 't2': '', 't3': ''}}}
         alanes = {}
         if lanes is None:
             if 'assignments' in self.guilds[alliance].keys():
@@ -848,14 +856,13 @@ class Alliance:
                     for key in alanes.keys:
                         if alanes[key] in valid_maps[alliance_map][key]:
                             package.update({'map': {key: alanes[key]}})
-
                     await self.bot.say(package)
                 else:
-                    package = {user.id: {map: alanes}}
+                    package = {user.id: {alliance_map: alanes}}
                     self.guilds[alliance]['assignments'].update(package)
             else:
-                package = {user.id: {map: alanes}}
-                self.guilds[alliance].update({'assignments': package})
+                empty_package[user.id][alliance_map].update(alanes)
+                self.guilds[alliance].update({'assignments': empty_package})
             data.add_field(name=alliance_map.upper(),
                            value=json.dumps(self.guilds[alliance]['assignments'][user.id][alliance_map]))
         dataIO.save_json(self.alliances, self.guilds)
