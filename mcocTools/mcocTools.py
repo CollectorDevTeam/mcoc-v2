@@ -731,7 +731,9 @@ class MCOCTools:
     async def topic(self, ctx):
         channel = ctx.message.channel
         topic = channel.topic
-        await self.bot.say(topic)
+        if topic is not None and topic != '':
+            data = discord.Embed(color=ctx.message.author.color, title='{} Topic'.format(ctx.message.channel.name), description=topic)
+            await self.bot.say(embed=data)
 
     @commands.command(pass_context=True, aliases={'collector', 'infocollector', 'about'})
     async def aboutcollector(self, ctx):
