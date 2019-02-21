@@ -735,8 +735,10 @@ class MCOCTools:
         topic = channel.topic
         if topic is not None and topic != '':
             data = discord.Embed(color=ctx.message.author.color,
-                                 title='{} Topic :sparkles:'.format(ctx.message.channel.name.title()),
+                                 title='#{} Topic :sparkles:'.format(ctx.message.channel.name),
                                  description=topic)
+            data.thumbnail(url=ctx.message.server.icon_url)
+            data.set_footer(text='CollectorDevTeam', icon_url=self.COLLECTOR_ICON)
             await self.bot.say(embed=data)
 
     @commands.command(pass_context=True, aliases={'collector', 'infocollector', 'about'})
