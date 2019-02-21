@@ -840,7 +840,7 @@ class Alliance:
                       'aq6': {'t1': 'abcdefg', 't2': 'abcdefghi', 't3': 'abcdefghij'},
                       'aq7': {'t1': 'abcdefg', 't2': 'abcdefghi', 't3': 'abcdefghij'}}
         data = self._get_embed(ctx)
-        data.title('Member Assignment')
+        data.title='Member Assignment'
         if alliance_map in valid_maps.keys() and alanes != {}:
             if 'assignments' in self.guilds[alliance].keys():
                 if user.id in self.guilds[alliance]['assignments']:
