@@ -729,11 +729,13 @@ class MCOCTools:
 
     @commands.command(pass_context=True, no_pm=True)
     async def topic(self, ctx, channel:discord.channel = None):
+        '''Play the Channel Topic in the chat channel.'''
         if channel is None:
             channel = ctx.message.channel
         topic = channel.topic
         if topic is not None and topic != '':
-            data = discord.Embed(color=ctx.message.author.color, title='{} Topic'.format(ctx.message.channel.name),
+            data = discord.Embed(color=ctx.message.author.color,
+                                 title='{} Topic :sparkles:'.format(ctx.message.channel.name.title()),
                                  description=topic)
             await self.bot.say(embed=data)
 
