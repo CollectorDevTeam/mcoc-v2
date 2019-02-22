@@ -99,14 +99,15 @@ class Alliance:
             else:
                 data.description = 'Alliance About is not set.'
             if 'alliance' in keys:
-                for r in server.roles:
-                    if r.id == self.guilds[alliance]['alliance']['id']:
-                        verbose = False
-                        if ctx.message.server == server:
-                            verbose = True
-                        data = await self._get_prestige(server=server, role=r, verbose=verbose, data=data)
-                        # data.add_field(name='Alliance Prestige', value=clan_prestige)
-                        continue
+                role = self._get_role(server, 'alliance')
+                role_members = _get_members(server, role)
+                if role is not None:
+                    verbose = False
+                    if ctx.message.server == server:  # on home server
+                        verbose = True
+                    data = await self._get_prestige(server=server, role=role, verbose=verbose,
+                                                    data=data, role_members=role_members)
+                    # data.add_field(name='Alliance Prestige', value=clan_prestige)
             else:
                 data.add_field(name='Alliance Role', value='Alliance role is not set.')
             if 'started' in keys:
@@ -129,29 +130,28 @@ class Alliance:
             logger.warning('No Pages to display')
             # print('alliance._show_public - no pages')
 
-    def _get_embed(self, ctx, alliance=None, user_id=None):
+    def _get_embed(self, ctx, alliance=None, user_id=None, color=None):
         """Return a color styled embed with no title or description"""
-        color = discord.Color.gold()
+        # color = discord.Color.gold()
         if alliance is not None:
             server = self.bot.get_server(alliance)
             for member in server.members:
-                if user_id == member.id:
+                if color is None and user_id == member.id:
                     color = member.color
                     break
         else:
             server = ctx.message.server
-            color = get_color(ctx)
+            if color is None:
+                color = get_color(ctx)
         data = discord.Embed(color=color, title='', description='')
         data.set_author(name='A CollectorVerse Alliance', icon_url=COLLECTOR_ICON)
         data.set_thumbnail(url=server.icon_url)
         data.set_footer(text='CollectorDevTeam', icon_url=COLLECTOR_ICON)
         return data
 
-    async def _get_prestige(self, server, role, verbose=False, data=None):
-        """Pull User Prestige for all users in Role"""
-        # print('_get_prestige activated')
-        # print('server: '+server.name)
-        # print('role: '+role.name)
+    async def _get_prestige(self, server, role, verbose=False,
+                            data=None, role_members: list = None):
+        """Return Clan Prestige and Verbose Prestige for Role members"""
         logger.info("Retrieving prestige for role '{}' on guild '{}'".format(
                 role.name, server.name, ))
         members = []
@@ -160,14 +160,10 @@ class Alliance:
         width = 20
         prestige = 0
         cnt = 0
-        role_members = []
-        for member in server.members:
-            # print(member.display_name)
-            # print('\n'.join(r.name for r in member.roles))
-            if role in member.roles:
-                role_members.append(member)
-                # print('role in member.roles')
-        # print('role_member count {}'.format(len(role_members)))
+        if role_members is None:
+            for member in server.members:
+                if role in member.roles:
+                    role_members.append(member)
         if len(role_members) > 0:
             for member in role_members:
                 members.append(member)
@@ -201,8 +197,9 @@ class Alliance:
                     return clan_prestige
             else:
                 if verbose and len(role_members) <= 30:
-                    data.add_field(name='{} [{}/10] prestige: {}'
-                                   .format(role.name, len(role_members), clan_prestige), value=verbose_prestige, inline=False)
+                    data.add_field(name='{} [{}] prestige: {}'
+                                   .format(role.name, len(role_members), clan_prestige),
+                                   value=verbose_prestige, inline=False)
                 elif verbose:
                     data.add_field(
                             name='{} prestige {}'.format(role.name, clan_prestige),
@@ -311,19 +308,13 @@ class Alliance:
             return user_alliances, '{} found.'.format(user.name)
         else:
             return None, '{} not found in a registered CollectorVerse Alliance.'.format(user.name)
-    # def _get_members(self, server, key, role):
-    #     """For known Server and Role, find all server.members with role"""
-    #     servermembers = server.members
-    #     members = []
-    #     for m in servermembers:
-    #         if role in m.roles:
-    #             members.append(m)
-    #     package = {key: {'role':role, 'members':members}}
-    #     self.guilds[server.id].update(package)
-    #     dataIO.save_json(self.alliances, self.guilds)
-    #     print('Members saved for {}'.format(role.name))
-    #     print(json.dumps(package))
-    #     return
+
+    def _get_role(self, server, role_key: str):
+        """Returns discord.Role"""
+        for role in server.roles:
+            if role.id == self.guilds[server.id][role_key]['id']:
+                return role
+        return None
 
     @alliance.command(
                 name='bg',
@@ -343,73 +334,78 @@ class Alliance:
         elif ctx.message.server.id in alliances:
             server = ctx.message.server
             alliance = server.id
-            roles = server.roles
-            members = []
             if 'alliance' in self.guilds[alliance].keys():
-                ally = None
-                for r in roles:
-                    if r.id == self.guilds[alliance]['alliance']['id']:
-                        ally = r
-                if ally is not None:
-                    for member in server.members:
-                        if ally in member.roles:
-                            members.append(member)
+                members = _get_members(server, 'alliance')
+                if members is None:
+                    members = server.members
             else:
                 members = server.members
-            aq_roles = []
-            aw_roles = []
-            rolelist = []
+            battle_groups = {}
             pages = []
-            basic = ('bg1', 'bg2', 'bg3')
+            basic = False
             if self.guilds[alliance]['type'] == 'basic':
-                for bg in basic:
-                    for r in roles:
-                        if bg in self.guilds[alliance].keys():
-                            if r.id in self.guilds[alliance][bg]['id']:
-                                aq_roles.append(r)
-                rolelist.append(aq_roles)
-            elif self.guilds[alliance]['type'] == 'advanced':
-                for bg in basic:
-                    for r in roles:
-                        if bg + 'aq' in self.guilds[alliance]:
-                            if r.id == self.guilds[alliance][bg+'aq']['id']:
-                                aq_roles.append(r)
-                        if bg + 'aw' in self.guilds[alliance]:
-                            if r.id == self.guilds[alliance][bg+'aw']['id']:
-                                aw_roles.append(r)
-                rolelist.append(aq_roles)
-                rolelist.append(aw_roles)
-            for a in (rolelist):
-                data = self._get_embed(ctx)
-                data.color = discord.Color.gold()
-                if a == aq_roles:
-                    data.title = 'Alliance Quest Battlegroups:sparkles:'
-                else:
-                    data.title = 'Alliance War Battlegroups:sparkles:'
-                if aq_roles == aw_roles:
-                    if 'tag' in self.guilds[alliance].keys():
-                        data.title = '[{}] Battlegroups:sparkles:'.format(self.guilds[alliance]['tag'])
-                    else:
-                        data.title = 'Alliance Battlegroups:sparkles:'
-                overload = []
-                cnt = 0
-                for role in a:
-                    data = await self._get_prestige(server, role, verbose=True, data=data)
-                    for role in a:
-                        if role in member.roles:
-                            cnt += 1
-                    if cnt > 1:
-                        overload.append(member)
+                basic = True
+                for bg in 'bg1', 'bg2', 'bg3':
+                    role = self._get_role(server, bg)
+                    if role is not None:
+                        role_members = _get_members(server, role)
+                        if role_members is not None:
+                            battle_groups.update({bg: {'role': role, 'members': role_members}})
+            else:
+                for bg in ('bg1', 'bg2', 'bg3', 'bg1aq', 'bg2aq', 'bg3aq', 'bg1aw', 'bg2aw', 'bg3aw'):
+                    if bg in self.guilds[alliance].keys():
+                        role = self._get_role(server, bg)
+                        if role is not None:
+                            role_members = _get_members(server, role)
+                            if role_members is not None:
+                                battle_groups.update({bg: {'role': role, 'members': role_members}})
+            tag = ''
+            if 'tag' in self.guilds[alliance].keys():
+                tag = '[{}] '.format(self.guilds[alliance]['tag'])
+            if basic:
+                data = self._get_embed(ctx, alliance=alliance)
+                data.title = tag+'Alliance Battlegroups:sparkles:'
+                for bg in ('bg1', 'bg2', 'bg3'):
+                    if bg in battle_groups.keys():
+                        data = await self._get_prestige(server, battle_groups[bg]['role'], verbose=True,
+                                                        data=data, role_members=battle_groups[bg]['members'])
                 pages.append(data)
-                if len(overload) > 0:
-                    data = self._get_embed(ctx)
-                    if a == aq_roles and a != aw_roles:
-                        data.title = 'AQ Overloaded BGs'
-                    elif a == aw_roles and a != aq_roles:
-                        data.title = 'AW Overloaded BGs'
-                    else:
-                        data.title = 'Alliance Overloaded BGs'
-                    data.description = '\n'.join(m.display_name for m in overload)
+            else:
+                data = self._get_embed(ctx, alliance=alliance)
+                data.title = tag + 'Alliance Quest Battlegroups:sparkles:'
+                for bg in ('bg1aq', 'bg2aq', 'bg3aq'):
+                    if bg in battle_groups.keys():
+                        data = await self._get_prestige(server, battle_groups[bg]['role'], verbose=True, data=data,
+                                                        role_members=battle_groups[bg]['members'])
+                pages.append(data)
+                data = self._get_embed(ctx, alliance=alliance)
+                data.title = tag + 'Alliance War Battlegroups:sparkles:'
+                for bg in ('bg1aw', 'bg2aw', 'bg3aw'):
+                    if bg in battle_groups.keys():
+                        data = await self._get_prestige(server, battle_groups[bg]['role'], verbose=True, data=data,
+                                                        role_members=battle_groups[bg]['members'])
+                pages.append(data)
+            overload = []
+            for m in members:
+                cnt = 0
+                if basic:
+                    for bg in ('bg1', 'bg2', 'bg3'):
+                        cnt += battle_groups[bg]['members'].count(m)
+                else:
+                    for bg in ('bg1aq', 'bg2aq', 'bg3aq'):
+                        cnt += battle_groups[bg]['members'].count(m)
+                    if cnt > 1:
+                        overload.append(m)
+                    for bg in ('bg1aw', 'bg2aw', 'bg3aw'):
+                        cnt += battle_groups[bg]['members'].count(m)
+                    if cnt > 1:
+                        overload.append(m)
+                if cnt > 1:
+                    overload.append(m)
+            if len(overload) > 0:
+                data = self._get_embed(ctx, alliance)
+                data.title = 'Overloaded Battle Groups'
+                data.add_field(name='Check these user\'s roles', value='\n'.join(m.display_name for m in overload))
             menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
             await menu.menu_start(pages=pages)
 
@@ -550,7 +546,7 @@ class Alliance:
     async def _started(self, ctx, *, date: str):
         """When did you create this Alliance?"""
         key = "started"
-        value = date
+        # value = date
         # print(value)
         started = date_parse(date)
 
@@ -838,13 +834,13 @@ class Alliance:
         server = ctx.message.server
         alliance = server.id
         empty_package = {user.id: {'aw': {'t1': ''},
-                                  'aq1': {'t1': '', 't2': '', 't3': ''},
-                                  'aq2': {'t1': '', 't2': ''},
-                                  'aq3': {'t1': '', 't2': '', 't3': ''},
-                                  'aq4': {'t1': '', 't2': '', 't3': ''},
-                                  'aq5': {'t1': '', 't2': '', 't3': ''},
-                                  'aq6': {'t1': '', 't2': '', 't3': ''},
-                                  'aq7': {'t1': '', 't2': '', 't3': ''}}}
+                                   'aq1': {'t1': '', 't2': '', 't3': ''},
+                                   'aq2': {'t1': '', 't2': ''},
+                                   'aq3': {'t1': '', 't2': '', 't3': ''},
+                                   'aq4': {'t1': '', 't2': '', 't3': ''},
+                                   'aq5': {'t1': '', 't2': '', 't3': ''},
+                                   'aq6': {'t1': '', 't2': '', 't3': ''},
+                                   'aq7': {'t1': '', 't2': '', 't3': ''}}}
         alanes = {}
         if lanes is None:
             if 'assignments' in self.guilds[alliance].keys():
@@ -860,10 +856,10 @@ class Alliance:
         parse_re = re.compile(
             r'''(t[1]|tier(\s?)[1])\s?(?P<t1>[a-jA-J])|(t[2]|tier(\s?)[2])\s?(?P<t2>[a-jA-J])|(t[3]|tier(\s?)[3])\s?(?P<t3>[a-jA-J])''',
             re.X)
-        # alanes = parse_re.findall(lanes)
-        for m in parse_re.findall(lanes):
-            alanes[m.lastgroup] = m.group(m.lastgroup)
-        print(json.dumps(alanes))
+        alanes = parse_re.findall(lanes)
+        # for m in parse_re.findall(lanes):
+        #     alanes[m.lastgroup] = m.group(m.lastgroup)
+        await self.bot.say('debug: '+json.dumps(alanes))
 
         valid_maps = {'aw': {'t1': 'abcdefghi'},
                       'aq1': {'t1': 'abcdefgh', 't2': 'abcdefgh', 't3': 'abcdefgh'},
@@ -930,6 +926,18 @@ def get_color(ctx):
         return discord.Color.gold()
     else:
         return ctx.message.author.color
+
+
+def _get_members(server, role):
+    """Returns list of discord.server.members"""
+    members = []
+    for m in server.members:
+        if role in m.roles:
+            members.append(m)
+    if len(members) > 0:
+        return members
+    else:
+        return None
 
 
 def check_folder():

@@ -1,10 +1,8 @@
 import re
 from datetime import datetime, timedelta
 from dateutil.parser import parse as dateParse
-from textwrap import wrap
-from collections import UserDict, defaultdict, ChainMap, namedtuple, OrderedDict
+from collections import UserDict, defaultdict, ChainMap  #, namedtuple, OrderedDict
 from functools import partial
-from math import log2
 from math import *
 from operator import attrgetter
 import os
@@ -16,9 +14,7 @@ import csv
 import json
 import pygsheets
 import random
-# import requests
 
-# from pygsheets.utils import numericise_all, numericise
 import asyncio
 from .utils.dataIO import dataIO
 from functools import wraps
@@ -27,8 +23,6 @@ from discord.ext import commands
 from .utils import chat_formatting as chat
 from __main__ import send_cmd_help
 from cogs.utils import checks
-# from .hook import ChampionRoster, HashtagRankConverter
-# from .hook import PagesMenu
 
 ## experimental jjw
 import matplotlib.pyplot as plt
@@ -105,44 +99,34 @@ async def postprocess_sig_data(bot, struct):
         try:
             struct[key]['kabam_text'] = champ_class.get_kabam_sig_text(
                     champ_class, sigs=sigs,
-                    #champ_exceptions=struct['kabam_key_override'])
+                    # champ_exceptions=struct['kabam_key_override'])
                     champ_exceptions=aux)
         except TitleError as e:
             missing.append(e.champ)
     if missing:
         await bot.say("Skipped Champs due to Kabam Key Errors: {}".format(', '.join(missing)))
 
-gsheet_files = {
-    'signature': {'gkey': '1kNvLfeWSCim8liXn6t0ksMAy5ArZL5Pzx4hhmLqjukg',
-            'local': local_files['signature'],
-            'postprocess': postprocess_sig_data,
-            },
-    'sig_coeff_4star': {'gkey': '1WrAj9c41C4amzP8-jY-QhyKurO8mIeclk9C1pSvmWsk',
-            'local': local_files['sig_coeff_4star'],
-            },
-    'sig_coeff_5star': {'gkey': '1VHi9MioEGAsLoZneYQm37gPkmbD8mx7HHa-zuMiwWns',
-            'local': local_files['sig_coeff_5star'],
-            },
-    'synergy': {'gkey': '1Apun0aUcr8HcrGmIODGJYhr-ZXBCE_lAR7EaFg_ZJDY',
-            'local': local_files['synergy'],
-            },
-}
+# gsheet_files = {
+#     'signature': {'gkey': '1kNvLfeWSCim8liXn6t0ksMAy5ArZL5Pzx4hhmLqjukg',
+#             'local': local_files['signature'],
+#             'postprocess': postprocess_sig_data,
+#             },
+#     'sig_coeff_4star': {'gkey': '1WrAj9c41C4amzP8-jY-QhyKurO8mIeclk9C1pSvmWsk',
+#             'local': local_files['sig_coeff_4star'],
+#             },
+#     'sig_coeff_5star': {'gkey': '1VHi9MioEGAsLoZneYQm37gPkmbD8mx7HHa-zuMiwWns',
+#             'local': local_files['sig_coeff_5star'],
+#             },
+#     'synergy': {'gkey': '1Apun0aUcr8HcrGmIODGJYhr-ZXBCE_lAR7EaFg_ZJDY',
+#             'local': local_files['synergy'],
+#             },
+# }
 
 star_glyph = "★"
 lolmap_path="data/mcoc/maps/lolmap.png"
 file_checks_json = "data/mcoc/file_checks.json"
 remote_data_basepath = "https://raw.githubusercontent.com/CollectorDevTeam/assets/master/data/"
 icon_sdf = "https://raw.githubusercontent.com/CollectorDevTeam/assets/master/data/sdf_icon.png"
-
-###### KEYS for MCOC JSON Data Extraction
-mcoc_dir="data/mcoc/json/snapshots/en/"
-kabam_bio = mcoc_dir + "character_bios_en.json"
-kabam_special_attacks = mcoc_dir+"special_attacks_en.json"
-kabam_bcg_stat_en = mcoc_dir+"bcg_stat_en.json"
-kabam_bcg_en= mcoc_dir+"bcg_en.json"
-# kabam_masteries=mcoc_dir+"masteries_en.json"
-
-#print(cdt_data['ID_UI_STAT_FORMAT_GOBLIN_MADNESS_C'])
 
 ability_desc = "data/mcoc/ability-desc/{}.txt"
 
