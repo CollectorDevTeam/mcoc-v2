@@ -344,7 +344,18 @@ class Alliance:
             server = ctx.message.server
             alliance = server.id
             roles = server.roles
-            # members = server.members
+            members = []
+            if 'alliance' in self.guilds[alliance].keys():
+                ally = None
+                for r in roles:
+                    if r.id == self.guilds[alliance]['alliance']['id']:
+                        ally = r
+                if ally is not None:
+                    for member in server.members:
+                        if ally in member.roles:
+                            members.append(member)
+            else:
+                members = server.members
             aq_roles = []
             aw_roles = []
             pages = []
@@ -374,12 +385,14 @@ class Alliance:
                 else:
                     data.title = 'Alliance War Battlegroups:sparkles:'
                 if aq_roles == aw_roles:
-                    data.title = 'Alliance Battlegroups:sparkles:'
+                    if 'tag' in data:
+                        data.title = '[{}] Battlegroups:sparkles:'.format(self.guilds[alliance]['tag'])
+                    else:
+                        data.title = 'Alliance Battlegroups:sparkles:'
                 overload = []
                 cnt = 0
                 for role in a:
                     data = await self._get_prestige(server, role, verbose=True, data=data)
-                for member in server.members:
                     for role in a:
                         if role in member.roles:
                             cnt += 1
