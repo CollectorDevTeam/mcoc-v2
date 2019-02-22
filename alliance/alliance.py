@@ -385,9 +385,16 @@ class Alliance:
                             cnt += 1
                     if cnt > 1:
                         overload.append(member)
-                if len(overload) > 0:
-                    data.add_field(name='Overloaded BGs', value='\n'.join(m.display_name for m in overload))
                 pages.append(data)
+                if len(overload) > 0:
+                    data = self._get_embed(ctx)
+                    if a == aq_roles and a != aw_roles:
+                        data.title = 'AQ Overloaded BGs'
+                    elif a == aw_roles and a != aq_roles:
+                        data.title = 'AW Overloaded BGs'
+                    else:
+                        data.title = 'Alliance Overloaded BGs'
+                    data.description = '\n'.join(m.display_name for m in overload)
             menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
             await menu.menu_start(pages=pages)
 
