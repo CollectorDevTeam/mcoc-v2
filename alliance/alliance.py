@@ -385,7 +385,7 @@ class Alliance:
                 else:
                     data.title = 'Alliance War Battlegroups:sparkles:'
                 if aq_roles == aw_roles:
-                    if 'tag' in data:
+                    if 'tag' in self.guilds[alliance].keys():
                         data.title = '[{}] Battlegroups:sparkles:'.format(self.guilds[alliance]['tag'])
                     else:
                         data.title = 'Alliance Battlegroups:sparkles:'
