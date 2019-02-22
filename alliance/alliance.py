@@ -842,7 +842,7 @@ class Alliance:
                                    'aq6': {'t1': '', 't2': '', 't3': ''},
                                    'aq7': {'t1': '', 't2': '', 't3': ''}}}
         data = self._get_embed(ctx)
-        if alliance_map not in empty_package.keys():
+        if alliance_map not in empty_package[user.id].keys():
             data.title = 'Assignment Error'
             data.description = 'Specify the AQ or AW map.  \n' \
                                'aq1, aq2, aq3, aq4, aq5, aq6, aq7, aq'
