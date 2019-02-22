@@ -863,10 +863,10 @@ class Alliance:
         regex = r"t?\w+?\s?1\s?(?P<t1>\w{1})\s?t?\w+?\s?2\s?(?P<t2>\w)\s?t?\w+?\s?3\s?(?P<t3>\w)"
         matches = re.match(regex, lanes.lower()).groupdict()
 
-        # self.guilds[alliance]['assignments'][user.id][alliance_map].update(matches)
         try:
-            for key in matches.keys():
-                self.guilds[alliance]['assignments'][user.id][alliance_map].update({key, matches[key]})
+            self.guilds[alliance]['assignments'][user.id][alliance_map].update(matches)
+            # for key in matches.keys():
+            #     self.guilds[alliance]['assignments'][user.id][alliance_map].update({key, matches[key]})
         except:
             await self.bot.say(json.dumps(matches))
             # print(matches)
