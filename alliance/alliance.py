@@ -200,10 +200,8 @@ class Alliance:
                 return clan_prestige
         else:
             if verbose and len(role_members) <= 30:
-                data.add_field(
-                        name='{} prestige: {}'.format(role.name, clan_prestige),
-                        value=verbose_prestige,
-                        inline=False)
+                data.add_field(name='{} [{}/10] prestige: {}'
+                               .format(role.name, len(role_members), value=verbose_prestige, inline=False))
             elif verbose:
                 data.add_field(
                         name='{} prestige {}'.format(role.name, clan_prestige),
@@ -370,23 +368,22 @@ class Alliance:
             for a in (aq_roles, aw_roles):
                 data = self._get_embed(ctx)
                 data.color = discord.Color.gold()
-                overload = []
+
                 if a == aq_roles:
                     data.title = 'Alliance Quest Battlegroups:sparkles:'
                 else:
                     data.title = 'Alliance War Battlegroups:sparkles:'
+                overload = []
+                cnt = 0
                 for role in a:
                     data = await self._get_prestige(server, role, verbose=True, data=data)
-                # for member in members:
-                #     for battlegroups in (aq_roles, aw_roles):
-                #         for role in battlegroups:
-                #             count = 0
-                #             if role in member.roles:
-                #                 count += 1
-                #             if count > 1:
-                #                 overload.append(member.display_name)
-                # if len(overload) > 0:
-                #     data.add_field(name='Battlegroup Overload', value='\n'.join(overload))
+                    for member in members:
+                        if role in member.roles:
+                            cnt += 1
+                if cnt > 1:
+                    overload.append(member)
+                if len(overload) > 0:
+                    data.add_field(name='Overloaded BGs', value='\n'.join(m.display_name for m in overload))
                 pages.append(data)
             menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
             await menu.menu_start(pages=pages)
