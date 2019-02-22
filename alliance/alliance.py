@@ -879,9 +879,8 @@ class Alliance:
                       'aq7': {'t1': 'abcdefg', 't2': 'abcdefghi', 't3': 'abcdefghij'}}
 
         data.title = 'Member Assignment'
-        data.add_field(name='debug', value=json.dumps(matches)
-        data.add_field(name=alliance_map.upper(),
-                       value=json.dumps(self.guilds[alliance]['assignments'][user.id][alliance_map]))
+        data.add_field(name='debug', value=json.dumps(matches))
+        data.add_field(name=alliance_map.upper(),value=json.dumps(self.guilds[alliance]['assignments'][user.id][alliance_map]))
         dataIO.save_json(self.alliances, self.guilds)
         await self.bot.say(embed=data)
 
