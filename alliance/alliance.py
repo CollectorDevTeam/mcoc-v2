@@ -840,7 +840,7 @@ class Alliance:
             re.X)
         # alanes = parse_re.findall(lanes)
         for m in parse_re.findall(lanes):
-            alanes[m.lastgroup] = int(m.group(m.lastgroup))
+            alanes[m.lastgroup] = m.group(m.lastgroup)
         print(json.dumps(alanes))
 
         valid_maps = {'aw': {'t1': 'abcdefghi'},
@@ -852,23 +852,23 @@ class Alliance:
                       'aq6': {'t1': 'abcdefg', 't2': 'abcdefghi', 't3': 'abcdefghij'},
                       'aq7': {'t1': 'abcdefg', 't2': 'abcdefghi', 't3': 'abcdefghij'}}
         data = self._get_embed(ctx)
-        data.title='Member Assignment'
+        data.title = 'Member Assignment'
         if alliance_map in valid_maps.keys() and alanes != {}:
             if 'assignments' in self.guilds[alliance].keys():
                 if user.id in self.guilds[alliance]['assignments']:
-                    package = json.dumps(self.guilds[alliance]['assignments'][user.id])
-                    for key in alanes.keys:
-                        if alanes[key] in valid_maps[alliance_map][key]:
-                            package.update({'map': {key: alanes[key]}})
-                    await self.bot.say(package)
+                    for t in alanes.keys():
+                        self.guilds[alliance]['assignments'][user.id][alliance_map].update({t: alanes})
+
                 else:
-                    package = {user.id: {alliance_map: alanes}}
-                    self.guilds[alliance]['assignments'].update(package)
+                    for t in alanes.keys():
+                        empty_package[user.id][alliance_map].update({t: alanes})
+                    self.guilds[alliance]['assignments'].update(empty_package)
             else:
-                empty_package[user.id][alliance_map].update(alanes)
+                for t in alanes.keys():
+                    empty_package[user.id][alliance_map].update({t: alanes})
                 self.guilds[alliance].update({'assignments': empty_package})
-            data.add_field(name=alliance_map.upper(),
-                           value=json.dumps(self.guilds[alliance]['assignments'][user.id][alliance_map]))
+        data.add_field(name=alliance_map.upper(),
+                       value=json.dumps(self.guilds[alliance]['assignments'][user.id][alliance_map]))
         dataIO.save_json(self.alliances, self.guilds)
         await self.bot.say(embed=data)
 
