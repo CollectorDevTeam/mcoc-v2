@@ -14,11 +14,11 @@ import aiohttp
 import logging
 import csv
 import json
+import pygsheets
 import random
 import requests
 
 from pygsheets.utils import numericise_all, numericise
-import pygsheets
 import asyncio
 from .utils.dataIO import dataIO
 from functools import wraps
@@ -317,35 +317,38 @@ class ChampConverterMult(ChampConverter):
 async def warn_bold_say(bot, msg):
     await bot.say('\u26a0 ' + chat.bold(msg))
 
-def numericise_bool(val):
-    if val == "TRUE":
-        return True
-    elif val == "FALSE":
-        return False
-    else:
-        return numericise(val)
 
-def strip_and_numericise(val):
-        return numericise_bool(val.strip())
+# moved a bunch of definitions to mcocTools
 
-def cell_to_list(cell):
-    if cell is not None:
-        return [strip_and_numericise(i) for c in cell.split(',') for i in c.split('\n')]
+# def numericise_bool(val):
+#     if val == "TRUE":
+#         return True
+#     elif val == "FALSE":
+#         return False
+#     else:
+#         return numericise(val)
+#
+# def strip_and_numericise(val):
+#         return numericise_bool(val.strip())
 
-def cell_to_dict(cell):
-    if cell is None:
-        return None
-    ret  = {}
-    for i in cell.split(','):
-        k, v = [strip_and_numericise(j) for j in i.split(':')]
-        ret[k] = v
-    return ret
+# def cell_to_list(cell):
+#     if cell is not None:
+#         return [strip_and_numericise(i) for c in cell.split(',') for i in c.split('\n')]
+#
+# def cell_to_dict(cell):
+#     if cell is None:
+#         return None
+#     ret  = {}
+#     for i in cell.split(','):
+#         k, v = [strip_and_numericise(j) for j in i.split(':')]
+#         ret[k] = v
+#     return ret
 
-def remove_commas(cell):
-    return numericise_bool(cell.replace(',', ''))
-
-def remove_NA(cell):
-    return None if cell in ("#N/A", "") else numericise_bool(cell)
+# def remove_commas(cell):
+#     return numericise_bool(cell.replace(',', ''))
+#
+# def remove_NA(cell):
+#     return None if cell in ("#N/A", "") else numericise_bool(cell)
 
 class AliasDict(UserDict):
     '''Custom dictionary that uses a tuple of aliases as key elements.
@@ -1152,17 +1155,6 @@ class MCOC(ChampionFactory):
 
     @champ.command(pass_context=True, name='sigplot', hidden=True)
     async def champ_sigplot(self,ctx,*, champ: ChampConverterSig):
-        # try:
-        #     title, desc, sig_calcs = await champ.process_sig_description(
-        #             isbotowner=ctx.message.author == appinfo.owner)
-
-        # if champ.star <= 4 and champ.star > 1:
-        #     x = [1, 20, 40, 60, 80, 99]#99
-        # elif champ.star > 4:
-        #     x = 200
-        # elif champ.star == 1:
-        #     await self.bot.say('1★ champs have no signature ability.')
-        #     return
 
         try:
             # try:

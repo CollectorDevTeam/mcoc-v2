@@ -1,29 +1,27 @@
-import discord
-import re
+import asyncio
 import csv
-import random
-import logging
-import os
 import datetime
 import json
-import asyncio
-import aiohttp
-import pygsheets
-import modgrammar as md
-# for Calculator/
-from math import *
-from random import *  # from functools import wraps, partial
-
+import logging
+import os
+import re
 # defaultdict & partial needed for cache_gsheets
-from collections import UserDict, defaultdict, ChainMap, namedtuple, OrderedDict
+from collections import defaultdict, ChainMap, namedtuple, OrderedDict
 from functools import partial
+
+import aiohttp
+import discord
+import modgrammar as md
+import pygsheets
+from __main__ import send_cmd_help
+# from .mcoc import GSHandler, gapi_service_creds
+from cogs.utils import checks
+from discord.ext import commands
 
 from .utils import chat_formatting as chat
 from .utils.dataIO import dataIO
-#from .mcoc import GSHandler, gapi_service_creds
-from cogs.utils import checks
-from discord.ext import commands
-from __main__ import send_cmd_help
+
+# for Calculator/
 
 # from . import hook as hook
 
@@ -35,6 +33,7 @@ KABAM_ICON = 'https://imgur.com/UniRf5f.png'
 GSX2JSON = 'http://gsx2json.com/api?id={}&sheet={}&columns=false&integers=false'
 
 gapi_service_creds = "data/mcoc/mcoc_service_creds.json"
+
 
 # class_color_codes = {
 #         'Cosmic': discord.Color(0x2799f7), 'Tech': discord.Color(0x0033ff),
@@ -53,31 +52,30 @@ gapi_service_creds = "data/mcoc/mcoc_service_creds.json"
 #     return run
 
 class GSExport:
-
     default_settings = {
-                'sheet_name': None,
-                'sheet_action': 'file',
-                'data_type': 'dict',
-                'range': None,
-                'include_empty': False,
-                'column_handler': None,
-                'row_handler': None,
-                'rc_priority': 'column',
-                'postprocess': None,
-                'prepare_function': 'numericise_bool',
-            }
+        'sheet_name': None,
+        'sheet_action': 'file',
+        'data_type': 'dict',
+        'range': None,
+        'include_empty': False,
+        'column_handler': None,
+        'row_handler': None,
+        'rc_priority': 'column',
+        'postprocess': None,
+        'prepare_function': 'numericise_bool',
+    }
     default_cell_handlers = (
-                'cell_to_list',
-                'cell_to_dict',
-                'remove_commas',
-                'remove_NA',
-                'numericise',
-                'numericise_bool'
-            )
+        'cell_to_list',
+        'cell_to_dict',
+        'remove_commas',
+        'remove_NA',
+        'numericise',
+        'numericise_bool'
+    )
     cell_handler_aliases = {
-                'to_list': 'cell_to_list',
-                'to_dict': 'cell_to_dict',
-            }
+        'to_list': 'cell_to_list',
+        'to_dict': 'cell_to_dict',
+    }
 
     def __init__(self, bot, gc, *, name, gkey, local, **kwargs):
         self.bot = bot
@@ -112,7 +110,7 @@ class GSExport:
 
         if meta:
             for record in meta.get_all_records():
-                [record.update(((k,v),)) for k,v in self.settings.items() if k not in record or not record[k]]
+                [record.update(((k, v),)) for k, v in self.settings.items() if k not in record or not record[k]]
                 await self.retrieve_sheet(ss, **record)
         else:
             await self.retrieve_sheet(ss, **self.settings)
@@ -122,7 +120,7 @@ class GSExport:
                 await self.settings['postprocess'](self.bot, self.data)
             except Exception as err:
                 await self.bot.say("Runtime Error in postprocess of Spreadsheet "
-                        "'{}':\n\t{}".format( self.name, err))
+                                   "'{}':\n\t{}".format(self.name, err))
                 raise
         if self.local:
             dataIO.save_json(self.local, self.data)
@@ -136,11 +134,11 @@ class GSExport:
         if data_type.startswith('nested_list'):
             data_type, dlen = data_type.rsplit('::', maxsplit=1)
             dlen = int(dlen)
-        #prep_func = self.cell_handlers[kwargs['prepare_function']]
+        # prep_func = self.cell_handlers[kwargs['prepare_function']]
         prep_func = self.get_prepare_function(kwargs)
         self.data['_headers'][sheet_name] = header
         col_handlers = self._build_column_handlers(sheet_name, header,
-                            kwargs['column_handler'])
+                                                   kwargs['column_handler'])
         if sheet_action == 'table':
             self.data[sheet_name] = [header]
         for row in data[1:]:
@@ -154,15 +152,15 @@ class GSExport:
                 if data_type == 'list':
                     pack = clean_row[1:]
                 elif data_type == 'dict':
-                    pack = dict(zip(header[1:],clean_row[1:]))
+                    pack = dict(zip(header[1:], clean_row[1:]))
                 elif data_type == 'nested_list':
                     if len(clean_row[1:]) < dlen or not any(clean_row[1:]):
                         pack = None
                     else:
-                        pack = [clean_row[i:i+dlen] for i in range(1, len(clean_row), dlen)]
+                        pack = [clean_row[i:i + dlen] for i in range(1, len(clean_row), dlen)]
                 else:
                     await self.bot.say("Unknown data type '{}' for worksheet '{}' in spreadsheet '{}'".format(
-                            data_type, sheet_name, self.name))
+                        data_type, sheet_name, self.name))
                     return
                 self.data[rkey][sheet_name] = pack
             elif sheet_action in ('dict', 'file'):
@@ -189,7 +187,7 @@ class GSExport:
                 self.data[sheet_name].append(clean_row)
             else:
                 raise KeyError("Unknown sheet_action '{}' for worksheet '{}' in spreadsheet '{}'".format(
-                            sheet_action, sheet_name, self.name))
+                    sheet_action, sheet_name, self.name))
 
     async def _resolve_sheet_name(self, ss, sheet_name):
         if sheet_name:
@@ -197,7 +195,7 @@ class GSExport:
                 sheet = ss.worksheet('title', sheet_name)
             except pygsheets.WorksheetNotFound:
                 await self.bot.say("Cannot find worksheet '{}' in Spreadsheet '{}' ({})".format(
-                        sheet_name, ss.title, ss.id))
+                    sheet_name, ss.title, ss.id))
         else:
             sheet = ss.sheet1
             sheet_name = sheet.title
@@ -221,18 +219,20 @@ class GSExport:
 
         #  multiple prep
         handlers = [self.cell_handlers[i] for i in prep_list]
+
         def _curried(x):
             ret = x
             for func in handlers:
                 ret = func(ret)
             return ret
+
         return _curried
 
     def get_sheet_values(self, sheet, kwargs):
         if kwargs['range']:
             rng = self.bound_range(sheet, kwargs['range'])
             data = sheet.get_values(*rng, returnas='matrix',
-                    include_empty=kwargs['include_empty'])
+                                    include_empty=kwargs['include_empty'])
         else:
             data = sheet.get_all_values(include_empty=kwargs['include_empty'])
         return data
@@ -241,18 +241,18 @@ class GSExport:
         if not column_handler_str:
             return [None] * len(header)
         col_handler = cell_to_dict(column_handler_str)
-        #print(col_handler)
+        # print(col_handler)
 
         #  Column Header check
         invalid = set(col_handler.keys()) - set(header)
         if invalid:
             raise ValueError("Undefined Columns in column_handler for sheet "
-                    + "'{}':\n\t{}".format(sheet_name, ', '.join(invalid)))
+                             + "'{}':\n\t{}".format(sheet_name, ', '.join(invalid)))
         #  Callback Cell Handler check
         invalid = set(col_handler.values()) - set(self.cell_handlers.keys())
         if invalid:
             raise ValueError("Undefined CellHandler in column_handler for sheet "
-                    + "'{}':\n\t{}".format(sheet_name, ', '.join(invalid)))
+                             + "'{}':\n\t{}".format(sheet_name, ', '.join(invalid)))
 
         handler_funcs = []
         for column in header:
@@ -307,8 +307,8 @@ class GSHandler:
                         time.sleep(.3 * try_num)
                         await self.bot.say("Error while pulling '{}', try: {}".format(k, try_num))
             msg = await self.bot.edit_message(msg,
-                     'Pulled Google Sheet data {}/{}'.format(i+1, num_files))
-            logger.info('Pulled Google Sheet data {}/{}, {}'.format(i+1, num_files, "" if pulled else "Failed"))
+                                              'Pulled Google Sheet data {}/{}'.format(i + 1, num_files))
+            logger.info('Pulled Google Sheet data {}/{}, {}'.format(i + 1, num_files, "" if pulled else "Failed"))
         msg = await self.bot.edit_message(msg, 'Retrieval Complete')
         return package
 
@@ -317,7 +317,7 @@ class GSHandler:
             return pygsheets.authorize(service_file=self.service_file, no_cache=True)
         except FileNotFoundError:
             err_msg = 'Cannot find credentials file.  Needs to be located:\n' \
-                    + self.service_file
+                      + self.service_file
             await self.bot.say(err_msg)
             raise FileNotFoundError(err_msg)
 
@@ -732,7 +732,7 @@ class MCOCTools:
         return em
 
     @commands.command(pass_context=True, no_pm=True)
-    async def topic(self, ctx, channel:discord.channel = None):
+    async def topic(self, ctx, channel: discord.channel = None):
         '''Play the Channel Topic in the chat channel.'''
         if channel is None:
             channel = ctx.message.channel
@@ -1225,7 +1225,7 @@ class MCOCTools:
         event = 'eq_13'
         await self.format_eventquest(event, tier.lower())
 
-    @eventquest.command(name='13.1',  aliases=('secretempireforever', 'punisher2099', 'carnage', 'p99',))
+    @eventquest.command(name='13.1', aliases=('secretempireforever', 'punisher2099', 'carnage', 'p99',))
     async def eq_secretempireforever(self, tier='Master'):
         '''SECRET EMPIRE FOREVER'''
         event = 'eq_13.1'
@@ -1343,7 +1343,7 @@ class MCOCTools:
         event = 'eq_love3'
         await self.format_eventquest(event, tier.lower())
 
-    @eventquest.command(name='cmcc', aliases=('cmclash','captainmarvelclash',))
+    @eventquest.command(name='cmcc', aliases=('cmclash', 'captainmarvelclash',))
     async def eq_cmcc(self, tier='Act'):
         '''Captain Marvel\'s Combat Clash'''
         event = 'eq_cmcc'
@@ -1637,6 +1637,20 @@ class CDTReport:
         await self.bot.send_message(masterchannel, embed=embed)  # Sends report to the channel we specified earlier
 
 
+def cell_to_list(cell):
+    if cell is not None:
+        return [strip_and_numericise(i) for c in cell.split(',') for i in c.split('\n')]
+
+
+def cell_to_dict(cell):
+    if cell is None:
+        return None
+    ret  = {}
+    for i in cell.split(','):
+        k, v = [strip_and_numericise(j) for j in i.split(':')]
+        ret[k] = v
+    return ret
+
 def check_folders():
     folders = ('data', 'data/mcocTools/')
     for folder in folders:
@@ -1686,6 +1700,27 @@ def get_csv_rows(filecsv, column, match_val, default=None):
                         row[k] = default
             package.append(row)
     return package
+
+
+def numericise_bool(val):
+    if val == "TRUE":
+        return True
+    elif val == "FALSE":
+        return False
+    else:
+        return numericise(val)
+
+
+def remove_commas(cell):
+    return numericise_bool(cell.replace(',', ''))
+
+
+def remove_NA(cell):
+    return None if cell in ("#N/A", "") else numericise_bool(cell)
+
+
+def strip_and_numericise(val):
+        return numericise_bool(val.strip())
 
 
 def tabulate(table_data, width, rotate=True, header_sep=True):
