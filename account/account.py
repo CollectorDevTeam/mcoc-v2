@@ -161,9 +161,9 @@ class Account:
                 value = '<:ios:548619937296416789> '+value
                 continue
         if 'android' in value.lower() or 'samsung' in value.lower():
-            value = '<:android:548617164542836736> '+value
+            value = '<:android:548634644455882762> '+value
         elif 'both' in value.lower():
-            value = '<:ios:548619937296416789> iOS & <:android:548617164542836736> Android'
+            value = '<:ios:548619937296416789> iOS & <:android:548634644455882762> Android'
         if user.id not in self.nerdie:
             data = self._unknownuser(ctx, user)
         else:
