@@ -202,7 +202,7 @@ class Alliance:
             else:
                 if verbose and len(role_members) <= 30:
                     data.add_field(name='{} [{}/10] prestige: {}'
-                                   .format(role.name, len(role_members), value=verbose_prestige), inline=False)
+                                   .format(role.name, len(role_members), clan_prestige), value=verbose_prestige, inline=False)
                 elif verbose:
                     data.add_field(
                             name='{} prestige {}'.format(role.name, clan_prestige),
