@@ -368,20 +368,22 @@ class Alliance:
             for a in (aq_roles, aw_roles):
                 data = self._get_embed(ctx)
                 data.color = discord.Color.gold()
-
                 if a == aq_roles:
                     data.title = 'Alliance Quest Battlegroups:sparkles:'
                 else:
                     data.title = 'Alliance War Battlegroups:sparkles:'
+                if aq_roles == aw_roles:
+                    data.title = 'Alliance Battlegroups:sparkles:'
                 overload = []
                 cnt = 0
                 for role in a:
                     data = await self._get_prestige(server, role, verbose=True, data=data)
-                    for member in members:
+                for member in server.members:
+                    for role in a:
                         if role in member.roles:
                             cnt += 1
-                if cnt > 1:
-                    overload.append(member)
+                    if cnt > 1:
+                        overload.append(member)
                 if len(overload) > 0:
                     data.add_field(name='Overloaded BGs', value='\n'.join(m.display_name for m in overload))
                 pages.append(data)
