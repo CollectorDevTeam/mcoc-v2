@@ -864,9 +864,11 @@ class Alliance:
         matches = re.match(regex, lanes.lower()).groupdict()
 
         # self.guilds[alliance]['assignments'][user.id][alliance_map].update(matches)
-        for key in matches.keys():
-            self.guilds[alliance]['assignments'][user.id][alliance_map].update({key, matches[key]})
-
+        try:
+            for key in matches.keys():
+                self.guilds[alliance]['assignments'][user.id][alliance_map].update({key, matches[key]})
+        except:
+            await self.bot.say(json.dumps(matches))
             # print(matches)
 
         valid_maps = {'aw': {'t1': 'abcdefghi'},
