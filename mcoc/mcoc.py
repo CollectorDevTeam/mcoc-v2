@@ -16,9 +16,9 @@ import csv
 import json
 import pygsheets
 import random
-import requests
+# import requests
 
-from pygsheets.utils import numericise_all, numericise
+# from pygsheets.utils import numericise_all, numericise
 import asyncio
 from .utils.dataIO import dataIO
 from functools import wraps
@@ -27,7 +27,7 @@ from discord.ext import commands
 from .utils import chat_formatting as chat
 from __main__ import send_cmd_help
 from cogs.utils import checks
-#from .hook import ChampionRoster, HashtagRankConverter
+# from .hook import ChampionRoster, HashtagRankConverter
 # from .hook import PagesMenu
 
 ## experimental jjw
