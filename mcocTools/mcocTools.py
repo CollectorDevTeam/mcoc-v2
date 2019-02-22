@@ -8,6 +8,7 @@ import datetime
 import json
 import asyncio
 import aiohttp
+import pygsheets
 import modgrammar as md
 # for Calculator/
 from math import *
