@@ -358,6 +358,7 @@ class Alliance:
                 members = server.members
             aq_roles = []
             aw_roles = []
+            rolelist = []
             pages = []
             basic = ('bg1', 'bg2', 'bg3')
             if self.guilds[alliance]['type'] == 'basic':
@@ -366,7 +367,7 @@ class Alliance:
                         if bg in self.guilds[alliance].keys():
                             if r.id in self.guilds[alliance][bg]['id']:
                                 aq_roles.append(r)
-                aw_roles = aq_roles
+                rolelist.append(aq_roles)
             elif self.guilds[alliance]['type'] == 'advanced':
                 for bg in basic:
                     for r in roles:
@@ -376,8 +377,9 @@ class Alliance:
                         if bg + 'aw' in self.guilds[alliance]:
                             if r.id == self.guilds[alliance][bg+'aw']['id']:
                                 aw_roles.append(r)
-            print("AQ and AW roles", aq_roles, aw_roles)
-            for a in (aq_roles, aw_roles):
+                rolelist.append(aq_roles)
+                rolelist.append(aw_roles)
+            for a in (rolelist):
                 data = self._get_embed(ctx)
                 data.color = discord.Color.gold()
                 if a == aq_roles:
