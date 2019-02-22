@@ -841,7 +841,13 @@ class Alliance:
                                    'aq5': {'t1': '', 't2': '', 't3': ''},
                                    'aq6': {'t1': '', 't2': '', 't3': ''},
                                    'aq7': {'t1': '', 't2': '', 't3': ''}}}
-        alanes = {}
+        data = self._get_embed(ctx)
+        if alliance_map not in empty_package.keys():
+            data.title = 'Assignment Error'
+            data.description = 'Specify the AQ or AW map.  \n' \
+                               'aq1, aq2, aq3, aq4, aq5, aq6, aq7, aq'
+            await self.bot.say(embed=data)
+            return
         if lanes is None:
             if 'assignments' in self.guilds[alliance].keys():
                 if user.id in self.guilds[alliance]['assignments'].keys():
@@ -855,10 +861,10 @@ class Alliance:
                         await self.bot.delete_message(confirmation)
 
         regex = r"t?\w+?\s?1\s?(?P<t1>\w{1})|t?\w+?\s?2\s?(?P<t2>\w)|t?\w+?\s?3\s?(?P<t3>\w)"
-        matches = re.finditer(regex, lanes)
-        for m in matches:
-            self.guilds[alliance]['assignments'][user.id][alliance_map].update(m.groupdict())
-
+        matches = re.match(regex, lanes.lower())
+        for key in matches.keys():
+            self.guilds[alliance]['assignments'][user.id][alliance_map].update(key, matches[key])
+            # print(matches)
 
         valid_maps = {'aw': {'t1': 'abcdefghi'},
                       'aq1': {'t1': 'abcdefgh', 't2': 'abcdefgh', 't3': 'abcdefgh'},
@@ -869,7 +875,6 @@ class Alliance:
                       'aq6': {'t1': 'abcdefg', 't2': 'abcdefghi', 't3': 'abcdefghij'},
                       'aq7': {'t1': 'abcdefg', 't2': 'abcdefghi', 't3': 'abcdefghij'}}
 
-        data = self._get_embed(ctx)
         data.title = 'Member Assignment'
 
         data.add_field(name=alliance_map.upper(),
