@@ -14,7 +14,10 @@ import modgrammar as md
 from math import *
 from random import *  # from functools import wraps, partial
 
+# defaultdict & partial needed for cache_gsheets
 from collections import UserDict, defaultdict, ChainMap, namedtuple, OrderedDict
+from functools import partial
+
 from .utils import chat_formatting as chat
 from .utils.dataIO import dataIO
 #from .mcoc import GSHandler, gapi_service_creds
