@@ -158,11 +158,11 @@ class Account:
         key = "Phone"
         user = ctx.message.author
         if value.lower() in ('ios', 'iphone', 'ipad', 'apple'):
-            value = ':iphone:'+value
-        elif value.lower() in ('android',):
-            value = ':android:'+value
+            value = '<:ios:548619937296416789> '+value
+        elif value.lower() in ('android', 'samsung'):
+            value = '<:android:548617164542836736> '+value
         elif value in ('both',):
-            value = ':iphone: iOS & :android: Android'
+            value = '<:ios:548619937296416789> iOS & <:android:548617164542836736> Android'
         if user.id not in self.nerdie:
             data = self._unknownuser(ctx, user)
         else:
