@@ -862,8 +862,10 @@ class Alliance:
 
         regex = r"t?\w+?\s?1\s?(?P<t1>\w{1})|t?\w+?\s?2\s?(?P<t2>\w)|t?\w+?\s?3\s?(?P<t3>\w)"
         matches = re.match(regex, lanes.lower()).groupdict()
-        for key in matches.keys():
-            self.guilds[alliance]['assignments'][user.id][alliance_map].update(key, matches[key])
+
+        self.guilds[alliance]['assignments'][user.id][alliance_map].update(matches)
+        # for key in matches.keys():
+        #     self.guilds[alliance]['assignments'][user.id][alliance_map].update({key, matches[key]})
             # print(matches)
 
         valid_maps = {'aw': {'t1': 'abcdefghi'},
