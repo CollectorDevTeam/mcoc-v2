@@ -745,7 +745,8 @@ class MCOCMaps:
 
         # 'class_filter' : None, 'star_filter': 0,
 
-        default = {'tier': 0, 'difficulty' : '', 'hp': 0, 'atk': 0, 'node' : 0, 'color':discord.Color.gold(), 'debug': 0, 'test': False}
+        default = {'tier': 0, 'difficulty' : '', 'hp': 0, 'atk': 0, 'node': 0,
+                   'color': discord.Color.gold(), 'debug': 0, 'test': False}
         parse_re = re.compile(r'''\b(?:t(?:ier)?(?P<tier>[0-9]{1,2})
                     | hp?(?P<hp>[0-9]{2,6})
                     | a(?:tk)?(?P<atk>[0-9]{2,5})
