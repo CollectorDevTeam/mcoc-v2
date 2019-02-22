@@ -168,52 +168,53 @@ class Alliance:
                 role_members.append(member)
                 # print('role in member.roles')
         # print('role_member count {}'.format(len(role_members)))
-        for member in role_members:
-            members.append(member)
-            roster = ChampionRoster(self.bot, member)
-            await roster.load_champions()
-            if roster.prestige > 0:
-                prestige += roster.prestige
-                cnt += 1
-            temp_line = '{:{width}} p = {}'.format(
-                    member.display_name, int(roster.prestige), width=width)
-            # print(temp_line)
-            # line_out.append(temp_line)
-            line_out.update({roster.prestige: temp_line})
-        joined = '\n'.join(v for k, v in line_out.items())
-        # verbose_prestige = '```{}```'.format('\n'.join(line_out))
-        verbose_prestige = '```{}```'.format(joined)
-        # line_out.append('_' * (width + 11))
-        clan_prestige = 0
-        summary = 0
-        if cnt > 0:
-            summary = '{0:{width}}   = {1} from {2} members'.format(
-                role.name, round(prestige / cnt, 0), cnt, width=width)
-            clan_prestige = int(round(prestige / cnt, 0))
-            # print("Prestige:  ", clan_prestige)
-        if data is None:
-            if len(members) == 0 or len(members) > 30:
-                return None
-            elif verbose:
-                return verbose_prestige
+        if len(role_members) > 0:
+            for member in role_members:
+                members.append(member)
+                roster = ChampionRoster(self.bot, member)
+                await roster.load_champions()
+                if roster.prestige > 0:
+                    prestige += roster.prestige
+                    cnt += 1
+                temp_line = '{:{width}} p = {}'.format(
+                        member.display_name, int(roster.prestige), width=width)
+                # print(temp_line)
+                # line_out.append(temp_line)
+                line_out.update({roster.prestige: temp_line})
+            joined = '\n'.join(v for k, v in line_out.items())
+            # verbose_prestige = '```{}```'.format('\n'.join(line_out))
+            verbose_prestige = '```{}```'.format(joined)
+            # line_out.append('_' * (width + 11))
+            clan_prestige = 0
+            summary = 0
+            if cnt > 0:
+                summary = '{0:{width}}   = {1} from {2} members'.format(
+                    role.name, round(prestige / cnt, 0), cnt, width=width)
+                clan_prestige = int(round(prestige / cnt, 0))
+                # print("Prestige:  ", clan_prestige)
+            if data is None:
+                if len(members) == 0 or len(members) > 30:
+                    return None
+                elif verbose:
+                    return verbose_prestige
+                else:
+                    return clan_prestige
             else:
-                return clan_prestige
-        else:
-            if verbose and len(role_members) <= 30:
-                data.add_field(name='{} [{}/10] prestige: {}'
-                               .format(role.name, len(role_members), value=verbose_prestige, inline=False))
-            elif verbose:
-                data.add_field(
-                        name='{} prestige {}'.format(role.name, clan_prestige),
-                        value=summary + '\n\nVerbose prestige details '
-                                        'restricted for roles with more than 30 members.',
-                        inline=False)
-            else:
-                data.add_field(
-                        name='{} prestige {}'.format(role.name, clan_prestige),
-                        value=summary,
-                        inline=False)
-            return data
+                if verbose and len(role_members) <= 30:
+                    data.add_field(name='{} [{}/10] prestige: {}'
+                                   .format(role.name, len(role_members), value=verbose_prestige, inline=False))
+                elif verbose:
+                    data.add_field(
+                            name='{} prestige {}'.format(role.name, clan_prestige),
+                            value=summary + '\n\nVerbose prestige details '
+                                            'restricted for roles with more than 30 members.',
+                            inline=False)
+                else:
+                    data.add_field(
+                            name='{} prestige {}'.format(role.name, clan_prestige),
+                            value=summary,
+                            inline=False)
+                return data
 
     @checks.admin_or_permissions(manage_server=True)
     @alliance.command(name='delete', aliases=('unregister', 'del' 'remove', 'rm',), pass_context=True,
