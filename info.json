@@ -1,0 +1,7 @@
+{
+    "AUTHOR" : "CollectorDevTeam",
+    "INSTALL_MSG" : "The cogs on this repo are configured specifically for Collector. Caution.",
+    "NAME" : "CollectorDevTeam",
+    "SHORT" : "CDT",
+    "DESCRIPTION" : "The CollectorDevTeam repository for Redbot Cogs servicing Marvel Contest of Champions."
+}

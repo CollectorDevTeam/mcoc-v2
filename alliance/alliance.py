@@ -853,13 +853,12 @@ class Alliance:
                             self.guilds[alliance]['assignments'][user.id].pop(alliance_map, None)
                             dataIO.save_json(self.alliances, self.guilds)
                         await self.bot.delete_message(confirmation)
-        parse_re = re.compile(
-            r'''(t[1]|tier(\s?)[1])\s?(?P<t1>[a-jA-J])|(t[2]|tier(\s?)[2])\s?(?P<t2>[a-jA-J])|(t[3]|tier(\s?)[3])\s?(?P<t3>[a-jA-J])''',
-            re.X)
-        alanes = parse_re.groupindex(lanes)
-        # for m in parse_re.findall(lanes):
-        #     alanes[m.lastgroup] = m.group(m.lastgroup)
-        await self.bot.say('debug: '+json.dumps(alanes))
+
+        regex = r"t?\w+?\s?1\s?(?P<t1>\w{1})|t?\w+?\s?2\s?(?P<t2>\w)|t?\w+?\s?3\s?(?P<t3>\w)"
+        matches = re.finditer(regex, lanes)
+        for m in matches:
+            self.guilds[alliance]['assignments'][user.id][alliance_map].update(m.groupdict())
+
 
         valid_maps = {'aw': {'t1': 'abcdefghi'},
                       'aq1': {'t1': 'abcdefgh', 't2': 'abcdefgh', 't3': 'abcdefgh'},
@@ -870,25 +869,12 @@ class Alliance:
                       'aq6': {'t1': 'abcdefg', 't2': 'abcdefghi', 't3': 'abcdefghij'},
                       'aq7': {'t1': 'abcdefg', 't2': 'abcdefghi', 't3': 'abcdefghij'}}
 
-        # data = self._get_embed(ctx)
-        # data.title = 'Member Assignment'
-        # if alliance_map in valid_maps.keys() and alanes != {}:
-        #     if 'assignments' in self.guilds[alliance].keys():
-        #         if user.id in self.guilds[alliance]['assignments']:
-        #             for t in alanes.keys():
-        #                 self.guilds[alliance]['assignments'][user.id][alliance_map].update({t: alanes})
-        #
-        #         else:
-        #             for t in alanes.keys():
-        #                 empty_package[user.id][alliance_map].update({t: alanes})
-        #             self.guilds[alliance]['assignments'].update(empty_package)
-        #     else:
-        #         for t in alanes.keys():
-        #             empty_package[user.id][alliance_map].update({t: alanes})
-        #         self.guilds[alliance].update({'assignments': empty_package})
-        # data.add_field(name=alliance_map.upper(),
-        #                value=json.dumps(self.guilds[alliance]['assignments'][user.id][alliance_map]))
-        # dataIO.save_json(self.alliances, self.guilds)
+        data = self._get_embed(ctx)
+        data.title = 'Member Assignment'
+
+        data.add_field(name=alliance_map.upper(),
+                       value=json.dumps(self.guilds[alliance]['assignments'][user.id][alliance_map]))
+        dataIO.save_json(self.alliances, self.guilds)
         await self.bot.say(embed=data)
 
 
