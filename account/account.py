@@ -80,7 +80,7 @@ class Account:
                 data.add_field(name='Top 5 Champs', value='\n'.join(roster.top5), inline=False)
             else:
                 data.add_field(name='Prestige', value='User has no registerd CollectorVerse roster.\nUse the ``/roster`` command to get started.')
-            for i in ['Alliance', 'Job', 'Recruiting', 'Age', 'Gender', 'Timezone', 'About', 'Other', 'Website']:
+            for i in ['Alliance', 'Job', 'Recruiting', 'Age', 'Gender', 'Timezone', 'Phone', 'About', 'Other', 'Website']:
                 if i in self.nerdie[user.id]:
                     data.add_field(name=i+":", value=self.nerdie[user.id][i])
                 else:
@@ -133,7 +133,7 @@ class Account:
             await PagesMenu.menu_start(self, [data])
 
     # @commands.group(name="update", pass_context=True, invoke_without_command=True)
-    @_account.group(name="update", pass_context=True, invoke_without_command=True)
+    @_account.group(name="set", aliases('update',), pass_context=True, invoke_without_command=True)
     async def _update(self, ctx):
         """Update your CollectorVerse account"""
         await send_cmd_help(ctx)
@@ -144,6 +144,25 @@ class Account:
         key = "MCOC username"
         user = ctx.message.author
 
+        if user.id not in self.nerdie:
+            data = self._unknownuser(ctx, user)
+        else:
+            data = self._updateuser(ctx, key, value)
+        await PagesMenu.menu_start(self, [data])
+
+    @_update.command(pass_context=True, aliases=('os','iphone','android',))
+    async def phone(self, ctx, *, value):
+        """What's your device OS?
+        iOS, Android, Both"""
+
+        key = "Phone"
+        user = ctx.message.author
+        if value.lower() in ('ios', 'iphone', 'ipad', 'apple'):
+            value = ':iphone: iOS'
+        elif value.lower() in ('android',):
+            value = ':android: Android'
+        elif value in ('both',):
+            value = ':iphone: iOS & :android: Android'
         if user.id not in self.nerdie:
             data = self._unknownuser(ctx, user)
         else:
