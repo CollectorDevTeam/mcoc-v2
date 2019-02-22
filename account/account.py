@@ -154,14 +154,15 @@ class Account:
     async def phone(self, ctx, *, value):
         """What's your device OS?
         iOS, Android, Both"""
-
         key = "Phone"
         user = ctx.message.author
-        if value.lower() in ('ios', 'iphone', 'ipad', 'apple'):
-            value = '<:ios:548619937296416789> '+value
-        elif value.lower() in ('android', 'samsung'):
+        for i in ('ios', 'iphone', 'ipad', 'apple'):
+            if i in value.lower():
+                value = '<:ios:548619937296416789> '+value
+                continue
+        if 'android' in value.lower() or 'samsung' in value.lower():
             value = '<:android:548617164542836736> '+value
-        elif value in ('both',):
+        elif 'both' in value.lower():
             value = '<:ios:548619937296416789> iOS & <:android:548617164542836736> Android'
         if user.id not in self.nerdie:
             data = self._unknownuser(ctx, user)
