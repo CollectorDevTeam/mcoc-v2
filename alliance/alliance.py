@@ -860,7 +860,7 @@ class Alliance:
                             dataIO.save_json(self.alliances, self.guilds)
                         await self.bot.delete_message(confirmation)
 
-        regex = r"t?\w+?\s?1\s?(?P<t1>\w{1})|t?\w+?\s?2\s?(?P<t2>\w)|t?\w+?\s?3\s?(?P<t3>\w)"
+        regex = r"t?\w+?\s?1\s?(?P<t1>\w{1})\s?t?\w+?\s?2\s?(?P<t2>\w)\s?t?\w+?\s?3\s?(?P<t3>\w)"
         matches = re.match(regex, lanes.lower()).groupdict()
 
         # self.guilds[alliance]['assignments'][user.id][alliance_map].update(matches)
