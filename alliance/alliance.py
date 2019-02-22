@@ -866,7 +866,7 @@ class Alliance:
             data.add_field(name=alliance_map.upper(),
                            value=json.dumps(self.guilds[alliance]['assignments'][user.id][alliance_map]))
         dataIO.save_json(self.alliances, self.guilds)
-        await self.bot.send(embed=data)
+        await self.bot.say(embed=data)
 
 
 def send_request(url):
