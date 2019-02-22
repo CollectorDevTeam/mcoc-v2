@@ -133,7 +133,7 @@ class Account:
             await PagesMenu.menu_start(self, [data])
 
     # @commands.group(name="update", pass_context=True, invoke_without_command=True)
-    @_account.group(name="set", aliases('update',), pass_context=True, invoke_without_command=True)
+    @_account.group(name="set", aliases=('update',), pass_context=True, invoke_without_command=True)
     async def _update(self, ctx):
         """Update your CollectorVerse account"""
         await send_cmd_help(ctx)
@@ -158,9 +158,9 @@ class Account:
         key = "Phone"
         user = ctx.message.author
         if value.lower() in ('ios', 'iphone', 'ipad', 'apple'):
-            value = ':iphone: iOS'
+            value = ':iphone:'+value
         elif value.lower() in ('android',):
-            value = ':android: Android'
+            value = ':android:'+value
         elif value in ('both',):
             value = ':iphone: iOS & :android: Android'
         if user.id not in self.nerdie:
