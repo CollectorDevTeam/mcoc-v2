@@ -861,7 +861,7 @@ class Alliance:
                         await self.bot.delete_message(confirmation)
 
         regex = r"t?\w+?\s?1\s?(?P<t1>\w{1})|t?\w+?\s?2\s?(?P<t2>\w)|t?\w+?\s?3\s?(?P<t3>\w)"
-        matches = re.match(regex, lanes.lower())
+        matches = re.match(regex, lanes.lower()).groupdict()
         for key in matches.keys():
             self.guilds[alliance]['assignments'][user.id][alliance_map].update(key, matches[key])
             # print(matches)
