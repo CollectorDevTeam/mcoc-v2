@@ -851,11 +851,19 @@ class Alliance:
         """
         server = ctx.message.server
         alliance = server.id
+        valid_maps = {'aw': {'t1': 'abcdefghi'},
+                      'aq1': {'t1': 'abcdefgh', 't2': 'abcdefgh', 't3': 'abcdefgh'},
+                      'aq2': {'t1': 'abcdefgh', 't2': 'abcdefgh'},
+                      'aq3': {'t1': 'abcde', 't2': 'abcd', 't3': 'abcde'},
+                      'aq4': {'t1': 'abcde', 't2': 'abcdef', 't3': 'abcdefg'},
+                      'aq5': {'t1': 'abcdefgh', 't2': 'abcdefgh', 't3': 'abcdefgh'},
+                      'aq6': {'t1': 'abcdefg', 't2': 'abcdefghi', 't3': 'abcdefghij'},
+                      'aq7': {'t1': 'abcdefg', 't2': 'abcdefghi', 't3': 'abcdefghij'}}
         empty_package = {user.id: {'aw': {'t1': ''},
                                   }}
         data = self._get_embed(ctx)
 
-        if alliance_map not in empty_package[user.id].keys():
+        if alliance_map not in valid_maps.keys():
             data.title = 'Assignment Error'
             data.description = 'Specify the AQ or AW map.  \n' \
                                'aq1, aq2, aq3, aq4, aq5, aq6, aq7, aq'
@@ -873,32 +881,25 @@ class Alliance:
                             dataIO.save_json(self.alliances, self.guilds)
                         await self.bot.delete_message(confirmation)
                         return
+        else:
+            regex = r"t?\w+?\s?1\s?(?P<t1>\w{1})\s?t?\w+?\s?2\s?(?P<t2>\w)\s?t?\w+?\s?3\s?(?P<t3>\w)"
+            matches = re.match(regex, lanes.lower()).groupdict()
 
-        regex = r"t?\w+?\s?1\s?(?P<t1>\w{1})\s?t?\w+?\s?2\s?(?P<t2>\w)\s?t?\w+?\s?3\s?(?P<t3>\w)"
-        matches = re.match(regex, lanes.lower()).groupdict()
+            try:
+                self.guilds[alliance]['assignments'][user.id][alliance_map].update(matches)
+                # for key in matches.keys():
+                #     self.guilds[alliance]['assignments'][user.id][alliance_map].update({key, matches[key]})
+            except:
+                await self.bot.say(json.dumps(matches))
+                # print(matches)
 
-        try:
-            self.guilds[alliance]['assignments'][user.id][alliance_map].update(matches)
-            # for key in matches.keys():
-            #     self.guilds[alliance]['assignments'][user.id][alliance_map].update({key, matches[key]})
-        except:
-            await self.bot.say(json.dumps(matches))
-            # print(matches)
 
-        valid_maps = {'aw': {'t1': 'abcdefghi'},
-                      'aq1': {'t1': 'abcdefgh', 't2': 'abcdefgh', 't3': 'abcdefgh'},
-                      'aq2': {'t1': 'abcdefgh', 't2': 'abcdefgh'},
-                      'aq3': {'t1': 'abcde', 't2': 'abcd', 't3': 'abcde'},
-                      'aq4': {'t1': 'abcde', 't2': 'abcdef', 't3': 'abcdefg'},
-                      'aq5': {'t1': 'abcdefgh', 't2': 'abcdefgh', 't3': 'abcdefgh'},
-                      'aq6': {'t1': 'abcdefg', 't2': 'abcdefghi', 't3': 'abcdefghij'},
-                      'aq7': {'t1': 'abcdefg', 't2': 'abcdefghi', 't3': 'abcdefghij'}}
 
-        data.title = 'Member Assignment'
-        # data.add_field(name='debug', value=json.dumps(matches))
-        data.add_field(name=alliance_map.upper(), value=json.dumps(self.guilds[alliance]['assignments'][user.id][alliance_map]))
-        dataIO.save_json(self.alliances, self.guilds)
-        await self.bot.say(embed=data)
+            data.title = 'Member Assignment'
+            # data.add_field(name='debug', value=json.dumps(matches))
+            data.add_field(name=alliance_map.upper(), value=json.dumps(self.guilds[alliance]['assignments'][user.id][alliance_map]))
+            dataIO.save_json(self.alliances, self.guilds)
+            await self.bot.say(embed=data)
 
 
 def send_request(url):
