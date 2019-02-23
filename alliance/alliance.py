@@ -852,13 +852,7 @@ class Alliance:
         server = ctx.message.server
         alliance = server.id
         empty_package = {user.id: {'aw': {'t1': ''},
-                                   'aq1': {'t1': '', 't2': '', 't3': ''},
-                                   'aq2': {'t1': '', 't2': ''},
-                                   'aq3': {'t1': '', 't2': '', 't3': ''},
-                                   'aq4': {'t1': '', 't2': '', 't3': ''},
-                                   'aq5': {'t1': '', 't2': '', 't3': ''},
-                                   'aq6': {'t1': '', 't2': '', 't3': ''},
-                                   'aq7': {'t1': '', 't2': '', 't3': ''}}}
+                                  }}
         data = self._get_embed(ctx)
 
         if alliance_map not in empty_package[user.id].keys():
@@ -878,6 +872,7 @@ class Alliance:
                             self.guilds[alliance]['assignments'][user.id].pop(alliance_map, None)
                             dataIO.save_json(self.alliances, self.guilds)
                         await self.bot.delete_message(confirmation)
+                        return
 
         regex = r"t?\w+?\s?1\s?(?P<t1>\w{1})\s?t?\w+?\s?2\s?(?P<t2>\w)\s?t?\w+?\s?3\s?(?P<t3>\w)"
         matches = re.match(regex, lanes.lower()).groupdict()
