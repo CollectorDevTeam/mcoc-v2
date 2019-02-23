@@ -38,6 +38,24 @@ class Alliance:
                               'bg1aq', 'bg2aq', 'bg3aq', 'bg1aw', 'bg2aw', 'bg3aw',)
         self.info_keys = ('name', 'tag', 'type', 'about', 'started', 'invite', 'poster')
 
+    @commands.command(pass_context=True, no_pm=True)
+    async def lanes(self, user: discord.Member = None):
+        server = ctx.message.server
+        alliance = server.id
+        if user is None:
+            user = ctx.message.author
+        if alliance in self.guilds and 'assignments' in self.guilds[alliance] and user.id in self.guilds[alliance]['assignments']:
+            data = self._get_embed(ctx, alliance, user.id, user.color)
+            assignments = json.dumps(self.guilds[alliance]['assignments'][user.id])
+            keys = assignments.keys()
+            for map in keys:
+                assigned = []
+                for k, v in assigned[map]:
+                    assigned.append('{} : track {}'.format(k, v))
+                data.add_field(name=map.upper(), value='\n'.join(assigned))
+            await self.bot.say(embed=data)
+
+
     @commands.group(aliases=('clan', 'guild'), pass_context=True, invoke_without_command=True, hidden=False, no_pm=True)
     async def alliance(self, ctx, user: discord.Member = None):
         """[ALPHA] CollectorVerse Alliance tools
