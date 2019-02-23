@@ -1733,16 +1733,14 @@ class MCOC(ChampionFactory):
                 await self.bot.say('Regex match error. Abort.')
                 return
             if matches is not None:
+                saypackage = 'Submission registered.\nChampion: ' + champ.verbose_str
                 matches = matches.groupdict()
                 print('stats matches :\n'+json.dumps(matches))
                 keys = matches.keys()
                 for k in keys:
                     v = matches[k]
-                    default.update({k: {'v': v}})
-
-            saypackage = 'Submission registered.\nChampion: ' + champ.verbose_str
-            for k in keys:
-                saypackage += '\n{} : {}'.format(default[k]['title'], default[k]['v'])
+                    default[k]['v'].update(matches[k])
+                    saypackage += '\n{} : {}'.format(default[k]['title'], default[k]['v'])
 
             if len(attachments) > 0:
                 saypackage += '\nAttachments:'
