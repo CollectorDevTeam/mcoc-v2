@@ -1722,7 +1722,7 @@ class MCOC(ChampionFactory):
             (a|atk|at\w+?)\s?(?P<atk>\d{1,4})|
             (?:(cr|critrate)\s?(?P<cr>\d{1,4}))|
             (?:cd\s?(?P<cd>\d{1,4}))|
-            (?:(armorp\w+?|apen\w+?)\s?(?P<armopen>\d{1,4}))|
+            (?:(armorp\w+?|apen\w+?)\s?(?P<armorpen>\d{1,4}))|
             (?:(blockpen|bpen\w+?)\s?(?P<blockpen>\d{1,4}))|
             (?:(critresist|cres\w+?)\s?(?P<critresist>\d{1,4}))|
             (?:(ar|armor)\s?(?P<armor>\d{1,4}))|
