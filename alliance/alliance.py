@@ -48,11 +48,12 @@ class Alliance:
             data = self._get_embed(ctx, alliance, user.id, user.color)
             # assignments = self.guilds[alliance]['assignments'][user.id]
             # keys = self.guilds[alliance]['assignments'][user.id].keys()
-            for map in ('aq1', 'aq2', 'aq3', 'aq4', 'aq5', 'aq6', 'aq7', 'aw',):
-                assigned = []
-                for k, v in self.guilds[alliance]['assignments'][user.id][map]:
-                    assigned.append('{} : track {}'.format(k, v))
-                data.add_field(name=map.upper(), value='\n'.join(assigned))
+            for m in ('aq1', 'aq2', 'aq3', 'aq4', 'aq5', 'aq6', 'aq7', 'aw',):
+                if m in self.guilds[alliance]['assignments'][user.id]:
+                    assigned = []
+                    for k, v in self.guilds[alliance]['assignments'][user.id][m]:
+                        assigned.append('{} : track {}'.format(k, v))
+                    data.add_field(name=m.upper(), value='\n'.join(assigned))
             await self.bot.say(embed=data)
 
 
@@ -887,6 +888,8 @@ class Alliance:
 
             try:
                 self.guilds[alliance]['assignments'][user.id][alliance_map].update(matches)
+                dataIO.save_json(self.alliances, self.guilds)
+
                 # for key in matches.keys():
                 #     self.guilds[alliance]['assignments'][user.id][alliance_map].update({key, matches[key]})
             except:
@@ -897,8 +900,12 @@ class Alliance:
 
             data.title = 'Member Assignment'
             # data.add_field(name='debug', value=json.dumps(matches))
-            data.add_field(name=alliance_map.upper(), value=json.dumps(self.guilds[alliance]['assignments'][user.id][alliance_map]))
-            dataIO.save_json(self.alliances, self.guilds)
+            for m in ('aq1', 'aq2', 'aq3', 'aq4', 'aq5', 'aq6', 'aq7', 'aw',):
+                if m in self.guilds[alliance]['assignments'][user.id]:
+                    assigned = []
+                    for k, v in self.guilds[alliance]['assignments'][user.id][m]:
+                        assigned.append('{} : track {}'.format(k, v))
+                    data.add_field(name=m.upper(), value='\n'.join(assigned))
             await self.bot.say(embed=data)
 
 
