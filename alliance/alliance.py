@@ -39,7 +39,7 @@ class Alliance:
         self.info_keys = ('name', 'tag', 'type', 'about', 'started', 'invite', 'poster')
 
     @commands.command(pass_context=True, no_pm=True)
-    async def lanes(self, user: discord.Member = None):
+    async def lanes(self, ctx, user: discord.Member = None):
         server = ctx.message.server
         alliance = server.id
         if user is None:
