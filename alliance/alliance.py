@@ -860,6 +860,7 @@ class Alliance:
                                    'aq6': {'t1': '', 't2': '', 't3': ''},
                                    'aq7': {'t1': '', 't2': '', 't3': ''}}}
         data = self._get_embed(ctx)
+                   
         if alliance_map not in empty_package[user.id].keys():
             data.title = 'Assignment Error'
             data.description = 'Specify the AQ or AW map.  \n' \
@@ -899,8 +900,8 @@ class Alliance:
                       'aq7': {'t1': 'abcdefg', 't2': 'abcdefghi', 't3': 'abcdefghij'}}
 
         data.title = 'Member Assignment'
-        data.add_field(name='debug', value=json.dumps(matches))
-        data.add_field(name=alliance_map.upper(),value=json.dumps(self.guilds[alliance]['assignments'][user.id][alliance_map]))
+        # data.add_field(name='debug', value=json.dumps(matches))
+        data.add_field(name=alliance_map.upper(), value=json.dumps(self.guilds[alliance]['assignments'][user.id][alliance_map]))
         dataIO.save_json(self.alliances, self.guilds)
         await self.bot.say(embed=data)
 
