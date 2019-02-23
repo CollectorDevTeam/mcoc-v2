@@ -150,7 +150,7 @@ class Alliance:
             logger.warning('No Pages to display')
             # print('alliance._show_public - no pages')
 
-    def _get_embed(self, ctx, alliance=None, user_id=None, color=None):
+    def _get_embed(self, ctx, alliance=None, user_id=None, color=discord.Color.gold()):
         """Return a color styled embed with no title or description"""
         # color = discord.Color.gold()
         if alliance is not None:
@@ -424,7 +424,7 @@ class Alliance:
                 if cnt > 1:
                     overload.append(m)
             if len(overload) > 0:
-                data = self._get_embed(ctx, alliance)
+                data = self._get_embed(ctx, alliance=alliance, color=dcolor)
                 data.title = 'Overloaded Battle Groups'
                 data.add_field(name='Check these user\'s roles', value='\n'.join(m.display_name for m in overload))
             menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)

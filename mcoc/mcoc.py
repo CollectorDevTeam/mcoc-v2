@@ -1707,15 +1707,15 @@ class MCOC(ChampionFactory):
             return
         else:
             default = {
-                'hp' : {'v' :0, 'title': 'Health'}, # Health
-                'atk' : {'v' :0, 'title': 'Attack'}, # Attack
-                'cr' : {'v' :0, 'title': 'Critical Rate'}, # Critical Rate
-                'cd' : {'v' :0, 'title': 'Critical Damage'}, # Critical Damage
-                'blockpen' : {'v' :0, 'title': 'Block Penetration'}, # Blcok Proficiency
-                'critresist' : {'v' :0, 'title': 'Critical Resistance'}, # Critical Resistance
-                'armorpen' :  {'v' :0, 'title': 'Armor Penetration'}, # Armor Penetration
-                'armor' :  {'v' :0, 'title': 'Armor'}, # Armor
-                'bp' :  {'v' :0, 'title': 'Block Proficiency'}, # Block Proficiency
+                'hp': {'v' :0, 'title': 'Health'}, # Health
+                'atk': {'v' :0, 'title': 'Attack'}, # Attack
+                'cr': {'v' :0, 'title': 'Critical Rate'}, # Critical Rate
+                'cd': {'v' :0, 'title': 'Critical Damage'}, # Critical Damage
+                'blockpen': {'v' :0, 'title': 'Block Penetration'}, # Blcok Proficiency
+                'critresist': {'v' :0, 'title': 'Critical Resistance'}, # Critical Resistance
+                'armorpen':  {'v' :0, 'title': 'Armor Penetration'}, # Armor Penetration
+                'armor':  {'v' :0, 'title': 'Armor'}, # Armor
+                'bp':  {'v' :0, 'title': 'Block Proficiency'}, # Block Proficiency
             }
 
             regex = r'''(h|hp|h\w+?)\s?(?P<hp>\d{1,6})|
@@ -1728,10 +1728,17 @@ class MCOC(ChampionFactory):
             (?:(ar|armor)\s?(?P<armor>\d{1,4}))|
             (?:(bp|blockpro\w+?|bpro\w+?)\s?(?P<bp>\d{1,5}))'''
 
-            matches = re.match(regex,stats).groupdict()
-            keys = matches.keys()
-            for k in keys:
-                default[k].update({'v': matches[k]})
+            matches = re.match(regex, stats.lower())
+            if matches is None:
+                await self.bot.say('Regex match error. Abort.')
+                return
+            if matches is not None:
+                matches = matches.groupdict()
+                print('stats matches :\n'+json.dumps(matches))
+                keys = matches.keys()
+                for k in keys:
+                    v = matches[k]
+                    default.update({k: {'v': v}})
 
             saypackage = 'Submission registered.\nChampion: ' + champ.verbose_str
             for k in keys:
