@@ -51,8 +51,9 @@ class Alliance:
             for m in ('aq1', 'aq2', 'aq3', 'aq4', 'aq5', 'aq6', 'aq7', 'aw',):
                 if m in self.guilds[alliance]['assignments'][user.id]:
                     assigned = []
-                    for k, v in self.guilds[alliance]['assignments'][user.id][m]:
-                        assigned.append('{} : track {}'.format(k, v))
+                    for k in ('t1','t2','t3'):
+                        if k in self.guilds[alliance]['assignments'][user.id][m]:
+                            assigned.append('{} : track {}'.format(k, self.guilds[alliance]['assignments'][user.id][m][k]))
                     data.add_field(name=m.upper(), value='\n'.join(assigned))
             await self.bot.say(embed=data)
 
@@ -903,8 +904,9 @@ class Alliance:
             for m in ('aq1', 'aq2', 'aq3', 'aq4', 'aq5', 'aq6', 'aq7', 'aw',):
                 if m in self.guilds[alliance]['assignments'][user.id]:
                     assigned = []
-                    for k, v in self.guilds[alliance]['assignments'][user.id][m]:
-                        assigned.append('{} : track {}'.format(k, v))
+                    for k in ('t1','t2','t3'):
+                        if k in self.guilds[alliance]['assignments'][user.id][m]:
+                            assigned.append('{} : track {}'.format(k, self.guilds[alliance]['assignments'][user.id][m][k]))
                     data.add_field(name=m.upper(), value='\n'.join(assigned))
             await self.bot.say(embed=data)
 
