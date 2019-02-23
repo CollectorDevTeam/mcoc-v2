@@ -1736,10 +1736,8 @@ class MCOC(ChampionFactory):
                 saypackage = 'Submission registered.\nChampion: ' + champ.verbose_str
                 matches = matches.groupdict()
                 print('stats matches :\n'+json.dumps(matches))
-                keys = matches.keys()
-                for k in keys:
-                    v = matches[k]
-                    default[k]['v'].update(matches[k])
+                for k in matches.keys():
+                    default[k]['v'] = matches[k]
                     saypackage += '\n{} : {}'.format(default[k]['title'], default[k]['v'])
 
             if len(attachments) > 0:
