@@ -1696,8 +1696,8 @@ class MCOC(ChampionFactory):
         guild = await self.check_guild(ctx)
         attachments = ctx.message.attachments
 
-        if ctx.server.id != '215271081517383682':
-            cdt = self.bot.get_server(cdt)
+        if ctx.message.server.id != '215271081517383682':
+            cdt = self.bot.get_server('215271081517383682')
             cdt_stats = self.bot.get_channel('391358016328302593')
         else:
             cdt_stats = None
@@ -1760,9 +1760,14 @@ class MCOC(ChampionFactory):
                             default['armorpen']['v]'], default['blockpen']['v]'], default['critresist']['v]'],
                             default['armor']['v]'], default['bp']['v'], author.id]]
                 check = await self.bot.say('Debug - no stats submissions accepted currently.')
-                # check = await self._process_submission(package=package, GKEY=GKEY, sheet='submit_stats')
+                check = await self._process_submission(package=package, GKEY=GKEY, sheet='submit_stats')
                 if check:
                     await self.bot.edit_message(message2, 'Submission complete.')
+                    if cdt_stats is not None:
+                        await self.bot.send_message(cdt_stats, saypackage)
+                        if len(ctx.message.attachments) > 0:
+                            for a in ctx.message.attachments:
+                                await self.bot.send_message(cdt_stats, a.url)
                 else:
                     await self.bot.edit_message(message2, 'Submission failed.')
                 await self.bot.delete_message(confirmation)
