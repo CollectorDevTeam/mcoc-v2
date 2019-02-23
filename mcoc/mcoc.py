@@ -1691,70 +1691,84 @@ class MCOC(ChampionFactory):
 
     @submit.command(pass_context=True, name='stats', hidden=True)
     async def submit_stats(self, ctx, champ : ChampConverter, *, stats):
-        '''hp, atk, cr, cd, blockpen, critresist, armorpen, armor, bp'''
+        '''Submit Champion Stats
+        valid keys: hp, atk, cr, cd, blockpen, critresist, armorpen, armor, bp'''
         guild = await self.check_guild(ctx)
+        attachments = ctx.message.attachments
+
+        if ctx.server.id != '215271081517383682':
+            cdt = self.bot.get_server(cdt)
+            cdt_stats = self.bot.get_channel('391358016328302593')
+        else:
+            cdt_stats = None
+
         if not guild:
             await self.bot.say('This server is unauthorized.')
             return
         else:
             default = {
-                'hp' : 0, # Health
-                'atk' : 0, # Attack
-                'cr' : 0, # Critical Rate
-                'cd' : 0, # Critical Damage
-                'blockpen' : 0, # Blcok Proficiency
-                'critresist' : 0, # Critical Resistance
-                'armorpen' : 0, # Armor Penetration
-                'armor' : 0, # Armor
-                'bp' : 0, # Block Proficiency
+                'hp' : {'v' :0, 'title': 'Health'}, # Health
+                'atk' : {'v' :0, 'title': 'Attack'}, # Attack
+                'cr' : {'v' :0, 'title': 'Critical Rate'}, # Critical Rate
+                'cd' : {'v' :0, 'title': 'Critical Damage'}, # Critical Damage
+                'blockpen' : {'v' :0, 'title': 'Block Penetration'}, # Blcok Proficiency
+                'critresist' : {'v' :0, 'title': 'Critical Resistance'}, # Critical Resistance
+                'armorpen' :  {'v' :0, 'title': 'Armor Penetration'}, # Armor Penetration
+                'armor' :  {'v' :0, 'title': 'Armor'}, # Armor
+                'bp' :  {'v' :0, 'title': 'Block Proficiency'}, # Block Proficiency
             }
 
-            parse_re = re.compile(r'''(?:hp(?P<hp>/d{1,6}))
-                |(?:atk(?P<atk>/d{1,4}))
-                |(?:cr(?P<cr>/d{1,4}))
-                |(?:cd(?P<cd>/d{1,4}))
-                |(?:armorpen(?P<armopen>/d{1,4}))
-                |(?:blockpen(?P<blockpen>/d{1,4}))
-                |(?:critresist(?P<critresist>/d{1,4}))
-                |(?:armor(?P<armor>/d{1,4}))
-                |(?:bp(?P<bp>/d{1,5}))
-                ''',re.X)
+            regex = r'''(h|hp|h\w+?)\s?(?P<hp>\d{1,6})|
+            (a|atk|at\w+?)\s?(?P<atk>\d{1,4})|
+            (?:(cr|critrate)\s?(?P<cr>\d{1,4}))|
+            (?:cd\s?(?P<cd>\d{1,4}))|
+            (?:(armorp\w+?|apen\w+?)\s?(?P<armopen>\d{1,4}))|
+            (?:(blockpen|bpen\w+?)\s?(?P<blockpen>\d{1,4}))|
+            (?:(critresist|cres\w+?)\s?(?P<critresist>\d{1,4}))|
+            (?:(ar|armor)\s?(?P<armor>\d{1,4}))|
+            (?:(bp|blockpro\w+?|bpro\w+?)\s?(?P<bp>\d{1,5}))'''
 
-            dangling_arg = None
-            for arg in stats.lower().split(' '):
-                for m in parse_re.finditer(arg):
-                    default[m.lastgroup] = int(m.group(m.lastgroup))
+            matches = re.match(regex,stats).groupdict()
+            keys = matches.keys()
+            for k in keys:
+                default[k].update({'v': matches[k]})
 
-            message = await self.bot.say('Submission registered.\nChampion: ' + champ.verbose_str +
-                    '\nHealth: {0.hp}'
-                    '\nAttack: {0.atk}'
-                    '\nCritical Rate: {0.cr}'
-                    '\nCritical Damage: {0.cd}'
-                    '\nArmor Penetration: {0.armorpen}'
-                    '\nBlock Penetration: {0.blockpen}'
-                    '\nCritical Resistance: {0.crit_resist}'
-                    '\nArmor: {0.armor}'
-                    '\nBlock Proficiency: {0.bp}'
-                    '\nPress OK to confirm.'.format(default))
-            await self.bot.add_reaction(message, '❌')
-            await self.bot.add_reaction(message, '🆗')
-            react = await self.bot.wait_for_reaction(message=message,
-                    user=ctx.message.author, timeout=60, emoji=['❌', '🆗'])
-            if react is not None:
-                if react.reaction.emoji == '❌':
-                    await self.bot.say('Submission canceled.')
-                elif react.reaction.emoji == '🆗':
-                    GKEY = '1VOqej9o4yLAdMoZwnWbPY-fTFynbDb_Lk8bXDNeonuE'
-                    message2 = await self.bot.say('Submission in process.')
-                    author = ctx.message.author
-                    package = [[str(ctx.message.timestamp), author.name, champ.full_name, champ.star, champ.rank, hp, attack, cr, cd, armorpen, blockpen, critresist, armor, bp, author.id ]]
-                    check = await self._process_submission(package=package, GKEY=GKEY, sheet='submit_stats')
-                    if check:
-                        await self.bot.edit_message(message2, 'Submission complete.')
-                    else:
-                        await self.bot.edit_message(message2, 'Submission failed.')
+            saypackage = 'Submission registered.\nChampion: ' + champ.verbose_str
+            for k in keys:
+                saypackage += '\n{} : {}'.format(default[k]['title'], default[k]['v'])
+
+            if len(attachments) > 0:
+                saypackage += '\nAttachments:'
+                for a in attachments:
+                    saypackage += '\{}'.format(a.url)
+
+            answer, confirmation = await PagesMenu.confirm(self, ctx, saypackage)
+
+            if answer is False:
+                await self.bot.say('Submission canceled.')
+                await self.bot.delete_message(confirmation)
+            elif answer is True:
+                if default['hp']['v'] == 0 or default['atk']['v'] == 0:
+                    await self.bot.say('Submission Error:\nMinimum required submission includes Health & Attack.  Preferred submissions include all base stats.')
+                    await self.bot.delete_message(confirmation)
+                    return
+                GKEY = '1VOqej9o4yLAdMoZwnWbPY-fTFynbDb_Lk8bXDNeonuE'
+                message2 = await self.bot.say('Submission in progress.')
+                author = ctx.message.author
+                package = [[str(ctx.message.timestamp), author.name, champ.full_name, champ.star, champ.rank,
+                            default['hp']['v]'], default['attack']['v]'],default['cr']['v]'], default['cd']['v]'],
+                            default['armorpen']['v]'], default['blockpen']['v]'], default['critresist']['v]'],
+                            default['armor']['v]'], default['bp']['v'], author.id]]
+                check = await self.bot.say('Debug - no stats submissions accepted currently.')
+                # check = await self._process_submission(package=package, GKEY=GKEY, sheet='submit_stats')
+                if check:
+                    await self.bot.edit_message(message2, 'Submission complete.')
+                else:
+                    await self.bot.edit_message(message2, 'Submission failed.')
+                await self.bot.delete_message(confirmation)
             else:
                 await self.bot.say('Ambiguous response.  Submission canceled')
+                await self.bot.delete_message(confirmation)
 
 
     @submit.command(pass_context=True, name='prestige')

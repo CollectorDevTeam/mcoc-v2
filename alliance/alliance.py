@@ -345,8 +345,9 @@ class Alliance:
     async def _battle_groups(self, ctx):
         """Report Alliance Battlegroups"""
         alliances, message = self._find_alliance(ctx.message.author)
+        dcolor = discord.Color.gold()
         if alliances is None:
-            data = self._get_embed(ctx)
+            data = self._get_embed(ctx, color=dcolor)
             data.title = 'Access Denied:sparkles:'
             data.description = 'This tool is only available for members of this alliance.'
             await self.bot.say(embed=data)
@@ -383,7 +384,7 @@ class Alliance:
             if 'tag' in self.guilds[alliance].keys():
                 tag = '[{}] '.format(self.guilds[alliance]['tag'])
             if basic:
-                data = self._get_embed(ctx, alliance=alliance)
+                data = self._get_embed(ctx, alliance=alliance, color=dcolor)
                 data.title = tag+'Alliance Battlegroups:sparkles:'
                 for bg in ('bg1', 'bg2', 'bg3'):
                     if bg in battle_groups.keys():
@@ -391,14 +392,14 @@ class Alliance:
                                                         data=data, role_members=battle_groups[bg]['members'])
                 pages.append(data)
             else:
-                data = self._get_embed(ctx, alliance=alliance)
+                data = self._get_embed(ctx, alliance=alliance, color=dcolor)
                 data.title = tag + 'Alliance Quest Battlegroups:sparkles:'
                 for bg in ('bg1aq', 'bg2aq', 'bg3aq'):
                     if bg in battle_groups.keys():
                         data = await self._get_prestige(server, battle_groups[bg]['role'], verbose=True, data=data,
                                                         role_members=battle_groups[bg]['members'])
                 pages.append(data)
-                data = self._get_embed(ctx, alliance=alliance)
+                data = self._get_embed(ctx, alliance=alliance, color=dcolor)
                 data.title = tag + 'Alliance War Battlegroups:sparkles:'
                 for bg in ('bg1aw', 'bg2aw', 'bg3aw'):
                     if bg in battle_groups.keys():
