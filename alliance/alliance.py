@@ -886,11 +886,13 @@ class Alliance:
                         return
         regex = r"t?\w+?\s?1\s?(?P<t1>\w{1})\s?t?\w+?\s?2\s?(?P<t2>\w)\s?t?\w+?\s?3\s?(?P<t3>\w)"
         matches = re.match(regex, lanes.lower())
-        if matches is not None:
-            matches = matches.groupdict()
-
+        if matches is None:
+            await self.bot.say('No matches.  Abort.')
+            return
+        matches = matches.groupdict()
         try:
-            self.guilds[alliance]['assignments'][user.id][alliance_map].update(matches)
+            for k in matches.keys():
+                self.guilds[alliance]['assignments'][user.id][alliance_map].update({k:matches[k]})
             dataIO.save_json(self.alliances, self.guilds)
             # for key in matches.keys():
             #     self.guilds[alliance]['assignments'][user.id][alliance_map].update({key, matches[key]})
