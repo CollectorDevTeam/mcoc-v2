@@ -38,7 +38,7 @@ class Alliance:
                               'bg1aq', 'bg2aq', 'bg3aq', 'bg1aw', 'bg2aw', 'bg3aw',)
         self.info_keys = ('name', 'tag', 'type', 'about', 'started', 'invite', 'poster')
 
-    @commands.command(pass_context=True, no_pm=True)
+    @commands.command(pass_context=True, no_pm=True, hidden=True)
     async def lanes(self, ctx, user: discord.Member = None):
         server = ctx.message.server
         alliance = server.id
@@ -46,11 +46,11 @@ class Alliance:
             user = ctx.message.author
         if alliance in self.guilds and 'assignments' in self.guilds[alliance] and user.id in self.guilds[alliance]['assignments']:
             data = self._get_embed(ctx, alliance, user.id, user.color)
-            assignments = json.dumps(self.guilds[alliance]['assignments'][user.id])
-            keys = assignments.keys()
-            for map in keys:
+            # assignments = self.guilds[alliance]['assignments'][user.id]
+            # keys = self.guilds[alliance]['assignments'][user.id].keys()
+            for map in ('aq1', 'aq2', 'aq3', 'aq4', 'aq5', 'aq6', 'aq7', 'aw',):
                 assigned = []
-                for k, v in assigned[map]:
+                for k, v in self.guilds[alliance]['assignments'][user.id][map]:
                     assigned.append('{} : track {}'.format(k, v))
                 data.add_field(name=map.upper(), value='\n'.join(assigned))
             await self.bot.say(embed=data)
@@ -860,7 +860,7 @@ class Alliance:
                                    'aq6': {'t1': '', 't2': '', 't3': ''},
                                    'aq7': {'t1': '', 't2': '', 't3': ''}}}
         data = self._get_embed(ctx)
-                   
+
         if alliance_map not in empty_package[user.id].keys():
             data.title = 'Assignment Error'
             data.description = 'Specify the AQ or AW map.  \n' \
