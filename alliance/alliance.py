@@ -867,7 +867,7 @@ class Alliance:
                       'aq7': {'t1': 'abcdefg', 't2': 'abcdefghi', 't3': 'abcdefghij'}}
         empty_package = {user.id: {'aw': {'t1': ''},
                                   }}
-        data = self._get_embed(ctx)
+        data = self._get_embed(ctx, color=user.color)
 
         if alliance_map not in valid_maps.keys():
             data.title = 'Assignment Error'
@@ -878,6 +878,8 @@ class Alliance:
         if 'assignments' not in self.guilds[alliance].keys():
             self.guilds[alliance].update({'assignments': {}})
             dataIO.save_json(self.alliances, self.guilds)
+        if user.id not in self.guilds[alliance]['assignments']:
+            self.guilds[alliance]['assignments'].update({user.id: {}})
         if lanes is None:
             if 'assignments' in self.guilds[alliance].keys():
                 if user.id in self.guilds[alliance]['assignments'].keys():
@@ -890,32 +892,31 @@ class Alliance:
                             dataIO.save_json(self.alliances, self.guilds)
                         await self.bot.delete_message(confirmation)
                         return
-        regex = r"t?\w+?\s?1\s?(?P<t1>\w{1})\s?t?\w+?\s?2\s?(?P<t2>\w)\s?t?\w+?\s?3\s?(?P<t3>\w)"
-        matches = re.match(regex, lanes.lower())
-        if matches is None:
-            await self.bot.say('No matches.  Abort.')
-            return
-        matches = matches.groupdict()
-        try:
-            for k in matches.keys():
-                self.guilds[alliance]['assignments'][user.id][alliance_map].update({k:matches[k]})
-            dataIO.save_json(self.alliances, self.guilds)
-            # for key in matches.keys():
-            #     self.guilds[alliance]['assignments'][user.id][alliance_map].update({key, matches[key]})
-        except:
-            await self.bot.say(json.dumps(matches))
+        else:
+            regex = r"t?\w+?\s?1\s?(?P<t1>\w{1})\s?t?\w+?\s?2\s?(?P<t2>\w)\s?t?\w+?\s?3\s?(?P<t3>\w)"
+            matches = re.match(regex, lanes.lower())
+            if matches is None:
+                await self.bot.say('No matches.  Abort.')
+                return
+            matches = matches.groupdict()
+            try:
+                for k in matches.keys():
+                    self.guilds[alliance]['assignments'][user.id][alliance_map].update({k:matches[k]})
+                dataIO.save_json(self.alliances, self.guilds)
+                # for key in matches.keys():
+                #     self.guilds[alliance]['assignments'][user.id][alliance_map].update({key, matches[key]})
+            except:
+                await self.bot.say(json.dumps(matches))
             # print(matches)
 
-        data.title = 'Member Assignment'
-        # data.add_field(name='debug', value=json.dumps(matches))
-        for m in ('aq1', 'aq2', 'aq3', 'aq4', 'aq5', 'aq6', 'aq7', 'aw',):
-            if m in self.guilds[alliance]['assignments'][user.id]:
+            data.title = 'Member Assignment'
+            for m in self.guilds[alliance]['assignments'][user.id].keys():
                 assigned = []
                 for k in ('t1', 't2', 't3'):
                     if k in self.guilds[alliance]['assignments'][user.id][m]:
                         assigned.append('{} : track {}'.format(k, self.guilds[alliance]['assignments'][user.id][m][k]))
                 data.add_field(name=m.upper(), value='\n'.join(assigned))
-        await self.bot.say(embed=data)
+            await self.bot.say(embed=data)
 
 
 def send_request(url):
