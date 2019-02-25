@@ -872,9 +872,12 @@ class Alliance:
         if alliance_map not in valid_maps.keys():
             data.title = 'Assignment Error'
             data.description = 'Specify the AQ or AW map.  \n' \
-                               'aq1, aq2, aq3, aq4, aq5, aq6, aq7, aq'
+                               'aq1, aq2, aq3, aq4, aq5, aq6, aq7, aw'
             await self.bot.say(embed=data)
             return
+        if 'assignments' not in self.guilds[alliance].keys():
+            self.guilds[alliance].update({'assignments': {}})
+            dataIO.save_json(self.alliances, self.guilds)
         if lanes is None:
             if 'assignments' in self.guilds[alliance].keys():
                 if user.id in self.guilds[alliance]['assignments'].keys():
@@ -908,7 +911,7 @@ class Alliance:
         for m in ('aq1', 'aq2', 'aq3', 'aq4', 'aq5', 'aq6', 'aq7', 'aw',):
             if m in self.guilds[alliance]['assignments'][user.id]:
                 assigned = []
-                for k in ('t1','t2','t3'):
+                for k in ('t1', 't2', 't3'):
                     if k in self.guilds[alliance]['assignments'][user.id][m]:
                         assigned.append('{} : track {}'.format(k, self.guilds[alliance]['assignments'][user.id][m][k]))
                 data.add_field(name=m.upper(), value='\n'.join(assigned))
