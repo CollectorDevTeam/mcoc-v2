@@ -411,14 +411,17 @@ class Alliance:
                 cnt = 0
                 if basic:
                     for bg in ('bg1', 'bg2', 'bg3'):
-                        cnt += battle_groups[bg]['members'].count(m)
+                        if bg in self.guilds[alliance]:
+                            cnt += battle_groups[bg]['members'].count(m)
                 else:
                     for bg in ('bg1aq', 'bg2aq', 'bg3aq'):
-                        cnt += battle_groups[bg]['members'].count(m)
+                        if bg in self.guilds[alliance]:
+                            cnt += battle_groups[bg]['members'].count(m)
                     if cnt > 1:
                         overload.append(m)
                     for bg in ('bg1aw', 'bg2aw', 'bg3aw'):
-                        cnt += battle_groups[bg]['members'].count(m)
+                        if bg in self.guilds[alliance]:
+                            cnt += battle_groups[bg]['members'].count(m)
                     if cnt > 1:
                         overload.append(m)
                 if cnt > 1:
@@ -675,26 +678,26 @@ class Alliance:
 
     @checks.admin_or_permissions(manage_server=True)
     @update.command(pass_context=True, name='officers')
-    async def _officers(self, ctx, role: EnhancedRoleConverter):
+    async def _officers(self, ctx, role: EnhancedRoleConverter = None):
         """Which role are your Alliance Officers?"""
         data = await self._update_role(ctx, key='officers', role=role)
         await self.bot.say(embed=data)
 
     @update.command(pass_context=True, name='bg1')
-    async def _bg1(self, ctx, role: EnhancedRoleConverter):
+    async def _bg1(self, ctx, role: EnhancedRoleConverter = None):
         """Which role is your Battlegroup 1?"""
         print("updating bg1")
         data = await self._update_role(ctx, key='bg1', role=role)
         await self.bot.say(embed=data)
 
     @update.command(pass_context=True, name='bg1aq')
-    async def _bg1aq(self, ctx, role: EnhancedRoleConverter):
+    async def _bg1aq(self, ctx, role: EnhancedRoleConverter = None):
         """Which role is your Battlegroup 1 for Alliance Quest?"""
         data = await self._update_role(ctx, key='bg1aq', role=role)
         await self.bot.say(embed=data)
 
     @update.command(pass_context=True, name='bg1aw')
-    async def _bg1aw(self, ctx, role: EnhancedRoleConverter):
+    async def _bg1aw(self, ctx, role: EnhancedRoleConverter = None):
         """Which role is your Battlegroup 1 for Alliance War?"""
         # if role.name == 'everyone':
         #     data = self._get_embed(ctx)
@@ -705,43 +708,43 @@ class Alliance:
         await self.bot.say(embed=data)
 
     @update.command(pass_context=True, name='bg2')
-    async def _bg2(self, ctx, role: EnhancedRoleConverter):
+    async def _bg2(self, ctx, role: EnhancedRoleConverter = None):
         """Which role is your Battlegroup 2?"""
         data = await self._update_role(ctx, key='bg2', role=role)
         await self.bot.say(embed=data)
 
     @update.command(pass_context=True, name='bg2aq')
-    async def _bg2aq(self, ctx, role: EnhancedRoleConverter):
+    async def _bg2aq(self, ctx, role: EnhancedRoleConverter = None):
         """Which role is your Battlegroup 2 for Alliance Quest?"""
         data = await self._update_role(ctx, key='bg2aq', role=role)
         await self.bot.say(embed=data)
 
     @update.command(pass_context=True, name='bg2aw')
-    async def _bg2aw(self, ctx, role: EnhancedRoleConverter):
+    async def _bg2aw(self, ctx, role: EnhancedRoleConverter = None):
         """Which role is your Battlegroup 2 for Alliance War?"""
         data = await self._update_role(ctx, key='bg2aw', role=role)
         await self.bot.say(embed=data)
 
     @update.command(pass_context=True, name='bg3')
-    async def _bg3(self, ctx, role: EnhancedRoleConverter):
+    async def _bg3(self, ctx, role: EnhancedRoleConverter = None):
         """Which role is your Battlegroup 3?"""
         data = await self._update_role(ctx, key='bg3', role=role)
         await self.bot.say(embed=data)
 
     @update.command(pass_context=True, name='bg3aq')
-    async def _bg3aq(self, ctx, role: EnhancedRoleConverter):
+    async def _bg3aq(self, ctx, role: EnhancedRoleConverter = None):
         """Which role is your Battlegroup 3 for Alliance Quest?"""
         data = await self._update_role(ctx, key='bg3aq', role=role)
         await self.bot.say(embed=data)
 
     @update.command(pass_context=True, name='bg3aw')
-    async def _bg3aw(self, ctx, role: EnhancedRoleConverter):
+    async def _bg3aw(self, ctx, role: EnhancedRoleConverter = None):
         """Which role is your Battlegroup 3 for Alliance War?"""
         data = await self._update_role(ctx, key='bg3aw', role=role)
         await self.bot.say(embed=data)
 
     @update.command(pass_context=True, name='alliance')
-    async def _alliance(self, ctx, role: EnhancedRoleConverter):
+    async def _alliance(self, ctx, role: EnhancedRoleConverter = None):
         """Which role represents all members of your alliance (up to 30)?"""
         data = await self._update_role(ctx, key='alliance', role=role)
         await self.bot.say(embed=data)
@@ -764,7 +767,7 @@ class Alliance:
         print("update: ", server.name, role.name)
         if server.id not in self.guilds:
             return _unknown_guild(ctx)
-        if role.name == '@everyone':
+        if role is not None and role.name == '@everyone':
             data = self._get_embed(ctx)
             data.title = 'Alliance Role restriction:sparkles:'
             data.description = 'The ``@everyone`` role is prohibited from ' \
