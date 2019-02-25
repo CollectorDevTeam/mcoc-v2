@@ -536,7 +536,7 @@ class MCOCMaps:
         for k, v in aw_tiers.items():
             value.append([k, v['mult'], v['diff']])
         v = CDTHelperFunctions.tabulate_data(value, width=[3, 4, 14], align=['left', 'left', 'left'], rotate=False, separate_header=False)
-        em = discord.Embed(color=discord.Color.gold(), title='Alliance War Tiers', url=JOINCDT)
+        em = discord.Embed(color=discord.Color.gold(), title='Alliance War Tier Multipliers and Difficulty', url=JOINCDT)
         em.set_thumbnail(url='http://www.alliancewar.com/aw/images/app_icon.jpg')
         em.add_field(name=name, value='```{}```'.format(v))
         # em.add_field(name=name, value=chat.box(v), inline=False)
