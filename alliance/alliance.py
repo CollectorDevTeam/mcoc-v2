@@ -865,8 +865,7 @@ class Alliance:
                       'aq5': {'t1': 'abcdefgh', 't2': 'abcdefgh', 't3': 'abcdefgh'},
                       'aq6': {'t1': 'abcdefg', 't2': 'abcdefghi', 't3': 'abcdefghij'},
                       'aq7': {'t1': 'abcdefg', 't2': 'abcdefghi', 't3': 'abcdefghij'}}
-        empty_package = {user.id: {'aw': {'t1': ''},
-                                  }}
+
         data = self._get_embed(ctx, color=user.color)
 
         if alliance_map not in valid_maps.keys():
@@ -875,6 +874,7 @@ class Alliance:
                                'aq1, aq2, aq3, aq4, aq5, aq6, aq7, aw'
             await self.bot.say(embed=data)
             return
+
         if 'assignments' not in self.guilds[alliance].keys():
             self.guilds[alliance].update({'assignments': {}})
             dataIO.save_json(self.alliances, self.guilds)
@@ -893,21 +893,21 @@ class Alliance:
                         await self.bot.delete_message(confirmation)
                         return
         else:
-            regex = r"t?\w+?\s?1\s?(?P<t1>\w{1})\s?t?\w+?\s?2\s?(?P<t2>\w)\s?t?\w+?\s?3\s?(?P<t3>\w)"
-            matches = re.match(regex, lanes.lower())
-            if matches is None:
-                await self.bot.say('No matches.  Abort.')
-                return
-            matches = matches.groupdict()
-            try:
-                for k in matches.keys():
-                    self.guilds[alliance]['assignments'][user.id][alliance_map].update({k:matches[k]})
-                dataIO.save_json(self.alliances, self.guilds)
-                # for key in matches.keys():
-                #     self.guilds[alliance]['assignments'][user.id][alliance_map].update({key, matches[key]})
-            except:
-                await self.bot.say(json.dumps(matches))
-            # print(matches)
+            tiers ={"t1": r"t?\w+?\s?1\s?(?P<t1>\w{1})",
+                    "t2": r"t?\w+?\s?2\s?(?P<t2>\w{1})",
+                    "t3": r"t?\w+?\s?3\s?(?P<t3>\w{1})"}
+            for t in ("t1", "t2", "t3"):
+                match = re.search(tiers[t], lanes)
+                if match is not None:
+                    if match[1] in valid_maps[alliance_map][t]:
+                        self.guilds[alliance]['assignments'][user.id][alliance_map].update({t: match[1]})
+                    else:
+                        if alliance_map in self.guilds[alliance][user.id].keys():
+                            question = "**{}** is not a valid assignment. Do you wish to pop this **{}** assignment?"\
+                                .format(match[1].upper(), t)
+                            answer, confirmation = await PagesMenu.confirm(self, ctx, question)
+                            if answer and t in self.guilds[alliance][user.id][alliance_map].keys():
+                                self.guilds[alliance]['assignments'][user.id][alliance_map].pop(t)
 
             data.title = 'Member Assignment'
             for m in self.guilds[alliance]['assignments'][user.id].keys():
