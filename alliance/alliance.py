@@ -882,7 +882,7 @@ class Alliance:
             self.guilds[alliance]['assignments'].update({user.id: {}})
             dataIO.save_json(self.alliances, self.guilds)
         if assignment is not None:
-            self.guilds[alliance]['assignments'][alliance_map].update(assignment)
+            self.guilds[alliance]['assignments'].update({alliance_map: assignment})
             dataIO.save_json(self.alliances, self.guilds)
         elif assignment is None:
             if user.id in self.guilds[alliance]['assignments'].keys():
