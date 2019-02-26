@@ -1692,7 +1692,7 @@ class MCOC(ChampionFactory):
             await send_cmd_help(ctx)
 
     @submit.command(pass_context=True, name='stats', hidden=True)
-    async def submit_stats(self, ctx, champ : ChampConverter, *, stats):
+    async def submit_stats(self, ctx, champ : ChampConverter, *, stats: str = None):
         '''Submit Champion Stats and or Images
         valid keys: hp, atk, cr, cd, blockpen, critresist, armorpen, armor, bp'''
         guild = await self.check_guild(ctx)
@@ -1704,6 +1704,20 @@ class MCOC(ChampionFactory):
             cdt_stats = self.bot.get_channel('391358016328302593')
         else:
             cdt_stats = None
+
+        data = discord.Embed(color=discord.Color.gold(), title='Submit Stats')
+        data.set_footer(text='Submitted by {} on {} [{}]'.format(author.display_name, server.name, server.id),
+                        icon_url=author.avatar_url)
+
+        if stats is None and len(ctx.message.attachements) > 0:
+            attachments = ctx.message.attachments
+            if len(attachments) > 2:
+                for i in attachments:
+                    data.add_field(name='Image submission', value=attachments[i].url)
+            elif len(attachments) == 1:
+                data.set_image(url=attachments[0].url)
+            await self.bot.send_message(cdt_stats, embed=data)
+            return
 
         if not guild:
             await self.bot.say('This server is unauthorized.')
@@ -1732,18 +1746,6 @@ class MCOC(ChampionFactory):
                     r'((bp|blockprof)(\s+)?(?P<bp>\d{1,5}))?(\s)?'
             r = re.search(regex, stats)
             matches = r.groupdict()
-            data = discord.Embed(color=discord.Color.gold(), title='Submit Stats')
-            data.set_footer(text='Submitted by {} on {} [{}]'.format(author.display_name, server.name, server.id),
-                            icon_url=author.avatar_url)
-            if stats is None and len(ctx.message.attachements) > 0:
-                attachments = ctx.message.attachments
-                if len(attachments) > 2:
-                    for i in attachments:
-                        data.add_field(name='Image submission', value=attachments[i].url)
-                elif len(attachments) == 1:
-                    data.set_image(url=attachments[0].url)
-                await self.bot.send_message(cdt_stats, embed=data)
-                return
 
             if r is None or matches is None or matches.keys() is None:
                 data.description = 'Minimum stats submissions include Health & Attack.\n' \
