@@ -52,10 +52,10 @@ class Alliance:
         elif user_or_role is None:
             user = ctx.message.author
         if user is not None:
-            if alliance in self.guilds and 'assignments' in self.guilds[alliance] and user.id in self.guilds[alliance]['assignments']:
+            if alliance in self.guilds.keys() and 'assignments' in self.guilds[alliance].keys() and user.id in self.guilds[alliance]['assignments'].keys():
                 data = self._get_embed(ctx, alliance, user.id, user.color)
                 for m in ('aq1', 'aq2', 'aq3', 'aq4', 'aq5', 'aq6', 'aq7', 'aw',):
-                    if m in self.guilds[alliance]['assignments'][user.id]:
+                    if m in self.guilds[alliance]['assignments'][user.id].keys():
                         data.add_field(name=m.upper()+' Assignment', value=self.guilds[alliance]['assignments'][user.id][m])
                 await self.bot.say(embed=data)
         elif members is not None:
@@ -65,8 +65,8 @@ class Alliance:
                 data.title = '{} Assignments for {}'.format(role.name, m.upper())
                 cnt = 0
                 for member in members:
-                    if member.id in self.guilds[alliance]['assignments']:
-                        if m in self.guilds[alliance]['assignments'][member.id]:
+                    if member.id in self.guilds[alliance]['assignments'].keys():
+                        if m in self.guilds[alliance]['assignments'][member.id].keys():
                             data.add_field(name=member.display_name, value=self.guilds[alliance]['assignments'][member.id][m])
                             cnt += 1
                 if cnt > 0:
