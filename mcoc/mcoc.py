@@ -1699,11 +1699,7 @@ class MCOC(ChampionFactory):
         attachments = ctx.message.attachments
         author = ctx.message.author
         server = ctx.message.server
-        if ctx.message.server.id != '215271081517383682':
-            cdt = self.bot.get_server('215271081517383682')
-            cdt_stats = self.bot.get_channel('391358016328302593')
-        else:
-            cdt_stats = None
+        cdt_stats = self.bot.get_channel('391358016328302593')
 
         data = discord.Embed(color=discord.Color.gold(), title='Submit Stats')
         data.set_footer(text='Submitted by {} on {} [{}]'.format(author.display_name, server.name, server.id),
