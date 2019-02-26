@@ -1692,7 +1692,7 @@ class MCOC(ChampionFactory):
             await send_cmd_help(ctx)
 
     @submit.command(pass_context=True, name='stats', hidden=True)
-    async def submit_stats(self, ctx, champ : ChampConverter, *, stats: str = None):
+    async def submit_stats(self, ctx, champ: ChampConverter = None, *, stats: str = None):
         '''Submit Champion Stats and or Images
         valid keys: hp, atk, cr, cd, blockpen, critresist, armorpen, armor, bp'''
         attachments = ctx.message.attachments
@@ -1705,7 +1705,6 @@ class MCOC(ChampionFactory):
                         icon_url=author.avatar_url)
 
         if stats is None and len(ctx.message.attachments) > 0:
-            attachments = ctx.message.attachments
             if len(attachments) > 2:
                 for i in attachments:
                     data.add_field(name='Image submission', value=attachments[i]['url'])
@@ -1729,15 +1728,15 @@ class MCOC(ChampionFactory):
             return
         else:
             default = {
-                'hp': {'v' :0, 'title': 'Health'},# Health
-                'atk': {'v' :0, 'title': 'Attack'},# Attack
-                'cr': {'v' :0, 'title': 'Critical Rate'},# Critical Rate
-                'cd': {'v' :0, 'title': 'Critical Damage'},# Critical Damage
-                'blockpen': {'v' :0, 'title': 'Block Penetration'},# Blcok Proficiency
-                'critresist': {'v' :0, 'title': 'Critical Resistance'},# Critical Resistance
-                'armorpen':  {'v' :0, 'title': 'Armor Penetration'},# Armor Penetration
-                'armor':  {'v' :0, 'title': 'Armor'},# Armor
-                'bp':  {'v' :0, 'title': 'Block Proficiency'},# Block Proficiency
+                'hp': {'v': 0, 'title': 'Health'},# Health
+                'atk': {'v': 0, 'title': 'Attack'},# Attack
+                'cr': {'v': 0, 'title': 'Critical Rate'},# Critical Rate
+                'cd': {'v': 0, 'title': 'Critical Damage'},# Critical Damage
+                'blockpen': {'v': 0, 'title': 'Block Penetration'},# Blcok Proficiency
+                'critresist': {'v': 0, 'title': 'Critical Resistance'},# Critical Resistance
+                'armorpen':  {'v': 0, 'title': 'Armor Penetration'},# Armor Penetration
+                'armor':  {'v': 0, 'title': 'Armor'},# Armor
+                'bp':  {'v': 0, 'title': 'Block Proficiency'},# Block Proficiency
             }
             # https://regex101.com/r/um4NsT/4 thanks Wchou
             regex = r'((h|hp|health)(\s+)?(?P<hp>\d{1,6}))?(\s+)?' \
