@@ -1730,7 +1730,7 @@ class MCOC(ChampionFactory):
             r = re.search(regex, stats)
             matches = r.groupdict()
             data = discord.Embed(color=discord.Color.gold(), title='Submit Stats')
-            if r is None:
+            if r is None or matches is None:
                 data.description = 'Minimum stats submissions include Health & Attack.\n' \
                                    'However, we strongly encourage you to submit **all** champion base stats.\n' \
                                    '1. Select Champion\n' \
