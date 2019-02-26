@@ -55,10 +55,10 @@ class Alliance:
                 await self.bot.say(embed=data)
 
     @commands.command(pass_context=True, no_pm=True, hidden=True)
-    async def bglanes(self, ctx, role : discord.Role):
+    async def bglanes(self, ctx, role: discord.role):
         server = ctx.message.server
         alliance = server.id
-        members = _get_members(server.role)
+        members = _get_members(server, role)
 
         if members is not None:
             pages = []
