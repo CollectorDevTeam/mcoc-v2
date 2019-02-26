@@ -1792,7 +1792,7 @@ class MCOC(ChampionFactory):
                             default['armorpen']['v'], default['blockpen']['v'], default['critresist']['v'],
                             default['armor']['v'], default['bp']['v'], author.id]
                 check = await self.bot.say('Debug - no stats submissions accepted currently.')
-                check = await self._process_submission(package=package, GKEY=GKEY, sheet='submit_stats')
+                check = await self._process_submission(package=package, GKEY=GKEY, sheet='Form Survey')
                 if check:
                     await self.bot.edit_message(message2, embed=data)
                     if cdt_stats is not None:
