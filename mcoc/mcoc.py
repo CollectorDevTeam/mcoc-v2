@@ -1722,7 +1722,10 @@ class MCOC(ChampionFactory):
                                'Image attachments will be uploaded to CDT Server.'
             data.set_image(
                 url='https://cdn.discordapp.com/attachments/278246904620646410/550010804880277554/unknown.png')
-            data.add_field(name='Submission Error', value='Could not decipher submission.\n Try harder next time.')
+            data.add_field(name='Example format',
+                           value='``/submit stats {} hp 12345 atk 1234 cr 123 cd 123 armor 123 bp 1234``'
+                           .format(champ.unique))
+            data.add_field(name='Submission Error', value='No information included.\n Try harder next time.')
             await self.bot.say(embed=data)
             # await self.bot.say('Submit Stats debug: Did not match stats')
             return
