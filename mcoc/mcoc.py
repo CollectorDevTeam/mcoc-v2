@@ -1721,12 +1721,15 @@ class MCOC(ChampionFactory):
                 'bp':  {'v' :0, 'title': 'Block Proficiency'},# Block Proficiency
             }
             # https://regex101.com/r/um4NsT/4 thanks Wchou
-            regex = r'((h|hp|health)(\s+)?(?P<hp>\d{1,6}))?(\s+)?((attack|atk)(\s+)?' \
-                    r'(?P<atk>\d{1,4}))?(\s+)?((cr|critrate)(\s+)?(?P<cr>\d{1,4}))?(\s+)?' \
-                    r'((cd|critdamage)(\s+)?(?P<cd>\d{1,4}))?(\s+)?((armorp|apen|armorpen)(\s+)?' \
-                    r'(?P<armorpen>\d{1,4}))?(\s+)?((blockpen|bpen)(\s+)?(?P<blockpen>\d{1,4}))?(\s+)?' \
-                    r'((critresist|cres|crr)?(\s+)?(?P<critresist>\d{1,4}))?(\s+)?((ar|armor)(\s+)?' \
-                    r'(?P<armor>\d{1,4}))?(\s)?((bp|blockprof)(\s+)?(?P<bp>\d{1,5}))?(\s)?'
+            regex = r'((h|hp|health)(\s+)?(?P<hp>\d{1,6}))?(\s+)?' \
+                    r'((attack|atk)(\s+)?(?P<atk>\d{1,4}))?(\s+)?' \
+                    r'((cr|critrate)(\s+)?(?P<cr>\d{1,4}))?(\s+)?' \
+                    r'((cd|critdamage)(\s+)?(?P<cd>\d{1,4}))?(\s+)?' \
+                    r'((armorp|apen|armorpen)(\s+)?(?P<armorpen>\d{1,4}))?(\s+)?' \
+                    r'((blockpen|bpen)(\s+)(?P<blockpen>\d{1,4}))?(\s+)?' \
+                    r'((critresist|cres|crr)(\s+)?(?P<critresist>\d{1,4}))?(\s+)?' \
+                    r'((ar|armor)(\s+)?(?P<armor>\d{1,4}))?(\s)?' \
+                    r'((bp|blockprof)(\s+)?(?P<bp>\d{1,5}))?(\s)?'
             r = re.search(regex, stats)
             matches = r.groupdict()
             data = discord.Embed(color=discord.Color.gold(), title='Submit Stats')
