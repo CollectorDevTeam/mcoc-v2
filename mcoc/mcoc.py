@@ -1695,7 +1695,6 @@ class MCOC(ChampionFactory):
     async def submit_stats(self, ctx, champ : ChampConverter, *, stats: str = None):
         '''Submit Champion Stats and or Images
         valid keys: hp, atk, cr, cd, blockpen, critresist, armorpen, armor, bp'''
-        guild = await self.check_guild(ctx)
         attachments = ctx.message.attachments
         author = ctx.message.author
         server = ctx.message.server
@@ -1714,9 +1713,19 @@ class MCOC(ChampionFactory):
                 data.set_image(url=attachments[0]['url'])
             await self.bot.send_message(cdt_stats, embed=data)
             return
-
-        if not guild:
-            await self.bot.say('This server is unauthorized.')
+        elif stats is None:
+            data.description = 'Minimum stats submissions include Health & Attack.\n' \
+                               'However, we strongly encourage you to submit **all** champion base stats.\n' \
+                               '1. Select Champion\n' \
+                               '2. Select Info\n' \
+                               '3. Tap the ``attributes`` information panel' \
+                               '\n' \
+                               'Image attachments will be uploaded to CDT Server.'
+            data.set_image(
+                url='https://cdn.discordapp.com/attachments/278246904620646410/550010804880277554/unknown.png')
+            data.add_field(name='Submission Error', value='Could not decipher submission.\n Try harder next time.')
+            await self.bot.say(embed=data)
+            # await self.bot.say('Submit Stats debug: Did not match stats')
             return
         else:
             default = {
