@@ -1726,7 +1726,7 @@ class MCOC(ChampionFactory):
             else:
                 for k in r.keys():
                     default[k]['v'].update(int(r[k]))
-                await self.bot.say('Submit stats debug:\n{}'.format(json.dumps(default))
+                await self.bot.say('Submit stats debug:\n{}'.format(json.dumps(default)))
 
             #
             # for match in re.finditer(regex, stats):
