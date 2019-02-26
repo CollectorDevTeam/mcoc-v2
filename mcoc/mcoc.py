@@ -1718,7 +1718,7 @@ class MCOC(ChampionFactory):
                 'bp':  {'v' :0, 'title': 'Block Proficiency'},# Block Proficiency
             }
 
-            regex = r'((h|hp|health)(\s+)?(?P<hp>\d{1,6}))(\s+)?((attack|atk)(\s+)?(?P<atk>\d{1,4}))(\s+)?((cr|critrate)(\s+)?(?P<cr>\d{1,4}))(\s+)?((cd|critdamage)(\s+)?(?P<cd>\d{1,4}))(\s+)?((armorp|apen|armorpen)(\s+)?(?P<armorpen>\d{1,4}))(\s+)?((blockpen|bpen)(\s+)?(?P<blockpen>\d{1,4}))(\s+)?((critresist|cres|crr)(\s+)?(?P<critresist>\d{1,4}))(\s+)?((ar|armor)(\s+)?(?P<armor>\d{1,4}))\s((bp|blockprof)(\s+)?(?P<bp>\d{1,5}))'
+            regex = r'((h|hp|health)(\s+)?(?P<hp>\d{1,6}))?(\s+)?((attack|atk)(\s+)?(?P<atk>\d{1,4}))?(\s+)?((cr|critrate)(\s+)?(?P<cr>\d{1,4}))?(\s+)?((cd|critdamage)(\s+)?(?P<cd>\d{1,4}))?(\s+)?((armorp|apen|armorpen)(\s+)?(?P<armorpen>\d{1,4}))?(\s+)?((blockpen|bpen)(\s+)?(?P<blockpen>\d{1,4}))?(\s+)?((critresist|cres|crr)?(\s+)?(?P<critresist>\d{1,4}))?(\s+)?((ar|armor)(\s+)?(?P<armor>\d{1,4}))?(\s)?((bp|blockprof)(\s+)?(?P<bp>\d{1,5}))?(\s)?'
             r = re.search(regex, stats)
             matches = r.groupdict()
             if r is None:
