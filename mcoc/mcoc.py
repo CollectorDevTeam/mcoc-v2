@@ -1785,7 +1785,7 @@ class MCOC(ChampionFactory):
                     await self.bot.say('Submission Error:\nMinimum required submission includes Health & Attack.  Preferred submissions include all base stats.')
                     await self.bot.delete_message(confirmation)
                     return
-                GKEY = '1VOqej9o4yLAdMoZwnWbPY-fTFynbDb_Lk8bXDNeonuE'
+                GKEY = '1JSiGo-oGbPdmlegmGTH7hcurd_HYtkpTnZGY1mN_XCE'
                 message2 = await self.bot.say('Submission in progress.')
                 package = [[str(ctx.message.timestamp), author.name, champ.full_name, champ.star, champ.rank,
                             default['hp']['v'], default['atk']['v'],default['cr']['v']], default['cd']['v'],
