@@ -1693,7 +1693,7 @@ class MCOC(ChampionFactory):
 
     @submit.command(pass_context=True, name='stats', hidden=True)
     async def submit_stats(self, ctx, champ : ChampConverter, *, stats):
-        '''Submit Champion Stats
+        '''Submit Champion Stats and or Images
         valid keys: hp, atk, cr, cd, blockpen, critresist, armorpen, armor, bp'''
         guild = await self.check_guild(ctx)
         attachments = ctx.message.attachments
@@ -1742,7 +1742,8 @@ class MCOC(ChampionFactory):
                         data.add_field(name='Image submission', value=attachments[i].url)
                 elif len(attachments) == 1:
                     data.set_image(url=attachments[0].url)
-
+                await self.bot.send_message(cdt_stats, embed=data)
+                return
 
             if r is None or matches is None or matches.keys() is None:
                 data.description = 'Minimum stats submissions include Health & Attack.\n' \
