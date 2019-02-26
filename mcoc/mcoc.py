@@ -1698,7 +1698,7 @@ class MCOC(ChampionFactory):
         guild = await self.check_guild(ctx)
         attachments = ctx.message.attachments
         author = ctx.message.author
-
+        server = ctx.message.server
         if ctx.message.server.id != '215271081517383682':
             cdt = self.bot.get_server('215271081517383682')
             cdt_stats = self.bot.get_channel('391358016328302593')
@@ -1762,7 +1762,7 @@ class MCOC(ChampionFactory):
 
             saypackage = 'Submission registered.\nChampion: ' + champ.verbose_str
 
-            for k in default.keys():
+            for k in ('hp', 'atk', 'cr', 'cd','blockpen', 'critresist', 'armorpen', 'armor','bp'):
                 saypackage += '\n{} : {}'.format(default[k]['title'], default[k]['v'])
 
             if len(attachments) > 0:
@@ -1774,8 +1774,8 @@ class MCOC(ChampionFactory):
             data.description = saypackage
             # data.author(name=ctx.message.author.display_name, icon_url=ctx.message.author.avatar_url)
 
-            data.set_footer(text='Submitted by {}'.format(author.display_name), icon_url=author.avatar_url)
-
+            data.set_footer(text='Submitted by {} on {} [{}]'.format(author.display_name, server.name, server.id),
+                            icon_url=author.avatar_url)
 
             if answer is False:
                 await self.bot.say('Submission canceled.')
@@ -1794,7 +1794,7 @@ class MCOC(ChampionFactory):
                             str(default['hp']['v']), str(default['atk']['v']), str(default['cr']['v']), str(default['cd']['v']),
                             str(default['armorpen']['v']), str(default['blockpen']['v']), str(default['critresist']['v']),
                             str(default['armor']['v']), str(default['bp']['v']), author.id]]
-                check = await self.bot.say('Debug - no stats submissions accepted currently.')
+                # check = await self.bot.say('Debug - no stats submissions accepted currently.')
                 check = await self._process_submission(package=package, GKEY=GKEY, sheet='submit_stats')
                 if check:
                     await self.bot.edit_message(message2, embed=data)
