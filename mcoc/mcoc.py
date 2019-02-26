@@ -1726,7 +1726,8 @@ class MCOC(ChampionFactory):
                 return
             else:
                 for k in matches.keys():
-                    default[k]['v'].update(int(matches[k]))
+                    default[k]['v'] = int(matches[k])
+                    # default[k].update({'v': int(matches[k])})
                 await self.bot.say('Submit stats debug:\n{}'.format(json.dumps(default)))
 
             #
