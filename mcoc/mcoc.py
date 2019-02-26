@@ -1787,7 +1787,10 @@ class MCOC(ChampionFactory):
                     return
                 GKEY = '1VOqej9o4yLAdMoZwnWbPY-fTFynbDb_Lk8bXDNeonuE'
                 message2 = await self.bot.say('Submission in progress.')
-                package = [[str(ctx.message.timestamp), author.name, champ.full_name, champ.star, champ.rank,
+                level = champ.rank*10
+                if champ.star > 4:
+                    level += 15
+                package = [[str(ctx.message.timestamp), author.name, champ.full_name, champ.star, champ.rank, level,
                             str(default['hp']['v']), str(default['atk']['v']), str(default['cr']['v']), str(default['cd']['v']),
                             str(default['armorpen']['v']), str(default['blockpen']['v']), str(default['critresist']['v']),
                             str(default['armor']['v']), str(default['bp']['v']), author.id]]
