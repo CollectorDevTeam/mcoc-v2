@@ -1707,76 +1707,80 @@ class MCOC(ChampionFactory):
             return
         else:
             default = {
-                'hp': {'v' :0, 'title': 'Health'}, # Health
-                'atk': {'v' :0, 'title': 'Attack'}, # Attack
-                'cr': {'v' :0, 'title': 'Critical Rate'}, # Critical Rate
-                'cd': {'v' :0, 'title': 'Critical Damage'}, # Critical Damage
-                'blockpen': {'v' :0, 'title': 'Block Penetration'}, # Blcok Proficiency
-                'critresist': {'v' :0, 'title': 'Critical Resistance'}, # Critical Resistance
-                'armorpen':  {'v' :0, 'title': 'Armor Penetration'}, # Armor Penetration
-                'armor':  {'v' :0, 'title': 'Armor'}, # Armor
-                'bp':  {'v' :0, 'title': 'Block Proficiency'}, # Block Proficiency
+                'hp': {'v' :0, 'title': 'Health'},# Health
+                'atk': {'v' :0, 'title': 'Attack'},# Attack
+                'cr': {'v' :0, 'title': 'Critical Rate'},# Critical Rate
+                'cd': {'v' :0, 'title': 'Critical Damage'},# Critical Damage
+                'blockpen': {'v' :0, 'title': 'Block Penetration'},# Blcok Proficiency
+                'critresist': {'v' :0, 'title': 'Critical Resistance'},# Critical Resistance
+                'armorpen':  {'v' :0, 'title': 'Armor Penetration'},# Armor Penetration
+                'armor':  {'v' :0, 'title': 'Armor'},# Armor
+                'bp':  {'v' :0, 'title': 'Block Proficiency'},# Block Proficiency
             }
 
-            regex = r'''(h|hp|h\w+?)\s?(?P<hp>\d{1,6})|
-            (a|atk|at\w+?)\s?(?P<atk>\d{1,4})|
-            (?:(cr|critrate)\s?(?P<cr>\d{1,4}))|
-            (?:cd\s?(?P<cd>\d{1,4}))|
-            (?:(armorp\w+?|apen\w+?)\s?(?P<armorpen>\d{1,4}))|
-            (?:(blockpen|bpen\w+?)\s?(?P<blockpen>\d{1,4}))|
-            (?:(critresist|cres\w+?)\s?(?P<critresist>\d{1,4}))|
-            (?:(ar|armor)\s?(?P<armor>\d{1,4}))|
-            (?:(bp|blockpro\w+?|bpro\w+?)\s?(?P<bp>\d{1,5}))'''
-
-            matches = re.match(regex, stats.lower())
-            if matches is None:
-                await self.bot.say('Regex match error. Abort.')
+            regex = r'((h|hp|health)(\s+)?(?P<hp>\d{1,6}))(\s+)?((attack|atk)(\s+)?(?P<atk>\d{1,4}))(\s+)?((cr|critrate)(\s+)?(?P<cr>\d{1,4}))(\s+)?((cd|critdamage)(\s+)?(?P<cd>\d{1,4}))(\s+)?((armorp|apen|armorpen)(\s+)?(?P<armorpen>\d{1,4}))(\s+)?((blockpen|bpen)(\s+)?(?P<blockpen>\d{1,4}))(\s+)?((critresist|cres|crr)(\s+)?(?P<critresist>\d{1,4}))(\s+)?((ar|armor)(\s+)?(?P<armor>\d{1,4}))\s((bp|blockprof)(\s+)?(?P<bp>\d{1,5}))'
+            r = re.search(regex, stats)
+            if r is None:
+                await self.bot.say('Submit Stats debug: Did not match stats')
                 return
-            if matches is not None:
-                saypackage = 'Submission registered.\nChampion: ' + champ.verbose_str
-                matches = matches.groupdict()
-                print('stats matches :\n'+json.dumps(matches))
-                for k in matches.keys():
-                    default[k]['v'] = matches[k]
-                    saypackage += '\n{} : {}'.format(default[k]['title'], default[k]['v'])
-
-            if len(attachments) > 0:
-                saypackage += '\nAttachments:'
-                for a in attachments:
-                    saypackage += '\{}'.format(a.url)
-
-            answer, confirmation = await PagesMenu.confirm(self, ctx, saypackage)
-
-            if answer is False:
-                await self.bot.say('Submission canceled.')
-                await self.bot.delete_message(confirmation)
-            elif answer is True:
-                if default['hp']['v'] == 0 or default['atk']['v'] == 0:
-                    await self.bot.say('Submission Error:\nMinimum required submission includes Health & Attack.  Preferred submissions include all base stats.')
-                    await self.bot.delete_message(confirmation)
-                    return
-                GKEY = '1VOqej9o4yLAdMoZwnWbPY-fTFynbDb_Lk8bXDNeonuE'
-                message2 = await self.bot.say('Submission in progress.')
-                author = ctx.message.author
-                package = [[str(ctx.message.timestamp), author.name, champ.full_name, champ.star, champ.rank,
-                            default['hp']['v]'], default['attack']['v]'],default['cr']['v]'], default['cd']['v]'],
-                            default['armorpen']['v]'], default['blockpen']['v]'], default['critresist']['v]'],
-                            default['armor']['v]'], default['bp']['v'], author.id]]
-                check = await self.bot.say('Debug - no stats submissions accepted currently.')
-                check = await self._process_submission(package=package, GKEY=GKEY, sheet='submit_stats')
-                if check:
-                    await self.bot.edit_message(message2, 'Submission complete.')
-                    if cdt_stats is not None:
-                        await self.bot.send_message(cdt_stats, saypackage)
-                        if len(ctx.message.attachments) > 0:
-                            for a in ctx.message.attachments:
-                                await self.bot.send_message(cdt_stats, a.url)
-                else:
-                    await self.bot.edit_message(message2, 'Submission failed.')
-                await self.bot.delete_message(confirmation)
             else:
-                await self.bot.say('Ambiguous response.  Submission canceled')
-                await self.bot.delete_message(confirmation)
+                for k in r.keys():
+                    default[k]['v'].update(int(r[k]))
+                await self.bot.say('Submit stats debug:\n{}'.format(json.dumps(default))
+
+            #
+            # for match in re.finditer(regex, stats):
+            #     groups = match.groupdict()
+            #     for key in groups.keys():
+            #         if groups[key] is not None and int(groups[key]) > 0:
+            #             default[key].update({'v': int(groups[key])})
+            #
+            #
+            # if matches is not None:
+            #     saypackage = 'Submission registered.\nChampion: ' + champ.verbose_str
+            #     matches = matches.groupdict()
+            #     print('stats matches :\n'+json.dumps(matches))
+            #     for k in matches.keys():
+            #         default[k]['v'] = matches[k]
+            #         saypackage += '\n{} : {}'.format(default[k]['title'], default[k]['v'])
+            #
+            # if len(attachments) > 0:
+            #     saypackage += '\nAttachments:'
+            #     for a in attachments:
+            #         saypackage += '\{}'.format(a.url)
+            #
+            # answer, confirmation = await PagesMenu.confirm(self, ctx, saypackage)
+            #
+            # if answer is False:
+            #     await self.bot.say('Submission canceled.')
+            #     await self.bot.delete_message(confirmation)
+            # elif answer is True:
+            #     if default['hp']['v'] == 0 or default['atk']['v'] == 0:
+            #         await self.bot.say('Submission Error:\nMinimum required submission includes Health & Attack.  Preferred submissions include all base stats.')
+            #         await self.bot.delete_message(confirmation)
+            #         return
+            #     GKEY = '1VOqej9o4yLAdMoZwnWbPY-fTFynbDb_Lk8bXDNeonuE'
+            #     message2 = await self.bot.say('Submission in progress.')
+            #     author = ctx.message.author
+            #     package = [[str(ctx.message.timestamp), author.name, champ.full_name, champ.star, champ.rank,
+            #                 default['hp']['v]'], default['attack']['v]'],default['cr']['v]'], default['cd']['v]'],
+            #                 default['armorpen']['v]'], default['blockpen']['v]'], default['critresist']['v]'],
+            #                 default['armor']['v]'], default['bp']['v'], author.id]]
+            #     check = await self.bot.say('Debug - no stats submissions accepted currently.')
+            #     check = await self._process_submission(package=package, GKEY=GKEY, sheet='submit_stats')
+            #     if check:
+            #         await self.bot.edit_message(message2, 'Submission complete.')
+            #         if cdt_stats is not None:
+            #             await self.bot.send_message(cdt_stats, saypackage)
+            #             if len(ctx.message.attachments) > 0:
+            #                 for a in ctx.message.attachments:
+            #                     await self.bot.send_message(cdt_stats, a.url)
+            #     else:
+            #         await self.bot.edit_message(message2, 'Submission failed.')
+            #     await self.bot.delete_message(confirmation)
+            # else:
+            #     await self.bot.say('Ambiguous response.  Submission canceled')
+            #     await self.bot.delete_message(confirmation)
 
 
     @submit.command(pass_context=True, name='prestige')
