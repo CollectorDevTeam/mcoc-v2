@@ -1788,9 +1788,9 @@ class MCOC(ChampionFactory):
                 GKEY = '1VOqej9o4yLAdMoZwnWbPY-fTFynbDb_Lk8bXDNeonuE'
                 message2 = await self.bot.say('Submission in progress.')
                 package = [[str(ctx.message.timestamp), author.name, champ.full_name, champ.star, champ.rank,
-                            default['hp']['v'], default['atk']['v'],default['cr']['v']], default['cd']['v'],
-                            default['armorpen']['v'], default['blockpen']['v'], default['critresist']['v'],
-                            default['armor']['v'], default['bp']['v'], author.id]
+                            str(default['hp']['v']), str(default['atk']['v']), str(default['cr']['v']]), str(default['cd']['v']),
+                            str(default['armorpen']['v']), str(default['blockpen']['v']), str(default['critresist']['v']),
+                            str(default['armor']['v']), str(default['bp']['v']), author.id]
                 check = await self.bot.say('Debug - no stats submissions accepted currently.')
                 check = await self._process_submission(package=package, GKEY=GKEY, sheet='submit_stats')
                 if check:
