@@ -1769,7 +1769,7 @@ class MCOC(ChampionFactory):
             data.description = saypackage
             # data.author(name=ctx.message.author.display_name, icon_url=ctx.message.author.avatar_url)
 
-            data.footer(text='Submitted by {}'.format(author.display_name), icon_url=author.avatar_url)
+            data.set_footer(text='Submitted by {}'.format(author.display_name), icon_url=author.avatar_url)
 
 
             if answer is False:
