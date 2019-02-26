@@ -1709,7 +1709,7 @@ class MCOC(ChampionFactory):
         data.set_footer(text='Submitted by {} on {} [{}]'.format(author.display_name, server.name, server.id),
                         icon_url=author.avatar_url)
 
-        if stats is None and len(ctx.message.attachements) > 0:
+        if stats is None and len(ctx.message.attachments) > 0:
             attachments = ctx.message.attachments
             if len(attachments) > 2:
                 for i in attachments:
