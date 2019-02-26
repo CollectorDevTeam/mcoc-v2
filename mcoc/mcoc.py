@@ -932,7 +932,7 @@ class MCOC(ChampionFactory):
                 em.description='\n'.join(targets)
             else:
                 em.description='Target not found!\nAdd one to the Community Spreadhseet!\n[bit.ly/DuelTargetForm](http://bit.ly/DuelTargetForm)'
-                em.url='http://bit.ly/DuelTargetForm'
+                em.url = 'http://bit.ly/DuelTargetForm'
             em.add_field(name='Shortcode', value=champ.short, inline=False)
             await self.bot.say(embed=em)
 
@@ -1789,6 +1789,8 @@ class MCOC(ChampionFactory):
                     data.add_field(name='Example format',
                                    value='``/submit stats {} hp 12345 atk 1234 cr 123 cd 123 armor 123 bp 1234``'
                                    .format(champ.unique))
+                    data.set_image(
+                        url='https://cdn.discordapp.com/attachments/278246904620646410/550010804880277554/unknown.png')
                     data.set_footer(
                         text='Submission Attmpted by {} on {} [{}]'.format(author.display_name, server.name, server.id),
                         icon_url=author.avatar_url)
