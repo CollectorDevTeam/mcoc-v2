@@ -39,43 +39,39 @@ class Alliance:
         self.info_keys = ('name', 'tag', 'type', 'about', 'started', 'invite', 'poster')
 
     @commands.command(pass_context=True, no_pm=True, hidden=True)
-    async def lanes(self, ctx, user_or_role=None):
+    async def lanes(self, ctx, user: discord.Member = None):
         server = ctx.message.server
         alliance = server.id
         members = None
-        user = None
-        if isinstance(user_or_role, discord.Member):
-            user = discord.Member(user_or_role)
-        elif isinstance(user_or_role, discord.Role):
-            role = discord.Role(user_or_role)
-            members = _get_members(server, role)
-        elif user_or_role is None:
+        if user is None:
             user = ctx.message.author
         if user is not None:
-            if alliance in self.guilds.keys() and 'assignments' in self.guilds[alliance].keys() and user.id in self.guilds[alliance]['assignments'].keys():
+            if alliance in self.guilds.keys() and 'assignments' in self.guilds[alliance].keys() \
+                    and user.id in self.guilds[alliance]['assignments'].keys():
                 data = self._get_embed(ctx, alliance, user.id, user.color)
                 for m in ('aq1', 'aq2', 'aq3', 'aq4', 'aq5', 'aq6', 'aq7', 'aw',):
                     if m in self.guilds[alliance]['assignments'][user.id].keys():
-                        data.add_field(name=m.upper()+' Assignment', value=self.guilds[alliance]['assignments'][user.id][m])
+                        data.add_field(name=m.upper()+' Assignment',
+                                       value=self.guilds[alliance]['assignments'][user.id][m])
                 await self.bot.say(embed=data)
-        elif members is not None:
-            pages = []
-            for m in ('aq1', 'aq2', 'aq3', 'aq4', 'aq5', 'aq6', 'aq7', 'aw',):
-                data = self._get_embed(ctx, alliance=alliance, color=role.color)
-                data.title = '{} Assignments for {}'.format(role.name, m.upper())
-                cnt = 0
-                for member in members:
-                    if member.id in self.guilds[alliance]['assignments'].keys():
-                        if m in self.guilds[alliance]['assignments'][member.id].keys():
-                            data.add_field(name=member.display_name, value=self.guilds[alliance]['assignments'][member.id][m])
-                            cnt += 1
-                if cnt > 0:
-                    pages.append(data)
-            if len(pages) > 0:
-                menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
-                await menu.menu_start(pages=pages)
-            else:
-                logger.warning('No Pages to display')
+        # elif members is not None:
+        #     pages = []
+        #     for m in ('aq1', 'aq2', 'aq3', 'aq4', 'aq5', 'aq6', 'aq7', 'aw',):
+        #         data = self._get_embed(ctx, alliance=alliance, color=role.color)
+        #         data.title = '{} Assignments for {}'.format(role.name, m.upper())
+        #         cnt = 0
+        #         for member in members:
+        #             if member.id in self.guilds[alliance]['assignments'].keys():
+        #                 if m in self.guilds[alliance]['assignments'][member.id].keys():
+        #                     data.add_field(name=member.display_name, value=self.guilds[alliance]['assignments'][member.id][m])
+        #                     cnt += 1
+        #         if cnt > 0:
+        #             pages.append(data)
+        #     if len(pages) > 0:
+        #         menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
+        #         await menu.menu_start(pages=pages)
+        #     else:
+        #         logger.warning('No Pages to display')
 
     @commands.group(aliases=('clan', 'guild'), pass_context=True, invoke_without_command=True, hidden=False, no_pm=True)
     async def alliance(self, ctx, user: discord.Member = None):
