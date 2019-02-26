@@ -1785,7 +1785,12 @@ class MCOC(ChampionFactory):
                 await self.bot.delete_message(confirmation)
             elif answer is True:
                 if default['hp']['v'] == 0 or default['atk']['v'] == 0:
-                    await self.bot.say('Submission Error:\nMinimum required submission includes Health & Attack.  Preferred submissions include all base stats.')
+                    data.add_field(name='Submission Error', value='Minimum required submission includes Health & Attack. \nPreferred submissions include all base stats.\n\nPlease try harder.')
+                    data.add_field(name='Example format', value='``/submit stats {} hp 12345 atk 1234 cr 123 cd 123 armor 123 bp 1234``')
+                    data.set_footer(
+                        text='Submission Attmpted by {} on {} [{}]'.format(author.display_name, server.name, server.id),
+                        icon_url=author.avatar_url)
+                    await self.bot.say(embed=data)
                     await self.bot.delete_message(confirmation)
                     return
                 GKEY = '1VOqej9o4yLAdMoZwnWbPY-fTFynbDb_Lk8bXDNeonuE'
