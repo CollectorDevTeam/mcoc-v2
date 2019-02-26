@@ -43,11 +43,11 @@ class Alliance:
         server = ctx.message.server
         alliance = server.id
         members = None
+        user = None
         if isinstance(user_or_role, discord.Member):
             user = discord.Member(user_or_role)
         elif isinstance(user_or_role, discord.Role):
             role = discord.Role(user_or_role)
-            user = None
             members = _get_members(server, role)
         elif user_or_role is None:
             user = ctx.message.author
