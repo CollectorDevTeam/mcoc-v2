@@ -1730,7 +1730,7 @@ class MCOC(ChampionFactory):
             r = re.search(regex, stats)
             matches = r.groupdict()
             data = discord.Embed(color=discord.Color.gold(), title='Submit Stats')
-            if r is None or matches is None:
+            if r is None or matches is None or matches.keys() is None:
                 data.description = 'Minimum stats submissions include Health & Attack.\n' \
                                    'However, we strongly encourage you to submit **all** champion base stats.\n' \
                                    '1. Select Champion\n' \
@@ -1739,7 +1739,6 @@ class MCOC(ChampionFactory):
                                    '\n' \
                                    'Image attachments will be uploaded to CDT Server.'
                 data.set_image(url='https://cdn.discordapp.com/attachments/278246904620646410/550010804880277554/unknown.png')
-
                 data.add_field(name='Submission Error',value='Could not decipher submission.\n Try harder next time.')
                 await self.bot.say(embed=data)
                 # await self.bot.say('Submit Stats debug: Did not match stats')
@@ -1757,7 +1756,8 @@ class MCOC(ChampionFactory):
                 return
             else:
                 for k in matches.keys():
-                    default[k]['v'] = int(matches[k])
+                    if matches[k] is not None:
+                        default[k]['v'] = int(matches[k])
 
 
             saypackage = 'Submission registered.\nChampion: ' + champ.verbose_str
