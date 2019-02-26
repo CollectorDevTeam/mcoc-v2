@@ -1697,6 +1697,7 @@ class MCOC(ChampionFactory):
         valid keys: hp, atk, cr, cd, blockpen, critresist, armorpen, armor, bp'''
         guild = await self.check_guild(ctx)
         attachments = ctx.message.attachments
+        author = ctx.message.author
 
         if ctx.message.server.id != '215271081517383682':
             cdt = self.bot.get_server('215271081517383682')
@@ -1729,7 +1730,9 @@ class MCOC(ChampionFactory):
                                    'However, we strongly encourage you to submit **all** champion base stats.\n' \
                                    '1. Select Champion\n' \
                                    '2. Select Info\n' \
-                                   '3. Tap the ``attributes`` information panel '
+                                   '3. Tap the ``attributes`` information panel' \
+                                   '\n' \
+                                   'Image attachments will be uploaded to CDT Server.'
                 data.set_image(url='https://cdn.discordapp.com/attachments/278246904620646410/550010804880277554/unknown.png')
 
                 data.add_field(name='Submission Error',value='Could not decipher submission.\n Try harder next time.')
@@ -1741,7 +1744,9 @@ class MCOC(ChampionFactory):
                                    'However, we strongly encourage you to submit **all** champion base stats.\n' \
                                    '1. Select Champion\n' \
                                    '2. Select Info\n' \
-                                   '3. Tap the ``attributes`` information panel '
+                                   '3. Tap the ``attributes`` information panel\n' \
+                                   '\n' \
+                                   'Image attachments will be uploaded to CDT Server.'
                 data.set_image(url='https://cdn.discordapp.com/attachments/278246904620646410/550010804880277554/unknown.png')
                 await self.bot.say(embed=data)
                 return
@@ -1761,6 +1766,11 @@ class MCOC(ChampionFactory):
                     saypackage += '\{}'.format(a.url)
 
             answer, confirmation = await PagesMenu.confirm(self, ctx, saypackage)
+            data.description = saypackage
+            # data.author(name=ctx.message.author.display_name, icon_url=ctx.message.author.avatar_url)
+
+            data.footer(text='Submitted by {}'.format(author.display_name), icon_url=author.avatar_url)
+
 
             if answer is False:
                 await self.bot.say('Submission canceled.')
@@ -1772,7 +1782,6 @@ class MCOC(ChampionFactory):
                     return
                 GKEY = '1VOqej9o4yLAdMoZwnWbPY-fTFynbDb_Lk8bXDNeonuE'
                 message2 = await self.bot.say('Submission in progress.')
-                author = ctx.message.author
                 package = [[str(ctx.message.timestamp), author.name, champ.full_name, champ.star, champ.rank,
                             default['hp']['v'], default['attack']['v'],default['cr']['v']], default['cd']['v'],
                             default['armorpen']['v'], default['blockpen']['v'], default['critresist']['v'],
@@ -1780,9 +1789,9 @@ class MCOC(ChampionFactory):
                 check = await self.bot.say('Debug - no stats submissions accepted currently.')
                 check = await self._process_submission(package=package, GKEY=GKEY, sheet='submit_stats')
                 if check:
-                    await self.bot.edit_message(message2, 'Submission complete.')
+                    await self.bot.edit_message(message2, embed=data)
                     if cdt_stats is not None:
-                        await self.bot.send_message(cdt_stats, saypackage)
+                        await self.bot.send_message(cdt_stats, embed=data)
                         if len(ctx.message.attachments) > 0:
                             for a in ctx.message.attachments:
                                 await self.bot.send_message(cdt_stats, a.url)
