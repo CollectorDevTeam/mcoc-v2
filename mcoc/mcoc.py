@@ -1733,6 +1733,17 @@ class MCOC(ChampionFactory):
             r = re.search(regex, stats)
             matches = r.groupdict()
             data = discord.Embed(color=discord.Color.gold(), title='Submit Stats')
+            data.set_footer(text='Submitted by {} on {} [{}]'.format(author.display_name, server.name, server.id),
+                            icon_url=author.avatar_url)
+            if stats is None and len(ctx.message.attachements) > 0:
+                attachments = ctx.message.attachments
+                if len(attachments) > 2:
+                    for i in attachments:
+                        data.add_field(name='Image submission', value=attachments[i].url)
+                elif len(attachments) == 1:
+                    data.set_image(url=attachments[0].url)
+
+
             if r is None or matches is None or matches.keys() is None:
                 data.description = 'Minimum stats submissions include Health & Attack.\n' \
                                    'However, we strongly encourage you to submit **all** champion base stats.\n' \
@@ -1776,9 +1787,6 @@ class MCOC(ChampionFactory):
             answer, confirmation = await PagesMenu.confirm(self, ctx, saypackage)
             data.description = saypackage
             # data.author(name=ctx.message.author.display_name, icon_url=ctx.message.author.avatar_url)
-
-            data.set_footer(text='Submitted by {} on {} [{}]'.format(author.display_name, server.name, server.id),
-                            icon_url=author.avatar_url)
 
             if answer is False:
                 await self.bot.say('Submission canceled.')
