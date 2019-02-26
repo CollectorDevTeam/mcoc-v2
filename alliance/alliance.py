@@ -850,25 +850,25 @@ class Alliance:
         return data
 
     @alliance.command(pass_context=True, invoke_without_command=True, hidden=False, no_pm=True)
-    async def assign(self, ctx, user: discord.Member, alliance_map: str, *, lanes=None):
+    async def assign(self, ctx, user: discord.Member, alliance_map: str, *, assignment=None):
         """Alliance Assignment tool
         lanes = A, B, C
         lanes = t1 A, t2 B, t3 C
         """
         server = ctx.message.server
         alliance = server.id
-        valid_maps = {'aw': {'t1': 'abcdefghi'},
-                      'aq1': {'t1': 'abcdefgh', 't2': 'abcdefgh', 't3': 'abcdefgh'},
-                      'aq2': {'t1': 'abcdefgh', 't2': 'abcdefgh'},
-                      'aq3': {'t1': 'abcde', 't2': 'abcd', 't3': 'abcde'},
-                      'aq4': {'t1': 'abcde', 't2': 'abcdef', 't3': 'abcdefg'},
-                      'aq5': {'t1': 'abcdefgh', 't2': 'abcdefgh', 't3': 'abcdefgh'},
-                      'aq6': {'t1': 'abcdefg', 't2': 'abcdefghi', 't3': 'abcdefghij'},
-                      'aq7': {'t1': 'abcdefg', 't2': 'abcdefghi', 't3': 'abcdefghij'}}
+        # valid_maps = {'aw': {'t1': 'abcdefghi'},
+        #               'aq1': {'t1': 'abcdefgh', 't2': 'abcdefgh', 't3': 'abcdefgh'},
+        #               'aq2': {'t1': 'abcdefgh', 't2': 'abcdefgh'},
+        #               'aq3': {'t1': 'abcde', 't2': 'abcd', 't3': 'abcde'},
+        #               'aq4': {'t1': 'abcde', 't2': 'abcdef', 't3': 'abcdefg'},
+        #               'aq5': {'t1': 'abcdefgh', 't2': 'abcdefgh', 't3': 'abcdefgh'},
+        #               'aq6': {'t1': 'abcdefg', 't2': 'abcdefghi', 't3': 'abcdefghij'},
+        #               'aq7': {'t1': 'abcdefg', 't2': 'abcdefghi', 't3': 'abcdefghij'}}
 
         data = self._get_embed(ctx, color=user.color)
 
-        if alliance_map not in valid_maps.keys():
+        if alliance_map not in ('aq1', 'aq2', 'aq3', 'aq4', 'aq5', 'aq6', 'aq7', 'aw'):
             data.title = 'Assignment Error'
             data.description = 'Specify the AQ or AW map.  \n' \
                                'aq1, aq2, aq3, aq4, aq5, aq6, aq7, aw'
@@ -880,43 +880,25 @@ class Alliance:
             dataIO.save_json(self.alliances, self.guilds)
         if user.id not in self.guilds[alliance]['assignments']:
             self.guilds[alliance]['assignments'].update({user.id: {}})
-        if lanes is None:
-            if 'assignments' in self.guilds[alliance].keys():
-                if user.id in self.guilds[alliance]['assignments'].keys():
-                    if alliance_map in self.guilds[alliance]['assignments'][user.id]:
-                        question = 'Do you want to clear the {} assignment for {}?' \
-                            .format(alliance_map.upper(), user.id)
-                        answer, confirmation = await PagesMenu.confirm(self, ctx, question)
-                        if answer:
-                            self.guilds[alliance]['assignments'][user.id].pop(alliance_map, None)
-                            dataIO.save_json(self.alliances, self.guilds)
-                        await self.bot.delete_message(confirmation)
-                        return
-        else:
-            tiers ={"t1": r"t?\w+?\s?1\s?(?P<t1>\w{1})",
-                    "t2": r"t?\w+?\s?2\s?(?P<t2>\w{1})",
-                    "t3": r"t?\w+?\s?3\s?(?P<t3>\w{1})"}
-            for t in ("t1", "t2", "t3"):
-                match = re.search(tiers[t], lanes)
-                if match is not None:
-                    if match[1] in valid_maps[alliance_map][t]:
-                        self.guilds[alliance]['assignments'][user.id][alliance_map].update({t: match[1]})
-                    else:
-                        if alliance_map in self.guilds[alliance][user.id].keys():
-                            question = "**{}** is not a valid assignment. Do you wish to pop this **{}** assignment?"\
-                                .format(match[1].upper(), t)
-                            answer, confirmation = await PagesMenu.confirm(self, ctx, question)
-                            if answer and t in self.guilds[alliance][user.id][alliance_map].keys():
-                                self.guilds[alliance]['assignments'][user.id][alliance_map].pop(t)
-
-            data.title = 'Member Assignment'
-            for m in self.guilds[alliance]['assignments'][user.id].keys():
-                assigned = []
-                for k in ('t1', 't2', 't3'):
-                    if k in self.guilds[alliance]['assignments'][user.id][m]:
-                        assigned.append('{} : track {}'.format(k, self.guilds[alliance]['assignments'][user.id][m][k]))
-                data.add_field(name=m.upper(), value='\n'.join(assigned))
-            await self.bot.say(embed=data)
+            dataIO.save_json(self.alliances, self.guilds)
+        if assignment is not None:
+            self.guilds[alliance]['assignments'][alliance_map].update(assignment)
+            dataIO.save_json(self.alliances, self.guilds)
+        elif assignment is None:
+            if user.id in self.guilds[alliance]['assignments'].keys():
+                if alliance_map in self.guilds[alliance]['assignments'][user.id]:
+                    question = 'Do you want to clear the {} assignment for {}?' \
+                        .format(alliance_map.upper(), user.id)
+                    answer, confirmation = await PagesMenu.confirm(self, ctx, question)
+                    if answer:
+                        self.guilds[alliance]['assignments'][user.id].pop(alliance_map, None)
+                        dataIO.save_json(self.alliances, self.guilds)
+                    await self.bot.delete_message(confirmation)
+                    return
+        data.title = 'Member Assignment'
+        for m in self.guilds[alliance]['assignments'][user.id].keys():
+            data.add_field(name=m.upper(), value=self.guilds[alliance]['assignments'][user.id][m])
+        await self.bot.say(embed=data)
 
 
 def send_request(url):
