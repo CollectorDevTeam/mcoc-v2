@@ -1713,9 +1713,9 @@ class MCOC(ChampionFactory):
             attachments = ctx.message.attachments
             if len(attachments) > 2:
                 for i in attachments:
-                    data.add_field(name='Image submission', value=attachments[i].url)
+                    data.add_field(name='Image submission', value=attachments[i]['url'])
             elif len(attachments) == 1:
-                data.set_image(url=attachments[0].url)
+                data.set_image(url=attachments[0]['url'])
             await self.bot.send_message(cdt_stats, embed=data)
             return
 
