@@ -1700,7 +1700,7 @@ class MCOC(ChampionFactory):
         server = ctx.message.server
         cdt_stats = self.bot.get_channel('391358016328302593')
 
-        data = discord.Embed(color=discord.Color.gold(), title='Submit Stats')
+        data = discord.Embed(color=author.color, title='Submit Stats')
         data.set_footer(text='Submitted by {} on {} [{}]'.format(author.display_name, server.name, server.id),
                         icon_url=author.avatar_url)
 
@@ -1924,7 +1924,7 @@ class MCOC(ChampionFactory):
         # else:
         server = ctx.message.server
         author = ctx.message.author
-        data = discord.Embed(color=discord.Color.gold(), title='Submit Duel Targets')
+        data = discord.Embed(color=author.color, title='Submit Duel Targets')
         data.description='Duel Target registered.\nChampion: {0.star_name_str}\nTarget: {1}\nPress OK to confirm.'.format(
                 champ, observation)
         data.set_footer(text='Submitted by {} on {} [{}]'
