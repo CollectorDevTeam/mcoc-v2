@@ -1703,7 +1703,7 @@ class MCOC(ChampionFactory):
         data = discord.Embed(color=author.color, title='Submit Stats')
         data.set_footer(text='Submitted by {} on {} [{}]'.format(author.display_name, server.name, server.id),
                         icon_url=author.avatar_url)
-
+        data.set_thumbnail(url=champ.get_featured())
         if stats is None and len(ctx.message.attachments) > 0:
             if len(attachments) > 2:
                 for i in attachments:
@@ -1826,7 +1826,7 @@ class MCOC(ChampionFactory):
                 # check = await self.bot.say('Debug - no stats submissions accepted currently.')
                 check = await self._process_submission(package=package, GKEY=GKEY, sheet='submit_stats')
                 if check:
-                    await self.bot.edit_message(message2, embed=data)
+                    await self.bot.delete_message(message2)
                     if cdt_stats is not None:
                         await self.bot.send_message(cdt_stats, embed=data)
                         if len(ctx.message.attachments) > 0:
@@ -1918,14 +1918,11 @@ class MCOC(ChampionFactory):
     async def submit_duel_target(self, ctx, champ : ChampConverter, observation, pi:int = 0):
         # guild = await self.check_guild(ctx)
         cdt_duels = self.bot.get_channel('404046914057797652')
-        # if not guild:
-        #     await self.bot.say('\u26a0 This server is unauthorized.')
-        #     return
-        # else:
         server = ctx.message.server
         author = ctx.message.author
         data = discord.Embed(color=author.color, title='Submit Duel Targets')
-        data.description='Duel Target registered.\nChampion: {0.star_name_str}\nTarget: {1}\nPress OK to confirm.'.format(
+        data.set_thumbnail(url=champ.get_featured())
+        data.description = 'Duel Target registered.\nChampion: {0.star_name_str}\nTarget: {1}\nPress OK to confirm.'.format(
                 champ, observation)
         data.set_footer(text='Submitted by {} on {} [{}]'
                         .format(author.display_name, server.name, server.id),
