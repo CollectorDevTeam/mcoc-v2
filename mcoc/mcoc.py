@@ -1848,7 +1848,7 @@ class MCOC(ChampionFactory):
         question = 'Submission registered.\nChampion: {0.verbose_str}\nPrestige: {1}'\
             .format(champ, observation)
         answer, confirmation = await PagesMenu.confirm(self, ctx, question)
-        cdt_prestige = self.bot.get_channel('386959042678882315')
+        cdt_prestige = self.bot.get_channel('391358076219031553')
         data = discord.Embed(color=author.color, title='Submit Prestige')
         data.description = question
         data.set_thumbnail(url=champ.get_avatar())
