@@ -1893,7 +1893,7 @@ class MCOC(ChampionFactory):
             await self.bot.say(embed=data)
             return
         elif len(ctx.message.attachments) == 1:
-            data.set_image(ctx.message.attachments[0]['url'])
+            data.set_image(url=ctx.message.attachments[0]['url'])
         else:
             attachements = ctx.message.attachments
 
