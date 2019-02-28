@@ -1864,6 +1864,7 @@ class MCOC(ChampionFactory):
                              '4★ r5 at level 50  |  5★ r5 at level 55\n```'
             data.add_field(name='Attach Screenshots', value='Images may be attached to this command.\n'
                                                             'Attached images will cross-post to the CollectorDevTeam server for inspection.')
+            data.add_field(name='Example', value='```/submit prestige 5*x23r4s20 5871```\n'
             data.set_image(url='https://cdn.discordapp.com/attachments/390255698405228544/550783184430825482/unknown.png')
             pages.append(data)
             data2 = discord.Embed(color=author.color, title='Submit Prestige From Alliance Openings')
@@ -1881,6 +1882,9 @@ class MCOC(ChampionFactory):
                                '4★ r3 at level 30  |  5★ r3 at level 35\n' \
                                '4★ r4 at level 40  |  5★ r4 at level 45\n' \
                                '4★ r5 at level 50  |  5★ r5 at level 55\n```'
+            data2.add_field(name='Attach Screenshots', value='Images may be attached to this command.\n'
+            data2.add_field(name='Example', value='```/submit prestige 5*x23r4s20 5871```\n'
+
             data2.set_image(url='https://media.discordapp.net/attachments/390255698405228544/550782742141599798/unknown.png')
             pages.append(data2)
             menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
