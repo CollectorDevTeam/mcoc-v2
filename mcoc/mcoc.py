@@ -1889,7 +1889,7 @@ class MCOC(ChampionFactory):
                                'Resubmit this command with any number of image attachments.\n' \
                                'If you are submitting a batch of images, every 5 levels of ' \
                                'signature ability are more than sufficient.\n\n' \
-                               'Be sure to specify '
+                               'Be sure to specify the champion **rank**.'
             await self.bot.say(embed=data)
             return
         elif len(ctx.message.attachments) == 1:
