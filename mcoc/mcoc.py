@@ -1691,7 +1691,7 @@ class MCOC(ChampionFactory):
         if ctx.invoked_subcommand is None:
             await send_cmd_help(ctx)
 
-    @submit.command(pass_context=True, name='stats', hidden=True)
+    @submit.command(pass_context=True, name='stats')
     async def submit_stats(self, ctx, champ: ChampConverter = None, *, stats: str = None):
         '''Submit Champion Stats and or Images
         valid keys: hp, atk, cr, cd, blockpen, critresist, armorpen, armor, bp'''
@@ -1841,37 +1841,44 @@ class MCOC(ChampionFactory):
 
 
     @submit.command(pass_context=True, name='prestige')
-    async def submit_prestige(self, ctx, champ : ChampConverter, observation : int):
-        guild = await self.check_guild(ctx)
-        if not guild:
-            await self.bot.say('This server is unauthorized.')
+    async def submit_prestige(self, ctx, champ : ChampConverter, observation: int):
+        author = ctx.message.author
+        server = ctx.message.server
+        question = 'Submission registered.\nChampion: {0.verbose_str}\nPrestige: {1}'\
+            .format(champ, observation)
+        answer, confirmation = await PagesMenu.confirm(self, ctx, question)
+        cdt_prestige = self.bot.get_channel('386959042678882315')
+        data = discord.Embed(color=author.color, title='Submit Prestige')
+        data.description = question
+        data.set_thumbnail(url=champ.get_avatar())
+        data.set_footer(text='Submitted by {} on {} [{}]'.format(author.display_name, server.name, server.id),
+                        icon_url=author.avatar_url)
+        if answer is False:
+            data.add_field(name='Status', value='Cancelled by {}'.author.display_name)
+            await self.bot.delete_message(confirmation)
+            await self.bot.say(emebed=em)
             return
-        else:
-            message = await self.bot.say('Submission registered.\nChampion: ' +
-                    '{0.verbose_str}\nPrestige: {1}\nPress OK to confirm.'.format(
-                    champ, observation))
-            await self.bot.add_reaction(message, '❌')
-            await self.bot.add_reaction(message, '🆗')
-            react = await self.bot.wait_for_reaction(message=message,
-                    user=ctx.message.author, timeout=30, emoji=['❌', '🆗'])
-            if react is not None:
-                if react.reaction.emoji == '❌':
-                    await self.bot.say('Submission canceled.')
-                elif react.reaction.emoji == '🆗':
-                    GKEY = '1HXMN7PseaWSvWpNJ3igUkV_VT-w4_7-tqNY7kSk0xoc'
-                    message2 = await self.bot.say('Submission in progress.')
-                    # message2 = await self.bot.say(
-                    #     embed=discord.Embed(color=author.color, title='Submission in progress.'))
-
-                    author = ctx.message.author
-                    package = [['{}'.format(champ.mattkraftid), champ.sig, observation, champ.star, champ.rank, champ.max_lvl, author.name, author.id]]
-                    check = await self._process_submission(package=package, GKEY=GKEY, sheet='collector_submit')
-                    if check:
-                        await self.bot.edit_message(message2, 'Submission complete.')
-                    else:
-                        await self.bot.edit_message(message2, 'Submission failed.')
-            else:
-                await self.bot.say('Ambiguous response.  Submission canceled')
+        elif answer is True:
+            await self.bot.delete_message(confirmation)
+            message = self.bot.say(embed=data)
+            GKEY = '1HXMN7PseaWSvWpNJ3igUkV_VT-w4_7-tqNY7kSk0xoc'
+            message2 = await self.bot.say('Submission in progress.')
+                # message2 = await self.bot.say(
+                #     embed=discord.Embed(color=author.color, title='Submission in progress.'))
+                author = ctx.message.author
+                package = [['{}'.format(champ.mattkraftid), champ.sig, observation, champ.star, champ.rank, champ.max_lvl, author.name, author.id]]
+                check = await self._process_submission(package=package, GKEY=GKEY, sheet='collector_submit')
+                await self.bot.send_message(cdt_prestige, embed=data)
+                if check:
+                    data.add_field(name='Status', value='Submission complete.')
+                else:
+                    data.add_field(name='Status', value='Submission failed.')
+            await self.bot.delete_message(message2)
+            await self.bot.edit_message(message, embed=data)
+        # else:
+        #     await self.bot.delete_message(confirmation)
+        #     data.add_field(name='Status', value='Ambiguous response. Submission Cancelled')
+        #     await self.bot.say(embed=data)
 
     @submit.command(pass_context=True, name='sigs', aliases=('signatures', 'sig',))
     async def submit_sigs(self, ctx, champ: ChampConverter):
