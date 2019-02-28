@@ -1851,15 +1851,15 @@ class MCOC(ChampionFactory):
         data.set_footer(text='Submitted by {} on {} [{}]'.format(author.display_name, server.name, server.id),
                         icon_url=author.avatar_url)
         if champ is None or observation is None:
-            data.description('In order to submit prestige, the following is required:\n '
-                             '**Masteries must be removed**\n'
-                             'Champions must be at the maximum level for a given rank.\n'
-                             'i.e.\n'
-                             '4★ r1 at level 10  |  5★ r1 at level 15\n'
-                             '4★ r2 at level 20  |  5★ r2 at level 25\n'
-                             '4★ r3 at level 30  |  5★ r3 at level 35\n'
-                             '4★ r4 at level 40  |  5★ r4 at level 45\n'
-                             '4★ r5 at level 50  |  5★ r5 at level 55\n')
+            data.description='In order to submit prestige, the following is required:\n' \
+                             '**Masteries must be removed**\n' \
+                             'Champions must be at the maximum level for a given rank.\n' \
+                             'i.e.\n' \
+                             '4★ r1 at level 10  |  5★ r1 at level 15\n' \
+                             '4★ r2 at level 20  |  5★ r2 at level 25\n' \
+                             '4★ r3 at level 30  |  5★ r3 at level 35\n' \
+                             '4★ r4 at level 40  |  5★ r4 at level 45\n' \
+                             '4★ r5 at level 50  |  5★ r5 at level 55\n'
             data.add_field(name='Attach Screenshots', value='Images may be attached to this command.\n'
                                                             'Attached images will cross-post to the CollectorDevTeam server for inspection.')
             await self.bot.say(embed=data)
