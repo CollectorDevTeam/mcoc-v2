@@ -1842,6 +1842,7 @@ class MCOC(ChampionFactory):
 
     @submit.command(pass_context=True, name='prestige')
     async def submit_prestige(self, ctx, champ : ChampConverter, observation: int):
+        '''Submit Champion Prestige + Images'''
         author = ctx.message.author
         server = ctx.message.server
         question = 'Submission registered.\nChampion: {0.verbose_str}\nPrestige: {1}'\
@@ -1853,18 +1854,22 @@ class MCOC(ChampionFactory):
         data.set_thumbnail(url=champ.get_avatar())
         data.set_footer(text='Submitted by {} on {} [{}]'.format(author.display_name, server.name, server.id),
                         icon_url=author.avatar_url)
+        if len(ctx.message.attachments) == 1:
+            data.set_image(url=ctx.message.attachments[0]['url'])
+        elif len(ctx.message.attachments) > 1:
+            for attachment in ctx.message.attachements:
+                data.set_image(url=attachment['url'])
+                await self.bot.send_message('{}\n{}'.format(champ.verbose_str, attachment['url']))
         if answer is False:
             data.add_field(name='Status', value='Cancelled by {}'.author.display_name)
             await self.bot.delete_message(confirmation)
-            await self.bot.say(emebed=em)
+            await self.bot.say(emebed=data)
             return
         elif answer is True:
             await self.bot.delete_message(confirmation)
             message = self.bot.say(embed=data)
             GKEY = '1HXMN7PseaWSvWpNJ3igUkV_VT-w4_7-tqNY7kSk0xoc'
             message2 = await self.bot.say('Submission in progress.')
-                # message2 = await self.bot.say(
-                #     embed=discord.Embed(color=author.color, title='Submission in progress.'))
                 author = ctx.message.author
                 package = [['{}'.format(champ.mattkraftid), champ.sig, observation, champ.star, champ.rank, champ.max_lvl, author.name, author.id]]
                 check = await self._process_submission(package=package, GKEY=GKEY, sheet='collector_submit')
@@ -1873,12 +1878,9 @@ class MCOC(ChampionFactory):
                     data.add_field(name='Status', value='Submission complete.')
                 else:
                     data.add_field(name='Status', value='Submission failed.')
-            await self.bot.delete_message(message2)
-            await self.bot.edit_message(message, embed=data)
-        # else:
-        #     await self.bot.delete_message(confirmation)
-        #     data.add_field(name='Status', value='Ambiguous response. Submission Cancelled')
-        #     await self.bot.say(embed=data)
+                await self.bot.delete_message(message2)
+                await self.bot.edit_message(message, embed=data)
+
 
     @submit.command(pass_context=True, name='sigs', aliases=('signatures', 'sig',))
     async def submit_sigs(self, ctx, champ: ChampConverter):
