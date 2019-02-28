@@ -1870,16 +1870,15 @@ class MCOC(ChampionFactory):
             message = self.bot.say(embed=data)
             GKEY = '1HXMN7PseaWSvWpNJ3igUkV_VT-w4_7-tqNY7kSk0xoc'
             message2 = await self.bot.say('Submission in progress.')
-                author = ctx.message.author
-                package = [['{}'.format(champ.mattkraftid), champ.sig, observation, champ.star, champ.rank, champ.max_lvl, author.name, author.id]]
-                check = await self._process_submission(package=package, GKEY=GKEY, sheet='collector_submit')
-                await self.bot.send_message(cdt_prestige, embed=data)
-                if check:
-                    data.add_field(name='Status', value='Submission complete.')
-                else:
-                    data.add_field(name='Status', value='Submission failed.')
-                await self.bot.delete_message(message2)
-                await self.bot.edit_message(message, embed=data)
+            package = [['{}'.format(champ.mattkraftid), champ.sig, observation, champ.star, champ.rank, champ.max_lvl, author.name, author.id]]
+            check = await self._process_submission(package=package, GKEY=GKEY, sheet='collector_submit')
+            await self.bot.send_message(cdt_prestige, embed=data)
+            if check:
+                data.add_field(name='Status', value='Submission complete.')
+            else:
+                data.add_field(name='Status', value='Submission failed.')
+            await self.bot.delete_message(message2)
+            await self.bot.edit_message(message, embed=data)
 
 
     @submit.command(pass_context=True, name='sigs', aliases=('signatures', 'sig',))
