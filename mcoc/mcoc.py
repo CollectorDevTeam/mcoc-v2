@@ -1703,7 +1703,8 @@ class MCOC(ChampionFactory):
         data = discord.Embed(color=author.color, title='Submit Stats')
         data.set_footer(text='Submitted by {} on {} [{}]'.format(author.display_name, server.name, server.id),
                         icon_url=author.avatar_url)
-        data.set_thumbnail(url=champ.get_featured())
+        if champ is not None:
+            data.set_thumbnail(url=champ.get_featured())
         if stats is None and len(ctx.message.attachments) > 0:
             if len(attachments) > 2:
                 for i in attachments:
