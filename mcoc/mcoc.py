@@ -1845,11 +1845,11 @@ class MCOC(ChampionFactory):
         '''Submit Champion Prestige + Images'''
         author = ctx.message.author
         server = ctx.message.server
-        question = 'Submission registered.\nChampion: {0.verbose_str}\nPrestige: {1}'\
-            .format(champ, observation)
 
         cdt_prestige = self.bot.get_channel('391358076219031553')
         data = discord.Embed(color=author.color, title='Submit Prestige')
+        data.set_footer(text='Submitted by {} on {} [{}]'.format(author.display_name, server.name, server.id),
+                        icon_url=author.avatar_url)
         if champ is None or observation is None:
             data.description('In order to submit prestige, the following is required:\n '
                              '**Masteries must be removed**\n'
@@ -1864,37 +1864,37 @@ class MCOC(ChampionFactory):
                                                             'Attached images will cross-post to the CollectorDevTeam server for inspection.')
             await self.bot.say(embed=data)
             return
-        data.description = question
-        data.set_thumbnail(url=champ.get_avatar())
-        data.set_footer(text='Submitted by {} on {} [{}]'.format(author.display_name, server.name, server.id),
-                        icon_url=author.avatar_url)
-
-        answer, confirmation = await PagesMenu.confirm(self, ctx, question)
-        if len(ctx.message.attachments) == 1:
-            data.set_image(url=ctx.message.attachments[0]['url'])
-        elif len(ctx.message.attachments) > 1:
-            for attachment in ctx.message.attachements:
-                data.set_image(url=attachment['url'])
-                await self.bot.send_message('{}\n{}'.format(champ.verbose_str, attachment['url']))
-        if answer is False:
-            data.add_field(name='Status', value='Cancelled by {}'.author.display_name)
-            await self.bot.delete_message(confirmation)
-            await self.bot.say(emebed=data)
-            return
-        elif answer is True:
-            await self.bot.delete_message(confirmation)
-            message = await self.bot.say(embed=data)
-            GKEY = '1HXMN7PseaWSvWpNJ3igUkV_VT-w4_7-tqNY7kSk0xoc'
-            message2 = await self.bot.say('Submission in progress.')
-            package = [['{}'.format(champ.mattkraftid), champ.sig, observation, champ.star, champ.rank, champ.max_lvl, author.name, author.id, str(ctx.message.timestamp)]]
-            check = await self._process_submission(package=package, GKEY=GKEY, sheet='collector_submit')
-            await self.bot.send_message(cdt_prestige, embed=data)
-            if check:
-                data.add_field(name='Status', value='Submission complete.')
-            else:
-                data.add_field(name='Status', value='Submission failed.')
-            await self.bot.delete_message(message2)
-            await self.bot.edit_message(message, embed=data)
+        else:
+            data.set_thumbnail(url=champ.get_avatar())
+            question = 'Submission registered.\nChampion: {0.verbose_str}\nPrestige: {1}'\
+                .format(champ, observation)
+            data.description = question
+            answer, confirmation = await PagesMenu.confirm(self, ctx, question)
+            if len(ctx.message.attachments) == 1:
+                data.set_image(url=ctx.message.attachments[0]['url'])
+            elif len(ctx.message.attachments) > 1:
+                for attachment in ctx.message.attachements:
+                    data.set_image(url=attachment['url'])
+                    await self.bot.send_message('{}\n{}'.format(champ.verbose_str, attachment['url']))
+            if answer is False:
+                data.add_field(name='Status', value='Cancelled by {}'.author.display_name)
+                await self.bot.delete_message(confirmation)
+                await self.bot.say(emebed=data)
+                return
+            elif answer is True:
+                await self.bot.delete_message(confirmation)
+                message = await self.bot.say(embed=data)
+                GKEY = '1HXMN7PseaWSvWpNJ3igUkV_VT-w4_7-tqNY7kSk0xoc'
+                message2 = await self.bot.say('Submission in progress.')
+                package = [['{}'.format(champ.mattkraftid), champ.sig, observation, champ.star, champ.rank, champ.max_lvl, author.name, author.id, str(ctx.message.timestamp)]]
+                check = await self._process_submission(package=package, GKEY=GKEY, sheet='collector_submit')
+                await self.bot.send_message(cdt_prestige, embed=data)
+                if check:
+                    data.add_field(name='Status', value='Submission complete.')
+                else:
+                    data.add_field(name='Status', value='Submission failed.')
+                await self.bot.delete_message(message2)
+                await self.bot.edit_message(message, embed=data)
 
 
     @submit.command(pass_context=True, name='sigs', aliases=('signatures', 'sig',))
