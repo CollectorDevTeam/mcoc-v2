@@ -45,15 +45,19 @@ class MCOCMaps:
         }
 
     aq_map = {
-        'cheatsheet':{'map':'cheatsheetv2', 'maptitle':'Season 5 Cheat Sheet'},
-        '5':{'map': 's5aq5', 'maptitle':'5'},
-        '5.1':{'map': 's5aq51','maptitle':'5 Tier 1'},
-        '5.2':{'map':  's5aq52', 'maptitle':'5 Tier 2'},
-        '5.3':{'map': 's5aq53','maptitle':'5 Tier 3'},
-        '6':{'map': 's7aq6v2', 'maptitle':'6'},
-        '6.1':{'map': 's7aq61v2','maptitle':'6 Tier 1'},
-        '6.2':{'map':  's7aq62v2', 'maptitle':'6 Tier 2'},
-        '6.3':{'map': 's7aq63v2','maptitle':'6 Tier 3'},}
+        'cheatsheet': {'map': 'cheatsheetv2', 'maptitle': 'Season 5 Cheat Sheet'},
+        '5': {'map': 's5aq5', 'maptitle': '5'},
+        '5.1': {'map': 's5aq51', 'maptitle': '5 Tier 1'},
+        '5.2': {'map':  's5aq52', 'maptitle': '5 Tier 2'},
+        '5.3': {'map': 's5aq53', 'maptitle': '5 Tier 3'},
+        '6': {'map': 's7aq6v2', 'maptitle': '6'},
+        '6.1': {'map': 's7aq61v2', 'maptitle': '6 Tier 1'},
+        '6.2': {'map':  's7aq62v2', 'maptitle': '6 Tier 2'},
+        '6.3': {'map': 's7aq63v2', 'maptitle': '6 Tier 3'},
+        '7': {'map': 's7aq7', 'maptitle': '7'},
+        '7.1': {'map': 's7aq71', 'maptitle': '7 Tier 1'},
+        '7.2': {'map':  's7aq72', 'maptitle': '7 Tier 2'},
+        '7.3': {'map': 's7aq73', 'maptitle': '7 Tier 3'}}
 
     aq_map_tips = {
         'cheatsheet':{
@@ -566,7 +570,7 @@ class MCOCMaps:
         keys = default.keys()
 
         package = []
-        if default['node'] == 0:
+        if default['node'] == 0 and default['nodes'] == '':
             package.append('\nYou must specify an Alliance War Node number. \n Examples:\n``node30``\n``n30``')
         if default['tier'] == 0 and default['difficulty'] == '':
             package.append('\nYou must specify either an Alliance War Tier (T1 - T22) or a valid difficulty.\nExamples:\n``t4``\n``T4``\n``Expert``')
@@ -595,7 +599,10 @@ class MCOCMaps:
             for d in {'difficulty', 'star_filter','class_filter', 'hp', 'atk', 'tier'}:
                 if d in keys:
                     data[d] = default[d] #stringify all data?
-                data['node'] = 'n{}'.format(default['node'])
+                if default['node'] > 0:
+                    data['node'] = 'n{}'.format(default['node'])
+                elif default['nodes'] != '':
+                    data['node'] = default['nodes']
 
 
             if default['test'] == True:
@@ -745,14 +752,15 @@ class MCOCMaps:
 
         # 'class_filter' : None, 'star_filter': 0,
 
-        default = {'tier': 0, 'difficulty' : '', 'hp': 0, 'atk': 0, 'node': 0,
+        default = {'tier': 0, 'difficulty' : '', 'hp': 0, 'atk': 0, 'node': 0, 'nodes': '',
                    'color': discord.Color.gold(), 'debug': 0, 'test': False}
         parse_re = re.compile(r'''\b(?:t(?:ier)?(?P<tier>[0-9]{1,2})
                     | hp?(?P<hp>[0-9]{2,6})
                     | a(?:tk)?(?P<atk>[0-9]{2,5})
                     | (?P<hpi>\d{2,6})\s(?:\s)*(?P<atki>\d{2,5})
+                    | (?P<nodes>(n\d+(n\d+(n\d+(n\d+(n\d+)?)?)?)?)?)? 
                     | n(?:ode)?(?P<node>[0-9]{1,2}))
-                    |(?:d(?P<debug>[0-9]{1,2}))\b
+                    | (?:d(?P<debug>[0-9]{1,2}))\b
                     | (?P<star_filter>[1-6](?=(?:star|s)\b|(?:★|☆|\*)\B)) ''', re.X)
 
         class_re = re.compile(r'''(?:(?P<class>sc(?:ience)?|sk(?:ill)?|mu(?:tant)?|my(?:stic)?|co(?:smic)?|te(?:ch)?))''',re.X)
