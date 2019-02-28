@@ -1851,7 +1851,9 @@ class MCOC(ChampionFactory):
         data.set_footer(text='Submitted by {} on {} [{}]'.format(author.display_name, server.name, server.id),
                         icon_url=author.avatar_url)
         if champ is None or observation is None:
-            data.description='In order to submit prestige, the following is required:\n' \
+            pages = []
+            data.title = 'Submit Prestige Instructions'
+            data.description = 'In order to submit prestige, the following is required:\n' \
                              '**Masteries must be removed**\n' \
                              'Champions must be at the maximum level for a given rank.\n' \
                              'i.e.\n' \
@@ -1862,7 +1864,25 @@ class MCOC(ChampionFactory):
                              '4★ r5 at level 50  |  5★ r5 at level 55\n'
             data.add_field(name='Attach Screenshots', value='Images may be attached to this command.\n'
                                                             'Attached images will cross-post to the CollectorDevTeam server for inspection.')
-            await self.bot.say(embed=data)
+            data.set_image(url='https://cdn.discordapp.com/attachments/390255698405228544/550783184430825482/unknown.png')
+            pages.append(data)
+            data.description = 'Alliance-mate Opening Observations\n' \
+                                'You can report prestige from Alliance openings.\n ' \
+                                'Alliance openings are GREEN text in your Alliance feed.\n ' \
+                                'Click on the left-hand side of the item, on the champion portrait.\n ' \
+                                'The Champion Prestige is reported on this information screen.\n ' \
+                               'Champions must be at the maximum level for a given rank.\n' \
+                               'i.e.\n' \
+                               '4★ r1 at level 10  |  5★ r1 at level 15\n' \
+                               '4★ r2 at level 20  |  5★ r2 at level 25\n' \
+                               '4★ r3 at level 30  |  5★ r3 at level 35\n' \
+                               '4★ r4 at level 40  |  5★ r4 at level 45\n' \
+                               '4★ r5 at level 50  |  5★ r5 at level 55\n'
+            data.set_image(url='https://media.discordapp.net/attachments/390255698405228544/550782742141599798/unknown.png?width=604&height=604')
+            pages.append(data)
+            menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
+            await menu.menu_start(pages)
+            # await self.bot.say(embed=data)
             return
         else:
             data.set_thumbnail(url=champ.get_avatar())
