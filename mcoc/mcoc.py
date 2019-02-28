@@ -1841,19 +1841,35 @@ class MCOC(ChampionFactory):
 
 
     @submit.command(pass_context=True, name='prestige')
-    async def submit_prestige(self, ctx, champ : ChampConverter, observation: int):
+    async def submit_prestige(self, ctx, champ: ChampConverter = None, observation: int = None):
         '''Submit Champion Prestige + Images'''
         author = ctx.message.author
         server = ctx.message.server
         question = 'Submission registered.\nChampion: {0.verbose_str}\nPrestige: {1}'\
             .format(champ, observation)
-        answer, confirmation = await PagesMenu.confirm(self, ctx, question)
+
         cdt_prestige = self.bot.get_channel('391358076219031553')
         data = discord.Embed(color=author.color, title='Submit Prestige')
+        if champ is None or observation is None:
+            data.description('In order to submit prestige, the following is required:\n '
+                             '**Masteries must be removed**\n'
+                             'Champions must be at the maximum level for a given rank.\n'
+                             'i.e.\n'
+                             '4★ r1 at level 10  |  5★ r1 at level 15\n'
+                             '4★ r2 at level 20  |  5★ r2 at level 25\n'
+                             '4★ r3 at level 30  |  5★ r3 at level 35\n'
+                             '4★ r4 at level 40  |  5★ r4 at level 45\n'
+                             '4★ r5 at level 50  |  5★ r5 at level 55\n')
+            data.add_field(name='Attach Screenshots', value='Images may be attached to this command.\n'
+                                                            'Attached images will cross-post to the CollectorDevTeam server for inspection.')
+            await self.bot.say(embed=data)
+            return
         data.description = question
         data.set_thumbnail(url=champ.get_avatar())
         data.set_footer(text='Submitted by {} on {} [{}]'.format(author.display_name, server.name, server.id),
                         icon_url=author.avatar_url)
+
+        answer, confirmation = await PagesMenu.confirm(self, ctx, question)
         if len(ctx.message.attachments) == 1:
             data.set_image(url=ctx.message.attachments[0]['url'])
         elif len(ctx.message.attachments) > 1:
