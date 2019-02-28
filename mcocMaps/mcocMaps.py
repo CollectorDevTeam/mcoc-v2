@@ -128,6 +128,18 @@ class MCOCMaps:
             'energy':'D & E move first\nC & F move second\nA, B, G & I move third\nH & J move last',
             'tips':'A - Poison\nB - Caltrops\nC - Caltrops\nA, B & C - All or Nothing tile 118\nD - Degeneration\nE - Degeneration & Starburst\nF - Starburst & Power Gain\nG - Power Gain\nH \nI - Power Gain\nJ - Starburst',
             'miniboss':[['Kingpin','+575% Champion Boost\n+200% Health\nDimensional Anchor\nHeal Block\nLimber (20%)\n+50% Power Gain\nUnblockable'],]},
+        '7': {'required': '',
+              'energy': '',
+              'tips': '', },
+        '7.1': {'required': '',
+              'energy': '',
+              'tips': '', },
+        '7.2': {'required': '',
+              'energy': '',
+              'tips': '', },
+        '7.3': {'required': '',
+              'energy': '',
+              'tips': '', },
     }
 
     lolmaps = {'0':{'map':'0', 'maptitle': 'Completion Path 0'},
