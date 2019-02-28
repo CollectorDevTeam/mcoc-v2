@@ -2151,8 +2151,8 @@ class MCOC(ChampionFactory):
             return False
         else:
             sh = gc.open_by_key(key=GKEY, returnas='spreadsheet')
-            worksheet = sh.worksheet(property='title',value=sheet)
-            worksheet.append_table(start='A1',end=None, values=package, dimension='ROWS', overwrite=False)
+            worksheet = sh.worksheet(property='title', value=sheet)
+            worksheet.append_table(start='D1', end=None, values=package, dimension='ROWS', overwrite=False)
             worksheet.sync()
             return True
 
