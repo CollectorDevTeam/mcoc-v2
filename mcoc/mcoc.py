@@ -1870,7 +1870,7 @@ class MCOC(ChampionFactory):
             message = self.bot.say(embed=data)
             GKEY = '1HXMN7PseaWSvWpNJ3igUkV_VT-w4_7-tqNY7kSk0xoc'
             message2 = await self.bot.say('Submission in progress.')
-            package = [['{}'.format(champ.mattkraftid), champ.sig, observation, champ.star, champ.rank, champ.max_lvl, author.name, author.id]]
+            package = [['{}'.format(champ.mattkraftid), champ.sig, observation, champ.star, champ.rank, champ.max_lvl, author.name, author.id, str(ctx.message.timestamp)]]
             check = await self._process_submission(package=package, GKEY=GKEY, sheet='collector_submit')
             await self.bot.send_message(cdt_prestige, embed=data)
             if check:
