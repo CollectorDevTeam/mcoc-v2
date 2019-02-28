@@ -1815,7 +1815,7 @@ class MCOC(ChampionFactory):
                     await self.bot.delete_message(confirmation)
                     return
                 GKEY = '1VOqej9o4yLAdMoZwnWbPY-fTFynbDb_Lk8bXDNeonuE'
-                message2 = await self.bot.say('Submission in progress.')
+                message2 = await self.bot.say(embed=discord.Embed(color=author.color, title='Submission in progress.'))
                 level = champ.rank*10
                 if champ.star > 4:
                     level += 15
@@ -1860,6 +1860,9 @@ class MCOC(ChampionFactory):
                 elif react.reaction.emoji == '🆗':
                     GKEY = '1HXMN7PseaWSvWpNJ3igUkV_VT-w4_7-tqNY7kSk0xoc'
                     message2 = await self.bot.say('Submission in progress.')
+                    # message2 = await self.bot.say(
+                    #     embed=discord.Embed(color=author.color, title='Submission in progress.'))
+
                     author = ctx.message.author
                     package = [['{}'.format(champ.mattkraftid), champ.sig, observation, champ.star, champ.rank, champ.max_lvl, author.name, author.id]]
                     check = await self._process_submission(package=package, GKEY=GKEY, sheet='collector_submit')
@@ -1869,6 +1872,41 @@ class MCOC(ChampionFactory):
                         await self.bot.edit_message(message2, 'Submission failed.')
             else:
                 await self.bot.say('Ambiguous response.  Submission canceled')
+
+    @submit.command(pass_context=True, name='sigs', aliases=('signatures', 'sig',))
+    async def submit_sigs(self, ctx, champ: ChampConverter):
+        author = ctx.message.author
+        server = ctx.message.server
+        cdt_sigs = self.bot.get_channel('391358050918727692')
+        data = discord.Embed(color=author.color, title='Submit Signatures')
+        data.set_thumbnail(url=champ.get_avatar())
+        data.set_footer(text='Submitted by {} on {} [{}]'.format(author.display_name, server.name, server.id),
+                        icon_url=author.avatar_url)
+        data.description = '{} rank {}'.format(champ.full_name, champ.rank)
+        attachements = []
+        if len(ctx.message.attachments) == 0:
+            data.description = 'Champion Signature abilities must be manually coded.\n ' \
+                               'Resubmit this command with any number of image attachments.\n' \
+                               'If you are submitting a batch of images, every 5 levels of ' \
+                               'signature ability are more than sufficient.\n\n' \
+                               'Be sure to specify '
+            await self.bot.say(embed=data)
+            return
+        elif len(ctx.message.attachments) == 1:
+            data.set_image(ctx.message.attachments[0]['url'])
+        else:
+            attachements = ctx.message.attachments
+
+        saypackage = 'Do you want to submit image attachements for\n{}'.format(champ.verbose_str)
+        answer, confirmation = await PagesMenu.confirm(self, ctx, saypackage)
+        if answer:
+            await self.bot.say(embed=data)
+            await self.bot.delete_message(confirmation)
+            await self.bot.send_message(cdt_sigs, embed=data)
+            if len(attachements) > 0:
+                for i in attachements:
+                    await self.bot.send_message(cdt_sigs, i['url'])
+                await self.bot.send_message(cdt_sigs, 'Final submission for {}'.format(champ.verbose_str))
 
     # # @submit.command(pass_context=True, name='defenders', aliases=['awd'], hidden=true)
     # # async def submit_awd(self, ctx, target_user: str, *, champs : ChampConverterMult):
@@ -1937,7 +1975,7 @@ class MCOC(ChampionFactory):
             elif react.reaction.emoji == '🆗':
                 # GKEY = '1VOqej9o4yLAdMoZwnWbPY-fTFynbDb_Lk8bXDNeonuE'
                 GKEY = '1FZdJPB8sayzrXkE3F2z3b1VzFsNDhh-_Ukl10OXRN6Q'
-                message2 = await self.bot.say('Submission in progress.')
+                message2 = await self.bot.say(embed=discord.Embed(color=author.color, title='Submission in progress.'))
                 author = ctx.message.author
                 star = '{0.star}{0.star_char}'.format(champ)
                 if pi == 0:
@@ -1970,7 +2008,11 @@ class MCOC(ChampionFactory):
     # @commands.has_any_role('DataDonors','CollectorDevTeam','CollectorSupportTeam','CollectorPartners')
     @submit.command(pass_context=True, name='defkill', aliases=['defko',])
     async def submit_awkill(self, ctx, champ : ChampConverter, node:int, ko: int):
-        message = await self.bot.say('Defender Kill registered.\nChampion: {0.verbose_str}\nAW Node: {1}\nKills: {2}\nPress OK to confirm.'.format(champ, node, ko))
+        author = ctx.message.author
+        message = await self.bot.say('Defender Kill registered.\n'
+                                     'Champion: {0.verbose_str}\n'
+                                     'AW Node: {1}\nKills: {2}\n'
+                                     'Press OK to confirm.'.format(champ, node, ko))
         await self.bot.add_reaction(message, '❌')
         await self.bot.add_reaction(message, '🆗')
         react = await self.bot.wait_for_reaction(message=message, user=ctx.message.author, timeout=30, emoji=['❌', '🆗'])
@@ -1979,28 +2021,32 @@ class MCOC(ChampionFactory):
                 await self.bot.say('Submission canceled.')
             elif react.reaction.emoji == '🆗':
                 GKEY = '1VOqej9o4yLAdMoZwnWbPY-fTFynbDb_Lk8bXDNeonuE' #Collector Submissions
-                message2 = await self.bot.say('Submission in progress.')
+                message2 = await self.bot.say(embed=discord.Embed(color=author.color, title='Submission in progress.'))
                 author = ctx.message.author
                 now = str(ctx.message.timestamp)
                 package = [[now, author.name, author.id, champ.unique, node, ko]]
                 print('package built')
                 check = await self._process_submission(package=package, GKEY=GKEY, sheet='defender_kos')
                 if check:
-                    await self.bot.edit_message(message2, 'Submission complete.')
+                    await self.bot.edit_message(message2,
+                                                embed=discord.Embed(color=author.color, title='Submission Status', description='Submission complete'))
                 else:
-                    await self.bot.edit_message(message2, 'Submission failed.')
-        else:
-            GKEY = '1VOqej9o4yLAdMoZwnWbPY-fTFynbDb_Lk8bXDNeonuE' #Collector Submissions
-            message2 = await self.bot.say('Ambiguous response: Submission in progress.')
-            author = ctx.message.author
+                    await self.bot.edit_message(message2,
+                                                embed=discord.Embed(color=author.color, title='Submission Status', description='Submission failed'))
+            GKEY = '1VOqej9o4yLAdMoZwnWbPY-fTFynbDb_Lk8bXDNeonuE' # Collector Submissions
+            message2 = await self.bot.say(embed=discord.Embed(color=author.color, title='Submission Status', description='Ambiguous response.\nSubmission cancelled'))
             now = str(ctx.message.timestamp)
             package = [[now, author.name, author.id, champ.unique, node, ko]]
             print('package built')
             check = await self._process_submission(package=package, GKEY=GKEY, sheet='defender_kos')
             if check:
-                await self.bot.edit_message(message2, 'Submission complete.')
+                await self.bot.edit_message(message2,
+                                            embed=discord.Embed(color=author.color, title='Submission Status',
+                                                                description='Submission complete'))
             else:
-                await self.bot.edit_message(message2, 'Submission failed.')
+                await self.bot.edit_message(message2,
+                                            embed=discord.Embed(color=author.color, title='Submission Status',
+                                                                description='Submission failed'))
 
     @commands.has_any_role('DataDonors','CollectorDevTeam','CollectorSupportTeam','CollectorPartners')
     @submit.command(pass_context=True, name='100hits', aliases=['50hits',])
