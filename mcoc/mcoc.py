@@ -1851,6 +1851,8 @@ class MCOC(ChampionFactory):
         if champ is None or observation is None:
             pages = []
             data.title = 'Submit Prestige Instructions'
+            data.set_footer(text='{} on {} [{}]'.format(author.display_name, server.name, server.id),
+                            icon_url=author.avatar_url)
             data.description = 'In order to submit prestige, the following is required:\n' \
                              '**Masteries must be removed**\n' \
                              'Champions must be at the maximum level for a given rank.\n' \
@@ -1865,6 +1867,8 @@ class MCOC(ChampionFactory):
             data.set_image(url='https://cdn.discordapp.com/attachments/390255698405228544/550783184430825482/unknown.png')
             pages.append(data)
             data2 = discord.Embed(color=author.color, title='Submit Prestige Instructions')
+            data2.set_footer(text='{} on {} [{}]'.format(author.display_name, server.name, server.id),
+                            icon_url=author.avatar_url)
             data2.description = 'Alliance-mate Opening Observations\n' \
                                 'You can report prestige from Alliance openings.\n ' \
                                 'Alliance openings are GREEN text in your Alliance feed.\n ' \
@@ -1878,10 +1882,9 @@ class MCOC(ChampionFactory):
                                '4★ r4 at level 40  |  5★ r4 at level 45\n' \
                                '4★ r5 at level 50  |  5★ r5 at level 55\n'
             data2.set_image(url='https://media.discordapp.net/attachments/390255698405228544/550782742141599798/unknown.png')
-            pages.append(data)
+            pages.append(data2)
             menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
             await menu.menu_start(pages)
-            # await self.bot.say(embed=data)
             return
         else:
             data.set_footer(text='Submitted by {} on {} [{}]'.format(author.display_name, server.name, server.id),
