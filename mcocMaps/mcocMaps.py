@@ -54,10 +54,10 @@ class MCOCMaps:
         '6.1': {'map': 's7aq61v2', 'maptitle': '6 Tier 1'},
         '6.2': {'map':  's7aq62v2', 'maptitle': '6 Tier 2'},
         '6.3': {'map': 's7aq63v2', 'maptitle': '6 Tier 3'},
-        '7': {'map': 's7aq7', 'maptitle': '7'},
-        '7.1': {'map': 's7aq71', 'maptitle': '7 Tier 1'},
-        '7.2': {'map':  's7aq72', 'maptitle': '7 Tier 2'},
-        '7.3': {'map': 's7aq73', 'maptitle': '7 Tier 3'}}
+        '7': {'map': 's7aq7v2', 'maptitle': '7'},
+        '7.1': {'map': 's7aq71v2', 'maptitle': '7 Tier 1'},
+        '7.2': {'map':  's7aq72v2', 'maptitle': '7 Tier 2'},
+        '7.3': {'map': 's7aq73v2', 'maptitle': '7 Tier 3'}}
 
     aq_map_tips = {
         'cheatsheet':{
@@ -770,7 +770,7 @@ class MCOCMaps:
                     | hp?(?P<hp>[0-9]{2,6})
                     | a(?:tk)?(?P<atk>[0-9]{2,5})
                     | (?P<hpi>\d{2,6})\s(?:\s)*(?P<atki>\d{2,5})
-                    | (?P<nodes>(n\d+(n\d+(n\d+(n\d+(n\d+)?)?)?)?)?)? 
+                    # | (?P<nodes>(n\d+(n\d+(n\d+(n\d+(n\d+)?)?)?)?)?)? 
                     | n(?:ode)?(?P<node>[0-9]{1,2}))
                     | (?:d(?P<debug>[0-9]{1,2}))\b
                     | (?P<star_filter>[1-6](?=(?:star|s)\b|(?:★|☆|\*)\B)) ''', re.X)
