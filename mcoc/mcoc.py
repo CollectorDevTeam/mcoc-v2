@@ -1848,8 +1848,6 @@ class MCOC(ChampionFactory):
 
         cdt_prestige = self.bot.get_channel('391358076219031553')
         data = discord.Embed(color=author.color, title='Submit Prestige')
-        data.set_footer(text='Submitted by {} on {} [{}]'.format(author.display_name, server.name, server.id),
-                        icon_url=author.avatar_url)
         if champ is None or observation is None:
             pages = []
             data.title = 'Submit Prestige Instructions'
@@ -1866,7 +1864,8 @@ class MCOC(ChampionFactory):
                                                             'Attached images will cross-post to the CollectorDevTeam server for inspection.')
             data.set_image(url='https://cdn.discordapp.com/attachments/390255698405228544/550783184430825482/unknown.png')
             pages.append(data)
-            data.description = 'Alliance-mate Opening Observations\n' \
+            data2 = discord.Embed(color=author.color, title='Submit Prestige Instructions')
+            data2.description = 'Alliance-mate Opening Observations\n' \
                                 'You can report prestige from Alliance openings.\n ' \
                                 'Alliance openings are GREEN text in your Alliance feed.\n ' \
                                 'Click on the left-hand side of the item, on the champion portrait.\n ' \
@@ -1878,13 +1877,15 @@ class MCOC(ChampionFactory):
                                '4★ r3 at level 30  |  5★ r3 at level 35\n' \
                                '4★ r4 at level 40  |  5★ r4 at level 45\n' \
                                '4★ r5 at level 50  |  5★ r5 at level 55\n'
-            data.set_image(url='https://media.discordapp.net/attachments/390255698405228544/550782742141599798/unknown.png?width=604&height=604')
+            data2.set_image(url='https://media.discordapp.net/attachments/390255698405228544/550782742141599798/unknown.png')
             pages.append(data)
             menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
             await menu.menu_start(pages)
             # await self.bot.say(embed=data)
             return
         else:
+            data.set_footer(text='Submitted by {} on {} [{}]'.format(author.display_name, server.name, server.id),
+                            icon_url=author.avatar_url)
             data.set_thumbnail(url=champ.get_avatar())
             question = 'Submission registered.\nChampion: {0.verbose_str}\nPrestige: {1}'\
                 .format(champ, observation)
