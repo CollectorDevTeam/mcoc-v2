@@ -1867,7 +1867,7 @@ class MCOC(ChampionFactory):
             return
         elif answer is True:
             await self.bot.delete_message(confirmation)
-            message = self.bot.say(embed=data)
+            message = await self.bot.say(embed=data)
             GKEY = '1HXMN7PseaWSvWpNJ3igUkV_VT-w4_7-tqNY7kSk0xoc'
             message2 = await self.bot.say('Submission in progress.')
             package = [['{}'.format(champ.mattkraftid), champ.sig, observation, champ.star, champ.rank, champ.max_lvl, author.name, author.id, str(ctx.message.timestamp)]]
