@@ -545,7 +545,7 @@ class Hook:
                 data.description += '\nPercent of Roster: {}%\n'.format(round(stats['top'][star]['count']/total, 2))
             pages.append(data)
             for star in (6, 5, 4, 3, 2, 1):
-                data = discord.Embed(color=ctx.message.author.color, title='CollectorVerse {}★ Roster Stats', url=PATREON)
+                data = discord.Embed(color=ctx.message.author.color, title='CollectorVerse {}★ Roster Stats'.format(star), url=PATREON)
                 data.set_author(name='CollectorDevTeam', icon_url=COLLECTOR_ICON)
                 data.set_thumbnail(url=user.avatar_url)
                 data.set_footer(text='{} Roster Stats'.format(user.display_name))
