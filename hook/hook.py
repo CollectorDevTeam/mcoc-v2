@@ -550,7 +550,7 @@ class Hook:
                 data.set_thumbnail(url=user.avatar_url)
                 data.set_footer(text='{} Roster Stats'.format(user.display_name))
                 list = []
-                for klass in stats.keys():
+                for klass in ('Cosmic', 'Tech', 'Mutant', 'Skill', 'Science', 'Mystic'):
                     if stats[klass][star]['count'] > 0:
                         count = stats[klass][star]['count']
                         power = stats[klass][star]['sum']
