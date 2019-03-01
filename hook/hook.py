@@ -533,7 +533,7 @@ class Hook:
                         power = stats[klass][star]['sum']
                         prestige = round(power/count)
                         percent = count/total
-                        list.append('{star}★ Count: {count}\n{star}★ Total Power: {power}\n{star}★ Prestige{prestige}\n{star}★ Roster: {percent}% of Roster'.format(star, power, count, prestige, percent))
+                        list.append('{0}★ Count: {1}\n{0}★ Total Power: {2}\n{0}★ Prestige{3}\n{0}★ Roster: {4}% of Roster'.format(star, count, power, prestige, percent))
                 data.add_field(name=klass.title(),value='\n'.join(list))
             await self.bot.say(embed=data)
 
