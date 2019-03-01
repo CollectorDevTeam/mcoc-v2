@@ -535,17 +535,17 @@ class Hook:
                 stats['top'][star]['count'] += 1
                 stats['top'][star]['sum'] += 1
                 # export master count list from XREF
-            data = discord.Embed(color=ctx.message.author.color, name='Roster Stats', url='')
+            data = discord.Embed(color=ctx.message.author.color, title='CollectorVerse Roster Stats', url='')
             data.set_author(name='CollectorDevTeam', icon_url=COLLECTOR_ICON)
             data.set_thumbnail(url=user.avatar_url)
             data.set_footer(text='{} Roster Stats'.format(user.display_name))
-            data.description = 'Total Roster Power: {:,}\nNumber of Champions: {:,}'.format(total_power, total)
+            data.description = 'Total Roster Power: {:,}\nNumber of Champions: {:,}\n'.format(total_power, total)
             for star in (6, 5, 4, 3, 2, 1):
                 data.description += '\n{}★ Count: {}'.format(star, stats['top'][star]['count'])
                 data.description += '\n{}★ Percent of Roster: {}'.format(star, round(stats['top'][star]['count']/total, 2))
             pages.append(data)
             for star in (6, 5, 4, 3, 2, 1):
-                data = discord.Embed(color=ctx.message.author.color, name='{}★ Roster Stats', url=PATREON)
+                data = discord.Embed(color=ctx.message.author.color, name='CollectorVerse {}★ Roster Stats', url=PATREON)
                 data.set_author(name='CollectorDevTeam', icon_url=COLLECTOR_ICON)
                 data.set_thumbnail(url=user.avatar_url)
                 data.set_footer(text='{} Roster Stats'.format(user.display_name))
