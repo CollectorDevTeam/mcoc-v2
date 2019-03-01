@@ -499,7 +499,7 @@ class Hook:
     async def _roster_stats(self, ctx, user: discord.member = None):
         if user is None:
             user = ctx.message.author
-            roster = ChampionRoster(user)
+            roster = ChampionRoster(self.bot, user)
             await roster.load_champions()
             total = 0
             stats = {'science': {6: {'count': 0, 'sum': 0}, 5: {'count': 0, 'sum': 0}, 4: {'count': 0, 'sum': 0},
