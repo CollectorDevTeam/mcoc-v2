@@ -498,7 +498,7 @@ class Hook:
         await self._update(roster, champs)
 
     @roster.command(pass_context=True, name='stats', hidden=True)
-    async def _roster_stats(self, ctx, user: discord.Member = None):
+    async def _roster_stats(self, ctx, user: discord.User = None):
         if user is None:
             user = ctx.message.author
             roster = ChampionRoster(self.bot, user)
