@@ -549,17 +549,17 @@ class Hook:
                 data.set_author(name='CollectorDevTeam', icon_url=COLLECTOR_ICON)
                 data.set_thumbnail(url=user.avatar_url)
                 data.set_footer(text='{} Roster Stats'.format(user.display_name))
-                list = []
                 for klass in ('Cosmic', 'Tech', 'Mutant', 'Skill', 'Science', 'Mystic'):
+                    list = []
                     if stats[klass][star]['count'] > 0:
                         count = stats[klass][star]['count']
                         power = stats[klass][star]['sum']
                         percent = round(count/total, 2)
                         list.append('{0} Count: {1}\n{0} Power: {2:,}\n{3}% of Roster\n'
                                     .format(klass, count, power, percent))
-                    if len(list) > 0:
-                        data.add_field(name='{0}★ {1}'.format(star, klass), value='\n'.join(list))
-                        pages.append(data)
+                        if len(list) > 0:
+                            data.add_field(name='{0}★ {1}'.format(star, klass), value='\n'.join(list))
+                            pages.append(data)
             menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
             await menu.menu_start(pages=pages)
 
