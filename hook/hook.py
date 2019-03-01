@@ -573,7 +573,7 @@ class Hook:
                     percent = round(count/total*100, 2)
                     available = collection[klass][str(star)]
                     collected = round(count/available*100, 2)
-                    list.append('Champion Count: {} / {}\nCollection Index:  %{} \nTotal Power: {2:,}'
+                    list.append('Champion Count: {} / {}\nCollection Index:  %{} \nTotal Power: {:,}'
                                 .format(count, available, collected, power))
                     if len(list) > 0:
                         data.add_field(name='{0}★ {1}'.format(star, klass), value='\n'.join(list))
