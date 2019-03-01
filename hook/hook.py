@@ -559,7 +559,8 @@ class Hook:
                                     .format(klass, count, power, percent))
                         if len(list) > 0:
                             data.add_field(name='{0}★ {1}'.format(star, klass), value='\n'.join(list))
-                pages.append(data)
+                if stats['top'][star] > 0:
+                    pages.append(data)
             menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
             await menu.menu_start(pages=pages)
 
