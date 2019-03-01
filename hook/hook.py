@@ -542,7 +542,7 @@ class Hook:
             data.description = 'Total Roster Power: {:,}\nNumber of Champions: {:,}\n'.format(total_power, total)
             for star in (6, 5, 4, 3, 2, 1):
                 data.description += '\n{}★ Champion Count: {}'.format(star, stats['top'][star]['count'])
-                data.description += '\nPercent of Roster: {}\n'.format(round(stats['top'][star]['count']/total, 2))
+                data.description += '\nPercent of Roster: {}%\n'.format(round(stats['top'][star]['count']/total, 2))
             pages.append(data)
             for star in (6, 5, 4, 3, 2, 1):
                 data = discord.Embed(color=ctx.message.author.color, name='CollectorVerse {}★ Roster Stats', url=PATREON)
