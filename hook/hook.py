@@ -449,22 +449,22 @@ class Hook:
                 description=ret, color=role.color)
         await self.bot.say(embed=em)
 
-    @commands.command(pass_context=True, no_pm=True)
-    async def team(self,ctx, *, user : discord.Member=None):
-        """Displays a user's AQ/AWO/AWD teams.
-        Teams are set in hook/champions"""
-        if user is None:
-            user = ctx.message.author
-        # creates user if doesn't exist
-        info = self.load_champ_data(user)
-        em = discord.Embed(title="User Profile", description=user.name)
-        if info['aq']:
-            em.add_field(name='AQ Champs', value='\n'.join(info['aq']))
-        if info['awo']:
-            em.add_field(name='AWO Champs', value='\n'.join(info['awo']))
-        if info['awd']:
-            em.add_field(name='AWD Champs', value='\n'.join(info['awd']))
-        await self.bot.say(embed=em)
+    # @commands.command(pass_context=True, no_pm=True)
+    # async def team(self,ctx, *, user : discord.Member=None):
+    #     """Displays a user's AQ/AWO/AWD teams.
+    #     Teams are set in hook/champions"""
+    #     if user is None:
+    #         user = ctx.message.author
+    #     # creates user if doesn't exist
+    #     info = self.load_champ_data(user)
+    #     em = discord.Embed(title="User Profile", description=user.name)
+    #     if info['aq']:
+    #         em.add_field(name='AQ Champs', value='\n'.join(info['aq']))
+    #     if info['awo']:
+    #         em.add_field(name='AWO Champs', value='\n'.join(info['awo']))
+    #     if info['awd']:
+    #         em.add_field(name='AWD Champs', value='\n'.join(info['awd']))
+    #     await self.bot.say(embed=em)
 
     @commands.group(pass_context=True, invoke_without_command=True)
     async def roster(self, ctx, *, hargs=''):
@@ -499,7 +499,7 @@ class Hook:
     async def _roster_stats(self, ctx, user: discord.member = None):
         if user is None:
             user = ctx.message.author
-            roster = ChampionRoster(ctx.bot, user)
+            roster = ChampionRoster(user)
             await roster.load_champions()
             total = 0
             stats = {'science': {6: {'count': 0, 'sum': 0}, 5: {'count': 0, 'sum': 0}, 4: {'count': 0, 'sum': 0},
@@ -514,8 +514,8 @@ class Hook:
                                 3: {'count': 0, 'sum': 0}, 2: {'count': 0, 'sum': 0}, 1: {'count': 0, 'sum': 0}},
                      'skill': {6: {'count': 0, 'sum': 0}, 5: {'count': 0, 'sum': 0}, 4: {'count': 0, 'sum': 0},
                                3: {'count': 0, 'sum': 0}, 2: {'count': 0, 'sum': 0}, 1: {'count': 0, 'sum': 0}}}
-            for champ in roster:
-                champ=
+            for champ in roster.roster.values():
+                # champ = ChampConverter()
                 klass = champ.klass
                 star = champ.star
                 total += 1
