@@ -502,17 +502,17 @@ class Hook:
             roster = ChampionRoster(self.bot, user)
             await roster.load_champions()
             total = 0
-            stats = {'science': {6: {'count': 0, 'sum': 0}, 5: {'count': 0, 'sum': 0}, 4: {'count': 0, 'sum': 0},
+            stats = {'Science': {6: {'count': 0, 'sum': 0}, 5: {'count': 0, 'sum': 0}, 4: {'count': 0, 'sum': 0},
                                  3: {'count': 0, 'sum': 0}, 2: {'count': 0, 'sum': 0}, 1: {'count': 0, 'sum': 0}},
-                     'mystic': {6: {'count': 0, 'sum': 0}, 5: {'count': 0, 'sum': 0}, 4: {'count': 0, 'sum': 0},
+                     'Mystic': {6: {'count': 0, 'sum': 0}, 5: {'count': 0, 'sum': 0}, 4: {'count': 0, 'sum': 0},
                                 3: {'count': 0, 'sum': 0}, 2: {'count': 0, 'sum': 0}, 1: {'count': 0, 'sum': 0}},
-                     'cosmic': {6: {'count': 0, 'sum': 0}, 5: {'count': 0, 'sum': 0}, 4: {'count': 0, 'sum': 0},
+                     'Cosmic': {6: {'count': 0, 'sum': 0}, 5: {'count': 0, 'sum': 0}, 4: {'count': 0, 'sum': 0},
                                 3: {'count': 0, 'sum': 0}, 2: {'count': 0, 'sum': 0}, 1: {'count': 0, 'sum': 0}},
-                     'tech': {6: {'count': 0, 'sum': 0}, 5: {'count': 0, 'sum': 0}, 4: {'count': 0, 'sum': 0},
+                     'Tech': {6: {'count': 0, 'sum': 0}, 5: {'count': 0, 'sum': 0}, 4: {'count': 0, 'sum': 0},
                               3: {'count': 0, 'sum': 0}, 2: {'count': 0, 'sum': 0}, 1: {'count': 0, 'sum': 0}},
-                     'mutant': {6: {'count': 0, 'sum': 0}, 5: {'count': 0, 'sum': 0}, 4: {'count': 0, 'sum': 0},
+                     'Mutant': {6: {'count': 0, 'sum': 0}, 5: {'count': 0, 'sum': 0}, 4: {'count': 0, 'sum': 0},
                                 3: {'count': 0, 'sum': 0}, 2: {'count': 0, 'sum': 0}, 1: {'count': 0, 'sum': 0}},
-                     'skill': {6: {'count': 0, 'sum': 0}, 5: {'count': 0, 'sum': 0}, 4: {'count': 0, 'sum': 0},
+                     'Skill': {6: {'count': 0, 'sum': 0}, 5: {'count': 0, 'sum': 0}, 4: {'count': 0, 'sum': 0},
                                3: {'count': 0, 'sum': 0}, 2: {'count': 0, 'sum': 0}, 1: {'count': 0, 'sum': 0}}}
             for champ in roster.roster.values():
                 # champ = ChampConverter()
