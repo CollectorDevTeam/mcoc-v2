@@ -545,7 +545,7 @@ class Hook:
                 data.description += '\nPercent of Roster: {}%\n'.format(round(stats['top'][star]['count']/total, 2))
             pages.append(data)
             for star in (6, 5, 4, 3, 2, 1):
-                data = discord.Embed(color=ctx.message.author.color, name='CollectorVerse {}★ Roster Stats', url=PATREON)
+                data = discord.Embed(color=ctx.message.author.color, title='CollectorVerse {}★ Roster Stats', url=PATREON)
                 data.set_author(name='CollectorDevTeam', icon_url=COLLECTOR_ICON)
                 data.set_thumbnail(url=user.avatar_url)
                 data.set_footer(text='{} Roster Stats'.format(user.display_name))
@@ -557,9 +557,9 @@ class Hook:
                         percent = round(count/total, 2)
                         list.append('{0} Count: {1}\n{0} Power: {2:,}\n{3}% of Roster\n'
                                     .format(klass, count, power, percent))
-                if len(list) > 0:
-                    data.add_field(name='{0}★'.format(star), value='\n'.join(list))
-                    pages.append(data)
+                    if len(list) > 0:
+                        data.add_field(name='{0}★ {1}'.format(star, klass), value='\n'.join(list))
+                        pages.append(data)
             menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
             await menu.menu_start(pages=pages)
 
