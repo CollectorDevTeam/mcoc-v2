@@ -554,7 +554,7 @@ class Hook:
             .format(total_power, total, available, round(total/available*100, 4))
         for star in (6, 5, 4, 3, 2, 1):
             count = stats['top'][star]['count']
-            available = collection['Total'][star]
+            available = collection['Total'][str(star)]
             data.add_field(name='\n{}★ Champion Count: {}'.format(star, count),
                            value='\nPercent of Roster: {}%\nCollection Index: {} of {} = {}'
                            .format(round(count/total*100, 4), count, available, round(count/available*100, 4)))
@@ -570,7 +570,7 @@ class Hook:
                     count = stats[klass][star]['count']
                     power = stats[klass][star]['sum']
                     percent = round(count/total*100, 4)
-                    available = collection[klass][star]
+                    available = collection[klass][str(star)]
                     list.append('{0} Count: {1}\n{0} Power: {2:,}\n{3}% of Roster\nCollection Index {} of {} = {}%'
                                 .format(klass, count, power, percent, count, available, round(count/available*100, 4)))
                     if len(list) > 0:
