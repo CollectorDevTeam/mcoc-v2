@@ -36,6 +36,8 @@ GITHUB_ICON='http://www.smallbutdigital.com/static/media/twitter.png'
 HOOK_URL='http://hook.github.io/champions/#/roster'
 COLLECTOR_ICON='https://raw.githubusercontent.com/CollectorDevTeam/assets/master/data/images/portraits/collector.png'
 GSHEET_ICON='https://d2jixqqjqj5d23.cloudfront.net/assets/developer/imgs/icons/google-spreadsheet-icon.png'
+PATREON = 'https://patreon.com/collectorbot'
+
 
 _default.default = JSONEncoder().default  # Save unmodified default.
 JSONEncoder.default = _default # replacemente
@@ -503,6 +505,7 @@ class Hook:
             await roster.load_champions()
             total = 0
             total_power = 0
+            pages = []
             stats = {'Science': {6: {'count': 0, 'sum': 0}, 5: {'count': 0, 'sum': 0}, 4: {'count': 0, 'sum': 0},
                                  3: {'count': 0, 'sum': 0}, 2: {'count': 0, 'sum': 0}, 1: {'count': 0, 'sum': 0}},
                      'Mystic': {6: {'count': 0, 'sum': 0}, 5: {'count': 0, 'sum': 0}, 4: {'count': 0, 'sum': 0},
@@ -527,18 +530,26 @@ class Hook:
             data = discord.Embed(color=ctx.message.author.color, name='Roster Stats', url='')
             data.set_author(name='CollectorDevTeam', icon_url=COLLECTOR_ICON)
             data.set_footer(text='Roster Stats requested by {}'.format(ctx.message.author))
+            data.description = 'Total Roster Power: {}\nNumber of Champions: {}'.format(total_power, total)
+            pages.append(data)
             for star in (6, 5, 4, 3, 2, 1):
+                data = discord.Embed(color=ctx.message.author.color, name='{}★ Roster Stats', url=PATREON)
+                data.set_author(name='CollectorDevTeam', icon_url=COLLECTOR_ICON)
+                data.set_footer(text='Roster Stats requested by {}'.format(ctx.message.author))
                 list = []
                 for klass in stats.keys():
                     if stats[klass][star]['count'] > 0:
                         count = stats[klass][star]['count']
                         power = stats[klass][star]['sum']
-                        prestige = round(power/count)
-                        percent = round(count/total,2)
-                        list.append('{0} Count: {1}\n{0} Power: {2}\n{0} Roster: {3}% of Roster'.format(klass, count, power, percent))
+                        percent = round(count/total, 2)
+                        list.append('{0} Count: {1}\n{0} Power: {2}\n{0} Roster: {3}% of Roster'
+                                    .format(klass, count, power, percent))
                 data.add_field(name='{0}★'.format(star), value='\n'.join(list))
-            data.description = 'Total Roster Power: {}\nNumber of Champions: {}'.format(total_power, total)
-            await self.bot.say(embed=data)
+                pages.append(data)
+            menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
+            await menu.menu_start(pages=pages)
+
+
 
 
     async def _update(self, roster, champs):
