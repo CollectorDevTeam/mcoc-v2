@@ -275,7 +275,7 @@ class GSExport:
 
 class GSHandler:
 
-    def __init__(self, bot, service_file):
+    def __init__(self, bot, service_file=gapi_service_creds):
         self.bot = bot
         self.service_file = service_file
         self.gsheets = {}

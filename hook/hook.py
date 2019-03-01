@@ -22,7 +22,7 @@ import re
 import asyncio
 ### Monkey Patch of JSONEncoder
 from json import JSONEncoder, dump, dumps
-from .mcocTools import (KABAM_ICON, COLLECTOR_ICON, PagesMenu)
+from .mcocTools import (StaticGameData, PagesMenu, KABAM_ICON, COLLECTOR_ICON, CDTHelperFunctions)
 
 
 logger = logging.getLogger('red.roster')
@@ -404,6 +404,14 @@ class Hook:
     def __init__(self, bot):
         self.bot = bot
         self.champ_re = re.compile(r'.*hamp.*\.csv')
+        self.gsheet_handler = GSHandler(bot)
+        self.gsheet_handler.register_gsheet(
+            name='collection',
+            gkey='1JSiGo-oGbPdmlegmGTH7hcurd_HYtkpTnZGY1mN_XCE',
+            local='data/mcoc/collection',
+            sheet_name='collection',
+            range_name='available_collection'
+        )
         # self.champ_re = re.compile(r'champ.*\.csv')
         #self.champ_re = re.compile(r'champions(?:_\d+)?.csv')
         #self.champ_str = '{0[Stars]}★ R{0[Rank]} S{0[Awakened]:<2} {0[Id]}'
@@ -499,6 +507,8 @@ class Hook:
 
     @roster.command(pass_context=True, name='stats', hidden=True)
     async def _roster_stats(self, ctx, user: discord.User = None):
+        sgd = StaticGameData()
+        collection = await sgd.get_gsheets_data('collection')
         if user is None:
             user = ctx.message.author
         roster = ChampionRoster(self.bot, user)
@@ -535,17 +545,22 @@ class Hook:
             stats['top'][star]['count'] += 1
             stats['top'][star]['sum'] += 1
             # export master count list from XREF
-        data = discord.Embed(color=ctx.message.author.color, title='CollectorVerse Roster Stats', url='')
+        data = discord.Embed(color=user.color, title='CollectorVerse Roster Stats', url='')
         data.set_author(name='CollectorDevTeam', icon_url=COLLECTOR_ICON)
         data.set_thumbnail(url=user.avatar_url)
         data.set_footer(text='{} Roster Stats'.format(user.display_name))
-        data.description = 'Total Roster Power: {:,}\nNumber of Champions: {:,}\n'.format(total_power, total)
+        available = collection['Total']['Total']
+        data.description = 'Total Roster Power: {:,}\nCollection Index: {:,} of {:,} = {}\n'\
+            .format(total_power, total, available, round(total/available*100, 4))
         for star in (6, 5, 4, 3, 2, 1):
-            data.description += '\n{}★ Champion Count: {}'.format(star, stats['top'][star]['count'])
-            data.description += '\nPercent of Roster: {}%\n'.format(round(stats['top'][star]['count']/total*100, 2))
+            count = stats['top'][star]['count']
+            available = collection['Total'][star]
+            data.add_field(name='\n{}★ Champion Count: {}'.format(star, count),
+                           value='\nPercent of Roster: {}%\nCollection Index: {} of {} = {}'
+                           .format(round(count/total*100, 4), count, available, round(count/available*100, 4)))
         pages.append(data)
         for star in (6, 5, 4, 3, 2, 1):
-            data = discord.Embed(color=ctx.message.author.color, title='CollectorVerse {}★ Roster Stats'.format(star), url=PATREON)
+            data = discord.Embed(color=user.color, title='CollectorVerse {}★ Roster Stats'.format(star), url=PATREON)
             data.set_author(name='CollectorDevTeam', icon_url=COLLECTOR_ICON)
             data.set_thumbnail(url=user.avatar_url)
             data.set_footer(text='{} Roster Stats'.format(user.display_name))
@@ -554,9 +569,10 @@ class Hook:
                 if stats[klass][star]['count'] > 0:
                     count = stats[klass][star]['count']
                     power = stats[klass][star]['sum']
-                    percent = round(count/total*100, 2)
-                    list.append('{0} Count: {1}\n{0} Power: {2:,}\n{3}% of Roster\n'
-                                .format(klass, count, power, percent))
+                    percent = round(count/total*100, 4)
+                    available = collection[klass][star]
+                    list.append('{0} Count: {1}\n{0} Power: {2:,}\n{3}% of Roster\nCollection Index {} of {} = {}%'
+                                .format(klass, count, power, percent, count, available, round(count/available*100, 4)))
                     if len(list) > 0:
                         data.add_field(name='{0}★ {1}'.format(star, klass), value='\n'.join(list))
             if stats['top'][star]['count'] > 0:
@@ -806,5 +822,7 @@ def setup(bot):
     check_folders()
     override_error_handler(bot)
     n = Hook(bot)
+    sgd = StaticGameData()
+    sgd.register_gsheets(bot)
     bot.add_cog(n)
     bot.add_listener(n._on_attachment, name='on_message')

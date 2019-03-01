@@ -54,10 +54,10 @@ class MCOCMaps:
         '6.1': {'map': 's7aq61v2', 'maptitle': '6 Tier 1'},
         '6.2': {'map':  's7aq62v2', 'maptitle': '6 Tier 2'},
         '6.3': {'map': 's7aq63v2', 'maptitle': '6 Tier 3'},
-        '7': {'map': 's7aq7v2', 'maptitle': '7'},
-        '7.1': {'map': 's7aq71v2', 'maptitle': '7 Tier 1'},
-        '7.2': {'map':  's7aq72v2', 'maptitle': '7 Tier 2'},
-        '7.3': {'map': 's7aq73v2', 'maptitle': '7 Tier 3'}}
+        '7': {'map': 's7aq7', 'maptitle': '7'},
+        '7.1': {'map': 's7aq71', 'maptitle': '7 Tier 1'},
+        '7.2': {'map':  's7aq72', 'maptitle': '7 Tier 2'},
+        '7.3': {'map': 's7aq73', 'maptitle': '7 Tier 3'}}
 
     aq_map_tips = {
         'cheatsheet':{
@@ -266,8 +266,21 @@ class MCOCMaps:
             cheatsheet : cheatsheet
             aq maps : 5, 5.1, 5.2, 5.3, 6, 6.1, 6.2, 6.3
             /aq 5'''
+        author = ctx.message.author
         embeds = []
-        if maptype in self.aq_map:
+        if maptype in ('7', '7.1', '7.2', '7.3'):
+            for k, v in {'A': '1', 'B': '2', 'C': '3'}:
+                mapurl = '{}{}{}.png'.format(self.basepath, self.aq_map[maptype]['map'], k)
+                maptitle = 'Alliance Quest {} | Variation {}'.format(self.aq_map[maptype]['maptitle'], v)
+                data = discord.Embed(color=discord.Color.gold(), title=maptitle, url=PATREON)
+                data.set_image(url=mapurl)
+                data.set_author(name='CollectorDevTeam', icon_url=self.COLLECTOR_ICON)
+                data.set_footer(text='Requested by {}'.format(author.display_name), icon_url=author.avatar_url)
+                embeds.append(data)
+            menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
+            await menu.menu_start(pages=embeds, page_number=int(maptype))
+            return
+        elif maptype in self.aq_map:
             mapurl = '{}{}.png'.format(self.basepath, self.aq_map[maptype]['map'])
             maptitle = 'Alliance Quest {}'.format(self.aq_map[maptype]['maptitle'])
             em = discord.Embed(color=discord.Color.gold(),title=maptitle,url=PATREON)
