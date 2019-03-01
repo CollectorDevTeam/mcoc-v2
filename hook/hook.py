@@ -550,15 +550,15 @@ class Hook:
         data.set_thumbnail(url=user.avatar_url)
         data.set_footer(text='{} Roster Stats'.format(user.display_name))
         available = collection['Total']['Total']
-        data.description = 'Total Roster Power: {:,}\nCollection Index: {:,} of {:,} = {}\n'\
-            .format(total_power, total, available, round(total/available*100, 4))
+        data.description = 'Champion Count: {} / {} \nCollection Index: = %{}\nTotal Power: {:,} \n'\
+            .format(total, available, round(total/available*100, 2), total_power)
         for star in (6, 5, 4, 3, 2, 1):
             count = stats['top'][star]['count']
             available = collection['Total'][str(star)]
             collected = round(count / available * 100, 2)
-            data.add_field(name='\n{}★ Champion Count: {}'.format(star, count),
-                           value='\nPercent of Roster: {}%\nCollection Index: {} of {} = {}'
-                           .format(round(count/total*100, 2), count, available, collected))
+            data.add_field(name='\n{}★ Champion Count: {} / {}'.format(star, count, available),
+                           value='Collection Index: % {} \nTotal Power: {}'
+                           .format(collected, stats['top'][star]['sum']))
         pages.append(data)
         for star in (6, 5, 4, 3, 2, 1):
             data = discord.Embed(color=user.color, title='CollectorVerse {}★ Roster Stats'.format(star), url=PATREON)
@@ -573,8 +573,8 @@ class Hook:
                     percent = round(count/total*100, 2)
                     available = collection[klass][str(star)]
                     collected = round(count/available*100, 2)
-                    list.append('{0} Count: {1}\n{0} Power: {2:,}\n{3}% of Roster\nCollection Index {4} of {5} = {6}%'
-                                .format(klass, count, power, percent, count, available, collected))
+                    list.append('Champion Count: {} / {}\nCollection Index:  %{} \nTotal Power: {2:,}'
+                                .format(count, available, collected, power))
                     if len(list) > 0:
                         data.add_field(name='{0}★ {1}'.format(star, klass), value='\n'.join(list))
             if stats['top'][star]['count'] > 0:
