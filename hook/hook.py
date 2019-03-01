@@ -496,12 +496,13 @@ class Hook:
         await self._update(roster, champs)
 
     @roster.command(pass_context=True, name='stats', hidden=True)
-    async def _roster_stats(self, ctx, user: discord.member = None):
+    async def _roster_stats(self, ctx, user: discord.Member = None):
         if user is None:
             user = ctx.message.author
             roster = ChampionRoster(self.bot, user)
             await roster.load_champions()
             total = 0
+            total_power = 0
             stats = {'Science': {6: {'count': 0, 'sum': 0}, 5: {'count': 0, 'sum': 0}, 4: {'count': 0, 'sum': 0},
                                  3: {'count': 0, 'sum': 0}, 2: {'count': 0, 'sum': 0}, 1: {'count': 0, 'sum': 0}},
                      'Mystic': {6: {'count': 0, 'sum': 0}, 5: {'count': 0, 'sum': 0}, 4: {'count': 0, 'sum': 0},
@@ -519,22 +520,24 @@ class Hook:
                 klass = champ.klass
                 star = champ.star
                 total += 1
+                total_power += champ.prestige
                 stats[klass][star]['count'] += 1
                 stats[klass][star]['sum'] += champ.prestige
                 # export master count list from XREF
             data = discord.Embed(color=ctx.message.author.color, name='Roster Stats', url='')
             data.set_author(name='CollectorDevTeam', icon_url=COLLECTOR_ICON)
             data.set_footer(text='Roster Stats requested by {}'.format(ctx.message.author))
-            for klass in stats.keys():
+            for star in (6, 5, 4, 3, 2, 1):
                 list = []
-                for star in (6, 5, 4, 3, 2, 1):
+                for klass in stats.keys():
                     if stats[klass][star]['count'] > 0:
                         count = stats[klass][star]['count']
                         power = stats[klass][star]['sum']
                         prestige = round(power/count)
-                        percent = count/total
-                        list.append('{0}★ Count: {1}\n{0}★ Total Power: {2}\n{0}★ Prestige{3}\n{0}★ Roster: {4}% of Roster'.format(star, count, power, prestige, percent))
-                data.add_field(name=klass.title(),value='\n'.join(list))
+                        percent = round(count/total,2)
+                        list.append('{0} Count: {1}\n{0} Power: {2}\n{0} Roster: {3}% of Roster'.format(klass, count, power, percent))
+                data.add_field(name='{0}★'.format(star), value='\n'.join(list))
+            data.description = 'Total Roster Power: {}\nNumber of Champions: {}'.format(total_power, total)
             await self.bot.say(embed=data)
 
 
