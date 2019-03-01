@@ -502,67 +502,67 @@ class Hook:
         if user is None:
             user = ctx.message.author
             roster = ChampionRoster(self.bot, user)
-            await roster.load_champions()
-            total = 0
-            total_power = 0
-            pages = []
-            stats = {'top': {6: {'count': 0, 'sum': 0},
-                             5: {'count': 0, 'sum': 0},
-                             4: {'count': 0, 'sum': 0},
-                             3: {'count': 0, 'sum': 0},
-                             2: {'count': 0, 'sum': 0},
-                             1: {'count': 0, 'sum': 0}},
-                     'Science': {6: {'count': 0, 'sum': 0}, 5: {'count': 0, 'sum': 0}, 4: {'count': 0, 'sum': 0},
-                                 3: {'count': 0, 'sum': 0}, 2: {'count': 0, 'sum': 0}, 1: {'count': 0, 'sum': 0}},
-                     'Mystic': {6: {'count': 0, 'sum': 0}, 5: {'count': 0, 'sum': 0}, 4: {'count': 0, 'sum': 0},
-                                3: {'count': 0, 'sum': 0}, 2: {'count': 0, 'sum': 0}, 1: {'count': 0, 'sum': 0}},
-                     'Cosmic': {6: {'count': 0, 'sum': 0}, 5: {'count': 0, 'sum': 0}, 4: {'count': 0, 'sum': 0},
-                                3: {'count': 0, 'sum': 0}, 2: {'count': 0, 'sum': 0}, 1: {'count': 0, 'sum': 0}},
-                     'Tech': {6: {'count': 0, 'sum': 0}, 5: {'count': 0, 'sum': 0}, 4: {'count': 0, 'sum': 0},
-                              3: {'count': 0, 'sum': 0}, 2: {'count': 0, 'sum': 0}, 1: {'count': 0, 'sum': 0}},
-                     'Mutant': {6: {'count': 0, 'sum': 0}, 5: {'count': 0, 'sum': 0}, 4: {'count': 0, 'sum': 0},
-                                3: {'count': 0, 'sum': 0}, 2: {'count': 0, 'sum': 0}, 1: {'count': 0, 'sum': 0}},
-                     'Skill': {6: {'count': 0, 'sum': 0}, 5: {'count': 0, 'sum': 0}, 4: {'count': 0, 'sum': 0},
-                               3: {'count': 0, 'sum': 0}, 2: {'count': 0, 'sum': 0}, 1: {'count': 0, 'sum': 0}}}
-            for champ in roster.roster.values():
-                # champ = ChampConverter()
-                klass = champ.klass
-                star = champ.star
-                total += 1
-                total_power += champ.prestige
-                stats[klass][star]['count'] += 1
-                stats[klass][star]['sum'] += champ.prestige
-                stats['top'][star]['count'] += 1
-                stats['top'][star]['sum'] += 1
-                # export master count list from XREF
-            data = discord.Embed(color=ctx.message.author.color, title='CollectorVerse Roster Stats', url='')
+        await roster.load_champions()
+        total = 0
+        total_power = 0
+        pages = []
+        stats = {'top': {6: {'count': 0, 'sum': 0},
+                         5: {'count': 0, 'sum': 0},
+                         4: {'count': 0, 'sum': 0},
+                         3: {'count': 0, 'sum': 0},
+                         2: {'count': 0, 'sum': 0},
+                         1: {'count': 0, 'sum': 0}},
+                 'Science': {6: {'count': 0, 'sum': 0}, 5: {'count': 0, 'sum': 0}, 4: {'count': 0, 'sum': 0},
+                             3: {'count': 0, 'sum': 0}, 2: {'count': 0, 'sum': 0}, 1: {'count': 0, 'sum': 0}},
+                 'Mystic': {6: {'count': 0, 'sum': 0}, 5: {'count': 0, 'sum': 0}, 4: {'count': 0, 'sum': 0},
+                            3: {'count': 0, 'sum': 0}, 2: {'count': 0, 'sum': 0}, 1: {'count': 0, 'sum': 0}},
+                 'Cosmic': {6: {'count': 0, 'sum': 0}, 5: {'count': 0, 'sum': 0}, 4: {'count': 0, 'sum': 0},
+                            3: {'count': 0, 'sum': 0}, 2: {'count': 0, 'sum': 0}, 1: {'count': 0, 'sum': 0}},
+                 'Tech': {6: {'count': 0, 'sum': 0}, 5: {'count': 0, 'sum': 0}, 4: {'count': 0, 'sum': 0},
+                          3: {'count': 0, 'sum': 0}, 2: {'count': 0, 'sum': 0}, 1: {'count': 0, 'sum': 0}},
+                 'Mutant': {6: {'count': 0, 'sum': 0}, 5: {'count': 0, 'sum': 0}, 4: {'count': 0, 'sum': 0},
+                            3: {'count': 0, 'sum': 0}, 2: {'count': 0, 'sum': 0}, 1: {'count': 0, 'sum': 0}},
+                 'Skill': {6: {'count': 0, 'sum': 0}, 5: {'count': 0, 'sum': 0}, 4: {'count': 0, 'sum': 0},
+                           3: {'count': 0, 'sum': 0}, 2: {'count': 0, 'sum': 0}, 1: {'count': 0, 'sum': 0}}}
+        for champ in roster.roster.values():
+            # champ = ChampConverter()
+            klass = champ.klass
+            star = champ.star
+            total += 1
+            total_power += champ.prestige
+            stats[klass][star]['count'] += 1
+            stats[klass][star]['sum'] += champ.prestige
+            stats['top'][star]['count'] += 1
+            stats['top'][star]['sum'] += 1
+            # export master count list from XREF
+        data = discord.Embed(color=ctx.message.author.color, title='CollectorVerse Roster Stats', url='')
+        data.set_author(name='CollectorDevTeam', icon_url=COLLECTOR_ICON)
+        data.set_thumbnail(url=user.avatar_url)
+        data.set_footer(text='{} Roster Stats'.format(user.display_name))
+        data.description = 'Total Roster Power: {:,}\nNumber of Champions: {:,}\n'.format(total_power, total)
+        for star in (6, 5, 4, 3, 2, 1):
+            data.description += '\n{}★ Champion Count: {}'.format(star, stats['top'][star]['count'])
+            data.description += '\nPercent of Roster: {}%\n'.format(round(stats['top'][star]['count']/total, 2))
+        pages.append(data)
+        for star in (6, 5, 4, 3, 2, 1):
+            data = discord.Embed(color=ctx.message.author.color, title='CollectorVerse {}★ Roster Stats'.format(star), url=PATREON)
             data.set_author(name='CollectorDevTeam', icon_url=COLLECTOR_ICON)
             data.set_thumbnail(url=user.avatar_url)
             data.set_footer(text='{} Roster Stats'.format(user.display_name))
-            data.description = 'Total Roster Power: {:,}\nNumber of Champions: {:,}\n'.format(total_power, total)
-            for star in (6, 5, 4, 3, 2, 1):
-                data.description += '\n{}★ Champion Count: {}'.format(star, stats['top'][star]['count'])
-                data.description += '\nPercent of Roster: {}%\n'.format(round(stats['top'][star]['count']/total, 2))
-            pages.append(data)
-            for star in (6, 5, 4, 3, 2, 1):
-                data = discord.Embed(color=ctx.message.author.color, title='CollectorVerse {}★ Roster Stats'.format(star), url=PATREON)
-                data.set_author(name='CollectorDevTeam', icon_url=COLLECTOR_ICON)
-                data.set_thumbnail(url=user.avatar_url)
-                data.set_footer(text='{} Roster Stats'.format(user.display_name))
-                for klass in ('Cosmic', 'Tech', 'Mutant', 'Skill', 'Science', 'Mystic'):
-                    list = []
-                    if stats[klass][star]['count'] > 0:
-                        count = stats[klass][star]['count']
-                        power = stats[klass][star]['sum']
-                        percent = round(count/total, 2)
-                        list.append('{0} Count: {1}\n{0} Power: {2:,}\n{3}% of Roster\n'
-                                    .format(klass, count, power, percent))
-                        if len(list) > 0:
-                            data.add_field(name='{0}★ {1}'.format(star, klass), value='\n'.join(list))
-                if stats['top'][star]['count'] > 0:
-                    pages.append(data)
-            menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
-            await menu.menu_start(pages=pages)
+            for klass in ('Cosmic', 'Tech', 'Mutant', 'Skill', 'Science', 'Mystic'):
+                list = []
+                if stats[klass][star]['count'] > 0:
+                    count = stats[klass][star]['count']
+                    power = stats[klass][star]['sum']
+                    percent = round(count/total, 2)
+                    list.append('{0} Count: {1}\n{0} Power: {2:,}\n{3}% of Roster\n'
+                                .format(klass, count, power, percent))
+                    if len(list) > 0:
+                        data.add_field(name='{0}★ {1}'.format(star, klass), value='\n'.join(list))
+            if stats['top'][star]['count'] > 0:
+                pages.append(data)
+        menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
+        await menu.menu_start(pages=pages)
 
 
 
