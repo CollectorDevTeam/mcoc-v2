@@ -501,7 +501,7 @@ class Hook:
     async def _roster_stats(self, ctx, user: discord.User = None):
         if user is None:
             user = ctx.message.author
-            roster = ChampionRoster(self.bot, user)
+        roster = ChampionRoster(self.bot, user)
         await roster.load_champions()
         total = 0
         total_power = 0
