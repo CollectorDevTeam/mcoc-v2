@@ -506,8 +506,12 @@ class Hook:
             total = 0
             total_power = 0
             pages = []
-            stats = {6: {'count': 0, 'sum': 0}, 5: {'count': 0, 'sum': 0}, 4: {'count': 0, 'sum': 0},
-                                 3: {'count': 0, 'sum': 0}, 2: {'count': 0, 'sum': 0}, 1: {'count': 0, 'sum': 0},
+            stats = {'top': {6: {'count': 0, 'sum': 0},
+                             5: {'count': 0, 'sum': 0},
+                             4: {'count': 0, 'sum': 0},
+                             3: {'count': 0, 'sum': 0},
+                             2: {'count': 0, 'sum': 0},
+                             1: {'count': 0, 'sum': 0}},
                      'Science': {6: {'count': 0, 'sum': 0}, 5: {'count': 0, 'sum': 0}, 4: {'count': 0, 'sum': 0},
                                  3: {'count': 0, 'sum': 0}, 2: {'count': 0, 'sum': 0}, 1: {'count': 0, 'sum': 0}},
                      'Mystic': {6: {'count': 0, 'sum': 0}, 5: {'count': 0, 'sum': 0}, 4: {'count': 0, 'sum': 0},
@@ -528,8 +532,8 @@ class Hook:
                 total_power += champ.prestige
                 stats[klass][star]['count'] += 1
                 stats[klass][star]['sum'] += champ.prestige
-                stats[star]['count'] += 1
-                stats[star]['sum'] += 1
+                stats['top'][star]['count'] += 1
+                stats['top'][star]['sum'] += 1
                 # export master count list from XREF
             data = discord.Embed(color=ctx.message.author.color, name='Roster Stats', url='')
             data.set_author(name='CollectorDevTeam', icon_url=COLLECTOR_ICON)
@@ -537,8 +541,8 @@ class Hook:
             data.set_footer(text='{} Roster Stats'.format(user.display_name))
             data.description = 'Total Roster Power: {:,}\nNumber of Champions: {:,}'.format(total_power, total)
             for star in (6, 5, 4, 3, 2, 1):
-                data.description += '\n{}★ Count: {}'.format(star, stats[star]['count'])
-                data.description += '\n{}★ Percent of Roster: {}'.format(star, round(stats[star]['count']/total, 2))
+                data.description += '\n{}★ Count: {}'.format(star, stats['top'][star]['count'])
+                data.description += '\n{}★ Percent of Roster: {}'.format(star, round(stats['top'][star]['count']/total, 2))
             pages.append(data)
             for star in (6, 5, 4, 3, 2, 1):
                 data = discord.Embed(color=ctx.message.author.color, name='{}★ Roster Stats', url=PATREON)
