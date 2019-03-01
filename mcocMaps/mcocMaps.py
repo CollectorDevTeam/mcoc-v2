@@ -267,24 +267,35 @@ class MCOCMaps:
             aq maps : 5, 5.1, 5.2, 5.3, 6, 6.1, 6.2, 6.3
             /aq 5'''
         embeds = []
+        author = ctx.message.author
         if maptype in self.aq_map:
-            mapurl = '{}{}.png'.format(self.basepath, self.aq_map[maptype]['map'])
-            maptitle = 'Alliance Quest {}'.format(self.aq_map[maptype]['maptitle'])
-            em = discord.Embed(color=discord.Color.gold(),title=maptitle,url=PATREON)
-            # if 'required' in self.aq_map_tips[maptype]:
-            #     em.add_field(name='Required',value=self.aq_map_tips[maptype]['required'])
-            if self.aq_map_tips[maptype]['required'] != '':
-                em.add_field(name='Required', value=self.aq_map_tips[maptype]['required'])
-            #     em.add_field(name='Suggestions', value=self.aq_map_tips[maptype]['tips'])
-            em.set_image(url=mapurl)
-            em.set_footer(text='CollectorDevTeam',icon_url=self.COLLECTOR_ICON)
-            embeds.append(em)
+            if maptype in ('7', '7.1', '7.2', '7.3'):
+                for k, v in {'A': 'I', 'B': 'II', 'C': 'III'}:
+                    data = discord.Embed(color=discord.Color.gold(), title='Alliance Quest {}: Variation {}'.format(maptype, v), url=PATREON)
+                    data.set_author(name='CollectorDevTeam', icon_url=COLLECTOR_ICON)
+                    data.set_image(url='{}{}{}.png'.format(self.basepath, self.aq_map[maptype]['map'], k))
+                    data.set_footer(text='Requested by {}'.format(author.display_name), icon_url=author.avatar_url)
+                    embeds.append(data)
+            else:
+                mapurl = '{}{}.png'.format(self.basepath, self.aq_map[maptype]['map'])
+                maptitle = 'Alliance Quest {}'.format(self.aq_map[maptype]['maptitle'])
+                em = discord.Embed(color=discord.Color.gold(),title=maptitle,url=PATREON)
+                # if 'required' in self.aq_map_tips[maptype]:
+                #     em.add_field(name='Required',value=self.aq_map_tips[maptype]['required'])
+                if self.aq_map_tips[maptype]['required'] != '':
+                    em.add_field(name='Required', value=self.aq_map_tips[maptype]['required'])
+                #     em.add_field(name='Suggestions', value=self.aq_map_tips[maptype]['tips'])
+                em.set_image(url=mapurl)
+                em.set_author(name='CollectorDevTeam', icon_url=self.COLLECTOR_ICON)
+                em.set_footer(text='Requested by {}'.format(author.display_name), icon_url=author.avatar_url)
+                embeds.append(em)
             if 'tips' in self.aq_map_tips[maptype]:
                 mapurl = '{}{}.png'.format(self.basepath, self.aq_map[maptype]['map'])
                 maptitle = 'Alliance Quest {}'.format(self.aq_map[maptype]['maptitle'])
                 em2 = discord.Embed(color=discord.Color.gold(),title=maptitle,url=PATREON)
                 em2.set_image(url=mapurl)
-                em2.set_footer(text='CollectorDevTeam',icon_url=self.COLLECTOR_ICON)
+                em2.set_author(name='CollectorDevTeam', icon_url=self.COLLECTOR_ICON)
+                em2.set_footer(text='Requested by {}'.format(author.display_name), icon_url=author.avatar_url)
                 if self.aq_map_tips[maptype]['required'] != '':
                     em2.add_field(name='Required',value=self.aq_map_tips[maptype]['required'])
                 if self.aq_map_tips[maptype]['energy'] != '':
@@ -297,7 +308,8 @@ class MCOCMaps:
                 maptitle = 'Alliance Quest {}'.format(self.aq_map[maptype]['maptitle'])
                 em3 = discord.Embed(color=discord.Color.gold(),title=maptitle,url=PATREON)
                 em3.set_image(url=mapurl)
-                em3.set_footer(text='CollectorDevTeam',icon_url=self.COLLECTOR_ICON)
+                em3.set_author(name='CollectorDevTeam',icon_url=self.COLLECTOR_ICON)
+                em3.set_footer(text='Requested by {}'.format(author.display_name), icon_url=author.avatar_url)
                 for miniboss in self.aq_map_tips[maptype]['miniboss']:
                     em3.add_field(name=miniboss[0],value=miniboss[1])
                 embeds.append(em3)
@@ -361,7 +373,9 @@ class MCOCMaps:
         mapTitle = 'Alliance War 3.0 Map'
         em = discord.Embed(color=discord.Color.gold(),title=mapTitle,url=PATREON)
         em.set_image(url=mapurl)
-        em.set_footer(text='CollectorDevTeam',icon_url=self.COLLECTOR_ICON)
+        em.set_author(name='CollectorDevTeam', icon_url=self.COLLECTOR_ICON)
+        em.set_footer(text='Requested by {}'.format(ctx.message.author.display_name),
+                      icon_url=ctx.message.author.avatar_url)
         await self.bot.say(embed=em)
 
 ### Beginning of AllianceWar.com integration
@@ -462,9 +476,9 @@ class MCOCMaps:
             title='{} BOSS Node {} Boosts'.format(tier.title(),nodeNumber)
         else:
             title='{} Node {} Boosts'.format(tier.title(),nodeNumber)
-        if em == None:
+        if em is None:
             em = discord.Embed(color=tiers[tier]['color'], title=title, descritpion='', url=JPAGS)
-            em.set_footer(icon_url=JPAGS+'/aw/images/app_icon.jpg',text='AllianceWar.com')
+            em.set_author(icon_url=JPAGS+'/aw/images/app_icon.jpg', name='AllianceWar.com')
         if pathdata is not None:
             nodedetails = pathdata['boosts'][str(nodeNumber)]
             for n in nodedetails:
@@ -512,7 +526,8 @@ class MCOCMaps:
             mapurl = '{}warmap_3_{}.png'.format(self.basepath,tier.lower())
             em = discord.Embed(color=tiers[tier],title=mapTitle,url=PATREON)
             em.set_image(url=mapurl)
-            em.set_footer(text='CollectorDevTeam',icon_url=self.COLLECTOR_ICON)
+            em.set_author(name='CollectorDevTeam',icon_url=self.COLLECTOR_ICON)
+            em.set_footer(text='Requested by {}'.format(ctx.message.author.display_name), icon_url=ctx.message.author.avatar_url)
             await self.bot.say(embed=em)
 
 
@@ -541,8 +556,8 @@ class MCOCMaps:
     #     menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
         # await menu.menu_start(ctx=ctx, pages=pages, timeout=60, page_number=tracks[track]-1)
 
-    @alliancewar.command(pass_context=False, hidden=False, name="tiers", aliases=['tier'])
-    async def _tiers(self):
+    @alliancewar.command(pass_context=True, hidden=False, name="tiers", aliases=['tier'])
+    async def _tiers(self, ctx):
         '''List Alliance War Tiers'''
         aw_tiers = self.aw_tiers
         # name = '\u200b'
@@ -556,7 +571,9 @@ class MCOCMaps:
         em.set_thumbnail(url='http://www.alliancewar.com/aw/images/app_icon.jpg')
         em.add_field(name=name, value='```{}```'.format(v))
         # em.add_field(name=name, value=chat.box(v), inline=False)
-        em.set_footer(text='CollectorDevTeam',icon_url=self.COLLECTOR_ICON)
+        em.set_author(name='CollectorDevTeam',icon_url=self.COLLECTOR_ICON)
+        em.set_footer(text='Requested by {}'.format(ctx.message.author.display_name),
+                      icon_url=ctx.message.author.avatar_url)
         await self.bot.say(embed=em)
 
     @alliancewar.command(pass_context=True, hidden=False, name="scout")
@@ -594,8 +611,12 @@ class MCOCMaps:
         #     package.append('{} : {}'.format(key, default[key]))
         em = discord.Embed(color=default['color'], title='JM\'s ScouterLens', description='', url='https://goo.gl/forms/ZgJG97KOpeSsQ2092')
         em2 = discord.Embed(color=default['color'], title='JM\'s ScouterLens', description='', url='https://goo.gl/forms/ZgJG97KOpeSsQ2092')
-        em.set_footer(text='CollectorDevTeam + JM\'s Scouter Lens Bot',icon_url=self.COLLECTOR_ICON)
-        em2.set_footer(text='CollectorDevTeam + JM\'s Scouter Lens Bot',icon_url=self.COLLECTOR_ICON)
+        em.set_author(name='CollectorDevTeam + JM\'s Scouter Lens Bot',icon_url=self.COLLECTOR_ICON)
+        em2.set_author(name='CollectorDevTeam + JM\'s Scouter Lens Bot',icon_url=self.COLLECTOR_ICON)
+        em.set_footer(text='Requested by {}'.format(ctx.message.author.display_name),
+                      icon_url=ctx.message.author.avatar_url)
+        em2.set_footer(text='Requested by {}'.format(ctx.message.author.display_name),
+                      icon_url=ctx.message.author.avatar_url)
         if len(package) > 0:
         # await self.bot.say('scoutlens testing')
             em.description='\n'.join(package)
