@@ -166,9 +166,9 @@ class MODOKError(QuietUserError):
     pass
 
 class ChampConverter(commands.Converter):
-    """Argument Parsing class that geneartes Champion objects from user input"""
+    '''Argument Parsing class that geneartes Champion objects from user input'''
 
-    arg_help = """
+    arg_help = '''
     Specify a single champion with optional parameters of star, rank, or sig.
     Champion names can be a number of aliases or partial aliases if no conflicts are found.
 
@@ -180,13 +180,13 @@ class ChampConverter(commands.Converter):
     Examples:
         4* yj r4 s30  ->  4 star Yellowjacket rank 4/40 sig 30
         r35*im        ->  5 star Ironman rank 3/45 sig 99
-        """
+        '''
 #(?:(?:s(?P<sig>[0-9]{1,3})) |(?:r(?P<rank>[1-5]))|(?:(?P<star>[1-5])\\?\*)|(?:d(?P<debug>[0-9]{1,2})))(?=\b|[a-zA-Z]|(?:[1-5]\\?\*))
     _bare_arg = None
-    parse_re = re.compile(r"""(?:s(?P<sig>[0-9]{1,3}))
+    parse_re = re.compile(r'''(?:s(?P<sig>[0-9]{1,3}))
                              |(?:r(?P<rank>[1-5]))
                              |(?:(?P<star>[1-6])(?:★|☆|\\?\*))
-                             |(?:d(?P<debug>[0-9]{1,2}))""", re.X)
+                             |(?:d(?P<debug>[0-9]{1,2}))''', re.X)
     async def convert(self):
         bot = self.ctx.bot
         attrs = {}
@@ -234,28 +234,28 @@ class ChampConverter(commands.Converter):
 
 class ChampConverterSig(ChampConverter):
     _bare_arg = 'sig'
-    arg_help = ChampConverter.arg_help + """
+    arg_help = ChampConverter.arg_help + '''
     Bare Number argument for this function is sig level:
-        "yjr5s30" is equivalent to "yjr5 30""""
+        "yjr5s30" is equivalent to "yjr5 30"'''
 
 class ChampConverterRank(ChampConverter):
     _bare_arg = 'rank'
-    arg_help = ChampConverter.arg_help + """
+    arg_help = ChampConverter.arg_help + '''
     Bare Number argument for this function is rank:
-        "yjr5s30" is equivalent to "yjs30 5""""
+        "yjr5s30" is equivalent to "yjs30 5"'''
 
 class ChampConverterStar(ChampConverter):
     _bare_arg = 'star'
-    arg_help = ChampConverter.arg_help + """
+    arg_help = ChampConverter.arg_help + '''
     Bare Number argument for this function is star:
-        "5*yjr5s30" is equivalent to "yjr5s30 5""""
+        "5*yjr5s30" is equivalent to "yjr5s30 5"'''
 
 class ChampConverterDebug(ChampConverter):
     _bare_arg = 'debug'
 
 class ChampConverterMult(ChampConverter):
 
-    arg_help = """
+    arg_help = '''
     Specify multiple champions with optional parameters of star, rank, or sig.
     Champion names can be a number of aliases or partial aliases if no conflicts are found.
 
@@ -272,7 +272,7 @@ class ChampConverterMult(ChampConverter):
         s20 yj im        ->  4* Yellowjacket r5/50 sig 20, 4* Ironman r5/50 sig 20
         r35*ims20 ims40  ->  5 star Ironman r3/45 sig 20, 4* Ironman r5/50 sig 40
         r4s20 yj ims40 lc -> 4* Yellowjacket r4/40 sig 20, 4* Ironman r4/40 sig 40, 4* Luke Cage r4/40 sig 20
-        """
+        '''
 
     async def convert(self):
         bot = self.ctx.bot
@@ -335,10 +335,10 @@ async def warn_bold_say(bot, msg):
 #     return None if cell in ("#N/A", "") else numericise_bool(cell)
 
 class AliasDict(UserDict):
-    """Custom dictionary that uses a tuple of aliases as key elements.
+    '''Custom dictionary that uses a tuple of aliases as key elements.
     Item addressing is handled either from the tuple as a whole or any
     element within the tuple key.
-    """
+    '''
     def __getitem__(self, key):
         if key in self.data:
             return self.data[key]
@@ -348,9 +348,9 @@ class AliasDict(UserDict):
         raise KeyError("Invalid Key '{}'".format(key))
 
 class ChampionFactory():
-    """Creation and storage of the dynamically created Champion subclasses.
+    '''Creation and storage of the dynamically created Champion subclasses.
     A new subclass is created for every champion defined.  Then objects are
-    created from user function calls off of the dynamic classes."""
+    created from user function calls off of the dynamic classes.'''
 
     def __init__(self, *args, **kwargs):
         self.cooldown_delta = 5 * 60
@@ -412,13 +412,13 @@ class ChampionFactory():
         return champion
 
     async def get_champion(self, name_id, attrs=None):
-        """straight alias lookup followed by new champion object creation"""
+        '''straight alias lookup followed by new champion object creation'''
         #await self.update_local()
         return self.champions[name_id](attrs)
 
     async def search_champions(self, search_str, attrs=None):
-        """searching through champion aliases and allowing partial matches.
-        Returns an array of new champion objects"""
+        '''searching through champion aliases and allowing partial matches.
+        Returns an array of new champion objects'''
         #await self.update_local()
         re_str = re.compile(search_str)
         champs = []
@@ -492,7 +492,7 @@ class ChampionFactory():
         return remote_check
 
     def _prepare_aliases(self):
-        """Create a python friendly data structure from the aliases json"""
+        '''Create a python friendly data structure from the aliases json'''
         logger.debug('Preparing aliases')
         self.champions = AliasDict()
         raw_data = load_csv(data_files['crossreference']['local'])
@@ -571,7 +571,7 @@ def command_arg_help(**cmdkwargs):
     return internal_func
 
 class MCOC(ChampionFactory):
-    """A Cog for Marvel's Contest of Champions"""
+    '''A Cog for Marvel's Contest of Champions'''
 
     def __init__(self, bot):
         self.bot = bot
@@ -619,13 +619,13 @@ class MCOC(ChampionFactory):
 
     @commands.command(aliases=('p2f',), hidden=True)
     async def per2flat(self, per: float, ch_rating: int=100):
-        """Convert Percentage to MCOC Flat Value"""
+        '''Convert Percentage to MCOC Flat Value'''
         await self.bot.say(to_flat(per, ch_rating))
 
     @commands.command(name='flat') #, aliases=('f2p')) --> this was translating as "flat | f | 2 | p"
     async def flat2per(self, *, m):
-        """Convert MCOC Flat Value to Percentge
-        <equation> [challenger rating = 100]"""
+        '''Convert MCOC Flat Value to Percentge
+        <equation> [challenger rating = 100]'''
         if ' ' in m:
             m, cr = m.rsplit(' ',1)
             challenger_rating = int(cr)
@@ -648,7 +648,7 @@ class MCOC(ChampionFactory):
 
     @commands.command(aliases=('compf','cfrac'), hidden=True)
     async def compound_frac(self, base: float, exp: int):
-        """Calculate multiplicative compounded fractions"""
+        '''Calculate multiplicative compounded fractions'''
         if base > 1:
             base = base / 100
         compound = 1 - (1 - base)**exp
@@ -698,12 +698,12 @@ class MCOC(ChampionFactory):
     @mastery.command(pass_context=True, name='info')
     # @commands.command(pass_context=True, hidden=True)
     async def mastery_info(self, ctx, word: str, rank: int = None):
-        """BETA: Present Mastery Text and rank information
+        '''BETA: Present Mastery Text and rank information
         Mastery must be in quotes if it includes whitespace
         ex
         /mastery info "Deep Wounds" 4 [works]
         /mastery info deepwounds 4 [works]
-        /mastery info Deep Wounds 4 [fails]"""
+        /mastery info Deep Wounds 4 [fails]'''
         sgd = cogs.mcocTools.StaticGameData()
         #print(len(sgd.cdt_data), len(sgd.cdt_masteries), sgd.test)
         cm = sgd.cdt_masteries
@@ -801,8 +801,8 @@ class MCOC(ChampionFactory):
     # @checks.admin_or_permissions(manage_server=True)
     @commands.command(pass_context=True, aliases=['nbs',])
     async def nerfbuffsell(self, ctx):
-        """Random draw of 3 champions.
-        Choose one to Nerf, one to Buff, and one to Sell"""
+        '''Random draw of 3 champions.
+        Choose one to Nerf, one to Buff, and one to Sell'''
         colors=[discord.Color.teal(), discord.Color.dark_teal(),
                 discord.Color.green(), discord.Color.dark_green(),
                 discord.Color.blue(), discord.Color.dark_blue(),
@@ -849,7 +849,7 @@ class MCOC(ChampionFactory):
 
     @champ.command(pass_context=True, name='featured',aliases=['feature',])
     async def champ_featured(self, ctx, *, champs : ChampConverterMult):
-        """Champion Featured image"""
+        '''Champion Featured image'''
         for champ in champs:
             released = await self.check_release(ctx, champ)
             if released:
@@ -860,7 +860,7 @@ class MCOC(ChampionFactory):
 
     @champ.command(pass_context=True, name='portrait', aliases=['avatar',])
     async def champ_portrait(self, ctx, *, champs : ChampConverterMult):
-        """Champion portraits"""
+        '''Champion portraits'''
         for champ in champs:
             released = await self.check_release(ctx, champ)
             if released:
@@ -872,7 +872,7 @@ class MCOC(ChampionFactory):
 
     @champ.command(pass_context=True, name='bio', aliases=('biography',))
     async def champ_bio(self, ctx, *, champ : ChampConverterDebug):
-        """Champio Bio"""
+        '''Champio Bio'''
         try:
             bio_desc = await champ.get_bio()
         except KeyError:
@@ -892,7 +892,7 @@ class MCOC(ChampionFactory):
 
     @champ.command(pass_context=True, name='duel')
     async def champ_duel(self, ctx, champ : ChampConverter):
-        """Duel & Spar Targets"""
+        '''Duel & Spar Targets'''
         #dataset=data_files['duelist']['local']
         released = await self.check_release(ctx, champ)
         if released:
@@ -938,7 +938,7 @@ class MCOC(ChampionFactory):
 
     @champ.command(pass_context=True, name='about', aliases=('about_champ',))
     async def champ_about(self, ctx, *, champ : ChampConverterRank):
-        """Champion Base Stats"""
+        '''Champion Base Stats'''
         released = await self.check_release(ctx, champ)
         if released:
             data = champ.get_spotlight(default='x')
@@ -973,7 +973,7 @@ class MCOC(ChampionFactory):
     @commands.has_any_role('CollectorDevTeam','CollectorSupportTeam','CollectorPartners')
     @champ.command(pass_context=True, name='export', hidden=True)
     async def champ_list_export(self, ctx, *, hargs=''):
-        """List of #hargs champions in name order.
+        '''List of #hargs champions in name order.
 
         hargs:  [attribute_args] [hashtags]
         The optional attribute arguments can be in any order, with or without spaces.
@@ -984,7 +984,7 @@ class MCOC(ChampionFactory):
         Examples:
             /champ list    (all 4* champs rank5, sig99)
             /champ list 5*r3s20 #bleed   (all 5* bleed champs at rank3, sig20)
-        """
+        '''
         guild = await self.check_guild(ctx)
         if not guild:
             await self.bot.say('This server is unauthorized.')
@@ -1007,7 +1007,7 @@ class MCOC(ChampionFactory):
 
     @champ.command(pass_context=True, name='list')
     async def champ_list(self, ctx, *, hargs=''):
-        """List of all champions in prestige order.
+        '''List of all champions in prestige order.
 
         hargs:  [attribute_args] [hashtags]
         The optional attribute arguments can be in any order, with or without spaces.
@@ -1018,7 +1018,7 @@ class MCOC(ChampionFactory):
         Examples:
             /champ list    (all 4* champs rank5, sig99)
             /champ list 5*r3s20 #bleed   (all 5* bleed champs at rank3, sig20)
-        """
+        '''
         hargs = await hook.HashtagRankConverter(ctx, hargs).convert() #imported from hook
         #await self.update_local()
         roster = hook.ChampionRoster(self.bot, self.bot.user) #imported from hook
@@ -1035,7 +1035,7 @@ class MCOC(ChampionFactory):
 
     @champ.command(pass_context=True, name='released', aliases=('odds','chances',))
     async def champ_released(self, ctx, *, champs : ChampConverterMult):
-        """Champion(s) Release Date"""
+        '''Champion(s) Release Date'''
         for champ in champs:
             print('check_release')
             released = await self.check_release(ctx, champ)
@@ -1082,7 +1082,7 @@ class MCOC(ChampionFactory):
 
     @champ.command(pass_context=True, name='sig', aliases=['signature',])
     async def champ_sig(self, ctx, *, champ : ChampConverterSig):
-        """Champion Signature Ability"""
+        '''Champion Signature Ability'''
         released = await self.check_release(ctx, champ)
         if not released:
             await self.bot.say("Champion {} is not released yet".format(champ.fullname))
@@ -1118,7 +1118,7 @@ class MCOC(ChampionFactory):
 
     @champ.command(pass_context=True, name='sigreport', hidden=False)
     async def champ_sig_report(self, ctx):
-        """Check All Champion Signature Abilities"""
+        '''Check All Champion Signature Abilities'''
         bad_champs = defaultdict(list)
         for champ_class in self.champions.values():
             champ = champ_class()
@@ -1168,7 +1168,7 @@ class MCOC(ChampionFactory):
 
     @champ.command(pass_context=True, name='stats', aliases=('stat',))
     async def champ_stats(self, ctx, *, champs : ChampConverterMult):
-        """Champion(s) Base Stats"""
+        '''Champion(s) Base Stats'''
         for champ in champs:
             released = await self.check_release(ctx, champ)
             if released:
@@ -1225,7 +1225,7 @@ class MCOC(ChampionFactory):
 
     @champ.command(pass_context=True, name='update', aliases=('add', 'dupe'), hidden=True)
     async def champ_update(self, ctx, *, args):
-        """Not a real command"""
+        '''Not a real command'''
         msg = '`{0}champ update` does not exist.\n' \
             + '`{0}roster update` is probably what you meant to do'
         prefixes = tuple(self.bot.settings.get_prefixes(ctx.message.server))
@@ -1240,7 +1240,7 @@ class MCOC(ChampionFactory):
 
     # @champ.command(pass_context=True, name='triggers', aliases=['synw',])
     # async def champ_syn_with(self, ctx, *, champ: ChampConverter):
-    #     """Find Synergies triggered by Champion"""
+    #     '''Find Synergies triggered by Champion'''
     #     if champs[0].debug:
     #         await self.gsheet_handler.cache_gsheets('synergy')
     #     syn_data = dataIO.load_json(local_files['synergy'])['SynExport']
@@ -1253,7 +1253,7 @@ class MCOC(ChampionFactory):
 
     @champ.command(pass_context=True, name='synergies', aliases=['syn',])
     async def champ_synergies(self, ctx, *, champs: ChampConverterMult):
-        """Champion(s) Synergies"""
+        '''Champion(s) Synergies'''
         syn_champs = []
         for champ in champs:
             released = await self.check_release(ctx, champ)
@@ -1269,7 +1269,7 @@ class MCOC(ChampionFactory):
         #await self.bot.say(embed=em)
 
     async def get_synergies(self, champs, embed=None):
-        """If Debug is sent, data will refresh"""
+        '''If Debug is sent, data will refresh'''
         if champs[0].debug:
             await self.gsheet_handler.cache_gsheets('synergy')
         syn_data = dataIO.load_json(local_files['synergy'])
@@ -1502,7 +1502,7 @@ class MCOC(ChampionFactory):
 
     @champ.command(pass_context=True, name='use', aliases=('howto',))
     async def champ_use(self, ctx, *, champ : ChampConverter):
-        """How to Fight With videos by MCOC Community"""
+        '''How to Fight With videos by MCOC Community'''
         released = await self.check_release(ctx, champ)
         if released:
             em = discord.Embed(color=champ.class_color, title='How-To-Use: '+champ.full_name, url='https://goo.gl/forms/VXSQ1z40H4Knia0t2')
@@ -1516,7 +1516,7 @@ class MCOC(ChampionFactory):
 
     @champ.command(pass_context=True, name='info', aliases=('infopage',))
     async def champ_info(self, ctx, *, champ : ChampConverterDebug):
-        """Champion Spotlight link"""
+        '''Champion Spotlight link'''
         xref = get_csv_row(data_files['crossreference']['local'],'champ',champ.full_name)
         em = discord.Embed(color=champ.class_color, title='Champ Info',url=SPOTLIGHT_SURVEY)
         em.set_author(name='{0.full_name}'.format(champ), icon_url=champ.get_avatar())
@@ -1535,7 +1535,7 @@ class MCOC(ChampionFactory):
 
     @champ.command(pass_context=True, name='abilities')
     async def champ_abilities(self, ctx,  *, champ : ChampConverterDebug):
-        """Champion Abilities"""
+        '''Champion Abilities'''
         xref=get_csv_row(data_files['crossreference']['local'],'champ',champ.full_name)
         abilities=xref['abilities'].split(', ')
         extended_abilities=xref['extended_abilities']
@@ -1584,7 +1584,7 @@ class MCOC(ChampionFactory):
 
     @champ.command(pass_context=True, name='specials', aliases=['special',])
     async def champ_specials(self, ctx, champ : ChampConverter):
-        """Special Attack Descritpion"""
+        '''Special Attack Descritpion'''
         try:
             specials = champ.get_special_attacks()
             em = discord.Embed(color=champ.class_color, title='Champion Special Attacks')
@@ -1601,7 +1601,7 @@ class MCOC(ChampionFactory):
 
     @champ.command(pass_context=True, name='prestige')
     async def champ_prestige(self, ctx, *, champs : ChampConverterMult):
-        """Champion(s) Prestige"""
+        '''Champion(s) Prestige'''
         pch = [c for c in champs if c.has_prestige]
         numerator = 0
         spch = sorted(pch, key=attrgetter('prestige'), reverse=True)
@@ -1626,7 +1626,7 @@ class MCOC(ChampionFactory):
 
     @champ.command(pass_context=True, name='aliases', aliases=('alias',))
     async def champ_aliases(self, ctx, *args):
-        """Champion Aliases"""
+        '''Champion Aliases'''
         em = discord.Embed(color=discord.Color.teal(), title='Champion Aliases')
         champs_matched = set()
         for arg in args:
@@ -1693,8 +1693,8 @@ class MCOC(ChampionFactory):
 
     @submit.command(pass_context=True, name='stats')
     async def submit_stats(self, ctx, champ: ChampConverter = None, *, stats: str = None):
-        """Submit Champion Stats and or Images
-        valid keys: hp, atk, cr, cd, blockpen, critresist, armorpen, armor, bp"""
+        '''Submit Champion Stats and or Images
+        valid keys: hp, atk, cr, cd, blockpen, critresist, armorpen, armor, bp'''
         attachments = ctx.message.attachments
         author = ctx.message.author
         server = ctx.message.server
@@ -1714,7 +1714,6 @@ class MCOC(ChampionFactory):
             await self.bot.send_message(cdt_stats, embed=data)
             return
         elif stats is None:
-            data.title = 'How To Submit Stats'
             data.description = 'Minimum stats submissions include Health & Attack.\n' \
                                'However, we strongly encourage you to submit **all** champion base stats.\n' \
                                '1. Select Champion\n' \
@@ -1844,7 +1843,7 @@ class MCOC(ChampionFactory):
 
     @submit.command(pass_context=True, name='prestige')
     async def submit_prestige(self, ctx, champ: ChampConverter = None, observation: int = None):
-        """Submit Champion Prestige + Images"""
+        '''Submit Champion Prestige + Images'''
         author = ctx.message.author
         server = ctx.message.server
 
@@ -2152,7 +2151,7 @@ class MCOC(ChampionFactory):
             return False
 
     async def check_release(self, ctx, champ):
-        """Champion Data is under embargo until the Champion Release date"""
+        '''Champion Data is under embargo until the Champion Release date'''
         print('initializing release status check')
         try:
             if champ.released is not None:
@@ -2697,12 +2696,12 @@ class Champion:
                 kabam_text=self.get_kabam_sig_text())
 
     def get_kabam_sig_text(self, sigs=None, champ_exceptions=None):
-        """required for signatures to work correctly
+        '''required for signatures to work correctly
         preamble
         title = titlekey,
         simplekey = preample + simple
         descriptionkey = preamble + desc,
-        """
+        '''
 
         sgd = cogs.mcocTools.StaticGameData()
         mcocsig = self.mcocsig

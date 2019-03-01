@@ -38,46 +38,46 @@ class Alliance:
                               'bg1aq', 'bg2aq', 'bg3aq', 'bg1aw', 'bg2aw', 'bg3aw',)
         self.info_keys = ('name', 'tag', 'type', 'about', 'started', 'invite', 'poster')
 
-    # @commands.command(pass_context=True, no_pm=True, hidden=True)
-    # async def lanes(self, ctx, user: discord.Member = None):
-    #     server = ctx.message.server
-    #     alliance = server.id
-    #     if user is None:
-    #         user = ctx.message.author
-    #     if user is not None:
-    #         if alliance in self.guilds.keys() and 'assignments' in self.guilds[alliance].keys() \
-    #                 and user.id in self.guilds[alliance]['assignments'].keys():
-    #             data = self._get_embed(ctx, alliance, user.id, user.color)
-    #             for m in ('aq1', 'aq2', 'aq3', 'aq4', 'aq5', 'aq6', 'aq7', 'aw',):
-    #                 if m in self.guilds[alliance]['assignments'][user.id].keys():
-    #                     data.add_field(name=m.upper()+' Assignment',
-    #                                    value=self.guilds[alliance]['assignments'][user.id][m])
-    #             await self.bot.say(embed=data)
+    @commands.command(pass_context=True, no_pm=True, hidden=True)
+    async def lanes(self, ctx, user: discord.Member = None):
+        server = ctx.message.server
+        alliance = server.id
+        if user is None:
+            user = ctx.message.author
+        if user is not None:
+            if alliance in self.guilds.keys() and 'assignments' in self.guilds[alliance].keys() \
+                    and user.id in self.guilds[alliance]['assignments'].keys():
+                data = self._get_embed(ctx, alliance, user.id, user.color)
+                for m in ('aq1', 'aq2', 'aq3', 'aq4', 'aq5', 'aq6', 'aq7', 'aw',):
+                    if m in self.guilds[alliance]['assignments'][user.id].keys():
+                        data.add_field(name=m.upper()+' Assignment',
+                                       value=self.guilds[alliance]['assignments'][user.id][m])
+                await self.bot.say(embed=data)
 
-    # @commands.command(pass_context=True, no_pm=True, hidden=True)
-    # async def bglanes(self, ctx, role: discord.role):
-    #     server = ctx.message.server
-    #     alliance = server.id
-    #     members = _get_members(server, role)
-    #
-    #     if members is not None:
-    #         pages = []
-    #         for m in ('aq1', 'aq2', 'aq3', 'aq4', 'aq5', 'aq6', 'aq7', 'aw',):
-    #             data = self._get_embed(ctx, alliance=alliance, color=role.color)
-    #             data.title = '{} Assignments for {}'.format(role.name, m.upper())
-    #             cnt = 0
-    #             for member in members:
-    #                 if member.id in self.guilds[alliance]['assignments'].keys():
-    #                     if m in self.guilds[alliance]['assignments'][member.id].keys():
-    #                         data.add_field(name=member.display_name, value=self.guilds[alliance]['assignments'][member.id][m])
-    #                         cnt += 1
-    #             if cnt > 0:
-    #                 pages.append(data)
-    #         if len(pages) > 0:
-    #             menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
-    #             await menu.menu_start(pages=pages)
-    #         else:
-    #             logger.warning('No Pages to display')
+    @commands.command(pass_context=True, no_pm=True, hidden=True)
+    async def bglanes(self, ctx, role: discord.role):
+        server = ctx.message.server
+        alliance = server.id
+        members = _get_members(server, role)
+
+        if members is not None:
+            pages = []
+            for m in ('aq1', 'aq2', 'aq3', 'aq4', 'aq5', 'aq6', 'aq7', 'aw',):
+                data = self._get_embed(ctx, alliance=alliance, color=role.color)
+                data.title = '{} Assignments for {}'.format(role.name, m.upper())
+                cnt = 0
+                for member in members:
+                    if member.id in self.guilds[alliance]['assignments'].keys():
+                        if m in self.guilds[alliance]['assignments'][member.id].keys():
+                            data.add_field(name=member.display_name, value=self.guilds[alliance]['assignments'][member.id][m])
+                            cnt += 1
+                if cnt > 0:
+                    pages.append(data)
+            if len(pages) > 0:
+                menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
+                await menu.menu_start(pages=pages)
+            else:
+                logger.warning('No Pages to display')
 
     @commands.group(aliases=('clan', 'guild'), pass_context=True, invoke_without_command=True, hidden=False, no_pm=True)
     async def alliance(self, ctx, user: discord.Member = None):
@@ -871,81 +871,55 @@ class Alliance:
         return data
 
     @alliance.command(pass_context=True, invoke_without_command=True, hidden=False, no_pm=True)
-    async def assign(self, ctx, map: str, tier: str, path: str, member: discord.member):
+    async def assign(self, ctx, user: discord.Member, alliance_map: str, *, assignment=None):
         """Alliance Assignment tool
         lanes = A, B, C
         lanes = t1 A, t2 B, t3 C
         """
-
         server = ctx.message.server
         alliance = server.id
-        if alliance not in self.guilds.keys:
-            await _unknown_guild(ctx)
+        # valid_maps = {'aw': {'t1': 'abcdefghi'},
+        #               'aq1': {'t1': 'abcdefgh', 't2': 'abcdefgh', 't3': 'abcdefgh'},
+        #               'aq2': {'t1': 'abcdefgh', 't2': 'abcdefgh'},
+        #               'aq3': {'t1': 'abcde', 't2': 'abcd', 't3': 'abcde'},
+        #               'aq4': {'t1': 'abcde', 't2': 'abcdef', 't3': 'abcdefg'},
+        #               'aq5': {'t1': 'abcdefgh', 't2': 'abcdefgh', 't3': 'abcdefgh'},
+        #               'aq6': {'t1': 'abcdefg', 't2': 'abcdefghi', 't3': 'abcdefghij'},
+        #               'aq7': {'t1': 'abcdefg', 't2': 'abcdefghi', 't3': 'abcdefghij'}}
+
+        data = self._get_embed(ctx, color=user.color)
+
+        if alliance_map not in ('aq1', 'aq2', 'aq3', 'aq4', 'aq5', 'aq6', 'aq7', 'aw'):
+            data.title = 'Assignment Error'
+            data.description = 'Specify the AQ or AW map.  \n' \
+                               'aq1, aq2, aq3, aq4, aq5, aq6, aq7, aw'
+            await self.bot.say(embed=data)
             return
-        # elif check for assignment authority
-        elif 'assignments' not in self.guilds[alliance].keys():
+
+        if 'assignments' not in self.guilds[alliance].keys():
             self.guilds[alliance].update({'assignments': {}})
-
-        valid_maps = {'aw': {'t1': 'abcdefghi', 'note': ''},
-                      'aq1': {'t1': 'abcdefgh', 't2': 'abcdefgh', 't3': 'abcdefgh', 'note': ''},
-                      'aq2': {'t1': 'abcdefgh', 't2': 'abcdefgh', 'note': ''},
-                      'aq3': {'t1': 'abcde', 't2': 'abcd', 't3': 'abcde', 'note': ''},
-                      'aq4': {'t1': 'abcde', 't2': 'abcdef', 't3': 'abcdefg', 'note': ''},
-                      'aq5': {'t1': 'abcdefgh', 't2': 'abcdefgh', 't3': 'abcdefgh', 'note': ''},
-                      'aq6': {'t1': 'abcdefg', 't2': 'abcdefghi', 't3': 'abcdefghij', 'note': ''},
-                      'aq7': {'t1': 'abcdefg', 't2': 'abcdefghi', 't3': 'abcdefghij', 'note': ''}}
-        data = self._get_embed(ctx, alliance=alliance)
-        if map not in valid_maps.keys():
-            data.title = 'Assignment Error'
-            data.description = 'Valid maps: \n{}'.format(valid_maps.keys())
-            await self.bot.say(embed=data)
-            return
-        elif tier.lower() not in valid_maps[map].keys():
-            data.title = 'Assignment Error'
-            data.description = 'Valid tiers: \n{}'.format(valid_maps[map].keys())
-            await self.bot.say(embed=data)
-            return
-        elif tier != 'note':
-            if path.lower() not in valid_maps[map][tier]:
-                data.title = 'Assignment Error'
-                paths = ', '.join(valid_maps[map][tier].upper().split(''))
-                data.description = 'Valid paths: \n'+paths
-                await self.bot.say(embed=data)
-                return
-
-            # data = self._get_embed(ctx, color=user.color)
-            #
-            # if alliance_map not in ('aq1', 'aq2', 'aq3', 'aq4', 'aq5', 'aq6', 'aq7', 'aw'):
-            #     data.title = 'Assignment Error'
-            #     data.description = 'Specify the AQ or AW map.  \n' \
-            #                        'aq1, aq2, aq3, aq4, aq5, aq6, aq7, aw'
-            #     await self.bot.say(embed=data)
-            #     return
-            #
-            # if 'assignments' not in self.guilds[alliance].keys():
-            #     self.guilds[alliance].update({'assignments': {}})
-            #     dataIO.save_json(self.alliances, self.guilds)
-            # if user.id not in self.guilds[alliance]['assignments']:
-            #     self.guilds[alliance]['assignments'].update({user.id: {}})
-            #     dataIO.save_json(self.alliances, self.guilds)
-            # if assignment is not None:
-            #     self.guilds[alliance]['assignments'][user.id].update({alliance_map: assignment})
-            #     dataIO.save_json(self.alliances, self.guilds)
-            # elif assignment is None:
-            #     if user.id in self.guilds[alliance]['assignments'].keys():
-            #         if alliance_map in self.guilds[alliance]['assignments'][user.id]:
-            #             question = 'Do you want to clear the {} assignment for {}?' \
-            #                 .format(alliance_map.upper(), user.id)
-            #             answer, confirmation = await PagesMenu.confirm(self, ctx, question)
-            #             if answer:
-            #                 self.guilds[alliance]['assignments'][user.id].pop(alliance_map, None)
-            #                 dataIO.save_json(self.alliances, self.guilds)
-            #             await self.bot.delete_message(confirmation)
-            #             return
-            # data.title = 'Member Assignment'
-            # for m in self.guilds[alliance]['assignments'][user.id].keys():
-            #     data.add_field(name=m.upper(), value=self.guilds[alliance]['assignments'][user.id][m])
-            # await self.bot.say(embed=data)
+            dataIO.save_json(self.alliances, self.guilds)
+        if user.id not in self.guilds[alliance]['assignments']:
+            self.guilds[alliance]['assignments'].update({user.id: {}})
+            dataIO.save_json(self.alliances, self.guilds)
+        if assignment is not None:
+            self.guilds[alliance]['assignments'][user.id].update({alliance_map: assignment})
+            dataIO.save_json(self.alliances, self.guilds)
+        elif assignment is None:
+            if user.id in self.guilds[alliance]['assignments'].keys():
+                if alliance_map in self.guilds[alliance]['assignments'][user.id]:
+                    question = 'Do you want to clear the {} assignment for {}?' \
+                        .format(alliance_map.upper(), user.id)
+                    answer, confirmation = await PagesMenu.confirm(self, ctx, question)
+                    if answer:
+                        self.guilds[alliance]['assignments'][user.id].pop(alliance_map, None)
+                        dataIO.save_json(self.alliances, self.guilds)
+                    await self.bot.delete_message(confirmation)
+                    return
+        data.title = 'Member Assignment'
+        for m in self.guilds[alliance]['assignments'][user.id].keys():
+            data.add_field(name=m.upper(), value=self.guilds[alliance]['assignments'][user.id][m])
+        await self.bot.say(embed=data)
 
 
 def send_request(url):

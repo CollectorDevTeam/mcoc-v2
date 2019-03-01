@@ -449,22 +449,22 @@ class Hook:
                 description=ret, color=role.color)
         await self.bot.say(embed=em)
 
-    # @commands.command(pass_context=True, no_pm=True)
-    # async def team(self,ctx, *, user : discord.Member=None):
-    #     """Displays a user's AQ/AWO/AWD teams.
-    #     Teams are set in hook/champions"""
-    #     if user is None:
-    #         user = ctx.message.author
-    #     # creates user if doesn't exist
-    #     info = self.load_champ_data(user)
-    #     em = discord.Embed(title="User Profile", description=user.name)
-    #     if info['aq']:
-    #         em.add_field(name='AQ Champs', value='\n'.join(info['aq']))
-    #     if info['awo']:
-    #         em.add_field(name='AWO Champs', value='\n'.join(info['awo']))
-    #     if info['awd']:
-    #         em.add_field(name='AWD Champs', value='\n'.join(info['awd']))
-    #     await self.bot.say(embed=em)
+    @commands.command(pass_context=True, no_pm=True)
+    async def team(self,ctx, *, user : discord.Member=None):
+        """Displays a user's AQ/AWO/AWD teams.
+        Teams are set in hook/champions"""
+        if user is None:
+            user = ctx.message.author
+        # creates user if doesn't exist
+        info = self.load_champ_data(user)
+        em = discord.Embed(title="User Profile", description=user.name)
+        if info['aq']:
+            em.add_field(name='AQ Champs', value='\n'.join(info['aq']))
+        if info['awo']:
+            em.add_field(name='AWO Champs', value='\n'.join(info['awo']))
+        if info['awd']:
+            em.add_field(name='AWD Champs', value='\n'.join(info['awd']))
+        await self.bot.say(embed=em)
 
     @commands.group(pass_context=True, invoke_without_command=True)
     async def roster(self, ctx, *, hargs=''):
@@ -475,50 +475,6 @@ class Hook:
         /roster [user] [#mutant #bleed]"""
         hargs = await HashtagRosterConverter(ctx, hargs).convert()
         await hargs.roster.display(hargs.tags)
-
-    @roster.command(pass_context=True, name='stats', hidden=True)
-    async def _roster_stats(self, ctx, user: discord.member = None):
-        if user is None:
-            user = ctx.message.author
-            roster = ChampionRoster(ctx.bot, user)
-            await roster.load_champions()
-            total = 0
-            stats = {'science': {6: {'count': 0, 'sum': 0}, 5: {'count': 0, 'sum': 0}, 4: {'count': 0, 'sum': 0},
-                                 3: {'count': 0, 'sum': 0}, 2: {'count': 0, 'sum': 0}, 1: {'count': 0, 'sum': 0}},
-                     'mystic': {6: {'count': 0, 'sum': 0}, 5: {'count': 0, 'sum': 0}, 4: {'count': 0, 'sum': 0},
-                                3: {'count': 0, 'sum': 0}, 2: {'count': 0, 'sum': 0}, 1: {'count': 0, 'sum': 0}},
-                     'cosmic': {6: {'count': 0, 'sum': 0}, 5: {'count': 0, 'sum': 0}, 4: {'count': 0, 'sum': 0},
-                                3: {'count': 0, 'sum': 0}, 2: {'count': 0, 'sum': 0}, 1: {'count': 0, 'sum': 0}},
-                     'tech': {6: {'count': 0, 'sum': 0}, 5: {'count': 0, 'sum': 0}, 4: {'count': 0, 'sum': 0},
-                              3: {'count': 0, 'sum': 0}, 2: {'count': 0, 'sum': 0}, 1: {'count': 0, 'sum': 0}},
-                     'mutant': {6: {'count': 0, 'sum': 0}, 5: {'count': 0, 'sum': 0}, 4: {'count': 0, 'sum': 0},
-                                3: {'count': 0, 'sum': 0}, 2: {'count': 0, 'sum': 0}, 1: {'count': 0, 'sum': 0}},
-                     'skill': {6: {'count': 0, 'sum': 0}, 5: {'count': 0, 'sum': 0}, 4: {'count': 0, 'sum': 0},
-                               3: {'count': 0, 'sum': 0}, 2: {'count': 0, 'sum': 0}, 1: {'count': 0, 'sum': 0}}}
-            for champ in roster:
-                klass = champ.klass
-                star = champ.star
-                total += 1
-                stats[klass][star]['count'] += 1
-                stats[klass][star]['sum'] += champ.prestige
-                # export master count list from XREF
-            data = discord.Embed(color=ctx.message.author.color, name='Roster Stats', url='')
-            data.set_author(name='CollectorDevTeam', icon_url=COLLECTOR_ICON)
-            data.set_footer(text='Roster Stats requested by {}'.format(ctx.message.author))
-            for klass in stats.keys():
-                list = []
-                for star in (6, 5, 4, 3, 2, 1):
-                    if stats[klass][star]['count'] > 0:
-                        count = stats[klass][star]['count']
-                        power = stats[klass][star]['sum']
-                        prestige = round(power/count)
-                        percent = count/total
-                        list.append('{star}★ Count: {count}\n{star}★ Total Power: {power}\n{star}★ Prestige{prestige}\n{star}★ Roster: {percent}% of Roster'.format(star, power, count, prestige, percent))
-                data.add_field(name=klass.title(),value='\n'.join(list))
-            await self.bot.say(embed=em)
-
-
-
 
     @roster.command(pass_context=True, name='add', aliases=('update',))
     async def _roster_update(self, ctx, *, champs: ChampConverterMult):
