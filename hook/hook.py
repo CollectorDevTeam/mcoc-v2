@@ -544,8 +544,9 @@ class Hook:
                         percent = round(count/total, 2)
                         list.append('{0} Count: {1}\n{0} Power: {2}\n{0} Roster: {3}% of Roster'
                                     .format(klass, count, power, percent))
-                data.add_field(name='{0}★'.format(star), value='\n'.join(list))
-                pages.append(data)
+                if len(list) > 0:
+                    data.add_field(name='{0}★'.format(star), value='\n'.join(list))
+                    pages.append(data)
             menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
             await menu.menu_start(pages=pages)
 
