@@ -971,7 +971,7 @@ class MCOCTools:
     @commands.command(name='gaps', pass_context=True, hidden=True)
     async def _alliance_popup(self, ctx, *args):
         '''Guild | Alliance Popup System'''
-
+        user=ctx.message.author
         warning_msg = ('The G.A.P.S. System will configure your server for basic Alliance Operations.\n ' \
                        'Roles will be added for summoners, alliance, officers, bg1, bg2, bg3\n ' \
                        'Channels will be added for announcements, alliance, & battlegroups.\n ' \
@@ -1017,6 +1017,7 @@ class MCOCTools:
         if 'admin' not in rolenames:
             admin = await self.bot.create_role(server=server, name='admin', color=discord.Color.gold(), hoist=False,
                                                mentionable=False)
+
         if 'officers' not in rolenames:
             officers = await self.bot.create_role(server=server, name='officers', color=discord.Color.light_grey(),
                                                   hoist=False, mentionable=True)
@@ -1035,7 +1036,11 @@ class MCOCTools:
         if 'summoners' not in rolenames:
             summoners = await self.bot.create_role(server=server, name='summoners', color=discord.Color.lighter_grey(),
                                                    hoist=True, mentionable=True)
-
+        for r in server.roles:
+            if r.name == 'officers':
+                await self.bot.add_role(user, r)
+            elif r.name == 'alliance':
+                await self.bot.add_role(user, r)
         roles = sorted(server.roles, key=lambda roles: roles.position, reverse=True)
         em = discord.Embed(color=discord.Color.red(), title='Guild Alliance Popup System', description='')
         positions = []
