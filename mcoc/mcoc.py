@@ -619,8 +619,10 @@ class MCOC(ChampionFactory):
 
     @commands.command(name='invite', aliases=('get collector','collectorverse'),pass_context=True)
     async def get_collector(self, ctx, user: discord.User=None):
+        whisper = True
         if user is None:
             user = ctx.message.author
+            whisper = False
         joinlink = 'https://discordapp.com/oauth2/authorize?client_id=210480249870352385&scope=bot&permissions=8'
         data = discord.Embed(color=user.color, title='INVITE COLLECTOR:sparkles:', description='', url=joinlink)
         data.description = 'Click the blue text to invite Collector to your Alliance Server.\n' \
@@ -630,6 +632,10 @@ class MCOC(ChampionFactory):
                            '\nCollectorBot Patrons receive priority support on the CollectorDevTeam server.\n ' \
                            'Support CollectorDevTeam: https://patreon.com/collectorbot'
         data.set_author(name='CollectorDevTeam', url=COLLECTOR_ICON)
+        if whisper:
+            await self.bot.whisper(embed=data)
+        else:
+            await self.bot.say(embed=data)
 
     @commands.command(aliases=('p2f',), hidden=True)
     async def per2flat(self, per: float, ch_rating: int=100):
