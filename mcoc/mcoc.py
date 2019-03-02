@@ -628,7 +628,7 @@ class MCOC(ChampionFactory):
         data.description = 'Click the blue text to invite Collector to your Alliance Server.\n' \
                            'Collector requires [ Administrator ] permissions on your server in order to use administrative functions, moderation functions, and some Alliance management functions.\n '\
                            '\nGuildOwners are required to register on the CollectorDevTeam server in order to receive support from the CollectorDevTeam.\n' \
-                           'CollectorDevTeam Server: discord.gg/BwhgZxk\n' \
+                           'CollectorDevTeam Server: https://discord.gg/BwhgZxk\n' \
                            '\nCollectorBot Patrons receive priority support on the CollectorDevTeam server.\n ' \
                            'Support CollectorDevTeam: https://patreon.com/collectorbot'
         data.set_author(name='CollectorDevTeam', url=COLLECTOR_ICON)
