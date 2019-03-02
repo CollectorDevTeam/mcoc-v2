@@ -184,6 +184,7 @@ class Alliance:
                             color = member.color
                             break
         else:
+            server = ctx.message.server
             if color is None:
                 color = get_color(ctx)
         data = discord.Embed(color=color, title='', description='')
