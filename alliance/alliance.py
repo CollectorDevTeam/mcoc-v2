@@ -452,7 +452,8 @@ class Alliance:
             if len(overload) > 0:
                 data = self._get_embed(ctx, alliance=alliance, color=dcolor)
                 data.title = 'Overloaded Battle Groups'
-                data.add_field(name='Check these user\'s roles', value='\n'.join(m.display_name for m in overload))
+                block = '\n'.join(m.display_name for m in overload)
+                data.add_field(name='Check these user\'s roles', value='```{}```'.format(block))
                 pages.append(data)
             menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
             await menu.menu_start(pages=pages)
