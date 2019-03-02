@@ -550,7 +550,7 @@ class Hook:
         data.set_thumbnail(url=user.avatar_url)
         data.set_footer(text='{} Roster Stats'.format(user.display_name))
         available = collection['Total']['Total']
-        data.description = 'Champion Count: {} / {} \nCollection Index: = % {}\nTotal Power: {:,} \n'\
+        data.description = 'Champion Count: {} / {} \nCollection Index: % {}\nTotal Power: {:,} \n'\
             .format(total, available, round(total/available*100, 2), total_power)
         for star in (6, 5, 4, 3, 2, 1):
             count = stats['top'][star]['count']
