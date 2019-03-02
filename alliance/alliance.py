@@ -189,7 +189,8 @@ class Alliance:
                 color = get_color(ctx)
         data = discord.Embed(color=color, title='', description='')
         data.set_author(name='A CollectorVerse Alliance', icon_url=COLLECTOR_ICON)
-        data.set_thumbnail(url=server.icon_url)
+        if server.icon_url is not None:
+            data.set_thumbnail(url=server.icon_url)
         data.set_footer(text='CollectorDevTeam', icon_url=COLLECTOR_ICON)
         return data
 
