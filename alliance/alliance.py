@@ -125,45 +125,46 @@ class Alliance:
             keys = self.guilds[alliance].keys()
             server = self.bot.get_server(alliance)
             data = self._get_embed(ctx, alliance, user.id)
-            if 'tag' in keys:
-                if 'name' in keys:
-                    data.title = '[{}] {}:sparkles:'.format(self.guilds[alliance]['tag'], self.guilds[alliance]['name'])
+            if server is not None:
+                if 'tag' in keys:
+                    if 'name' in keys:
+                        data.title = '[{}] {}:sparkles:'.format(self.guilds[alliance]['tag'], self.guilds[alliance]['name'])
+                    else:
+                        data.title = '[{}] {}:sparkles:'.format(self.guilds[alliance]['tag'], server.name)
+                elif 'name' in keys:
+                    data.title = '{}:sparkles:'.format(server.name)
+                    data.add_field(name='Alliance Tag', value='Alliance Tag not set.')
                 else:
-                    data.title = '[{}] {}:sparkles:'.format(self.guilds[alliance]['tag'], server.name)
-            elif 'name' in keys:
-                data.title = '{}:sparkles:'.format(server.name)
-                data.add_field(name='Alliance Tag', value='Alliance Tag not set.')
-            else:
-                data.title = server.name+':sparkles:'
-            if 'about' in keys:
-                data.description = self.guilds[alliance]['about']
-            else:
-                data.description = 'Alliance About is not set.'
-            if 'alliance' in keys:
-                role = self._get_role(server, 'alliance')
-                role_members = _get_members(server, role)
-                if role is not None:
-                    verbose = False
-                    if ctx.message.server == server:  # on home server
-                        verbose = True
-                    data = await self._get_prestige(server=server, role=role, verbose=verbose,
-                                                    data=data, role_members=role_members)
-                    # data.add_field(name='Alliance Prestige', value=clan_prestige)
-            else:
-                data.add_field(name='Alliance Role', value='Alliance role is not set.')
-            if 'started' in keys:
-                since = date_parse(self.guilds[alliance]['started'])
-                days_since = (datetime.datetime.utcnow() - since).days
-                data.add_field(name='Alliance founded: {}'.format(since.date()), value="Playing for {} days!"
-                               .format(days_since))
-            if 'poster' in keys:
-                data.set_image(url=self.guilds[alliance]['poster'])
-            if 'invite' in keys:
-                data.url = self.guilds[alliance]['invite']
-                data.add_field(name='Join server', value=self.guilds[alliance]['invite'])
-            else:
-                data.add_field(name='Join server', value='Invitation not set.')
-            pages.append(data)
+                    data.title = server.name+':sparkles:'
+                if 'about' in keys:
+                    data.description = self.guilds[alliance]['about']
+                else:
+                    data.description = 'Alliance About is not set.'
+                if 'alliance' in keys:
+                    role = self._get_role(server, 'alliance')
+                    role_members = _get_members(server, role)
+                    if role is not None:
+                        verbose = False
+                        if ctx.message.server == server:  # on home server
+                            verbose = True
+                        data = await self._get_prestige(server=server, role=role, verbose=verbose,
+                                                        data=data, role_members=role_members)
+                        # data.add_field(name='Alliance Prestige', value=clan_prestige)
+                else:
+                    data.add_field(name='Alliance Role', value='Alliance role is not set.')
+                if 'started' in keys:
+                    since = date_parse(self.guilds[alliance]['started'])
+                    days_since = (datetime.datetime.utcnow() - since).days
+                    data.add_field(name='Alliance founded: {}'.format(since.date()), value="Playing for {} days!"
+                                   .format(days_since))
+                if 'poster' in keys:
+                    data.set_image(url=self.guilds[alliance]['poster'])
+                if 'invite' in keys:
+                    data.url = self.guilds[alliance]['invite']
+                    data.add_field(name='Join server', value=self.guilds[alliance]['invite'])
+                else:
+                    data.add_field(name='Join server', value='Invitation not set.')
+                pages.append(data)
         if len(pages) > 0:
             menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
             await menu.menu_start(pages=pages)
