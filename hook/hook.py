@@ -557,7 +557,7 @@ class Hook:
             available = collection['Total'][str(star)]
             collected = round(count / available * 100, 2)
             data.add_field(name='\n{}★ Champion Count: {} / {}'.format(star, count, available),
-                           value='Collection Index: % {} \nTotal Power: {}'
+                           value='Collection Index: % {} \nTotal Power: {:,}'
                            .format(collected, stats['top'][star]['sum']))
         pages.append(data)
         for star in (6, 5, 4, 3, 2, 1):
