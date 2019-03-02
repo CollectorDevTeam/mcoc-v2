@@ -187,9 +187,10 @@ class Alliance:
             server = ctx.message.server
             if color is None:
                 color = get_color(ctx)
+
         data = discord.Embed(color=color, title='', description='')
         data.set_author(name='A CollectorVerse Alliance', icon_url=COLLECTOR_ICON)
-        if server.icon_url is not None:
+        if server is not None:
             data.set_thumbnail(url=server.icon_url)
         data.set_footer(text='CollectorDevTeam', icon_url=COLLECTOR_ICON)
         return data
