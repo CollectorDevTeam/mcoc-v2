@@ -617,6 +617,20 @@ class MCOC(ChampionFactory):
         logger.info("MCOC Init")
         super().__init__()
 
+    @commands.command(name='invite', aliases=('get collector','collectorverse'),pass_context=True)
+    async def get_collector(self, ctx, user: discord.User=None):
+        if user is None:
+            user = ctx.message.author
+        joinlink = 'https://discordapp.com/oauth2/authorize?client_id=210480249870352385&scope=bot&permissions=8'
+        data = discord.Embed(color=user.color, title='INVITE COLLECTOR:sparkles:', description='', url=joinlink)
+        data.description = 'Click the blue text to invite Collector to your Alliance Server.\n' \
+                           'Collector requires [ Administrator ] permissions on your server in order to use administrative functions, moderation functions, and some Alliance management functions.\n '\
+                           '\nGuildOwners are required to register on the CollectorDevTeam server in order to receive support from the CollectorDevTeam.\n' \
+                           'CollectorDevTeam Server: discord.gg/BwhgZxk\n' \
+                           '\nCollectorBot Patrons receive priority support on the CollectorDevTeam server.\n ' \
+                           'Support CollectorDevTeam: https://patreon.com/collectorbot'
+        data.set_author(name='CollectorDevTeam', url=COLLECTOR_ICON)
+
     @commands.command(aliases=('p2f',), hidden=True)
     async def per2flat(self, per: float, ch_rating: int=100):
         '''Convert Percentage to MCOC Flat Value'''
