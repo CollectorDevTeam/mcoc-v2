@@ -1038,9 +1038,9 @@ class MCOCTools:
                                                    hoist=True, mentionable=True)
         for r in server.roles:
             if r.name == 'officers':
-                await self.bot.add_role(user, r)
+                await self.bot.add_roles(user, r)
             elif r.name == 'alliance':
-                await self.bot.add_role(user, r)
+                await self.bot.add_roles(user, r)
         roles = sorted(server.roles, key=lambda roles: roles.position, reverse=True)
         em = discord.Embed(color=discord.Color.red(), title='Guild Alliance Popup System', description='')
         positions = []
