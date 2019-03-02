@@ -444,8 +444,6 @@ class Alliance:
                 block = '\n'.join(m.display_name for m in overload)
                 data.add_field(name='Check these user\'s roles', value='```{}```'.format(block))
                 pages.append(data)
-            menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
-            await menu.menu_start(pages=pages)
 
     @checks.admin_or_permissions(manage_server=True)
     @alliance.command(name="create", aliases=('register', 'add'),
@@ -479,7 +477,8 @@ class Alliance:
                 data_pages.append(data)
             if len(data_pages) > 0:
                 await self.bot.delete_message(confirmation)
-            await self.bot.say(embed=data)
+            menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
+            await menu.menu_start(pages=data_pages)
         else:
             return
 
