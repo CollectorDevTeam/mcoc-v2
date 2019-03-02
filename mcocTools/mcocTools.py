@@ -972,13 +972,14 @@ class MCOCTools:
     async def _alliance_popup(self, ctx, *args):
         '''Guild | Alliance Popup System'''
 
-        warning_msg = ('The G.A.P.S. System will configure your server for basic Alliance Operations.'
-                       'Roles will be added for summoners, alliance, officers, bg1, bg2, bg3'
-                       'Channels will be added for announcements, alliance, & battlegroups.'
-                       'Channel permissions will be configured.'
-                       'After the G.A.P.S. system prepares your server, there will be additional instructions.'
+        warning_msg = ('The G.A.P.S. System will configure your server for basic Alliance Operations.\n ' \
+                       'Roles will be added for summoners, alliance, officers, bg1, bg2, bg3\n ' \
+                       'Channels will be added for announcements, alliance, & battlegroups.\n ' \
+                       'Channel permissions will be configured.\n ' \
+                       'After the G.A.P.S. system prepares your server, there will be additional instructions.\n ' \
                        'If you consent, press OK')
         em = discord.Embed(color=ctx.message.author.color, title='G.A.P.S. Warning Message', description=warning_msg)
+        em.set_author(name='CollectorDevTeam Guild Alliance Popup System', url=COLLECTOR_ICON)
         message = await self.bot.say(embed=em)
         await self.bot.add_reaction(message, '❌')
         await self.bot.add_reaction(message, '🆗')
@@ -1103,13 +1104,14 @@ class MCOCTools:
 
         em = discord.Embed(color=discord.Color.red(), titel='Guild Alliance Popup System', descritpion='')
 
-        # fixNotifcations = await self.bot.say('Stage 3: Attempting to set Default Notification to Direct Message Only')
+        fixNotifcations = await self.bot.say('Stage 3: Attempting to set Default Notification to Direct Message Only')
         try:
             # mentions only
             await self.bot.http.request(discord.http.Route('PATCH', '/guilds/{guild_id}', guild_id=server.id),
                                         json={'default_message_notifications': 1})
             em.add_field(name='Stage 3: Notification Settings',
                          value='I have modified the servers to use better notification settings.')
+            await self.bot.delete_message(fixNotifcations)
         except Exception as e:
             await self.bot.edit_message(fixNotifcations, "An exception occurred. check your log.")
 
@@ -1124,7 +1126,12 @@ class MCOCTools:
                          summoners.mention), inline=False)
         await self.bot.say(embed=em)
         await self.bot.delete_message(message2)
-
+        try:
+            alliance = self.bot.get_cog("Alliance")
+            if alliance is not None:
+                await alliance._reg(self.bot, ctx)
+        except:
+            await self.bot.say("Now register your alliance:\n```/alliance register```")
     # @checks.is_owner()
     # @commands.group(pass_context=True, hidden=True)
     # async def inspect(self, ctx):
