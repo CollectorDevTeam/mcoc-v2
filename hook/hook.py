@@ -545,7 +545,7 @@ class Hook:
             stats['top'][star]['count'] += 1
             stats['top'][star]['sum'] += 1
             # export master count list from XREF
-        data = discord.Embed(color=user.color, title='CollectorVerse Roster Stats', url='')
+        data = discord.Embed(color=user.color, title='CollectorVerse Roster Stats', url=PATREON)
         data.set_author(name='CollectorDevTeam', icon_url=COLLECTOR_ICON)
         data.set_thumbnail(url=user.avatar_url)
         data.set_footer(text='{} Roster Stats'.format(user.display_name))
