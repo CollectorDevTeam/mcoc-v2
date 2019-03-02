@@ -303,7 +303,7 @@ class Alliance:
                 type_keys = self.alliance_keys
             else:
                 type_keys = self.advanced_keys
-            if 'assign' in keys:
+            if 'assign' in keys and 'officers' in keys:
                 if self.guilds[alliance]['assign']['id'] == self.guilds[alliance]['officers']['id']:
                     data.add_field(name='assignment policy',
                                    value='Basic assignment policy: \n{} : {}\nOfficers may set assignments.'
@@ -408,9 +408,11 @@ class Alliance:
                 data = self._get_embed(ctx, alliance=alliance, color=dcolor)
                 data.title = tag+'Alliance Battlegroups:sparkles:'
                 for bg in ('bg1', 'bg2', 'bg3'):
-                    if bg in battle_groups.keys():
+                    if bg in battle_groups.keys() and len(battle_groups[bg]['role_members']) > 0:
                         data = await self._get_prestige(server, battle_groups[bg]['role'], verbose=True,
                                                         data=data, role_members=battle_groups[bg]['members'])
+                    elif bg in battle_groups.keys() and len(battle_groups[bg]['role_members']) == 0:
+                        data.description = 'Battlegroup {} has no members assigned'.format(bg)
                 pages.append(data)
             else:
                 data = self._get_embed(ctx, alliance=alliance, color=dcolor)
