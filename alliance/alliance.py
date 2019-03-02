@@ -408,10 +408,10 @@ class Alliance:
                 data = self._get_embed(ctx, alliance=alliance, color=dcolor)
                 data.title = tag+'Alliance Battlegroups:sparkles:'
                 for bg in ('bg1', 'bg2', 'bg3'):
-                    if bg in battle_groups.keys() and len(battle_groups[bg]['role_members']) > 0:
+                    if bg in battle_groups.keys() and len(battle_groups[bg]['members']) > 0:
                         data = await self._get_prestige(server, battle_groups[bg]['role'], verbose=True,
                                                         data=data, role_members=battle_groups[bg]['members'])
-                    elif bg in battle_groups.keys() and len(battle_groups[bg]['role_members']) == 0:
+                    elif bg in battle_groups.keys() and len(battle_groups[bg]['members']) == 0:
                         data.description = 'Battlegroup {} has no members assigned'.format(bg)
                 pages.append(data)
             else:
