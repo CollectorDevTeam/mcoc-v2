@@ -176,12 +176,14 @@ class Alliance:
         # color = discord.Color.gold()
         if alliance is not None:
             server = self.bot.get_server(alliance)
-            for member in server.members:
-                if color is None and user_id == member.id:
-                    color = member.color
-                    break
+            if server is not None:
+                members = server.members
+                if user_id is not None:
+                    for member in members:
+                        if member.id == user_id:
+                            color = member.color
+                            break
         else:
-            server = ctx.message.server
             if color is None:
                 color = get_color(ctx)
         data = discord.Embed(color=color, title='', description='')
