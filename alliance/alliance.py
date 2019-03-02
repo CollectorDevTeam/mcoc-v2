@@ -434,17 +434,17 @@ class Alliance:
                 cnt = 0
                 if basic:
                     for bg in ('bg1', 'bg2', 'bg3'):
-                        if bg in self.guilds[alliance].keys():
-                            cnt += battle_groups[bg]['members'].count(m)
+                        if bg in self.guilds[alliance].keys() and m.id in self.guilds[alliance][bg]['member_ids']:
+                            cnt += 1
                 else:
                     for bg in ('bg1aq', 'bg2aq', 'bg3aq'):
-                        if bg in self.guilds[alliance].keys():
-                            cnt += battle_groups[bg]['members'].count(m)
+                        if bg in self.guilds[alliance].keys() and m.id in self.guilds[alliance][bg]['member_ids']:
+                            cnt += 1
                     if cnt > 1:
                         overload.append(m)
                     for bg in ('bg1aw', 'bg2aw', 'bg3aw'):
-                        if bg in self.guilds[alliance].keys():
-                            cnt += battle_groups[bg]['members'].count(m)
+                        if bg in self.guilds[alliance].keys() and m.id in self.guilds[alliance][bg]['member_ids']:
+                            cnt += 1
                     if cnt > 1:
                         overload.append(m)
                 if cnt > 1:
