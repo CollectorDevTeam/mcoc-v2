@@ -543,7 +543,7 @@ class Hook:
             stats[klass][star]['count'] += 1
             stats[klass][star]['sum'] += champ.prestige
             stats['top'][star]['count'] += 1
-            stats['top'][star]['sum'] += 1
+            stats['top'][star]['sum'] += champ.prestige
             # export master count list from XREF
         data = discord.Embed(color=user.color, title='CollectorVerse Roster Stats', url=PATREON)
         data.set_author(name='CollectorDevTeam', icon_url=COLLECTOR_ICON)
