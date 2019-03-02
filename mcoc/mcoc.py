@@ -626,7 +626,7 @@ class MCOC(ChampionFactory):
         joinlink = 'https://discordapp.com/oauth2/authorize?client_id=210480249870352385&scope=bot&permissions=8'
         data = discord.Embed(color=user.color, title='INVITE COLLECTOR:sparkles:', description='', url=joinlink)
         data.description = 'Click the blue text to invite Collector to your Alliance Server.\n' \
-                           'Collector requires [ Administrator ] permissions on your server in order to use administrative functions, moderation functions, and some Alliance management functions.\n '\
+                           'Collector requires [ **Administrator** ] permissions on your server in order to use administrative functions, moderation functions, and some Alliance management functions.\n '\
                            '\nGuildOwners are required to register on the CollectorDevTeam server in order to receive support from the CollectorDevTeam.\n' \
                            'CollectorDevTeam Server: https://discord.gg/BwhgZxk\n' \
                            '\nCollectorBot Patrons receive priority support on the CollectorDevTeam server.\n ' \
