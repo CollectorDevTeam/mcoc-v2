@@ -434,16 +434,16 @@ class Alliance:
                 cnt = 0
                 if basic:
                     for bg in ('bg1', 'bg2', 'bg3'):
-                        if bg in self.guilds[alliance].keys() and m.id in self.guilds[alliance][bg]['member_ids']:
+                        if bg in battle_groups.keys() and m in battle_groups[bg]['members']:
                             cnt += 1
                 else:
                     for bg in ('bg1aq', 'bg2aq', 'bg3aq'):
-                        if bg in self.guilds[alliance].keys() and m.id in self.guilds[alliance][bg]['member_ids']:
+                        if bg in battle_groups.keys() and m in battle_groups[bg]['members']:
                             cnt += 1
                     if cnt > 1:
                         overload.append(m)
                     for bg in ('bg1aw', 'bg2aw', 'bg3aw'):
-                        if bg in self.guilds[alliance].keys() and m.id in self.guilds[alliance][bg]['member_ids']:
+                        if bg in battle_groups.keys() and m in battle_groups[bg]['members']:
                             cnt += 1
                     if cnt > 1:
                         overload.append(m)
@@ -453,6 +453,7 @@ class Alliance:
                 data = self._get_embed(ctx, alliance=alliance, color=dcolor)
                 data.title = 'Overloaded Battle Groups'
                 data.add_field(name='Check these user\'s roles', value='\n'.join(m.display_name for m in overload))
+                pages.append(data)
             menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
             await menu.menu_start(pages=pages)
 
