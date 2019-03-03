@@ -604,8 +604,8 @@ class Hook:
                     collected = round(count/available*100, 2)
                     list.append('Champion Count: {} / {}\nCollection Index:  % {} \nTotal Power: {:,}'
                                 .format(count, available, collected, power))
-                    ranks = stats[klass][star]['ranks'].keys()
-                    for r in ranks.sorted():
+                    ranks = min(star+1, 5)
+                    for r in range(ranks):
                         list.append('{}★ Rank {} x {}'.format(star, r, stats[klass][star][r]))
                     if len(list) > 0:
                         data.add_field(name='{0}★ {1}'.format(star, klass), value='\n'.join(list))
