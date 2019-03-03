@@ -511,6 +511,10 @@ class Hook:
         collection = await sgd.get_gsheets_data('collection')
         if user is None:
             user = ctx.message.author
+        if ctx.message.channel.is_private:
+            color=discord.Color.gold()
+        else:
+            ucolor = user.color
         roster = ChampionRoster(self.bot, user)
         await roster.load_champions()
         total = 0
@@ -522,18 +526,43 @@ class Hook:
                          3: {'count': 0, 'sum': 0},
                          2: {'count': 0, 'sum': 0},
                          1: {'count': 0, 'sum': 0}},
-                 'Science': {6: {'count': 0, 'sum': 0}, 5: {'count': 0, 'sum': 0}, 4: {'count': 0, 'sum': 0},
-                             3: {'count': 0, 'sum': 0}, 2: {'count': 0, 'sum': 0}, 1: {'count': 0, 'sum': 0}},
-                 'Mystic': {6: {'count': 0, 'sum': 0}, 5: {'count': 0, 'sum': 0}, 4: {'count': 0, 'sum': 0},
-                            3: {'count': 0, 'sum': 0}, 2: {'count': 0, 'sum': 0}, 1: {'count': 0, 'sum': 0}},
-                 'Cosmic': {6: {'count': 0, 'sum': 0}, 5: {'count': 0, 'sum': 0}, 4: {'count': 0, 'sum': 0},
-                            3: {'count': 0, 'sum': 0}, 2: {'count': 0, 'sum': 0}, 1: {'count': 0, 'sum': 0}},
-                 'Tech': {6: {'count': 0, 'sum': 0}, 5: {'count': 0, 'sum': 0}, 4: {'count': 0, 'sum': 0},
-                          3: {'count': 0, 'sum': 0}, 2: {'count': 0, 'sum': 0}, 1: {'count': 0, 'sum': 0}},
-                 'Mutant': {6: {'count': 0, 'sum': 0}, 5: {'count': 0, 'sum': 0}, 4: {'count': 0, 'sum': 0},
-                            3: {'count': 0, 'sum': 0}, 2: {'count': 0, 'sum': 0}, 1: {'count': 0, 'sum': 0}},
-                 'Skill': {6: {'count': 0, 'sum': 0}, 5: {'count': 0, 'sum': 0}, 4: {'count': 0, 'sum': 0},
-                           3: {'count': 0, 'sum': 0}, 2: {'count': 0, 'sum': 0}, 1: {'count': 0, 'sum': 0}}}
+                 'Science': {6: {'count': 0, 'sum': 0, 'ranks': {1: 0, 2: 0, 3: 0, 4: 0, 5: 0}},
+                             5: {'count': 0, 'sum': 0, 'ranks': {1: 0, 2: 0, 3: 0, 4: 0, 5: 0}},
+                             4: {'count': 0, 'sum': 0, 'ranks': {1: 0, 2: 0, 3: 0, 4: 0, 5: 0}},
+                             3: {'count': 0, 'sum': 0, 'ranks': {1: 0, 2: 0, 3: 0, 4: 0}},
+                             2: {'count': 0, 'sum': 0, 'ranks': {1: 0, 2: 0, 3: 0}},
+                             1: {'count': 0, 'sum': 0, 'ranks': {1: 0, 2: 0}}},
+                 'Mystic': {6: {'count': 0, 'sum': 0, 'ranks': {1: 0, 2: 0, 3: 0, 4: 0, 5: 0}},
+                            5: {'count': 0, 'sum': 0, 'ranks': {1: 0, 2: 0, 3: 0, 4: 0, 5: 0}},
+                            4: {'count': 0, 'sum': 0, 'ranks': {1: 0, 2: 0, 3: 0, 4: 0, 5: 0}},
+                            3: {'count': 0, 'sum': 0, 'ranks': {1: 0, 2: 0, 3: 0, 4: 0}},
+                            2: {'count': 0, 'sum': 0, 'ranks': {1: 0, 2: 0, 3: 0}},
+                            1: {'count': 0, 'sum': 0, 'ranks': {1: 0, 2: 0}}},
+                 'Cosmic': {6: {'count': 0, 'sum': 0, 'ranks': {1: 0, 2: 0, 3: 0, 4: 0, 5: 0}},
+                            5: {'count': 0, 'sum': 0, 'ranks': {1: 0, 2: 0, 3: 0, 4: 0, 5: 0}},
+                            4: {'count': 0, 'sum': 0, 'ranks': {1: 0, 2: 0, 3: 0, 4: 0, 5: 0}},
+                            3: {'count': 0, 'sum': 0, 'ranks': {1: 0, 2: 0, 3: 0, 4: 0}},
+                            2: {'count': 0, 'sum': 0, 'ranks': {1: 0, 2: 0, 3: 0}},
+                            1: {'count': 0, 'sum': 0, 'ranks': {1: 0, 2: 0}}},
+                 'Tech': {6: {'count': 0, 'sum': 0, 'ranks': {1: 0, 2: 0, 3: 0, 4: 0, 5: 0}},
+                          5: {'count': 0, 'sum': 0, 'ranks': {1: 0, 2: 0, 3: 0, 4: 0, 5: 0}},
+                          4: {'count': 0, 'sum': 0, 'ranks': {1: 0, 2: 0, 3: 0, 4: 0, 5: 0}},
+                          3: {'count': 0, 'sum': 0, 'ranks': {1: 0, 2: 0, 3: 0, 4: 0}},
+                          2: {'count': 0, 'sum': 0, 'ranks': {1: 0, 2: 0, 3: 0}},
+                          1: {'count': 0, 'sum': 0, 'ranks': {1: 0, 2: 0}}},
+                 'Mutant': {6: {'count': 0, 'sum': 0, 'ranks': {1: 0, 2: 0, 3: 0, 4: 0, 5: 0}},
+                            5: {'count': 0, 'sum': 0, 'ranks': {1: 0, 2: 0, 3: 0, 4: 0, 5: 0}},
+                            4: {'count': 0, 'sum': 0, 'ranks': {1: 0, 2: 0, 3: 0, 4: 0, 5: 0}},
+                            3: {'count': 0, 'sum': 0, 'ranks': {1: 0, 2: 0, 3: 0, 4: 0}},
+                            2: {'count': 0, 'sum': 0, 'ranks': {1: 0, 2: 0, 3: 0}},
+                            1: {'count': 0, 'sum': 0, 'ranks': {1: 0, 2: 0}}},
+                 'Skill': {6: {'count': 0, 'sum': 0, 'ranks': {1: 0, 2: 0, 3: 0, 4: 0, 5: 0}},
+                           5: {'count': 0, 'sum': 0, 'ranks': {1: 0, 2: 0, 3: 0, 4: 0, 5: 0}},
+                           4: {'count': 0, 'sum': 0, 'ranks': {1: 0, 2: 0, 3: 0, 4: 0, 5: 0}},
+                           3: {'count': 0, 'sum': 0, 'ranks': {1: 0, 2: 0, 3: 0, 4: 0}},
+                           2: {'count': 0, 'sum': 0, 'ranks': {1: 0, 2: 0, 3: 0}},
+                           1: {'count': 0, 'sum': 0, 'ranks': {1: 0, 2: 0}}}}
+
         for champ in roster.roster.values():
             # champ = ChampConverter()
             klass = champ.klass
@@ -544,8 +573,9 @@ class Hook:
             stats[klass][star]['sum'] += champ.prestige
             stats['top'][star]['count'] += 1
             stats['top'][star]['sum'] += champ.prestige
+            stats[klass][star][champ.rank] += 1
             # export master count list from XREF
-        data = discord.Embed(color=user.color, title='CollectorVerse Roster Stats', url=PATREON)
+        data = discord.Embed(color=ucolor, title='CollectorVerse Roster Stats', url=PATREON)
         data.set_author(name='CollectorDevTeam', icon_url=COLLECTOR_ICON)
         data.set_thumbnail(url=user.avatar_url)
         data.set_footer(text='{} Roster Stats'.format(user.display_name))
@@ -570,11 +600,13 @@ class Hook:
                 if stats[klass][star]['count'] > 0:
                     count = stats[klass][star]['count']
                     power = stats[klass][star]['sum']
-                    percent = round(count/total*100, 2)
                     available = collection[klass][str(star)]
                     collected = round(count/available*100, 2)
                     list.append('Champion Count: {} / {}\nCollection Index:  % {} \nTotal Power: {:,}'
                                 .format(count, available, collected, power))
+                    ranks = stats[klass][star]['ranks'].keys()
+                    for r in ranks.sorted():
+                        list.append('{}★ Rank {} x {}'.format(star, r, stats[klass][star][r]))
                     if len(list) > 0:
                         data.add_field(name='{0}★ {1}'.format(star, klass), value='\n'.join(list))
             if stats['top'][star]['count'] > 0:

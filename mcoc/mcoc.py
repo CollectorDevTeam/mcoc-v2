@@ -623,8 +623,12 @@ class MCOC(ChampionFactory):
         if user is None:
             user = ctx.message.author
             whisper = False
+        if ctx.message.channel.is_private:
+            ucolor = discord.Color.gold()
+        else:
+            ucolor = user.color
         joinlink = 'https://discordapp.com/oauth2/authorize?client_id=210480249870352385&scope=bot&permissions=8'
-        data = discord.Embed(color=user.color, title='INVITE COLLECTOR:sparkles:', description='', url=joinlink)
+        data = discord.Embed(color=ucolor, title='INVITE COLLECTOR:sparkles:', description='', url=joinlink)
         data.description = 'Click the blue text to invite Collector to your Alliance Server.\n' \
                            'Collector requires [ **Administrator** ] permissions on your server in order to use administrative functions, moderation functions, and some Alliance management functions.\n '\
                            '\nGuildOwners are required to register on the CollectorDevTeam server in order to receive support from the CollectorDevTeam.\n' \
@@ -632,6 +636,8 @@ class MCOC(ChampionFactory):
                            '\nCollectorBot Patrons receive priority support on the CollectorDevTeam server.\n ' \
                            'Support CollectorDevTeam: https://patreon.com/collectorbot'
         data.set_author(name='CollectorDevTeam', url=COLLECTOR_ICON)
+        data.set_thumbnail(url=COLLECTOR_ICON)
+        
         if whisper:
             await self.bot.whisper(embed=data)
         else:
