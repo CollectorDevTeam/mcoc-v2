@@ -580,14 +580,14 @@ class Hook:
         data.set_thumbnail(url=user.avatar_url)
         data.set_footer(text='{} Roster Stats'.format(user.display_name))
         available = collection['Total']['Total']
-        data.description = 'Champion Count: {} / {} \nCollection Index: % {}\nTotal Power: {:,} \n'\
+        data.description = 'Champion Count: {} / {} \nCollected: % {}\nTotal Power: {:,} \n'\
             .format(total, available, round(total/available*100, 2), total_power)
         for star in (6, 5, 4, 3, 2, 1):
             count = stats['top'][star]['count']
             available = collection['Total'][str(star)]
             collected = round(count / available * 100, 2)
             data.add_field(name='\n{}★ Champion Count: {} / {}'.format(star, count, available),
-                           value='Collection Index: % {} \nTotal Power: {:,}'
+                           value='Collected: % {} \nTotal Power: {:,}'
                            .format(collected, stats['top'][star]['sum']))
         pages.append(data)
         for star in (6, 5, 4, 3, 2, 1):
@@ -602,7 +602,7 @@ class Hook:
                     power = stats[klass][star]['sum']
                     available = collection[klass][str(star)]
                     collected = round(count/available*100, 2)
-                    list.append('Champion Count: {} / {}\nCollection Index:  % {} \nTotal Power: {:,}'
+                    list.append('Champion Count: {} / {}\nCollected:  % {} \nTotal Power: {:,}'
                                 .format(count, available, collected, power))
                     ranks = min(star+1, 5)+1
                     for r in range(1, ranks):
