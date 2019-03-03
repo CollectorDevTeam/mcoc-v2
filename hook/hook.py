@@ -609,7 +609,7 @@ class Hook:
                         if stats[klass][star]['ranks'][r] > 0:
                             list.append('{}★ Rank {} : {}'.format(star, r, stats[klass][star]['ranks'][r]))
                     if len(list) > 0:
-                        data.add_field(name='{0}★ {1} : {} / {}'.format(star, klass, count, available), value='\n'.join(list))
+                        data.add_field(name='{}★ {} : {} / {}'.format(star, klass, count, available), value='\n'.join(list))
             if stats['top'][star]['count'] > 0:
                 pages.append(data)
         menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
