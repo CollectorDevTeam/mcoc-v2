@@ -604,7 +604,7 @@ class Hook:
                     collected = round(count/available*100, 2)
                     list.append('Champion Count: {} / {}\nCollection Index:  % {} \nTotal Power: {:,}'
                                 .format(count, available, collected, power))
-                    ranks = min(star+1, 5)
+                    ranks = min(star+1, 5)+1
                     for r in range(1, ranks):
                         if stats[klass][star]['ranks'][r] > 0:
                             list.append('{}★ Rank {} x {}'.format(star, r, stats[klass][star]['ranks'][r]))
