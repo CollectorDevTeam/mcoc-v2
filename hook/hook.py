@@ -520,6 +520,7 @@ class Hook:
         total = 0
         total_power = 0
         pages = []
+
         stats = {'top': {6: {'count': 0, 'sum': 0},
                          5: {'count': 0, 'sum': 0},
                          4: {'count': 0, 'sum': 0},
@@ -591,7 +592,7 @@ class Hook:
                            .format(collected, stats['top'][star]['sum']))
         pages.append(data)
         for star in (6, 5, 4, 3, 2, 1):
-            data = discord.Embed(color=user.color, title='CollectorVerse {}★ Roster Stats'.format(star), url=PATREON)
+            data = discord.Embed(color=star_color_codes[star], title='CollectorVerse {}★ Roster Stats'.format(star), url=PATREON)
             data.set_author(name='CollectorDevTeam', icon_url=COLLECTOR_ICON)
             data.set_thumbnail(url=user.avatar_url)
             data.set_footer(text='{} Roster Stats'.format(user.display_name))

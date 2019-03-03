@@ -137,6 +137,7 @@ class_color_codes = {
         'Science': discord.Color(0x0b8c13), 'Mystic': discord.Color(0x7f0da8),
         'All': discord.Color(0x03f193), 'Superior': discord.Color(0x03f193), 'default': discord.Color.light_grey(),
         }
+
 class_emoji = {
         'Superior':'<:all2:339511715920084993>',
         'All':'<:all2:339511715920084993>',

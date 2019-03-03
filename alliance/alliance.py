@@ -11,7 +11,7 @@ from __main__ import send_cmd_help
 from .utils.dataIO import dataIO
 from .utils import checks
 # from .utils import chat_formatting as chat
-from .mcocTools import (KABAM_ICON, COLLECTOR_ICON, PagesMenu)
+from .mcocTools import (KABAM_ICON, COLLECTOR_ICON, PagesMenu, star_color_codes)
 from .hook import RosterUserConverter, ChampionRoster
 # import cogs.mcocTools
 
