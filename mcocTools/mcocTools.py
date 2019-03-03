@@ -35,6 +35,10 @@ GSX2JSON = 'http://gsx2json.com/api?id={}&sheet={}&columns=false&integers=false'
 
 gapi_service_creds = "data/mcoc/mcoc_service_creds.json"
 
+star_color_codes = {1: discord.Color(0x3c4d3b), 2: discord.Color(0xa05e44), 3: discord.Color(0xa0aeba),
+                    4: discord.Color(0xe1b963), 5: discord.Color(0xf55738), 6: discord.Color(0x07c6ed)}
+
+
 # class_color_codes = {
 #         'Cosmic': discord.Color(0x2799f7), 'Tech': discord.Color(0x0033ff),
 #         'Mutant': discord.Color(0xffd400), 'Skill': discord.Color(0xdb1200),
@@ -692,9 +696,6 @@ class PagesMenu:
 
 class MCOCTools:
     '''Tools for Marvel Contest of Champions'''
-
-    star_color_codes = {1: discord.Color(0x3c4d3b), 2: discord.Color(0xa05e44), 3: discord.Color(0xa0aeba),
-                        4: discord.Color(0xe1b963), 5: discord.Color(0xf55738), 6: discord.Color(0x07c6ed)}
 
     lookup_links = {
         'event': (

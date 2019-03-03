@@ -130,7 +130,6 @@ icon_sdf = "https://raw.githubusercontent.com/CollectorDevTeam/assets/master/dat
 
 ability_desc = "data/mcoc/ability-desc/{}.txt"
 
-
 class_color_codes = {
         'Cosmic': discord.Color(0x2799f7), 'Tech': discord.Color(0x0033ff),
         'Mutant': discord.Color(0xffd400), 'Skill': discord.Color(0xdb1200),
