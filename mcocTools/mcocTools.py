@@ -972,11 +972,11 @@ class MCOCTools:
     async def _alliance_popup(self, ctx, *args):
         '''Guild | Alliance Popup System'''
         user=ctx.message.author
-        warning_msg = ('The G.A.P.S. System will configure your server for basic Alliance Operations.\n ' \
-                       'Roles will be added for summoners, alliance, officers, bg1, bg2, bg3\n ' \
-                       'Channels will be added for announcements, alliance, & battlegroups.\n ' \
-                       'Channel permissions will be configured.\n ' \
-                       'After the G.A.P.S. system prepares your server, there will be additional instructions.\n ' \
+        warning_msg = ('The G.A.P.S. System will configure your server for basic Alliance Operations.\n'
+                       'Roles will be added for summoners, alliance, officers, bg1, bg2, bg3\n'
+                       'Channels will be added for announcements, alliance, & battlegroups.\n'
+                       'Channel permissions will be configured.\n'
+                       'After the G.A.P.S. system prepares your server, there will be additional instructions.\n'
                        'If you consent, press OK')
         em = discord.Embed(color=ctx.message.author.color, title='G.A.P.S. Warning Message', description=warning_msg)
         em.set_author(name='CollectorDevTeam Guild Alliance Popup System', url=COLLECTOR_ICON)

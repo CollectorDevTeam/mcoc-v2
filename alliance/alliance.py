@@ -375,79 +375,79 @@ class Alliance:
                     members = server.members
             else:
                 members = server.members
-            battle_groups = {}
-            pages = []
-            basic = False
-            if self.guilds[alliance]['type'] == 'basic':
-                basic = True
-                for bg in 'bg1', 'bg2', 'bg3':
+        battle_groups = {}
+        pages = []
+        basic = False
+        if self.guilds[alliance]['type'] == 'basic':
+            basic = True
+            for bg in 'bg1', 'bg2', 'bg3':
+                role = self._get_role(server, bg)
+                if role is not None:
+                    role_members = _get_members(server, role)
+                    if role_members is not None:
+                        battle_groups.update({bg: {'role': role, 'members': role_members}})
+        else:
+            for bg in ('bg1', 'bg2', 'bg3', 'bg1aq', 'bg2aq', 'bg3aq', 'bg1aw', 'bg2aw', 'bg3aw'):
+                if bg in self.guilds[alliance].keys():
                     role = self._get_role(server, bg)
                     if role is not None:
                         role_members = _get_members(server, role)
                         if role_members is not None:
                             battle_groups.update({bg: {'role': role, 'members': role_members}})
-            else:
-                for bg in ('bg1', 'bg2', 'bg3', 'bg1aq', 'bg2aq', 'bg3aq', 'bg1aw', 'bg2aw', 'bg3aw'):
-                    if bg in self.guilds[alliance].keys():
-                        role = self._get_role(server, bg)
-                        if role is not None:
-                            role_members = _get_members(server, role)
-                            if role_members is not None:
-                                battle_groups.update({bg: {'role': role, 'members': role_members}})
-            tag = ''
-            if 'tag' in self.guilds[alliance].keys():
-                tag = '[{}] '.format(self.guilds[alliance]['tag'])
+        tag = ''
+        if 'tag' in self.guilds[alliance].keys():
+            tag = '[{}] '.format(self.guilds[alliance]['tag'])
+        if basic:
+            data = self._get_embed(ctx, alliance=alliance, color=dcolor)
+            data.title = tag+'Alliance Battlegroups:sparkles:'
+            for bg in ('bg1', 'bg2', 'bg3'):
+                if bg in battle_groups.keys() and len(battle_groups[bg]['members']) > 0:
+                    data = await self._get_prestige(server, battle_groups[bg]['role'], verbose=True,
+                                                    data=data, role_members=battle_groups[bg]['members'])
+                elif bg in battle_groups.keys() and len(battle_groups[bg]['members']) == 0:
+                    data.description = 'Battlegroup {} has no members assigned'.format(bg)
+            pages.append(data)
+        else:
+            data = self._get_embed(ctx, alliance=alliance, color=dcolor)
+            data.title = tag + 'Alliance Quest Battlegroups:sparkles:'
+            for bg in ('bg1aq', 'bg2aq', 'bg3aq'):
+                if bg in battle_groups.keys():
+                    data = await self._get_prestige(server, battle_groups[bg]['role'], verbose=True, data=data,
+                                                    role_members=battle_groups[bg]['members'])
+            pages.append(data)
+            data = self._get_embed(ctx, alliance=alliance, color=dcolor)
+            data.title = tag + 'Alliance War Battlegroups:sparkles:'
+            for bg in ('bg1aw', 'bg2aw', 'bg3aw'):
+                if bg in battle_groups.keys():
+                    data = await self._get_prestige(server, battle_groups[bg]['role'], verbose=True, data=data,
+                                                    role_members=battle_groups[bg]['members'])
+            pages.append(data)
+        overload = []
+        for m in members:
+            cnt = 0
             if basic:
-                data = self._get_embed(ctx, alliance=alliance, color=dcolor)
-                data.title = tag+'Alliance Battlegroups:sparkles:'
                 for bg in ('bg1', 'bg2', 'bg3'):
-                    if bg in battle_groups.keys() and len(battle_groups[bg]['members']) > 0:
-                        data = await self._get_prestige(server, battle_groups[bg]['role'], verbose=True,
-                                                        data=data, role_members=battle_groups[bg]['members'])
-                    elif bg in battle_groups.keys() and len(battle_groups[bg]['members']) == 0:
-                        data.description = 'Battlegroup {} has no members assigned'.format(bg)
-                pages.append(data)
+                    if bg in battle_groups.keys() and m in battle_groups[bg]['members']:
+                        cnt += 1
             else:
-                data = self._get_embed(ctx, alliance=alliance, color=dcolor)
-                data.title = tag + 'Alliance Quest Battlegroups:sparkles:'
                 for bg in ('bg1aq', 'bg2aq', 'bg3aq'):
-                    if bg in battle_groups.keys():
-                        data = await self._get_prestige(server, battle_groups[bg]['role'], verbose=True, data=data,
-                                                        role_members=battle_groups[bg]['members'])
-                pages.append(data)
-                data = self._get_embed(ctx, alliance=alliance, color=dcolor)
-                data.title = tag + 'Alliance War Battlegroups:sparkles:'
-                for bg in ('bg1aw', 'bg2aw', 'bg3aw'):
-                    if bg in battle_groups.keys():
-                        data = await self._get_prestige(server, battle_groups[bg]['role'], verbose=True, data=data,
-                                                        role_members=battle_groups[bg]['members'])
-                pages.append(data)
-            overload = []
-            for m in members:
-                cnt = 0
-                if basic:
-                    for bg in ('bg1', 'bg2', 'bg3'):
-                        if bg in battle_groups.keys() and m in battle_groups[bg]['members']:
-                            cnt += 1
-                else:
-                    for bg in ('bg1aq', 'bg2aq', 'bg3aq'):
-                        if bg in battle_groups.keys() and m in battle_groups[bg]['members']:
-                            cnt += 1
-                    if cnt > 1:
-                        overload.append(m)
-                    for bg in ('bg1aw', 'bg2aw', 'bg3aw'):
-                        if bg in battle_groups.keys() and m in battle_groups[bg]['members']:
-                            cnt += 1
-                    if cnt > 1:
-                        overload.append(m)
+                    if bg in battle_groups.keys() and m in battle_groups[bg]['members']:
+                        cnt += 1
                 if cnt > 1:
                     overload.append(m)
-            if len(overload) > 0:
-                data = self._get_embed(ctx, alliance=alliance, color=dcolor)
-                data.title = 'Overloaded Battle Groups'
-                block = '\n'.join(m.display_name for m in overload)
-                data.add_field(name='Check these user\'s roles', value='```{}```'.format(block))
-                pages.append(data)
+                for bg in ('bg1aw', 'bg2aw', 'bg3aw'):
+                    if bg in battle_groups.keys() and m in battle_groups[bg]['members']:
+                        cnt += 1
+                if cnt > 1:
+                    overload.append(m)
+            if cnt > 1:
+                overload.append(m)
+        if len(overload) > 0:
+            data = self._get_embed(ctx, alliance=alliance, color=dcolor)
+            data.title = 'Overloaded Battle Groups'
+            block = '\n'.join(m.display_name for m in overload)
+            data.add_field(name='Check these user\'s roles', value='```{}```'.format(block))
+            pages.append(data)
 
     @checks.admin_or_permissions(manage_server=True)
     @alliance.command(name="create", aliases=('register', 'add'),
