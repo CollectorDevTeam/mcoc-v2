@@ -587,7 +587,7 @@ class Hook:
             available = collection['Total'][str(star)]
             collected = round(count / available * 100, 2)
             data.add_field(name='\n{}★ Champion Count: {} / {}'.format(star, count, available),
-                           value='Collected: % {} \nTotal Power: {:,}'
+                           value='Collected: % {} \Basic Hero Rating: {:,}'
                            .format(collected, stats['top'][star]['sum']))
         pages.append(data)
         for star in (6, 5, 4, 3, 2, 1):
@@ -602,14 +602,14 @@ class Hook:
                     power = stats[klass][star]['sum']
                     available = collection[klass][str(star)]
                     collected = round(count/available*100, 2)
-                    list.append('Champion Count: {} / {}\nCollected:  % {} \nTotal Power: {:,}'
-                                .format(count, available, collected, power))
+                    list.append('Collected:  % {} \nBasic Hero Rating: {:,}'
+                                .format(collected, power))
                     ranks = min(star+1, 5)+1
                     for r in range(1, ranks):
                         if stats[klass][star]['ranks'][r] > 0:
-                            list.append('{}★ Rank {} x {}'.format(star, r, stats[klass][star]['ranks'][r]))
+                            list.append('{}★ Rank {} : {}'.format(star, r, stats[klass][star]['ranks'][r]))
                     if len(list) > 0:
-                        data.add_field(name='{0}★ {1}'.format(star, klass), value='\n'.join(list))
+                        data.add_field(name='{0}★ {1} : {} / {}'.format(star, klass, count, available), value='\n'.join(list))
             if stats['top'][star]['count'] > 0:
                 pages.append(data)
         menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
