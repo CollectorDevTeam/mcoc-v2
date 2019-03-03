@@ -269,9 +269,10 @@ class MCOCMaps:
         author = ctx.message.author
         embeds = []
         if maptype in ('7', '7.1', '7.2', '7.3'):
-            for k, v in {'A': '1', 'B': '2', 'C': '3'}:
+            seven = {'A': '1', 'B': '2', 'C': '3'}
+            for k in seven.keys:
                 mapurl = '{}{}{}.png'.format(self.basepath, self.aq_map[maptype]['map'], k)
-                maptitle = 'Alliance Quest {} | Variation {}'.format(self.aq_map[maptype]['maptitle'], v)
+                maptitle = 'Alliance Quest {} | Variation {}'.format(self.aq_map[maptype]['maptitle'], seven[k])
                 data = discord.Embed(color=discord.Color.gold(), title=maptitle, url=PATREON)
                 data.set_image(url=mapurl)
                 data.set_author(name='CollectorDevTeam', icon_url=self.COLLECTOR_ICON)
