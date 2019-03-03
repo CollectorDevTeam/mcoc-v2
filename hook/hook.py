@@ -606,7 +606,8 @@ class Hook:
                                 .format(count, available, collected, power))
                     ranks = min(star+1, 5)
                     for r in range(1, ranks):
-                        list.append('{}★ Rank {} x {}'.format(star, r, stats[klass][star]['ranks'][r]))
+                        if stats[klass][star]['ranks'][r] > 0:
+                            list.append('{}★ Rank {} x {}'.format(star, r, stats[klass][star]['ranks'][r]))
                     if len(list) > 0:
                         data.add_field(name='{0}★ {1}'.format(star, klass), value='\n'.join(list))
             if stats['top'][star]['count'] > 0:
