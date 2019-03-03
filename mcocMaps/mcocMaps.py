@@ -279,7 +279,7 @@ class MCOCMaps:
                 data.set_footer(text='Requested by {}'.format(author.display_name), icon_url=author.avatar_url)
                 embeds.append(data)
             menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
-            await menu.menu_start(pages=embeds, page_number=int(maptype))
+            await menu.menu_start(pages=embeds)
             return
         elif maptype in self.aq_map:
             mapurl = '{}{}.png'.format(self.basepath, self.aq_map[maptype]['map'])
