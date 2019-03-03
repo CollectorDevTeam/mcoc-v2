@@ -350,16 +350,12 @@ class Alliance:
                 return role
         return None
 
-    @alliance.command(
-                name='bg',
-                aliases=('battlegroups', 'bgs', 'BG', 'BGs'),
-                pass_context=True,
-                no_pm=True
-        )
+    @alliance.command(name='bg', aliases=('battlegroups', 'bgs', 'BG', 'BGs'),pass_context=True, no_pm=True)
     async def _battle_groups(self, ctx):
         """Report Alliance Battlegroups"""
         alliances, message = self._find_alliance(ctx.message.author)
         dcolor = discord.Color.gold()
+        server = ctx.message.server
         if alliances is None:
             data = self._get_embed(ctx, color=dcolor)
             data.title = 'Access Denied:sparkles:'
@@ -448,6 +444,9 @@ class Alliance:
             block = '\n'.join(m.display_name for m in overload)
             data.add_field(name='Check these user\'s roles', value='```{}```'.format(block))
             pages.append(data)
+
+        menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
+        await menu.menu_start(pages=pages)
 
     @checks.admin_or_permissions(manage_server=True)
     @alliance.command(name="create", aliases=('register', 'add'),
