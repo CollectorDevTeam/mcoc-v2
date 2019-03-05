@@ -1933,7 +1933,7 @@ class MCOC(ChampionFactory):
                     data.set_image(url=attachment['url'])
                     await self.bot.send_message('{}\n{}'.format(champ.verbose_str, attachment['url']))
             if answer is False:
-                data.add_field(name='Status', value='Cancelled by {}'.author.display_name)
+                data.add_field(name='Status', value='Cancelled by {}'.format(author.display_name))
                 await self.bot.delete_message(confirmation)
                 await self.bot.say(emebed=data)
                 return

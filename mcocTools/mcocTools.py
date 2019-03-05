@@ -388,7 +388,7 @@ class StaticGameData:
 
         # Update this list to add Events
         events = ['13', '13.1', '14', '14.1', '15', '15.1', '16', '16.1', '17', '17.1', '17.2', '18', '18.1', '19.1',
-                  '20', '20.1', '21', '21.1', '21.2', '21.3', 'love3', 'cmcc']
+                  '20', '20.1', '21', '21.1', '21.2', '21.3', '22', 'love3', 'cmcc', 'recon']
 
         for event in events:
             self.gsheet_handler.register_gsheet(
@@ -1371,6 +1371,18 @@ class MCOCTools:
     async def eq_cmcc(self, tier='Act'):
         '''Captain Marvel\'s Combat Clash'''
         event = 'eq_cmcc'
+        await self.format_eventquest(event, tier.lower())
+
+    @eventquest.command(name='recon', aliases=('nickfuryrecon',))
+    async def eq_recon(self, tier='part1'):
+        '''Nick Fury's Recon Initiatives'''
+        event = 'eq_recon'
+        await self.format_eventquest(event, tier.lower())
+
+    @eventquest.command(name='22', aliases=('secretinvasion','captainmarvel','nickfury','cm','nf',))
+    async def eq_22(self, tier='Uncollected'):
+        '''Battlerealm: Under Siege'''
+        event = 'eq_22'
         await self.format_eventquest(event, tier.lower())
 
     # @eventquest.command(name='', aliases=(,))
