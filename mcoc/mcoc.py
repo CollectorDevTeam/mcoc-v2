@@ -1789,8 +1789,8 @@ class MCOC(ChampionFactory):
                                    '\n' \
                                    'Image attachments will be uploaded to CDT Server.'
                 data.set_image(url='https://cdn.discordapp.com/attachments/278246904620646410/550010804880277554/unknown.png')
-                data.add_field(name='Submission Error',value='Could not decipher submission.\n Try harder next time.')
-                await self.bot.say(embed=data)
+                data.add_field(name='Submission Error', value='Could not decipher submission.\n Try harder next time.')
+                message = await self.bot.say(embed=data)
                 # await self.bot.say('Submit Stats debug: Did not match stats')
                 return
             elif 'hp' not in matches.keys() and 'atk' not in matches.keys():
@@ -1802,7 +1802,7 @@ class MCOC(ChampionFactory):
                                    '\n' \
                                    'Image attachments will be uploaded to CDT Server.'
                 data.set_image(url='https://cdn.discordapp.com/attachments/278246904620646410/550010804880277554/unknown.png')
-                await self.bot.say(embed=data)
+                message = await self.bot.say(embed=data)
                 return
             else:
                 for k in matches.keys():
@@ -1836,9 +1836,9 @@ class MCOC(ChampionFactory):
                     data.set_image(
                         url='https://cdn.discordapp.com/attachments/278246904620646410/550010804880277554/unknown.png')
                     data.set_footer(
-                        text='Submission Attmpted by {} on {} [{}]'.format(author.display_name, server.name, server.id),
+                        text='Submission Attempted by {} on {} [{}]'.format(author.display_name, server.name, server.id),
                         icon_url=author.avatar_url)
-                    await self.bot.say(embed=data)
+                    message = await self.bot.say(embed=data)
                     await self.bot.delete_message(confirmation)
                     return
                 GKEY = '1VOqej9o4yLAdMoZwnWbPY-fTFynbDb_Lk8bXDNeonuE'
@@ -1853,9 +1853,13 @@ class MCOC(ChampionFactory):
                 # check = await self.bot.say('Debug - no stats submissions accepted currently.')
                 check = await self._process_submission(package=package, GKEY=GKEY, sheet='submit_stats')
                 if check:
+                    data.set_footer(
+                        text='Submission Registered by {} on {} [{}]'.format(author.display_name, server.name, server.id),
+                        icon_url=author.avatar_url)
                     await self.bot.delete_message(message2)
                     if cdt_stats is not None:
                         await self.bot.send_message(cdt_stats, embed=data)
+                        await self.bot.say(embed=data)
                         if len(ctx.message.attachments) > 0:
                             for a in ctx.message.attachments:
                                 await self.bot.send_message(cdt_stats, a.url)
