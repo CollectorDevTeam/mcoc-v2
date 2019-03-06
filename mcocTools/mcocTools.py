@@ -308,7 +308,8 @@ class GSHandler:
                 except:
                     logger.info("Error while pulling '{}' try: {}".format(k, try_num))
                     if try_num < 3:
-                        time.sleep(.3 * try_num)
+                        # time.sleep(.3 * try_num)
+                        asyncio.sleep(.3 * try_num)
                         await self.bot.say("Error while pulling '{}', try: {}".format(k, try_num))
             msg = await self.bot.edit_message(msg,
                                               'Pulled Google Sheet data {}/{}'.format(i + 1, num_files))
@@ -409,7 +410,8 @@ class StaticGameData:
             'https://raw.githubusercontent.com/CollectorDevTeam/assets/master/data/json/snapshots/en/character_bios_en.json',
             'https://raw.githubusercontent.com/CollectorDevTeam/assets/master/data/json/snapshots/en/dungeons_en.json',
             'https://raw.githubusercontent.com/CollectorDevTeam/assets/master/data/json/snapshots/en/cutscenes_en.json',
-            'https://raw.githubusercontent.com/CollectorDevTeam/assets/master/data/json/snapshots/en/initial_en.json'
+            'https://raw.githubusercontent.com/CollectorDevTeam/assets/master/data/json/snapshots/en/initial_en.json',
+            'https://raw.githubusercontent.com/CollectorDevTeam/assets/master/data/json/snapshots/en/alliances_en.json'
         )
         async with aiohttp.ClientSession() as session:
             for url in files:
