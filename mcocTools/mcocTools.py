@@ -30,6 +30,8 @@ logger = logging.getLogger('red.mcoc.tools')
 logger.setLevel(logging.INFO)
 
 COLLECTOR_ICON = 'https://raw.githubusercontent.com/CollectorDevTeam/assets/master/data/cdt_icon.png'
+COLLECTOR_FEATURED = 'https://raw.githubusercontent.com/CollectorDevTeam/assets/master/data/images/featured/collector.png'
+
 KABAM_ICON = 'https://imgur.com/UniRf5f.png'
 GSX2JSON = 'http://gsx2json.com/api?id={}&sheet={}&columns=false&integers=false'
 
@@ -309,7 +311,7 @@ class GSHandler:
                     logger.info("Error while pulling '{}' try: {}".format(k, try_num))
                     if try_num < 3:
                         # time.sleep(.3 * try_num)
-                        asyncio.sleep(.3 * try_num)
+                        asyncio.sleep(.3*try_num)
                         await self.bot.say("Error while pulling '{}', try: {}".format(k, try_num))
             msg = await self.bot.edit_message(msg,
                                               'Pulled Google Sheet data {}/{}'.format(i + 1, num_files))
@@ -700,11 +702,11 @@ class MCOCTools:
     '''Tools for Marvel Contest of Champions'''
 
     lookup_links = {
-        'event': (
-            '<http://simians.tk/MCOC-Sched>',
-            '[Tiny MCoC Schedule](https://docs.google.com/spreadsheets/d/e/2PACX-1vT5A1MOwm3CvOGjn7fMvYaiTKDuIdvKMnH5XHRcgzi3eqLikm9SdwfkrSuilnZ1VQt8aSfAFJzZ02zM/pubhtml?gid=390226786)',
-            'Josh Morris Schedule',
-            'https://d2jixqqjqj5d23.cloudfront.net/assets/developer/imgs/icons/google-spreadsheet-icon.png'),
+        # 'event': (
+        #     '<http://simians.tk/MCOC-Sched>',
+        #     '[Tiny MCoC Schedule](https://docs.google.com/spreadsheets/d/e/2PACX-1vT5A1MOwm3CvOGjn7fMvYaiTKDuIdvKMnH5XHRcgzi3eqLikm9SdwfkrSuilnZ1VQt8aSfAFJzZ02zM/pubhtml?gid=390226786)',
+        #     'Josh Morris Schedule',
+        #     'https://d2jixqqjqj5d23.cloudfront.net/assets/developer/imgs/icons/google-spreadsheet-icon.png'),
         'rttl': (
             '<https://drive.google.com/file/d/0B4ozoShtX2kFcDV4R3lQb1hnVnc/view>',
             '[Road to the Labyrinth Opponent List](https://drive.google.com/file/d/0B4ozoShtX2kFcDV4R3lQb1hnVnc/view)',
@@ -744,6 +746,10 @@ class MCOCTools:
         else:
             em.set_footer(text='CollectorDevTeam', icon_url=self.COLLECTOR_ICON)
         return em
+
+    @commands.command(pass_context=True, aliases=('calendar','cal','events'))
+    async def calendar(self, ctx):
+        author = ctx.message.author
 
     @commands.command(pass_context=True, no_pm=True)
     async def topic(self, ctx, channel: discord.channel = None):
