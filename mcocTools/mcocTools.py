@@ -31,6 +31,8 @@ logger.setLevel(logging.INFO)
 
 COLLECTOR_ICON = 'https://raw.githubusercontent.com/CollectorDevTeam/assets/master/data/cdt_icon.png'
 COLLECTOR_FEATURED = 'https://raw.githubusercontent.com/CollectorDevTeam/assets/master/data/images/featured/collector.png'
+PATREON = 'https://patreon.com/collectorbot'
+
 
 KABAM_ICON = 'https://imgur.com/UniRf5f.png'
 GSX2JSON = 'http://gsx2json.com/api?id={}&sheet={}&columns=false&integers=false'
@@ -750,6 +752,13 @@ class MCOCTools:
     @commands.command(pass_context=True, aliases=('calendar','cal','events'))
     async def calendar(self, ctx):
         author = ctx.message.author
+        if ctx.message.channel.is_private:
+            ucolor=discord.Color.gold()
+        else:
+            ucolor=author.color
+        data = discord.embed(color=ucolor, title='Calendar', description='temp data', url=PATREON)
+        data.set_footer(name='Requested by {}'.format(author.display_name), icon_url=author.avatar_url)
+        await self.bot.say(embed=data)
 
     @commands.command(pass_context=True, no_pm=True)
     async def topic(self, ctx, channel: discord.channel = None):
