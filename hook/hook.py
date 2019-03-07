@@ -621,16 +621,30 @@ class Hook:
 
     async def _update(self, roster, champs):
         track = roster.update(champs)
-        em = discord.Embed(title='Champion Update for {}'.format(roster.user.name),
-                color=discord.Color.gold())
         if len(champs) <= 20:
+            em = discord.Embed(title='Champion Update for {}'.format(roster.user.name),
+                               color=discord.Color.gold())
             for k in ('new', 'modified', 'unchanged'):
                 if track[k]:
                     em.add_field(name='{} Champions'.format(k.capitalize()),
-                            value='\n'.join(sorted(track[k])), inline=False)
+                                 value='\n'.join(sorted(track[k])), inline=False)
+                    await self.bot.say(embed=em)
         else:
-            em.add_field(name='{} Champions updated, confirmed.'.format(len(champs)), value='Number exceeds display limitation')
-        await self.bot.say(embed=em)
+            tracked = ''
+            for k in ('new', 'modified', 'unchanged'):
+                tracked += k.capitalize() + ' Champions'
+                tracked += '\n'.join(sorted(track[k]))
+                tracked += '\n'
+            pagified = chat.pagify(text=tracked, page_length=1700)
+            pages = []
+            for page in pagified:
+                data = discord.Embed(title='Roster up', color=discord.Color.gold(), description=page)
+                data.set_author(name='CollectorDevTeam Roster Update', url=COLLECTOR_ICON)
+                data.set_footer(text='``/roster update``', icon_url=COLLECTOR_ICON)
+                pages.append(data)
+            # em.add_field(name='{} Champions updated, confirmed.'.format(len(champs)), value='Number exceeds display limitation')
+            menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
+            await menu.menu_start(pages=pages)
 
     @roster.command(pass_context=True, name='dupe')
     async def _roster_dupe(self, ctx, *, champs: ChampConverterMult):
