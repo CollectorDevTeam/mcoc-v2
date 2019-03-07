@@ -839,11 +839,11 @@ class MCOCTools:
     #         em.add_field(name='{} - filed by {}'.format(cnt, ticket['name'],value='{}\n id: {}'.format(ticket['message'],ticket)))
     #     await self.bot.say(embed=em)
 
-    @commands.command(help=lookup_links['event'][0], aliases=['events', 'schedule', ], hidden=True)
-    async def event(self):
-        x = 'event'
-        lookup = self.lookup_links[x]
-        await self.bot.say(embed=self.present(lookup))
+    # @commands.command(help=lookup_links['event'][0], aliases=['events', 'schedule', ], hidden=True)
+    # async def event(self):
+    #     x = 'event'
+    #     lookup = self.lookup_links[x]
+    #     await self.bot.say(embed=self.present(lookup))
         # await self.bot.say('iOS dumblink:\n{}'.format(lookup[0]))
 
     @commands.command(help=lookup_links['spotlight'][0], )
