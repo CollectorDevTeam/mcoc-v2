@@ -22,7 +22,7 @@ import re
 import asyncio
 ### Monkey Patch of JSONEncoder
 from json import JSONEncoder, dump, dumps
-from .mcocTools import (StaticGameData, PagesMenu, KABAM_ICON, COLLECTOR_ICON, CDTHelperFunctions, GSHandler, GSExport, star_color_codes)
+from .mcocTools import (StaticGameData, PagesMenu, KABAM_ICON, COLLECTOR_ICON, COLLECTOR_FEATURED CDTHelperFunctions, GSHandler, GSExport, star_color_codes)
 
 
 logger = logging.getLogger('red.roster')
@@ -632,18 +632,19 @@ class Hook:
         else:
             tracked = ''
             for k in ('new', 'modified', 'unchanged'):
-                tracked += k.capitalize() + ' Champions'
+                tracked += k.capitalize() + ' Champions : {}\n'.format(len(track[k]))
                 tracked += '\n'.join(sorted(track[k]))
                 tracked += '\n'
             pagified = chat.pagify(text=tracked, page_length=1700)
             pages = []
             for page in pagified:
-                data = discord.Embed(title='Roster up', color=discord.Color.gold(), description=page)
+                data = discord.Embed(title='Roster Update :sparkles:', color=discord.Color.gold(), description=page, url=PATREON)
                 data.set_author(name='CollectorDevTeam Roster Update', url=COLLECTOR_ICON)
                 data.set_footer(text='``/roster update``', icon_url=COLLECTOR_ICON)
+                data.set_thumbnail(url=COLLECTOR_FEATURED)
                 pages.append(data)
             # em.add_field(name='{} Champions updated, confirmed.'.format(len(champs)), value='Number exceeds display limitation')
-            menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
+            menu = PagesMenu(self.bot, timeout=240, delete_onX=True, add_pageof=True)
             await menu.menu_start(pages=pages)
 
     @roster.command(pass_context=True, name='dupe')
