@@ -775,103 +775,107 @@ class MCOCTools:
             await self.bot.say(embed=data)
 
     # @commands.command(pass_context=True, aliases={'collector', 'infocollector', 'about'})
-    # async def aboutcollector(self, ctx):
-    #     """Shows info about Collector"""
-    #     server = self.bot.get_server('215271081517383682')
-    #     members = server.members
-    #     for role in server.roles:
-    #         if role.id == '553394314609164308':
-    #             cdt = role
-    #         elif role.id == '553394403272556566':
-    #             cst = role
-    #         elif role.id == '553405576101494795':
-    #             patreon = role
-    #         elif role.id == '553408829874896898':
-    #             partner = role
-    #         elif role.id == '553408434209423380':
-    #             maps = role
-    #     devteam = []
-    #     supportteam = []
-    #     patrons = []
-    #     cdtpartners = []
-    #     mappartners = []
-    #     for member in members:
-    #         if cdt in member.roles:
-    #             devteam.append('{}#{}'.format(member.name, member.discriminator))
-    #         elif cst in member.roles:
-    #             supportteam.append('{}#{}'.format(member.name, member.discriminator))
-    #         elif maps in member.roles:
-    #             mappartners.append('{}#{}'.format(member.name, member.discriminator))
-    #         elif partner in member.roles:
-    #             cdtpartners.append('{}#{}'.format(member.name, member.discriminator))
-    #         if patreon in member.roles:
-    #             patrons.append('{}#{}'.format(member.name, member.discriminator))
-    #
-    #     author_repo = "https://github.com/Twentysix26"
-    #     red_repo = author_repo + "/Red-DiscordBot"
-    #     server_url = "https://discord.gg/wJqpYGS"
-    #     dpy_repo = "https://github.com/Rapptz/discord.py"
-    #     python_url = "https://www.python.org/"
-    #     collectorpatreon = 'https://patreon.com/collectorbot'
-    #     since = datetime.datetime(2016, 1, 2, 0, 0)
-    #     days_since = (datetime.datetime.utcnow() - since).days
-    #     dpy_version = "[{}]({})".format(discord.__version__, dpy_repo)
-    #     py_version = "[{}.{}.{}]({})".format(*os.sys.version_info[:3],
-    #                                          python_url)
-    #
-    #     owner_set = self.bot.settings.owner is not None
-    #     owner = self.bot.settings.owner if owner_set else None
-    #     if owner:
-    #         owner = discord.utils.get(self.bot.get_all_members(), id=owner)
-    #         if not owner:
-    #             try:
-    #                 owner = await self.bot.get_user_info(self.bot.settings.owner)
-    #             except:
-    #                 owner = None
-    #     if not owner:
-    #         owner = "Unknown"
-    #
-    #     about = (
-    #         "Collector is an instance of [Red, an open source Discord bot]({0}) "
-    #         "created by [Twentysix]({1}) and improved by many.\n\n"
-    #         "★ The Collector Dev Team is backed by a passionate community who contributes and "
-    #         "creates content for everyone to enjoy. [Join us today]({2}) "
-    #         "and help us improve!\n\n"
-    #         "★ If you would like to support the Collector, please visit {3}.\n"
-    #         "★ Patrons and Collaborators receive priority support and secrety stuff.\n\n~ JJW\n"
-    #         "".format(red_repo, author_repo, server_url, collectorpatreon))
-    #
-    #     # devteam = ("DeltaSigma#8530\n"
-    #     #            "JJW#8071\n"
-    #     #            "JM#7725"
-    #     #            )
-    #     # supportteam = ('phil_wo#3733\nSpiderSebas#9910\nsuprmatt#2753\ntaoness#5565')
-    #     embed = discord.Embed(colour=discord.Colour.red(), title="Collector", url=collectorpatreon)
-    #     embed.add_field(name="Instance owned by", value=str(owner))
-    #     embed.add_field(name="Python", value=py_version)
-    #     embed.add_field(name="discord.py", value=dpy_version)
-    #     embed.add_field(name="About", value=about, inline=False)
-    #     embed.add_field(name="PrestigePartner", value='mutamatt#4704', inline=True)
-    #     embed.add_field(name='DuelsPartners', value='ƦƆ51#4587', inline=True)
-    #     # embed.add_field(name='MapsPartners', value='jpags#5202\nBlooregarde#5848 ', inline=True)
-    #     if len(mappartners) > 0:
-    #         embed.add_field(name='Map Partners', value='\n'.join(mappartners), inline=True)
-    #     embed.add_field(name='ScoutPartner', value='jm#7725')
-    #     # embed.add_field(name='LabyrinthTeam', value='Kiryu#5755\nre-1#7595', inline=True)
-    #     if len(supportteam) > 0:
-    #         embed.add_field(name='CollectorSupportTeam', value='\n'.join(supportteam), inline=True)
-    #     if len(devteam) > 0:
-    #         embed.add_field(name="CollectorDevTeam", value='\n'.join(devteam), inline=True)
-    #     if len(patrons) > 0:
-    #         embed.add_field(name='Special thanks to {}'.format(patreon.name), value='\n'.join(patrons))
-    #     embed.set_footer(text="Bringing joy since 02 Jan 2016 (over "
-    #                           "{} days ago!)".format(days_since))
-    #
-    #     try:
-    #         await self.bot.say(embed=embed)
-    #     except discord.HTTPException:
-    #         await self.bot.say("I need the `Embed links` permission "
-    #                            "to send this")
+    async def aboutcollector(self, ctx):
+        """Shows info about Collector"""
+        server = self.bot.get_server('215271081517383682')
+        devteam = []
+        supportteam = []
+        patrons = []
+        cdtpartners = []
+        mappartners = []
+        members = server.members
+        for role in server.roles:
+            # devteam
+            if role.id == '553394314609164308':
+                for member in members:
+                    if role in member.roles:
+                        devteam.append(member)
+            # supportteam
+            elif role.id == '553394403272556566':
+                for member in members:
+                    if role in member.roles:
+                        supportteam.append(member)
+            # patrons
+            elif role.id == '553405576101494795':
+                for member in members:
+                    if role in member.roles:
+                        patrons.append(member)
+            # partners
+            elif role.id == '553408829874896898':
+                for member in members:
+                    if role in member.roles:
+                        cdtpartners.append(member)
+            # mapspartners
+            elif role.id == '553408434209423380':
+                for member in members:
+                    if role in member.roles:
+                        mappartners.append(member)
+
+        author_repo = "https://github.com/Twentysix26"
+        red_repo = author_repo + "/Red-DiscordBot"
+        server_url = "https://discord.gg/wJqpYGS"
+        dpy_repo = "https://github.com/Rapptz/discord.py"
+        python_url = "https://www.python.org/"
+        collectorpatreon = 'https://patreon.com/collectorbot'
+        since = datetime.datetime(2016, 1, 2, 0, 0)
+        days_since = (datetime.datetime.utcnow() - since).days
+        dpy_version = "[{}]({})".format(discord.__version__, dpy_repo)
+        py_version = "[{}.{}.{}]({})".format(*os.sys.version_info[:3],
+                                             python_url)
+
+        owner_set = self.bot.settings.owner is not None
+        owner = self.bot.settings.owner if owner_set else None
+        if owner:
+            owner = discord.utils.get(self.bot.get_all_members(), id=owner)
+            if not owner:
+                try:
+                    owner = await self.bot.get_user_info(self.bot.settings.owner)
+                except:
+                    owner = None
+        if not owner:
+            owner = "Unknown"
+
+        about = (
+            "Collector is an instance of [Red, an open source Discord bot]({0}) "
+            "created by [Twentysix]({1}) and improved by many.\n\n"
+            "★ The Collector Dev Team is backed by a passionate community who contributes and "
+            "creates content for everyone to enjoy. [Join us today]({2}) "
+            "and help us improve!\n\n"
+            "★ If you would like to support the Collector, please visit {3}.\n"
+            "★ Patrons and Collaborators receive priority support and secrety stuff.\n\n~ JJW\n"
+            "".format(red_repo, author_repo, server_url, collectorpatreon))
+
+        # devteam = ("DeltaSigma#8530\n"
+        #            "JJW#8071\n"
+        #            "JM#7725"
+        #            )
+        # supportteam = ('phil_wo#3733\nSpiderSebas#9910\nsuprmatt#2753\ntaoness#5565')
+        embed = discord.Embed(colour=discord.Colour.red(), title="Collector", url=collectorpatreon)
+        embed.add_field(name="Instance owned by", value=str(owner))
+        embed.add_field(name="Python", value=py_version)
+        embed.add_field(name="discord.py", value=dpy_version)
+        embed.add_field(name="About", value=about, inline=False)
+        embed.add_field(name="PrestigePartner", value='mutamatt#4704', inline=True)
+        embed.add_field(name='DuelsPartners', value='ƦƆ51#4587', inline=True)
+        # embed.add_field(name='MapsPartners', value='jpags#5202\nBlooregarde#5848 ', inline=True)
+        if len(mappartners) > 0:
+            embed.add_field(name='Map Partners', value='\n'.join(m.display_name for m in mappartners), inline=True)
+        embed.add_field(name='ScoutPartner', value='jm#7725')
+        # embed.add_field(name='LabyrinthTeam', value='Kiryu#5755\nre-1#7595', inline=True)
+        if len(supportteam) > 0:
+            embed.add_field(name='CollectorSupportTeam', value='\n'.join(m.display_name for m in supportteam), inline=True)
+        if len(devteam) > 0:
+            embed.add_field(name="CollectorDevTeam", value='\n'.join(m.display_name for m in devteam), inline=True)
+        if len(patrons) > 0:
+            embed.add_field(name='Special thanks to Patrons', value='\n'.join(m.display_name for m in patrons))
+        embed.set_footer(text="Bringing joy since 02 Jan 2016 (over "
+                              "{} days ago!)".format(days_since))
+
+        try:
+            await self.bot.say(embed=embed)
+        except discord.HTTPException:
+            await self.bot.say("I need the `Embed links` permission "
+                               "to send this")
 
     # @checks.admin_or_permissions(manage_server=True)
     # @commands.command()
@@ -1027,15 +1031,18 @@ class MCOCTools:
     #     return text
 
     @checks.admin_or_permissions(manage_server=True, manage_roles=True)
-    @commands.command(name='gaps', pass_context=True, hidden=True)
+    @commands.command(name='gaps', pass_context=True, hidden=False)
     async def _alliance_popup(self, ctx):
-        '''Guild | Alliance Popup System'''
+        """Guild | Alliance Popup System
+        G.A.P.S. will configure your server for basic Alliance operations.
+        Roles, Channels, Permissions, and Notification settings are set.
+        """
         user = ctx.message.author
-        warning_msg = ('The G.A.P.S. System will configure your server for basic Alliance Operations.\n'
+        warning_msg = ('G.A.P.S. will configure your server for basic Alliance operations.\n'
                        'Roles will be added for summoners, alliance, officers, bg1, bg2, bg3\n'
                        'Channels will be added for announcements, alliance, & battlegroups.\n'
                        'Channel permissions will be configured.\n'
-                       'After the G.A.P.S. system prepares your server, there will be additional instructions.\n'
+                       'After the G.A.P.S. prepares your server, there will be additional instructions.\n'
                        'If you consent, press OK')
         em = discord.Embed(color=ctx.message.author.color, title='G.A.P.S. Warning Message', description=warning_msg)
         em.set_author(name='CollectorDevTeam Guild Alliance Popup System', url=COLLECTOR_ICON)
