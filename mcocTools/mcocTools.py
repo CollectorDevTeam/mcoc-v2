@@ -777,6 +777,36 @@ class MCOCTools:
     @commands.command(pass_context=True, aliases={'collector', 'infocollector', 'about'})
     async def aboutcollector(self, ctx):
         """Shows info about Collector"""
+        server = self.bot.get_server('215271081517383682')
+        members = server.members
+        for role in server.roles:
+            if role.id == '553394314609164308':
+                cdt = role
+            elif role.id == '553394403272556566':
+                cst = role
+            elif role.id == '553405576101494795':
+                patreon = role
+            elif role.id == '553408829874896898':
+                partner = role
+            elif role.id == '553408434209423380':
+                maps = role
+        devteam = []
+        supportteam = []
+        patrons = []
+        cdtpartners = []
+        mappartners = []
+        for member in members:
+            if cdt in member.roles:
+                devteam.append('{}#{}'.format(member.name, member.discriminator))
+            elif cst in member.roles:
+                supportteam.append('{}#{}'.format(member.name, member.discriminator))
+            elif maps in member.roles:
+                mappartners.append('{}#{}'.format(member.name, member.discriminator))
+            elif partner in member.roles:
+                cdtpartners.append('{}#{}'.format(member.name, member.discriminator))
+            if patreon in member.roles:
+                patrons.append('{}#{}'.format(member.name, member.discriminator))
+
         author_repo = "https://github.com/Twentysix26"
         red_repo = author_repo + "/Red-DiscordBot"
         server_url = "https://discord.gg/wJqpYGS"
@@ -804,17 +834,18 @@ class MCOCTools:
         about = (
             "Collector is an instance of [Red, an open source Discord bot]({0}) "
             "created by [Twentysix]({1}) and improved by many.\n\n"
-            "The Collector Dev Team is backed by a passionate community who contributes and "
+            "★ The Collector Dev Team is backed by a passionate community who contributes and "
             "creates content for everyone to enjoy. [Join us today]({2}) "
             "and help us improve!\n\n"
             "★ If you would like to support the Collector, please visit {3}.\n"
-            "★ Patrons and Collaborators receive priority support and secrety stuff.\n\n~ JJW"
+            "★ Patrons and Collaborators receive priority support and secrety stuff.\n\n~ JJW\n"
             "".format(red_repo, author_repo, server_url, collectorpatreon))
-        devteam = ("DeltaSigma#8530\n"
-                   "JJW#8071\n"
-                   "JM#7725"
-                   )
-        supportteam = ('phil_wo#3733\nSpiderSebas#9910\nsuprmatt#2753\ntaoness#5565')
+
+        # devteam = ("DeltaSigma#8530\n"
+        #            "JJW#8071\n"
+        #            "JM#7725"
+        #            )
+        # supportteam = ('phil_wo#3733\nSpiderSebas#9910\nsuprmatt#2753\ntaoness#5565')
         embed = discord.Embed(colour=discord.Colour.red(), title="Collector", url=collectorpatreon)
         embed.add_field(name="Instance owned by", value=str(owner))
         embed.add_field(name="Python", value=py_version)
@@ -822,10 +853,17 @@ class MCOCTools:
         embed.add_field(name="About", value=about, inline=False)
         embed.add_field(name="PrestigePartner", value='mutamatt#4704', inline=True)
         embed.add_field(name='DuelsPartners', value='ƦƆ51#4587', inline=True)
-        embed.add_field(name='MapsPartners', value='jpags#5202\nBlooregarde#5848 ', inline=True)
-        embed.add_field(name='LabyrinthTeam', value='Kiryu#5755\nre-1#7595', inline=True)
-        embed.add_field(name='CollectorSupportTeam', value=supportteam, inline=True)
-        embed.add_field(name="CollectorDevTeam", value=devteam, inline=True)
+        # embed.add_field(name='MapsPartners', value='jpags#5202\nBlooregarde#5848 ', inline=True)
+        if len(mappartners) > 0:
+            embed.add_field(name='Map Partners', value='\n'.join(mappartners), inline=True)
+        embed.add_field(name='ScoutPartner', value='jm#7725')
+        # embed.add_field(name='LabyrinthTeam', value='Kiryu#5755\nre-1#7595', inline=True)
+        if len(supportteam) > 0:
+            embed.add_field(name='CollectorSupportTeam', value='\n'.join(supportteam), inline=True)
+        if len(devteam) > 0:
+            embed.add_field(name="CollectorDevTeam", value='\n'.join(devteam), inline=True)
+        if len(patrons) > 0:
+            embed.add_field(name='Special thanks to {}'.format(patreon.name), value='\n'.join(patrons))
         embed.set_footer(text="Bringing joy since 02 Jan 2016 (over "
                               "{} days ago!)".format(days_since))
 
