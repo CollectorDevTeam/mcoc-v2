@@ -29,6 +29,7 @@ from .utils.dataIO import dataIO
 logger = logging.getLogger('red.mcoc.tools')
 logger.setLevel(logging.INFO)
 
+
 COLLECTOR_ICON = 'https://raw.githubusercontent.com/CollectorDevTeam/assets/master/data/cdt_icon.png'
 COLLECTOR_FEATURED = 'https://raw.githubusercontent.com/CollectorDevTeam/assets/master/data/images/featured/collector.png'
 PATREON = 'https://patreon.com/collectorbot'
@@ -39,16 +40,20 @@ GSX2JSON = 'http://gsx2json.com/api?id={}&sheet={}&columns=false&integers=false'
 
 gapi_service_creds = "data/mcoc/mcoc_service_creds.json"
 
-star_color_codes = {1: discord.Color(0x3c4d3b), 2: discord.Color(0xa05e44), 3: discord.Color(0xa0aeba),
-                    4: discord.Color(0xe1b963), 5: discord.Color(0xf55738), 6: discord.Color(0x07c6ed)}
-
-
-# class_color_codes = {
-#         'Cosmic': discord.Color(0x2799f7), 'Tech': discord.Color(0x0033ff),
-#         'Mutant': discord.Color(0xffd400), 'Skill': discord.Color(0xdb1200),
-#         'Science': discord.Color(0x0b8c13), 'Mystic': discord.Color(0x7f0da8),
-#         'All': discord.Color(0x03f193), 'Superior': discord.Color(0x03f193), 'default': discord.Color.light_grey(),
-#         }
+CDT_COLORS = {1: discord.Color(0x3c4d3b), 2: discord.Color(0xa05e44), 3: discord.Color(0xa0aeba),
+              4: discord.Color(0xe1b963), 5: discord.Color(0xf55738), 6: discord.Color(0x07c6ed),
+              'Cosmic': discord.Color(0x2799f7), 'Tech': discord.Color(0x0033ff),
+              'Mutant': discord.Color(0xffd400), 'Skill': discord.Color(0xdb1200),
+              'Science': discord.Color(0x0b8c13), 'Mystic': discord.Color(0x7f0da8),
+              'All': discord.Color(0x03f193), 'Superior': discord.Color(0x03f193),
+              'default': discord.Color.light_grey(), 'CDT': discord.Color.gold(),
+              'easy': discord.Color.green(), 'beginner': discord.Color.green(),
+              'medium': discord.Color.gold(), 'normal': discord.Color.gold(),
+              'heroic': discord.Color.red(), 'hard': discord.Color.red(),
+              'expert': discord.Color.purple(), 'master': discord.Color.purple(),
+              'epic': discord.Color(0x2799f7), 'uncollected': discord.Color(0x2799f7),
+              'symbiote': discord.Color.darker_grey(),
+              }
 
 # def sync_to_async(func):
 #     @wraps(func)
@@ -468,11 +473,12 @@ class StaticGameData:
         return raw_data
 
     @staticmethod
-    async def fetch_gsx2json(sheet_id, sheet_number=1, query: str = ''):
+    async def fetch_gsx2json(self, sheet_id, sheet_number=1, query: str = ''):
         url = GSX2JSON.format(sheet_id, sheet_number)
         if query != '':
             url = url + '&q' + query
         async with aiohttp.ClientSession() as session:
+            # json_data = await self.fetch_json(url, session)
             json_data = await self.fetch_json(url, session)
             return json_data
 
@@ -728,8 +734,8 @@ class MCOCTools:
     #         'by u/alsciende',
     #         'https://images-ext-2.discordapp.net/external/ymdMNrkhO9L5tUDupbFSEmu-JK0X2bpV0ZE-VYTBICc/%3Fsize%3D1024/https/cdn.discordapp.com/avatars/268829380262756357/b55ae7fc51d9b741450f949accd15fbe.webp?width=80&height=80'),
     # }
-    mcolor = discord.Color.red()
-    COLLECTOR_ICON = 'https://raw.githubusercontent.com/JasonJW/mcoc-cogs/master/mcoc/data/cdt_icon.png'
+    # mcolor = discord.Color.red()
+    # COLLECTOR_ICON = 'https://raw.githubusercontent.com/JasonJW/mcoc-cogs/master/mcoc/data/cdt_icon.png'
     # icon_sdf = 'https://raw.githubusercontent.com/JasonJW/mcoc-cogs/master/mcoc/data/sdf_icon.png'
     # dataset = 'data/mcoc/masteries.csv'
 
@@ -750,18 +756,25 @@ class MCOCTools:
 
     @commands.command(pass_context=True, aliases=('calendar','cal','events'))
     async def calendar(self, ctx):
+        """MCOC Schedule
+        Created by Josh Morris
+        Maintained by JJW"""
         author = ctx.message.author
+        days = []
         if ctx.message.channel.is_private:
-            ucolor=discord.Color.gold()
+            ucolor = discord.Color.gold()
         else:
-            ucolor=author.color
-        data = discord.embed(color=ucolor, title='Calendar', description='Temp Data\nCalendar function is being rewritten.', url=PATREON)
+            ucolor = author.color
+        data = discord.Embed(color=ucolor, title='Calendar', description='Temp Data\nCalendar function is being rewritten.', url=PATREON)
         data.set_footer(name='Requested by {}'.format(author.display_name), icon_url=author.avatar_url)
-        await self.bot.say(embed=data)
+        days.append(data)
+        menu = PagesMenu(self.bot, timeout=240, delete_onX=True, add_pageof=True)
+        await menu.menu_start(page_list=days)
+        return
 
     @commands.command(pass_context=True, no_pm=True)
     async def topic(self, ctx, channel: discord.Channel = None):
-        '''Play the Channel Topic in the chat channel.'''
+        """Play the Channel Topic in the chat channel."""
         if channel is None:
             channel = ctx.message.channel
         topic = channel.topic
@@ -773,83 +786,62 @@ class MCOCTools:
             data.set_footer(text='CollectorDevTeam', icon_url=self.COLLECTOR_ICON)
             await self.bot.say(embed=data)
 
-    @commands.command(pass_context=True, aliases={'collector', 'infocollector', 'about'})
+    @commands.command(pass_context=True, aliases=('collector', 'infocollector', 'about'))
     async def aboutcollector(self, ctx):
         """Shows info about Collector"""
+        author = ctx.message.author
+        if ctx.message.channel.is_private:
+            ucolor = CDT_COLORS['Collector']
+        else:
+            ucolor = author.color
         server = self.bot.get_server('215271081517383682')
         devteam = []
         supportteam = []
         patrons = []
         cdtpartners = []
         mappartners = []
+        team = {'553394314609164308': devteam, '553394403272556566': supportteam,
+                '553405576101494795': patrons, '553408829874896898': cdtpartners,
+                '553408434209423380': mappartners}
         members = server.members
         await self.bot.say('{} CDT members found'.format(len(members)))
-        for role in server.roles:
-            # devteam
-            if role.id == '553394314609164308':
-                for member in members:
-                    if role in member.roles:
-                        devteam.append(member.display_name)
-            # supportteam
-            elif role.id == '553394403272556566':
-                for member in members:
-                    if role in member.roles:
-                        supportteam.append(member.display_name)
-            # mapspartners
-            elif role.id == '553408434209423380':
-                for member in members:
-                    if role in member.roles:
-                        mappartners.append(member.display_name)
-            # partners
-            elif role.id == '553408829874896898':
-                for member in members:
-                    if role in member.roles:
-                        cdtpartners.append(member.display_name)
-            # patrons
-            if role.id == '553405576101494795':
-                for member in members:
-                    if role in member.roles:
-                        patrons.append(member.display_name)
+        for member in members:
+            for r in member.roles:
+                for k, v in team:
+                    if r.id == k:
+                        team[v].append(member.display_name)
         author_repo = "https://github.com/Twentysix26"
         red_repo = author_repo + "/Red-DiscordBot"
         server_url = "https://discord.gg/wJqpYGS"
         dpy_repo = "https://github.com/Rapptz/discord.py"
         python_url = "https://www.python.org/"
-        collectorpatreon = 'https://patreon.com/collectorbot'
         since = datetime.datetime(2016, 1, 2, 0, 0)
         days_since = (datetime.datetime.utcnow() - since).days
         dpy_version = "[{}]({})".format(discord.__version__, dpy_repo)
         py_version = "[{}.{}.{}]({})".format(*os.sys.version_info[:3], python_url)
-        owner_set = self.bot.settings.owner is not None
-        owner = self.bot.settings.owner if owner_set else None
-        if owner:
-            owner = discord.utils.get(self.bot.get_all_members(), id=owner)
-            if not owner:
-                try:
-                    owner = await self.bot.get_user_info(self.bot.settings.owner)
-                except:
-                    owner = None
-        if not owner:
-            owner = "Unknown"
+        invite = 'https://discordapp.com/oauth2/authorize?client_id=210480249870352385&scope=bot&permissions=8'
+
+        jjw = discord.utils.get(self.bot.get_all_members(), id='124984294035816448')
+        mutamatt = discord.utils.get(self.bot.get_all_members(), id='287122588344516609')
+
         about = (
-            "Collector is an instance of [Red, an open source Discord bot]({0}) " 
-            "created by [Twentysix]({1}) and improved by many.\n\n"
-            "★ The Collector Dev Team is backed by a passionate community who contributes and "
-            "creates content for everyone to enjoy. [Join us today]({2}) "
-            "and help us improve!\n\n"
-            "★ If you would like to support the Collector, please visit {3}.\n"
+            "Collector is an instance of [Red, an open source Discord bot]({0}) "
+            "★ The [Collector Dev Team]({1}) is backed by a passionate community who contributes and "
+            "creates content for everyone to enjoy.\n "
+            "★ If you would like to add Collector to your server, this is the [``/invite``]({3}).\n"
+            "★ If you would like to support the Collector, this is the [Patreon]({2}).\n"
             "★ Patrons and Collaborators receive priority support and secrety stuff.\n"
-            "".format(red_repo, author_repo, server_url, collectorpatreon))
+            "".format(red_repo, server_url, PATREON, invite))
         if len(devteam) == 0:
             devteam = ("DeltaSigma#8530", "JJW#8071", "JM#7725")
         if len(supportteam) == 0:
             supportteam = ('phil_wo#3733', 'SpiderSebas#9910', 'suprmatt#2753', 'taoness#5565')
-        embed = discord.Embed(colour=discord.Colour.red(), title="Collector", url=collectorpatreon)
-        embed.add_field(name="Instance owned by", value=str(owner))
+        embed = discord.Embed(colour=ucolor, title="Collector", url=PATREON)
+        embed.add_field(name="Instance owned by", value=str(jjw))
         embed.add_field(name="Python", value=py_version)
         embed.add_field(name="discord.py", value=dpy_version)
         embed.add_field(name="About", value=about, inline=False)
-        embed.add_field(name="PrestigePartner", value='mutamatt#4704', inline=True)
+        embed.add_field(name="PrestigePartner", value=str(mutamatt), inline=True)
         embed.add_field(name='DuelsPartners', value='ƦƆ51#4587', inline=True)
         # embed.add_field(name='MapsPartners', value='jpags#5202\nBlooregarde#5848 ', inline=True)
         if len(mappartners) > 0:
@@ -1253,7 +1245,7 @@ class MCOCTools:
     #     # sgd = self.sgd
     #     cdt_trials = await sgd.get_gsheets_data('elemental_trials')
     #     trials = set(cdt_trials.keys()) - {'_headers'}
-    #     tiercolors = sgd.tiercolors
+    #     tiercolors = CDT_COLORS
     #
     #     if trial not in trials:
     #         em = discord.Embed(color=discord.Color.red(), title='Trials Error',
@@ -1521,8 +1513,8 @@ class MCOCTools:
             page_list = []
             page_number = list(tiers).index(tier)
             for row in tiers:
-                if row in sgd.tiercolors:
-                    color = sgd.tiercolors[row]
+                if row in CDT_COLORS:
+                    color = CDT_COLORS[row]
                 else:
                     color = discord.Color.gold()
                 em = discord.Embed(color=color, title=cdt_eq['event_title']['value'],
