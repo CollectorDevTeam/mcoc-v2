@@ -847,11 +847,9 @@ class MCOCTools:
             "★ Patrons and Collaborators receive priority support and secrety stuff.\n\n~ JJW\n"
             "".format(red_repo, author_repo, server_url, collectorpatreon))
 
-        devteam = ("DeltaSigma#8530\n"
-                   "JJW#8071\n"
-                   "JM#7725"
-                   )
-        supportteam = ('phil_wo#3733\nSpiderSebas#9910\nsuprmatt#2753\ntaoness#5565')
+        devteam = ("DeltaSigma#8530", "JJW#8071", "JM#7725")
+        supportteam = ('phil_wo#3733', 'SpiderSebas#9910', 'suprmatt#2753', 'taoness#5565')
+
         embed = discord.Embed(colour=discord.Colour.red(), title="Collector", url=collectorpatreon)
         embed.add_field(name="Instance owned by", value=str(owner))
         embed.add_field(name="Python", value=py_version)
@@ -864,10 +862,10 @@ class MCOCTools:
         #     embed.add_field(name='Map Partners', value='\n'.join(mappartners), inline=True)
         # embed.add_field(name='ScoutPartner', value='jm#7725')
         embed.add_field(name='LabyrinthTeam', value='Kiryu#5755\nre-1#7595', inline=True)
-        # if len(supportteam) > 0:
-        #     embed.add_field(name='CollectorSupportTeam', value='\n'.join(supportteam), inline=True)
-        # if len(devteam) > 0:
-        #     embed.add_field(name="CollectorDevTeam", value='\n'.join(devteam), inline=True)
+        if len(supportteam) > 0:
+            embed.add_field(name='CollectorSupportTeam', value='\n'.join(supportteam), inline=True)
+        if len(devteam) > 0:
+            embed.add_field(name="CollectorDevTeam", value='\n'.join(devteam), inline=True)
         # if len(patrons) > 0:
         #     embed.add_field(name='Special thanks to Patrons', value='\n'.join(patrons))
         embed.set_footer(text="Bringing joy since 02 Jan 2016 (over "
