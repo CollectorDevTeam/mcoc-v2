@@ -774,7 +774,7 @@ class MCOCTools:
             data.set_footer(text='CollectorDevTeam', icon_url=self.COLLECTOR_ICON)
             await self.bot.say(embed=data)
 
-    # @commands.command(pass_context=True, aliases={'collector', 'infocollector', 'about'})
+    @commands.command(pass_context=True, aliases={'collector', 'infocollector', 'about'})
     async def aboutcollector(self, ctx):
         """Shows info about Collector"""
         server = self.bot.get_server('215271081517383682')
