@@ -1028,9 +1028,9 @@ class MCOCTools:
 
     @checks.admin_or_permissions(manage_server=True, manage_roles=True)
     @commands.command(name='gaps', pass_context=True, hidden=True)
-    async def _alliance_popup(self, ctx, *args):
+    async def _alliance_popup(self, ctx):
         '''Guild | Alliance Popup System'''
-        user=ctx.message.author
+        user = ctx.message.author
         warning_msg = ('The G.A.P.S. System will configure your server for basic Alliance Operations.\n'
                        'Roles will be added for summoners, alliance, officers, bg1, bg2, bg3\n'
                        'Channels will be added for announcements, alliance, & battlegroups.\n'
@@ -1076,7 +1076,6 @@ class MCOCTools:
         if 'admin' not in rolenames:
             admin = await self.bot.create_role(server=server, name='admin', color=discord.Color.gold(), hoist=False,
                                                mentionable=False)
-
         if 'officers' not in rolenames:
             officers = await self.bot.create_role(server=server, name='officers', color=discord.Color.light_grey(),
                                                   hoist=False, mentionable=True)
