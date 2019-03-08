@@ -778,40 +778,40 @@ class MCOCTools:
     async def aboutcollector(self, ctx):
         """Shows info about Collector"""
         server = self.bot.get_server('215271081517383682')
-        devteam = []
-        supportteam = []
-        patrons = []
-        cdtpartners = []
-        mappartners = []
+        # devteam = []
+        # supportteam = []
+        # patrons = []
+        # cdtpartners = []
+        # mappartners = []
         members = server.members
         await self.bot.say('{} CDT members found'.format(len(members)))
-        for role in server.roles:
-            # devteam
-            if role.id == '553394314609164308':
-                for member in members:
-                    if role in member.roles:
-                        devteam.append(member.display_name)
-            # supportteam
-            elif role.id == '553394403272556566':
-                for member in members:
-                    if role in member.roles:
-                        supportteam.append(member.display_name)
-            # mapspartners
-            elif role.id == '553408434209423380':
-                for member in members:
-                    if role in member.roles:
-                        mappartners.append(member.display_name)
-            # partners
-            elif role.id == '553408829874896898':
-                for member in members:
-                    if role in member.roles:
-                        cdtpartners.append(member.display_name)
-            # patrons
-            if role.id == '553405576101494795':
-                for member in members:
-                    if role in member.roles:
-                        patrons.append(member.display_name)
-
+        # for role in server.roles:
+        #     # devteam
+        #     if role.id == '553394314609164308':
+        #         for member in members:
+        #             if role in member.roles:
+        #                 devteam.append(member.display_name)
+        #     # supportteam
+        #     elif role.id == '553394403272556566':
+        #         for member in members:
+        #             if role in member.roles:
+        #                 supportteam.append(member.display_name)
+        #     # mapspartners
+        #     elif role.id == '553408434209423380':
+        #         for member in members:
+        #             if role in member.roles:
+        #                 mappartners.append(member.display_name)
+        #     # partners
+        #     elif role.id == '553408829874896898':
+        #         for member in members:
+        #             if role in member.roles:
+        #                 cdtpartners.append(member.display_name)
+        #     # patrons
+        #     if role.id == '553405576101494795':
+        #         for member in members:
+        #             if role in member.roles:
+        #                 patrons.append(member.display_name)
+        #
 
         author_repo = "https://github.com/Twentysix26"
         red_repo = author_repo + "/Red-DiscordBot"
@@ -847,11 +847,11 @@ class MCOCTools:
             "★ Patrons and Collaborators receive priority support and secrety stuff.\n\n~ JJW\n"
             "".format(red_repo, author_repo, server_url, collectorpatreon))
 
-        # devteam = ("DeltaSigma#8530\n"
-        #            "JJW#8071\n"
-        #            "JM#7725"
-        #            )
-        # supportteam = ('phil_wo#3733\nSpiderSebas#9910\nsuprmatt#2753\ntaoness#5565')
+        devteam = ("DeltaSigma#8530\n"
+                   "JJW#8071\n"
+                   "JM#7725"
+                   )
+        supportteam = ('phil_wo#3733\nSpiderSebas#9910\nsuprmatt#2753\ntaoness#5565')
         embed = discord.Embed(colour=discord.Colour.red(), title="Collector", url=collectorpatreon)
         embed.add_field(name="Instance owned by", value=str(owner))
         embed.add_field(name="Python", value=py_version)
@@ -859,17 +859,17 @@ class MCOCTools:
         embed.add_field(name="About", value=about, inline=False)
         embed.add_field(name="PrestigePartner", value='mutamatt#4704', inline=True)
         embed.add_field(name='DuelsPartners', value='ƦƆ51#4587', inline=True)
-        # embed.add_field(name='MapsPartners', value='jpags#5202\nBlooregarde#5848 ', inline=True)
-        if len(mappartners) > 0:
-            embed.add_field(name='Map Partners', value='\n'.join(mappartners), inline=True)
-        embed.add_field(name='ScoutPartner', value='jm#7725')
-        # embed.add_field(name='LabyrinthTeam', value='Kiryu#5755\nre-1#7595', inline=True)
-        if len(supportteam) > 0:
-            embed.add_field(name='CollectorSupportTeam', value='\n'.join(supportteam), inline=True)
-        if len(devteam) > 0:
-            embed.add_field(name="CollectorDevTeam", value='\n'.join(devteam), inline=True)
-        if len(patrons) > 0:
-            embed.add_field(name='Special thanks to Patrons', value='\n'.join(patrons))
+        embed.add_field(name='MapsPartners', value='jpags#5202\nBlooregarde#5848 ', inline=True)
+        # if len(mappartners) > 0:
+        #     embed.add_field(name='Map Partners', value='\n'.join(mappartners), inline=True)
+        # embed.add_field(name='ScoutPartner', value='jm#7725')
+        embed.add_field(name='LabyrinthTeam', value='Kiryu#5755\nre-1#7595', inline=True)
+        # if len(supportteam) > 0:
+        #     embed.add_field(name='CollectorSupportTeam', value='\n'.join(supportteam), inline=True)
+        # if len(devteam) > 0:
+        #     embed.add_field(name="CollectorDevTeam", value='\n'.join(devteam), inline=True)
+        # if len(patrons) > 0:
+        #     embed.add_field(name='Special thanks to Patrons', value='\n'.join(patrons))
         embed.set_footer(text="Bringing joy since 02 Jan 2016 (over "
                               "{} days ago!)".format(days_since))
 
