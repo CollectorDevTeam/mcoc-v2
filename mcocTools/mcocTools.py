@@ -761,19 +761,19 @@ class MCOCTools:
 
     #     author = ctx.message.author
 
-    # @commands.command(pass_context=True, no_pm=True)
-    # async def topic(self, ctx, channel: discord.Channel = None):
-    #     """Play the Channel Topic in the chat channel."""
-    #     if channel is None:
-    #         channel = ctx.message.channel
-    #     topic = channel.topic
-    #     if topic is not None and topic != '':
-    #         data = discord.Embed(color=ctx.message.author.color,
-    #                              title='#{} Topic :sparkles:'.format(ctx.message.channel.name),
-    #                              description=topic)
-    #         data.set_thumbnail(url=ctx.message.server.icon_url)
-    #         data.set_footer(text='CollectorDevTeam', icon_url=self.COLLECTOR_ICON)
-    #         await self.bot.say(embed=data)
+    @commands.command(pass_context=True, no_pm=True)
+    async def topic(self, ctx, channel: discord.Channel = None):
+        """Play the Channel Topic in the chat channel."""
+        if channel is None:
+            channel = ctx.message.channel
+        topic = channel.topic
+        if topic is not None and topic != '':
+            data = discord.Embed(color=ctx.message.author.color,
+                                 title='#{} Topic :sparkles:'.format(ctx.message.channel.name),
+                                 description=topic)
+            data.set_thumbnail(url=ctx.message.server.icon_url)
+            data.set_footer(text='CollectorDevTeam', icon_url=self.COLLECTOR_ICON)
+            await self.bot.say(embed=data)
     #
     # @commands.command(pass_context=True, aliases={'collector', 'infocollector', 'about'})
     # async def aboutcollector(self, ctx):
@@ -1227,10 +1227,10 @@ class MCOCEvents:
                     color = CDT_COLORS[row]
                 else:
                     color = discord.Color.gold()
-                em = discord.Embed(color=color, title=cdt_eq['event_title']['value'].title(),
+                em = discord.Embed(color=color, title=cdt_eq['event_title']['value'].capitalize(),
                                    url=cdt_eq['event_url']['value'])
                 em.set_author(name=cdt_eq['date']['value'])
-                em.description = '{}\n\n{}'.format(cdt_eq['story_title']['value'].title(), cdt_eq['story_value']['value'])
+                em.description = '{}\n\n{}'.format(cdt_eq['story_title']['value'].capitalize(), cdt_eq['story_value']['value'])
                 # em.add_field(name=cdt_eq['story_title']['value'], value=cdt_eq['story_value']['value'])
                 if rewards:
                     em.add_field(name='{} Rewards'.format(row.title()), value=cdt_eq[row]['rewardsregex'])
