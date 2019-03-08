@@ -724,7 +724,7 @@ class MCOCTools:
         else:
             ucolor = author.color
         data = discord.Embed(color=ucolor, title='Calendar', description='Temp Data\nCalendar function is being rewritten.', url=PATREON)
-        data.set_footer(name='Requested by {}'.format(author.display_name), icon_url=author.avatar_url)
+        data.set_footer(text='Requested by {}'.format(author.display_name), icon_url=author.avatar_url)
         days.append(data)
         menu = PagesMenu(self.bot, timeout=240, delete_onX=True, add_pageof=True)
         await menu.menu_start(page_list=days)
