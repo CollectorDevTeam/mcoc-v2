@@ -43,7 +43,12 @@ CDT_COLORS = {1: discord.Color(0x3c4d3b), 2: discord.Color(0xa05e44), 3: discord
               'Mutant': discord.Color(0xffd400), 'Skill': discord.Color(0xdb1200),
               'Science': discord.Color(0x0b8c13), 'Mystic': discord.Color(0x7f0da8),
               'All': discord.Color(0x03f193), 'Superior': discord.Color(0x03f193),
-              'default': discord.Color.gold(),
+              'default': discord.Color.gold(), 'easy': discord.Color.green(),
+              'beginner': discord.Color.green(), 'medium': discord.Color.gold(),
+              'normal': discord.Color.gold(), 'heroic': discord.Color.red(),
+              'hard': discord.Color.red(), 'expert': discord.Color.purple(),
+              'master': discord.Color.purple(), 'epic': discord.Color(0x2799f7),
+              'uncollected': discord.Color(0x2799f7), 'symbiote': discord.Color.darker_grey(),
               }
 
 
@@ -110,7 +115,7 @@ class GSExport:
         try:
             ss = self.gc.open_by_key(self.gkey)
         except:
-            raise 
+            raise
             await self.bot.say("Error opening Spreadsheet <{}>".format(self.gkey))
             return
         if self.meta_sheet and self.settings['sheet_name'] is None:
@@ -948,6 +953,7 @@ class MCOCEvents:
         cdt_trials = await sgd.get_gsheets_data('elemental_trials')
         trials = set(cdt_trials.keys()) - {'_headers'}
 
+
         if trial not in trials:
             em = discord.Embed(color=discord.Color.red(), title='Trials Error',
                                description="Invalid trial '{}'".format(trial))
@@ -974,11 +980,13 @@ class MCOCEvents:
                 em.add_field(name=cdt_trials['rewards']['name'],
                              value=cdt_trials['rewards'][tier])
             em.set_author(name='CollectorDevTeam',
-                          icon_url=self.COLLECTOR_ICON)
+                          icon_url=COLLECTOR_ICON)
             em.set_footer(text='Requested by {}'.format(author.display_name), icon_url=author.avatar_url)
             await self.bot.say(embed=em)
 
-    @commands.group(name='eq', pass_context=True, aliases=('eventquest',), hidden=False)
+    ### BEGIN EVENTQUEST GROUP ###
+
+    @commands.group(pass_context=True, aliases=('eq','event'), hidden=False)
     async def eventquest(self, ctx):
         if ctx.invoked_subcommand is None:
             await send_cmd_help(ctx)
@@ -1199,7 +1207,7 @@ class MCOCEvents:
             menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
             await menu.menu_start(page_list, page_number)
 
-    async def format_eventquest(self, event, tier):  # , tiers=('beginner','normal','heroic','master')):
+    async def format_eventquest(self, event, tier, rewards=True):  # , tiers=('beginner','normal','heroic','master')):
         sgd = StaticGameData()
         # sgd = self.sgd
         cdt_eq = await sgd.get_gsheets_data(event)
@@ -1219,12 +1227,15 @@ class MCOCEvents:
                     color = sgd.CDT_COLORS[row]
                 else:
                     color = discord.Color.gold()
-                em = discord.Embed(color=color, title=cdt_eq['event_title']['value'],
+                em = discord.Embed(color=color, title=cdt_eq['event_title']['value'].title(),
                                    url=cdt_eq['event_url']['value'])
                 em.set_author(name=cdt_eq['date']['value'])
-                em.description = '{}\n\n{}'.format(cdt_eq['story_title']['value'], cdt_eq['story_value']['value'])
+                em.description = '{}\n\n{}'.format(cdt_eq['story_title']['value'].title(), cdt_eq['story_value']['value'])
                 # em.add_field(name=cdt_eq['story_title']['value'], value=cdt_eq['story_value']['value'])
-                em.add_field(name='{} Rewards'.format(row.title()), value=cdt_eq[row]['rewardsregex'])
+                if rewards:
+                    em.add_field(name='{} Rewards'.format(row.title()), value=cdt_eq[row]['rewardsregex'])
+                else:
+                    em.add_field(name='{}'.format(row.title()), value=cdt_eq[row]['rewardsregex'])
                 if 'champions' in cdt_eq and cdt_eq['champions']['value'] != "":
                     em.add_field(name='Introducing', value=cdt_eq['champions']['value'])
                 em.set_image(url=cdt_eq['story_image']['value'])
