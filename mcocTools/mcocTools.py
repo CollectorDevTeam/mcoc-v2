@@ -789,27 +789,28 @@ class MCOCTools:
             if role.id == '553394314609164308':
                 for member in members:
                     if role in member.roles:
-                        devteam.append(member)
+                        devteam.append(member.display_name)
             # supportteam
             elif role.id == '553394403272556566':
                 for member in members:
                     if role in member.roles:
-                        supportteam.append(member)
-            # patrons
-            elif role.id == '553405576101494795':
-                for member in members:
-                    if role in member.roles:
-                        patrons.append(member)
-            # partners
-            elif role.id == '553408829874896898':
-                for member in members:
-                    if role in member.roles:
-                        cdtpartners.append(member)
+                        supportteam.append(member.display_name)
             # mapspartners
             elif role.id == '553408434209423380':
                 for member in members:
                     if role in member.roles:
-                        mappartners.append(member)
+                        mappartners.append(member.display_name)
+            # partners
+            elif role.id == '553408829874896898':
+                for member in members:
+                    if role in member.roles:
+                        cdtpartners.append(member.display_name)
+            # patrons
+            if role.id == '553405576101494795':
+                for member in members:
+                    if role in member.roles:
+                        patrons.append(member.display_name)
+
 
         author_repo = "https://github.com/Twentysix26"
         red_repo = author_repo + "/Red-DiscordBot"
@@ -859,15 +860,15 @@ class MCOCTools:
         embed.add_field(name='DuelsPartners', value='ƦƆ51#4587', inline=True)
         # embed.add_field(name='MapsPartners', value='jpags#5202\nBlooregarde#5848 ', inline=True)
         if len(mappartners) > 0:
-            embed.add_field(name='Map Partners', value='\n'.join(m.display_name for m in mappartners), inline=True)
+            embed.add_field(name='Map Partners', value='\n'.join(mappartners), inline=True)
         embed.add_field(name='ScoutPartner', value='jm#7725')
         # embed.add_field(name='LabyrinthTeam', value='Kiryu#5755\nre-1#7595', inline=True)
         if len(supportteam) > 0:
-            embed.add_field(name='CollectorSupportTeam', value='\n'.join(m.display_name for m in supportteam), inline=True)
+            embed.add_field(name='CollectorSupportTeam', value='\n'.join(supportteam), inline=True)
         if len(devteam) > 0:
-            embed.add_field(name="CollectorDevTeam", value='\n'.join(m.display_name for m in devteam), inline=True)
+            embed.add_field(name="CollectorDevTeam", value='\n'.join(devteam), inline=True)
         if len(patrons) > 0:
-            embed.add_field(name='Special thanks to Patrons', value='\n'.join(m.display_name for m in patrons))
+            embed.add_field(name='Special thanks to Patrons', value='\n'.join(patrons))
         embed.set_footer(text="Bringing joy since 02 Jan 2016 (over "
                               "{} days ago!)".format(days_since))
 
