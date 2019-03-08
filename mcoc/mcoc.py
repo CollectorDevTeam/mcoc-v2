@@ -923,6 +923,7 @@ class MCOC(ChampionFactory):
         '''Duel & Spar Targets'''
         #dataset=data_files['duelist']['local']
         released = await self.check_release(ctx, champ)
+        author = ctx.message.author
         if released:
             gc = pygsheets.authorize(service_file=gapi_service_creds, no_cache=True)
             sh = gc.open_by_key('1FZdJPB8sayzrXkE3F2z3b1VzFsNDhh-_Ukl10OXRN6Q')
@@ -933,10 +934,10 @@ class MCOC(ChampionFactory):
                 raise IndexError
 
             DUEL_SPREADSHEET='https://docs.google.com/spreadsheets/d/1FZdJPB8sayzrXkE3F2z3b1VzFsNDhh-_Ukl10OXRN6Q/view#gid=61189525'
-            em = discord.Embed(color=champ.class_color, title='Duel & Spar Targets',url=DUEL_SPREADSHEET)
+            em = discord.Embed(color=champ.class_color, title='Duel & Spar Targets', url=DUEL_SPREADSHEET)
             em.set_author(name='{0.full_name}'.format(champ), icon_url=champ.get_avatar())
             em.set_thumbnail(url=champ.get_featured())
-            em.set_footer(text='2OO2RC51\' Duel Targets',
+            em.set_footer(text='CollectorDevTeam + RC51\' Duel Targets',
                     icon_url=GSHEET_ICON)
 
             targets = []
