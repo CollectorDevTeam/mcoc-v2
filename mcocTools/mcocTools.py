@@ -742,8 +742,6 @@ class MCOCTools:
         self.search_parser = SearchExpr.parser()
         self.menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
 
-        # self.settings = dataIO.load_json('data/mcocTools/settings.json')
-
     def present(self, lookup):
         em = discord.Embed(color=self.mcolor, title='', description=lookup[1])
         print(len(lookup))
@@ -753,9 +751,9 @@ class MCOCTools:
             em.set_footer(text='CollectorDevTeam', icon_url=self.COLLECTOR_ICON)
         return em
 
-    @commands.command(pass_context=True, aliases=('calendar','cal','events'))
-    async def mcoc_schedule(self, ctx):
-        author = ctx.message.author
+    # @commands.command(pass_context=True, aliases=('calendar','cal','events'))
+    # async def mcoc_schedule(self, ctx):
+    #     author = ctx.message.author
 
     @commands.command(pass_context=True, no_pm=True)
     async def topic(self, ctx, channel: discord.Channel = None):
@@ -832,19 +830,6 @@ class MCOCTools:
             await self.bot.say("I need the `Embed links` permission "
                                "to send this")
 
-    # @checks.admin_or_permissions(manage_server=True)
-    # @commands.command()
-    # async def tickets(self):
-    #     ticketsjson = 'data/tickets/tickets.json'
-    #     tickets = dataIO.load_json(ticketsjson)
-    #     em = discord.Embed(title='Tickets')
-    #     cnt = 0
-    #     ids = tickets.keys()
-    #
-    #     for ticket in :
-    #         em.add_field(name='{} - filed by {}'.format(cnt, ticket['name'],value='{}\n id: {}'.format(ticket['message'],ticket)))
-    #     await self.bot.say(embed=em)
-
     @commands.command(help=lookup_links['event'][0], aliases=['events', 'schedule', ], hidden=True)
     async def event(self):
         x = 'event'
@@ -911,79 +896,10 @@ class MCOCTools:
         await menu.menu_start(page_list)
 
     # @commands.command(hidden=True, pass_context=True, name='datamine', aliases=('dm', 'search'))
-    # async def kabam_search(self, ctx, *, term: str):
-    #     """Enter a search term or a JSON key"""
-    #     kdata = StaticGameData()
-    #     cdt_data, cdt_versions = kdata.cdt_data, kdata.cdt_versions
-    #     ksearchlist = []
-    #     is_number = term.replace('.', '').isdigit()
-    #     if is_number:
-    #         for k,v in cdt_versions.items():
-    #             if term == v:
-    #                 ksearchlist.append('\n**{}**\n{}\nvn: {}'.format(k,
-    #                         self._bcg_recompile(cdt_data[k]), v))
-    #     elif term.upper() in cdt_data:
-    #         term = term.upper()
-    #         if term in cdt_versions:
-    #             ver = '\nvn: {}'.format(cdt_versions[term])
-    #         else:
-    #             ver = ''
-    #         em = discord.Embed(title='Data Search',
-    #                 description='\n**{}**\n{}{}'.format(term,
-    #                         self._bcg_recompile(cdt_data[term]),
-    #                         ver)
-    #             )
-    #         # em.set_thumbnail(url=COLLECTOR_ICON)
-    #         em.set_footer(text='MCOC Game Files', icon_url=KABAM_ICON)
-    #         ## term is a specific JSON key
-    #         # await self.bot.say('\n**{}**\n{}'.format(term, self._bcg_recompile(cdt_data[term])))
-    #         await self.bot.say(embed=em)
-    #         return
-    #     else:
-    #         ## search for term in json
-    #         for k,v in cdt_data.items():
-    #             if term.lower() in v.lower():
-    #                 if k in cdt_versions:
-    #                     ver = '\nvn: {}'.format(cdt_versions[k])
-    #                 else:
-    #                     ver = ''
-    #                 ksearchlist.append('\n**{}**\n{}{}'.format(k,
-    #                         self._bcg_recompile(v), ver)
-    #                 )
-    #     if len(ksearchlist) > 0:
-    #         pages = chat.pagify('\n'.join(s for s in ksearchlist))
-    #         page_list = []
-    #         for page in pages:
-    #             em = discord.Embed(title='Data Search',  description = page)
-    #             # em.set_thumbnail(url=COLLECTOR_ICON)
-    #             em.set_footer(text='MCOC Game Files', icon_url=KABAM_ICON)
-    #             page_list.append(em)
-    #             # page_list.append(page)
-    #         menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
-    #         await menu.menu_start(page_list)
 
     def _bcg_recompile(self, str_data):
         hex_re = re.compile(r'\[[0-9a-f]{6,8}\](.+?)\[-\]', re.I)
         return hex_re.sub(r'\1', str_data)
-
-    # @commands.command()
-    # async def keygen(self, prefix='SDCC17'):
-    #     """SDCC Code Generator
-    #     No warranty :)"""
-    #     letters='ABCDEFGHIJKLMNOPQURSTUVWXYZ'
-    #     numbers='0123456789'
-    #     package = []
-    #     for i in range(0,9):
-    #         lets='{}{}{}{}{}{}'.format(random.choice(letters),random.choice(letters),random.choice(numbers),random.choice(numbers),random.choice(letters),random.choice(letters))
-    #         package.append(prefix+lets)
-    #     em=discord.Embed(color=discord.Color.gold(),title='Email Code Generator',description='\n'.join(package))
-    #     await self.bot.say(embed=em)
-
-    # def _get_text(self, mastery, rank):
-    #     rows = csv_get_rows(self.dataset, 'Mastery', mastery)
-    #     for row in rows:
-    #         text.append(row['Text'].format(row[str(rank)]))
-    #     return text
 
     async def cache_sgd_gsheets(self):
         sgd = StaticGameData()
@@ -1004,6 +920,7 @@ class MCOCTools:
         Water    | epic
         Light
         Alchemist"""
+        author = ctx.message.author
         trial = trial.lower()
         tier = tier.lower()
         tiers = ('easy', 'medium', 'hard', 'expert', 'epic')
@@ -1011,7 +928,6 @@ class MCOCTools:
         # sgd = self.sgd
         cdt_trials = await sgd.get_gsheets_data('elemental_trials')
         trials = set(cdt_trials.keys()) - {'_headers'}
-        tiercolors = sgd.tiercolors
 
         if trial not in trials:
             em = discord.Embed(color=discord.Color.red(), title='Trials Error',
@@ -1025,7 +941,7 @@ class MCOCTools:
             await self.bot.say(embed=em)
         else:
             em = discord.Embed(
-                color=tiercolors[tier],
+                color=CDT_COLORS[tier],
                 title=tier.title() + " " + cdt_trials[trial]['name'],
                 description='',
                 url='https://forums.playcontestofchampions.com/en/discussion/114604/take-on-the-trials-of-the-elementals/p1'
@@ -1038,8 +954,9 @@ class MCOCTools:
             else:
                 em.add_field(name=cdt_trials['rewards']['name'],
                              value=cdt_trials['rewards'][tier])
-            em.set_footer(text='CollectorDevTeam',
+            em.set_author(name='CollectorDevTeam',
                           icon_url=self.COLLECTOR_ICON)
+            em.set_footer(text='Requested by {}'.format(author.display_name), icon_url=author.avatar_url)
             await self.bot.say(embed=em)
 
     @commands.group(name='eq', pass_context=True, aliases=('eventquest',), hidden=False)
@@ -1279,8 +1196,8 @@ class MCOCTools:
             page_list = []
             page_number = list(tiers).index(tier)
             for row in tiers:
-                if row in sgd.tiercolors:
-                    color = sgd.tiercolors[row]
+                if row in sgd.CDT_COLORS:
+                    color = sgd.CDT_COLORS[row]
                 else:
                     color = discord.Color.gold()
                 em = discord.Embed(color=color, title=cdt_eq['event_title']['value'],
