@@ -22,34 +22,40 @@ from discord.ext import commands
 from .utils import chat_formatting as chat
 from .utils.dataIO import dataIO
 
+# for Calculator/
+
+# from . import hook as hook
+
 logger = logging.getLogger('red.mcoc.tools')
 logger.setLevel(logging.INFO)
 
-
 COLLECTOR_ICON = 'https://raw.githubusercontent.com/CollectorDevTeam/assets/master/data/cdt_icon.png'
 COLLECTOR_FEATURED = 'https://raw.githubusercontent.com/CollectorDevTeam/assets/master/data/images/featured/collector.png'
-PATREON = 'https://patreon.com/collectorbot'
-
 
 KABAM_ICON = 'https://imgur.com/UniRf5f.png'
 GSX2JSON = 'http://gsx2json.com/api?id={}&sheet={}&columns=false&integers=false'
 
 gapi_service_creds = "data/mcoc/mcoc_service_creds.json"
 
-CDT_COLORS = {1: discord.Color(0x3c4d3b), 2: discord.Color(0xa05e44), 3: discord.Color(0xa0aeba),
-              4: discord.Color(0xe1b963), 5: discord.Color(0xf55738), 6: discord.Color(0x07c6ed),
-              'Cosmic': discord.Color(0x2799f7), 'Tech': discord.Color(0x0033ff),
-              'Mutant': discord.Color(0xffd400), 'Skill': discord.Color(0xdb1200),
-              'Science': discord.Color(0x0b8c13), 'Mystic': discord.Color(0x7f0da8),
-              'All': discord.Color(0x03f193), 'Superior': discord.Color(0x03f193),
-              'default': discord.Color.light_grey(), 'CDT': discord.Color.gold(),
-              'easy': discord.Color.green(), 'beginner': discord.Color.green(),
-              'medium': discord.Color.gold(), 'normal': discord.Color.gold(),
-              'heroic': discord.Color.red(), 'hard': discord.Color.red(),
-              'expert': discord.Color.purple(), 'master': discord.Color.purple(),
-              'epic': discord.Color(0x2799f7), 'uncollected': discord.Color(0x2799f7),
-              'symbiote': discord.Color.darker_grey(),
-              }
+star_color_codes = {1: discord.Color(0x3c4d3b), 2: discord.Color(0xa05e44), 3: discord.Color(0xa0aeba),
+                    4: discord.Color(0xe1b963), 5: discord.Color(0xf55738), 6: discord.Color(0x07c6ed)}
+
+
+# class_color_codes = {
+#         'Cosmic': discord.Color(0x2799f7), 'Tech': discord.Color(0x0033ff),
+#         'Mutant': discord.Color(0xffd400), 'Skill': discord.Color(0xdb1200),
+#         'Science': discord.Color(0x0b8c13), 'Mystic': discord.Color(0x7f0da8),
+#         'All': discord.Color(0x03f193), 'Superior': discord.Color(0x03f193), 'default': discord.Color.light_grey(),
+#         }
+
+# def sync_to_async(func):
+#     @wraps(func)
+#     async def run(*args, loop=None, executor=None, **kwargs):
+#         if loop is None:
+#             loop = asyncio.get_event_loop()
+#         pfunc = partial(func, *args, **kwargs)
+#         return await loop.run_in_executor(executor, pfunc)
+#     return run
 
 class GSExport:
     default_settings = {
@@ -331,6 +337,19 @@ class StaticGameData:
     cdt_trials = None
     gsheets_data = None
     test = 3
+    tiercolors = {
+        'easy': discord.Color.green(),
+        'beginner': discord.Color.green(),
+        'medium': discord.Color.gold(),
+        'normal': discord.Color.gold(),
+        'heroic': discord.Color.red(),
+        'hard': discord.Color.red(),
+        'expert': discord.Color.purple(),
+        'master': discord.Color.purple(),
+        'epic': discord.Color(0x2799f7),
+        'uncollected': discord.Color(0x2799f7),
+        'symbiote': discord.Color.darker_grey(),
+    }
 
     def __new__(cls):
         if cls.instance is None:
@@ -360,6 +379,7 @@ class StaticGameData:
             sheet_name='collection',
             range_name='available_collection'
         )
+
         self.gsheet_handler.register_gsheet(
             name='variant',
             gkey='1ZnoP_Kz_dC1DuTYmRX0spQLcHjiUZtT-oVTF52MHO3g',
@@ -368,9 +388,11 @@ class StaticGameData:
             range_name='variant',
             # settings=dict(column_handler='champs: to_list')
         )
+
         # Update this list to add Events
         events = ['13', '13.1', '14', '14.1', '15', '15.1', '16', '16.1', '17', '17.1', '17.2', '18', '18.1', '19.1',
                   '20', '20.1', '21', '21.1', '21.2', '21.3', '22', 'love3', 'cmcc', 'recon']
+
         for event in events:
             self.gsheet_handler.register_gsheet(
                 name='eq_' + event,
@@ -405,6 +427,7 @@ class StaticGameData:
                 cdt_versions.maps.append(ver)
             self.cdt_data = cdt_data
             self.cdt_versions = cdt_versions
+
             self.cdt_masteries = await self.fetch_json(
                 self.remote_data_basepath + 'json/masteries.json',
                 session)
@@ -443,12 +466,11 @@ class StaticGameData:
         return raw_data
 
     @staticmethod
-    async def fetch_gsx2json(self, sheet_id, sheet_number=1, query: str = ''):
+    async def fetch_gsx2json(sheet_id, sheet_number=1, query: str = ''):
         url = GSX2JSON.format(sheet_id, sheet_number)
         if query != '':
             url = url + '&q' + query
         async with aiohttp.ClientSession() as session:
-            # json_data = await self.fetch_json(url, session)
             json_data = await self.fetch_json(url, session)
             return json_data
 
@@ -678,31 +700,60 @@ class PagesMenu:
 
 class MCOCTools:
     '''Tools for Marvel Contest of Champions'''
+
+    lookup_links = {
+        # 'event': (
+        #     '<http://simians.tk/MCOC-Sched>',
+        #     '[Tiny MCoC Schedule](https://docs.google.com/spreadsheets/d/e/2PACX-1vT5A1MOwm3CvOGjn7fMvYaiTKDuIdvKMnH5XHRcgzi3eqLikm9SdwfkrSuilnZ1VQt8aSfAFJzZ02zM/pubhtml?gid=390226786)',
+        #     'Josh Morris Schedule',
+        #     'https://d2jixqqjqj5d23.cloudfront.net/assets/developer/imgs/icons/google-spreadsheet-icon.png'),
+        'rttl': (
+            '<https://drive.google.com/file/d/0B4ozoShtX2kFcDV4R3lQb1hnVnc/view>',
+            '[Road to the Labyrinth Opponent List](https://drive.google.com/file/d/0B4ozoShtX2kFcDV4R3lQb1hnVnc/view)',
+            'by Regal Empire {OG Wolvz}',
+            'http://svgur.com/s/48'),
+        'hook': (
+            '<http://hook.github.io/champions>',
+            '[hook/Champions by gabriel](http://hook.github.io/champions)',
+            'hook/champions for Collector',
+            'https://assets-cdn.github.com/favicon.ico'),
+        'spotlight': (
+            '<http://simians.tk/MCoCspotlight>',
+            '[MCOC Spotlight Dataset](http://simians.tk/MCoCspotlight)\nIf you would like to donate prestige, signatures or stats, join us at \n[CollectorDevTeam](https://discord.gg/BwhgZxk)'),
+        'alsciende': (
+            '<https://alsciende.github.io/masteries/v10.0.1/#>',
+            '[Alsciende Mastery Tool](https://alsciende.github.io/masteries/v17.0.2/#)',
+            'by u/alsciende',
+            'https://images-ext-2.discordapp.net/external/ymdMNrkhO9L5tUDupbFSEmu-JK0X2bpV0ZE-VYTBICc/%3Fsize%3D1024/https/cdn.discordapp.com/avatars/268829380262756357/b55ae7fc51d9b741450f949accd15fbe.webp?width=80&height=80'),
+    }
+    mcolor = discord.Color.red()
+    COLLECTOR_ICON = 'https://raw.githubusercontent.com/JasonJW/mcoc-cogs/master/mcoc/data/cdt_icon.png'
+    icon_sdf = 'https://raw.githubusercontent.com/JasonJW/mcoc-cogs/master/mcoc/data/sdf_icon.png'
+    dataset = 'data/mcoc/masteries.csv'
+
     def __init__(self, bot):
         self.bot = bot
         self.search_parser = SearchExpr.parser()
+        self.menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
+
+        # self.settings = dataIO.load_json('data/mcocTools/settings.json')
+
+    def present(self, lookup):
+        em = discord.Embed(color=self.mcolor, title='', description=lookup[1])
+        print(len(lookup))
+        if len(lookup) > 2:
+            em.set_footer(text=lookup[2], icon_url=lookup[3])
+        else:
+            em.set_footer(text='CollectorDevTeam', icon_url=self.COLLECTOR_ICON)
+        return em
 
     @commands.command(pass_context=True, aliases=('calendar','cal','events'))
-    async def mcoc_calendar(self, ctx):
-        """MCOC Schedule
-        Created by Josh Morris
-        Maintained by JJW"""
+    async def calendar(self, ctx):
         author = ctx.message.author
-        days = []
-        if ctx.message.channel.is_private:
-            ucolor = discord.Color.gold()
-        else:
-            ucolor = author.color
-        data = discord.Embed(color=ucolor, title='Calendar', description='Temp Data\nCalendar function is being rewritten.', url=PATREON)
-        data.set_footer(text='Requested by {}'.format(author.display_name), icon_url=author.avatar_url)
-        days.append(data)
-        menu = PagesMenu(self.bot, timeout=240, delete_onX=True, add_pageof=True)
-        await menu.menu_start(page_list=days)
-        return
 
     @commands.command(pass_context=True, no_pm=True)
-    async def topic(self, ctx, channel: discord.Channel = None):
-        """Play the Channel Topic in the chat channel."""
+    async def topic(self, ctx, channel: discord.channel = None):
+        '''Play the Channel Topic in the chat channel.'''
         if channel is None:
             channel = ctx.message.channel
         topic = channel.topic
@@ -714,81 +765,118 @@ class MCOCTools:
             data.set_footer(text='CollectorDevTeam', icon_url=self.COLLECTOR_ICON)
             await self.bot.say(embed=data)
 
-    @commands.command(pass_context=True, aliases=('collector', 'infocollector', 'about'))
-    # async def about_collector(self, ctx):
-    #     """Shows info about Collector"""
-    #     author = ctx.message.author
-    #     if ctx.message.channel.is_private:
-    #         ucolor = CDT_COLORS['Collector']
-    #     else:
-    #         ucolor = author.color
-    #     server = self.bot.get_server('215271081517383682')
-    #     devteam = []
-    #     supportteam = []
-    #     patrons = []
-    #     cdtpartners = []
-    #     mappartners = []
-    #     team = {'553394314609164308': devteam, '553394403272556566': supportteam,
-    #             '553405576101494795': patrons, '553408829874896898': cdtpartners,
-    #             '553408434209423380': mappartners}
-    #     members = server.members
-    #     await self.bot.say('{} CDT members found'.format(len(members)))
-    #     for member in members:
-    #         for r in member.roles:
-    #             for k, v in team:
-    #                 if r.id == k:
-    #                     team[v].append(member.display_name)
-    #     author_repo = "https://github.com/Twentysix26"
-    #     red_repo = author_repo + "/Red-DiscordBot"
-    #     server_url = "https://discord.gg/wJqpYGS"
-    #     dpy_repo = "https://github.com/Rapptz/discord.py"
-    #     python_url = "https://www.python.org/"
-    #     since = datetime.datetime(2016, 1, 2, 0, 0)
-    #     days_since = (datetime.datetime.utcnow() - since).days
-    #     dpy_version = "[{}]({})".format(discord.__version__, dpy_repo)
-    #     py_version = "[{}.{}.{}]({})".format(*os.sys.version_info[:3], python_url)
-    #     invite = 'https://discordapp.com/oauth2/authorize?client_id=210480249870352385&scope=bot&permissions=8'
+    @commands.command(pass_context=True, aliases={'collector', 'infocollector', 'about'})
+    async def aboutcollector(self, ctx):
+        """Shows info about Collector"""
+        author_repo = "https://github.com/Twentysix26"
+        red_repo = author_repo + "/Red-DiscordBot"
+        server_url = "https://discord.gg/wJqpYGS"
+        dpy_repo = "https://github.com/Rapptz/discord.py"
+        python_url = "https://www.python.org/"
+        collectorpatreon = 'https://patreon.com/collectorbot'
+        since = datetime.datetime(2016, 1, 2, 0, 0)
+        days_since = (datetime.datetime.utcnow() - since).days
+        dpy_version = "[{}]({})".format(discord.__version__, dpy_repo)
+        py_version = "[{}.{}.{}]({})".format(*os.sys.version_info[:3],
+                                             python_url)
+
+        owner_set = self.bot.settings.owner is not None
+        owner = self.bot.settings.owner if owner_set else None
+        if owner:
+            owner = discord.utils.get(self.bot.get_all_members(), id=owner)
+            if not owner:
+                try:
+                    owner = await self.bot.get_user_info(self.bot.settings.owner)
+                except:
+                    owner = None
+        if not owner:
+            owner = "Unknown"
+
+        about = (
+            "Collector is an instance of [Red, an open source Discord bot]({0}) "
+            "created by [Twentysix]({1}) and improved by many.\n\n"
+            "The Collector Dev Team is backed by a passionate community who contributes and "
+            "creates content for everyone to enjoy. [Join us today]({2}) "
+            "and help us improve!\n\n"
+            "★ If you would like to support the Collector, please visit {3}.\n"
+            "★ Patrons and Collaborators receive priority support and secrety stuff.\n\n~ JJW"
+            "".format(red_repo, author_repo, server_url, collectorpatreon))
+        devteam = ("DeltaSigma#8530\n"
+                   "JJW#8071\n"
+                   "JM#7725"
+                   )
+        supportteam = ('phil_wo#3733\nSpiderSebas#9910\nsuprmatt#2753\ntaoness#5565')
+        embed = discord.Embed(colour=discord.Colour.red(), title="Collector", url=collectorpatreon)
+        embed.add_field(name="Instance owned by", value=str(owner))
+        embed.add_field(name="Python", value=py_version)
+        embed.add_field(name="discord.py", value=dpy_version)
+        embed.add_field(name="About", value=about, inline=False)
+        embed.add_field(name="PrestigePartner", value='mutamatt#4704', inline=True)
+        embed.add_field(name='DuelsPartners', value='ƦƆ51#4587', inline=True)
+        embed.add_field(name='MapsPartners', value='jpags#5202\nBlooregarde#5848 ', inline=True)
+        embed.add_field(name='LabyrinthTeam', value='Kiryu#5755\nre-1#7595', inline=True)
+        embed.add_field(name='CollectorSupportTeam', value=supportteam, inline=True)
+        embed.add_field(name="CollectorDevTeam", value=devteam, inline=True)
+        embed.set_footer(text="Bringing joy since 02 Jan 2016 (over "
+                              "{} days ago!)".format(days_since))
+
+        try:
+            await self.bot.say(embed=embed)
+        except discord.HTTPException:
+            await self.bot.say("I need the `Embed links` permission "
+                               "to send this")
+
+    # @checks.admin_or_permissions(manage_server=True)
+    # @commands.command()
+    # async def tickets(self):
+    #     ticketsjson = 'data/tickets/tickets.json'
+    #     tickets = dataIO.load_json(ticketsjson)
+    #     em = discord.Embed(title='Tickets')
+    #     cnt = 0
+    #     ids = tickets.keys()
     #
-    #     jjw = discord.utils.get(self.bot.get_all_members(), id='124984294035816448')
-    #     mutamatt = discord.utils.get(self.bot.get_all_members(), id='287122588344516609')
-    #
-    #     about = (
-    #         "Collector is an instance of [Red, an open source Discord bot]({0}) "
-    #         "★ The [Collector Dev Team]({1}) is backed by a passionate community who contributes and "
-    #         "creates content for everyone to enjoy.\n "
-    #         "★ If you would like to add Collector to your server, this is the [``/invite``]({3}).\n"
-    #         "★ If you would like to support the Collector, this is the [Patreon]({2}).\n"
-    #         "★ Patrons and Collaborators receive priority support and secrety stuff.\n"
-    #         "".format(red_repo, server_url, PATREON, invite))
-    #     if len(devteam) == 0:
-    #         devteam = ("DeltaSigma#8530", "JJW#8071", "JM#7725")
-    #     if len(supportteam) == 0:
-    #         supportteam = ('phil_wo#3733', 'SpiderSebas#9910', 'suprmatt#2753', 'taoness#5565')
-    #     embed = discord.Embed(colour=ucolor, title="Collector", url=PATREON)
-    #     embed.add_field(name="Instance owned by", value=str(jjw))
-    #     embed.add_field(name="Python", value=py_version)
-    #     embed.add_field(name="discord.py", value=dpy_version)
-    #     embed.add_field(name="About", value=about, inline=False)
-    #     embed.add_field(name="PrestigePartner", value=str(mutamatt), inline=True)
-    #     embed.add_field(name='DuelsPartners', value='ƦƆ51#4587', inline=True)
-    #     # embed.add_field(name='MapsPartners', value='jpags#5202\nBlooregarde#5848 ', inline=True)
-    #     if len(mappartners) > 0:
-    #         embed.add_field(name='Map Partners', value='\n'.join(mappartners), inline=True)
-    #     embed.add_field(name='ScoutPartner', value='jm#7725')
-    #     # embed.add_field(name='LabyrinthTeam', value='Kiryu#5755\nre-1#7595', inline=True)
-    #     if len(supportteam) > 0:
-    #         embed.add_field(name='CollectorSupportTeam', value='\n'.join(supportteam), inline=True)
-    #     if len(devteam) > 0:
-    #         embed.add_field(name="CollectorDevTeam", value='\n'.join(devteam), inline=True)
-    #     if len(patrons) > 0:
-    #         embed.add_field(name='Special thanks to Patrons', value='\n'.join(patrons))
-    #     embed.set_footer(text="Bringing joy since 02 Jan 2016 (over "
-    #                           "{} days ago!)".format(days_since))
-    #     await self.bot.say(embed=embed)
-    #     return
+    #     for ticket in :
+    #         em.add_field(name='{} - filed by {}'.format(cnt, ticket['name'],value='{}\n id: {}'.format(ticket['message'],ticket)))
+    #     await self.bot.say(embed=em)
+
+    @commands.command(help=lookup_links['event'][0], aliases=['events', 'schedule', ], hidden=True)
+    async def event(self):
+        x = 'event'
+        lookup = self.lookup_links[x]
+        await self.bot.say(embed=self.present(lookup))
+        # await self.bot.say('iOS dumblink:\n{}'.format(lookup[0]))
+
+    @commands.command(help=lookup_links['spotlight'][0], )
+    async def spotlight(self):
+        '''CollectorDevTeam Spotlight Dataset'''
+        x = 'spotlight'
+        lookup = self.lookup_links[x]
+        await self.bot.say(embed=self.present(lookup))
+        # await self.bot.say('iOS dumblink:\n{}'.format(lookup[0]))
+
+    @commands.command(help=lookup_links['rttl'][0], )
+    async def rttl(self):
+        x = 'rttl'
+        lookup = self.lookup_links[x]
+        await self.bot.say(embed=self.present(lookup))
+        # await self.bot.say('iOS dumblink:\n{}'.format(lookup[0]))
+
+    @commands.command(help=lookup_links['alsciende'][0], aliases=('mrig',), hidden=True)
+    async def alsciende(self):
+        x = 'alsciende'
+        lookup = self.lookup_links[x]
+        await self.bot.say(embed=self.present(lookup))
+        # await self.bot.say('iOS dumblink:\n{}'.format(lookup[0]))
+
+    @commands.command(help=lookup_links['hook'][0], hidden=True)
+    async def hook(self):
+        x = 'hook'
+        lookup = self.lookup_links[x]
+        await self.bot.say(embed=self.present(lookup))
+        # await self.bot.say('iOS dumblink:\n{}'.format(lookup[0]))
 
     @commands.command(hidden=True, pass_context=True, name='parse_search', aliases=('ps', 'dm'))
-    async def kabam_search(self, ctx, *, phrase: str):
+    async def kabam_search2(self, ctx, *, phrase: str):
         '''Enter a search term or a JSON key'''
         kdata = StaticGameData()
         cdt_data, cdt_versions = kdata.cdt_data, kdata.cdt_versions
@@ -816,9 +904,284 @@ class MCOCTools:
         menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
         await menu.menu_start(page_list)
 
+    # @commands.command(hidden=True, pass_context=True, name='datamine', aliases=('dm', 'search'))
+    # async def kabam_search(self, ctx, *, term: str):
+    #     '''Enter a search term or a JSON key'''
+    #     kdata = StaticGameData()
+    #     cdt_data, cdt_versions = kdata.cdt_data, kdata.cdt_versions
+    #     ksearchlist = []
+    #     is_number = term.replace('.', '').isdigit()
+    #     if is_number:
+    #         for k,v in cdt_versions.items():
+    #             if term == v:
+    #                 ksearchlist.append('\n**{}**\n{}\nvn: {}'.format(k,
+    #                         self._bcg_recompile(cdt_data[k]), v))
+    #     elif term.upper() in cdt_data:
+    #         term = term.upper()
+    #         if term in cdt_versions:
+    #             ver = '\nvn: {}'.format(cdt_versions[term])
+    #         else:
+    #             ver = ''
+    #         em = discord.Embed(title='Data Search',
+    #                 description='\n**{}**\n{}{}'.format(term,
+    #                         self._bcg_recompile(cdt_data[term]),
+    #                         ver)
+    #             )
+    #         # em.set_thumbnail(url=COLLECTOR_ICON)
+    #         em.set_footer(text='MCOC Game Files', icon_url=KABAM_ICON)
+    #         ## term is a specific JSON key
+    #         # await self.bot.say('\n**{}**\n{}'.format(term, self._bcg_recompile(cdt_data[term])))
+    #         await self.bot.say(embed=em)
+    #         return
+    #     else:
+    #         ## search for term in json
+    #         for k,v in cdt_data.items():
+    #             if term.lower() in v.lower():
+    #                 if k in cdt_versions:
+    #                     ver = '\nvn: {}'.format(cdt_versions[k])
+    #                 else:
+    #                     ver = ''
+    #                 ksearchlist.append('\n**{}**\n{}{}'.format(k,
+    #                         self._bcg_recompile(v), ver)
+    #                 )
+    #     if len(ksearchlist) > 0:
+    #         pages = chat.pagify('\n'.join(s for s in ksearchlist))
+    #         page_list = []
+    #         for page in pages:
+    #             em = discord.Embed(title='Data Search',  description = page)
+    #             # em.set_thumbnail(url=COLLECTOR_ICON)
+    #             em.set_footer(text='MCOC Game Files', icon_url=KABAM_ICON)
+    #             page_list.append(em)
+    #             # page_list.append(page)
+    #         menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
+    #         await menu.menu_start(page_list)
+
     def _bcg_recompile(self, str_data):
         hex_re = re.compile(r'\[[0-9a-f]{6,8}\](.+?)\[-\]', re.I)
         return hex_re.sub(r'\1', str_data)
+
+    # @commands.command()
+    # async def keygen(self, prefix='SDCC17'):
+    #     '''SDCC Code Generator
+    #     No warranty :)'''
+    #     letters='ABCDEFGHIJKLMNOPQURSTUVWXYZ'
+    #     numbers='0123456789'
+    #     package = []
+    #     for i in range(0,9):
+    #         lets='{}{}{}{}{}{}'.format(random.choice(letters),random.choice(letters),random.choice(numbers),random.choice(numbers),random.choice(letters),random.choice(letters))
+    #         package.append(prefix+lets)
+    #     em=discord.Embed(color=discord.Color.gold(),title='Email Code Generator',description='\n'.join(package))
+    #     await self.bot.say(embed=em)
+
+    # def _get_text(self, mastery, rank):
+    #     rows = csv_get_rows(self.dataset, 'Mastery', mastery)
+    #     for row in rows:
+    #         text.append(row['Text'].format(row[str(rank)]))
+    #     return text
+
+    @checks.admin_or_permissions(manage_server=True, manage_roles=True)
+    @commands.command(name='gaps', pass_context=True, hidden=True)
+    async def _alliance_popup(self, ctx, *args):
+        '''Guild | Alliance Popup System'''
+        user=ctx.message.author
+        warning_msg = ('The G.A.P.S. System will configure your server for basic Alliance Operations.\n'
+                       'Roles will be added for summoners, alliance, officers, bg1, bg2, bg3\n'
+                       'Channels will be added for announcements, alliance, & battlegroups.\n'
+                       'Channel permissions will be configured.\n'
+                       'After the G.A.P.S. system prepares your server, there will be additional instructions.\n'
+                       'If you consent, press OK')
+        em = discord.Embed(color=ctx.message.author.color, title='G.A.P.S. Warning Message', description=warning_msg)
+        em.set_author(name='CollectorDevTeam Guild Alliance Popup System', url=COLLECTOR_ICON)
+        message = await self.bot.say(embed=em)
+        await self.bot.add_reaction(message, '❌')
+        await self.bot.add_reaction(message, '🆗')
+        react = await self.bot.wait_for_reaction(message=message, user=ctx.message.author, timeout=30,
+                                                 emoji=['❌', '🆗'])
+        if react is not None:
+            if react.reaction.emoji == '❌':
+                await self.bot.say('G.A.P.S. canceled.')
+                return
+            elif react.reaction.emoji == '🆗':
+                message2 = await self.bot.say('G.A.P.S. in progress.')
+        else:
+            await self.bot.say('Ambiguous response.  G.A.P.S. canceled')
+            return
+
+        server = ctx.message.server
+        adminpermissions = discord.PermissionOverwrite(administrator=True)
+        moderatorpermissions = discord.PermissionOverwrite(manage_roles=True)
+        moderatorpermissions.manage_server = True
+        moderatorpermissions.kick_members = True
+        moderatorpermissions.ban_members = True
+        moderatorpermissions.manage_channels = True
+        moderatorpermissions.manage_server = True
+        moderatorpermissions.manage_messages = True
+        moderatorpermissions.view_audit_logs = True
+        moderatorpermissions.read_messages = True
+        moderatorpermissions.create_instant_invite = True
+
+        roles = server.roles
+        rolenames = []
+        for r in roles:
+            rolenames.append('{}'.format(r.name))
+        aroles = ['officers', 'bg1', 'bg2', 'bg3', 'alliance', 'summoners']
+        # message = await self.bot.say('Stage 1: Creating roles')
+        if 'admin' not in rolenames:
+            admin = await self.bot.create_role(server=server, name='admin', color=discord.Color.gold(), hoist=False,
+                                               mentionable=False)
+
+        if 'officers' not in rolenames:
+            officers = await self.bot.create_role(server=server, name='officers', color=discord.Color.light_grey(),
+                                                  hoist=False, mentionable=True)
+        if 'bg1' not in rolenames:
+            bg1 = await self.bot.create_role(server=server, name='bg1', color=discord.Color.blue(), hoist=False,
+                                             mentionable=True)
+        if 'bg2' not in rolenames:
+            bg2 = await self.bot.create_role(server=server, name='bg2', color=discord.Color.purple(), hoist=False,
+                                             mentionable=True)
+        if 'bg3' not in rolenames:
+            bg3 = await self.bot.create_role(server=server, name='bg3', color=discord.Color.orange(), hoist=False,
+                                             mentionable=True)
+        if 'alliance' not in rolenames:
+            alliance = await self.bot.create_role(server=server, name='alliance', color=discord.Color.teal(),
+                                                  hoist=True, mentionable=True)
+        if 'summoners' not in rolenames:
+            summoners = await self.bot.create_role(server=server, name='summoners', color=discord.Color.lighter_grey(),
+                                                   hoist=True, mentionable=True)
+        for r in server.roles:
+            if r.name == 'officers':
+                await self.bot.add_roles(user, r)
+            elif r.name == 'alliance':
+                await self.bot.add_roles(user, r)
+        roles = sorted(server.roles, key=lambda roles: roles.position, reverse=True)
+        em = discord.Embed(color=discord.Color.red(), title='Guild Alliance Popup System', description='')
+        positions = []
+        for r in roles:
+            positions.append('{} = {}'.format(r.position, r.mention))
+            if r.name == 'officers':
+                officers = r
+            elif r.name == 'bg1':
+                bg1 = r
+            elif r.name == 'bg2':
+                bg2 = r
+            elif r.name == 'bg3':
+                bg3 = r
+            elif r.name == 'alliance':
+                alliance = r
+            elif r.name == 'summoners':
+                summoners = r
+            elif r.name == 'admin':
+                admin = r
+            elif r.name == 'everyone':
+                everyone = r
+        em.add_field(name='Stage 1 Role Creation', value='\n'.join(positions), inline=False)
+        await self.bot.say(embed=em)
+
+        everyone_perms = discord.PermissionOverwrite(read_messages=False)
+        everyoneperms = discord.ChannelPermissions(target=server.default_role, overwrite=everyone_perms)
+        readperm = discord.PermissionOverwrite(read_messages=True)
+        officerperms = discord.ChannelPermissions(target=officers, overwrite=readperm)
+        allianceperms = discord.ChannelPermissions(target=alliance, overwrite=readperm)
+        summonerperms = discord.ChannelPermissions(target=summoners, overwrite=readperm)
+        bg1perms = discord.ChannelPermissions(target=bg1, overwrite=readperm)
+        bg2perms = discord.ChannelPermissions(target=bg2, overwrite=readperm)
+        bg3perms = discord.ChannelPermissions(target=bg3, overwrite=readperm)
+
+        channellist = []
+        for c in server.channels:
+            channellist.append(c.name)
+        if 'announcements' not in channellist:
+            await self.bot.create_channel(server, 'announcements', everyoneperms, allianceperms, summonerperms)
+        # if 'alliance' not in channellist:
+        #     await self.bot.create_channel(server, 'alliance', everyoneperms, allianceperms)
+        if 'alliance-chatter' not in channellist:
+            await self.bot.create_channel(server, 'alliance-chatter', everyoneperms, allianceperms)
+        if 'officers' not in channellist:
+            await self.bot.create_channel(server, 'officers', everyoneperms, officerperms)
+        if 'bg1aq' not in channellist:
+            await self.bot.create_channel(server, 'bg1aq', everyoneperms, officerperms, bg1perms)
+        if 'bg1aw' not in channellist:
+            await self.bot.create_channel(server, 'bg1aw', everyoneperms, officerperms, bg1perms)
+        if 'bg2aq' not in channellist:
+            await self.bot.create_channel(server, 'bg2aq', everyoneperms, officerperms, bg2perms)
+        if 'bg2aw' not in channellist:
+            await self.bot.create_channel(server, 'bg2aw', everyoneperms, officerperms, bg2perms)
+        if 'bg3aq' not in channellist:
+            await self.bot.create_channel(server, 'bg3aq', everyoneperms, officerperms, bg3perms)
+        if 'bg3aw' not in channellist:
+            await self.bot.create_channel(server, 'bg3aw', everyoneperms, officerperms, bg2perms)
+
+        channels = sorted(server.channels, key=lambda channels: channels.position, reverse=False)
+        channelnames = []
+        for c in channels:
+            channelnames.append('{} = {} '.format(c.position, c.mention))
+        em = discord.Embed(color=discord.Color.red(), title='Guild Alliance Popup System', description='')
+        em.add_field(name='Stage 2 Create Channels', value='\n'.join(channelnames), inline=False)
+        await self.bot.say(embed=em)
+
+        em = discord.Embed(color=discord.Color.red(), titel='Guild Alliance Popup System', descritpion='')
+
+        fixNotifcations = await self.bot.say('Stage 3: Attempting to set Default Notification to Direct Message Only')
+        try:
+            # mentions only
+            await self.bot.http.request(discord.http.Route('PATCH', '/guilds/{guild_id}', guild_id=server.id),
+                                        json={'default_message_notifications': 1})
+            em.add_field(name='Stage 3: Notification Settings',
+                         value='I have modified the servers to use better notification settings.')
+            await self.bot.delete_message(fixNotifcations)
+        except Exception as e:
+            await self.bot.edit_message(fixNotifcations, "An exception occurred. check your log.")
+
+        await self.bot.say(embed=em)
+        em = discord.Embed(color=ctx.message.author.color, titel='Guild Alliance Popup System',
+                           descritpion='Server Owner Instructions')
+        em.add_field(name='Enroll for Collector announcements',
+                     value='Enroll a channel for Collector announcements\n```/addchan #announcements```\n',
+                     inline=False)
+        em.add_field(name='Set up Autorole',
+                     value='Default Role should be {}\n```/autorole role summoners```\n```/autorole toggle``` '.format(
+                         summoners.mention), inline=False)
+        await self.bot.say(embed=em)
+        await self.bot.delete_message(message2)
+        try:
+            alliance = self.bot.get_cog("Alliance")
+            if alliance is not None:
+                await alliance._reg(self.bot, ctx)
+        except:
+            await self.bot.say("Now register your alliance:\n```/alliance register```")
+    # @checks.is_owner()
+    # @commands.group(pass_context=True, hidden=True)
+    # async def inspect(self, ctx):
+
+    # @checks.is_owner()
+    @commands.command(pass_context=True, hidden=True, name='inspectroles', aliases=['inspectrole', 'ir', ])
+    async def _inspect_roles(self, ctx):
+        server = ctx.message.server
+        roles = sorted(server.roles, key=lambda roles: roles.position, reverse=True)
+        positions = []
+        for r in roles:
+            positions.append('{} = {}'.format(r.position, r.name))
+        desc = '\n'.join(positions)
+        em = discord.Embed(color=discord.Color.red(), title='Collector Inspector: ROLES', description=desc)
+        await self.bot.say(embed=em)
+
+    @checks.admin_or_permissions(manage_roles=True)
+    @commands.command(name='norole', pass_context=True, hidden=True)
+    async def _no_role(self, ctx, role: discord.Role):
+        members = ctx.message.server.members
+        missing = []
+        print(str(len(missing)))
+        for member in members:
+            if not member.bot:
+                if role not in member.roles:
+                    missing.append('{0.name} : {0.id}'.format(member))
+        print(str(len(missing)))
+        if len(missing) == 0:
+            await self.bot.say('No users are missing the role: {}'.format(role.name))
+        else:
+            pages = chat.pagify('\n'.join(missing))
+            for page in pages:
+                await self.bot.say(chat.box(page))
 
     async def cache_sgd_gsheets(self):
         sgd = StaticGameData()
@@ -828,54 +1191,54 @@ class MCOCTools:
     async def aux_sheets(self):
         await self.cache_sgd_gsheets()
 
-    # @commands.command(name='trials', pass_context=True, aliases=('trial',), hidden=False)
-    # async def _trials(self, ctx, trial, tier='epic'):
-    #     '''Elemnts of the Trials
-    #     trials   | tier
-    #     Wind     | easy
-    #     Fire     | medium
-    #     Earth    | hard
-    #     Darkness | expert
-    #     Water    | epic
-    #     Light
-    #     Alchemist'''
-    #     trial = trial.lower()
-    #     tier = tier.lower()
-    #     tiers = ('easy', 'medium', 'hard', 'expert', 'epic')
-    #     sgd = StaticGameData()
-    #     # sgd = self.sgd
-    #     cdt_trials = await sgd.get_gsheets_data('elemental_trials')
-    #     trials = set(cdt_trials.keys()) - {'_headers'}
-    #     tiercolors = CDT_COLORS
-    #
-    #     if trial not in trials:
-    #         em = discord.Embed(color=discord.Color.red(), title='Trials Error',
-    #                            description="Invalid trial '{}'".format(trial))
-    #         em.add_field(name='Valid Trials:', value='\n'.join(trials))
-    #         await self.bot.say(embed=em)
-    #     elif tier not in tiers:
-    #         em = discord.Embed(color=discord.Color.red(), title='Trials Error',
-    #                            description="Invalid tier '{}'".format(tier))
-    #         em.add_field(name='Valid Tiers:', value='\n'.join(tiers))
-    #         await self.bot.say(embed=em)
-    #     else:
-    #         em = discord.Embed(
-    #             color=tiercolors[tier],
-    #             title=tier.title() + " " + cdt_trials[trial]['name'],
-    #             description='',
-    #             url='https://forums.playcontestofchampions.com/en/discussion/114604/take-on-the-trials-of-the-elementals/p1'
-    #         )
-    #         em.add_field(name='Champions', value=cdt_trials[trial]['champs'])
-    #         em.add_field(name='Boosts', value=cdt_trials[trial][tier])
-    #         if trial == 'alchemist':
-    #             em.add_field(name=cdt_trials['alchemistrewards']['name'],
-    #                          value=cdt_trials['alchemistrewards'][tier])
-    #         else:
-    #             em.add_field(name=cdt_trials['rewards']['name'],
-    #                          value=cdt_trials['rewards'][tier])
-    #         em.set_footer(text='CollectorDevTeam',
-    #                       icon_url=self.COLLECTOR_ICON)
-    #         await self.bot.say(embed=em)
+    @commands.command(name='trials', pass_context=True, aliases=('trial',), hidden=False)
+    async def _trials(self, ctx, trial, tier='epic'):
+        '''Elemnts of the Trials
+        trials   | tier
+        Wind     | easy
+        Fire     | medium
+        Earth    | hard
+        Darkness | expert
+        Water    | epic
+        Light
+        Alchemist'''
+        trial = trial.lower()
+        tier = tier.lower()
+        tiers = ('easy', 'medium', 'hard', 'expert', 'epic')
+        sgd = StaticGameData()
+        # sgd = self.sgd
+        cdt_trials = await sgd.get_gsheets_data('elemental_trials')
+        trials = set(cdt_trials.keys()) - {'_headers'}
+        tiercolors = sgd.tiercolors
+
+        if trial not in trials:
+            em = discord.Embed(color=discord.Color.red(), title='Trials Error',
+                               description="Invalid trial '{}'".format(trial))
+            em.add_field(name='Valid Trials:', value='\n'.join(trials))
+            await self.bot.say(embed=em)
+        elif tier not in tiers:
+            em = discord.Embed(color=discord.Color.red(), title='Trials Error',
+                               description="Invalid tier '{}'".format(tier))
+            em.add_field(name='Valid Tiers:', value='\n'.join(tiers))
+            await self.bot.say(embed=em)
+        else:
+            em = discord.Embed(
+                color=tiercolors[tier],
+                title=tier.title() + " " + cdt_trials[trial]['name'],
+                description='',
+                url='https://forums.playcontestofchampions.com/en/discussion/114604/take-on-the-trials-of-the-elementals/p1'
+            )
+            em.add_field(name='Champions', value=cdt_trials[trial]['champs'])
+            em.add_field(name='Boosts', value=cdt_trials[trial][tier])
+            if trial == 'alchemist':
+                em.add_field(name=cdt_trials['alchemistrewards']['name'],
+                             value=cdt_trials['alchemistrewards'][tier])
+            else:
+                em.add_field(name=cdt_trials['rewards']['name'],
+                             value=cdt_trials['rewards'][tier])
+            em.set_footer(text='CollectorDevTeam',
+                          icon_url=self.COLLECTOR_ICON)
+            await self.bot.say(embed=em)
 
     @commands.group(name='eq', pass_context=True, aliases=('eventquest',), hidden=False)
     async def eventquest(self, ctx):
@@ -1083,7 +1446,7 @@ class MCOCTools:
             for cp in valid:
                 v = vq[cp]
                 data = discord.Embed(color=discord.Color.gold(), title=v['title'])
-                data.set_footer(text='CollectorDevTeam + ƦƆ51', icon_url=COLLECTOR_ICON)
+                data.set_footer(text='CollectorDevTeam + ƦƆ51', icon_url=self.COLLECTOR_ICON)
                 if 'imageurl' in v:
                     data.set_image(url=v['imageurl'])
                     data.url = v['imageurl']
@@ -1097,13 +1460,16 @@ class MCOCTools:
                 page_list.append(data)
             menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
             await menu.menu_start(page_list, page_number)
-            return
 
     async def format_eventquest(self, event, tier):  # , tiers=('beginner','normal','heroic','master')):
         sgd = StaticGameData()
+        # sgd = self.sgd
         cdt_eq = await sgd.get_gsheets_data(event)
+        # rows = set(cdt_eq.keys()) - {'_headers'}
+        # print(', '.join(rows))
         tiers = cdt_eq['tiers']['value'].split(", ")
         print(tiers)
+
         if tier not in tiers:
             await self.bot.say('Invalid tier selection')
             return
@@ -1111,14 +1477,15 @@ class MCOCTools:
             page_list = []
             page_number = list(tiers).index(tier)
             for row in tiers:
-                if row in CDT_COLORS:
-                    color = CDT_COLORS[row]
+                if row in sgd.tiercolors:
+                    color = sgd.tiercolors[row]
                 else:
                     color = discord.Color.gold()
                 em = discord.Embed(color=color, title=cdt_eq['event_title']['value'],
                                    url=cdt_eq['event_url']['value'])
                 em.set_author(name=cdt_eq['date']['value'])
                 em.description = '{}\n\n{}'.format(cdt_eq['story_title']['value'], cdt_eq['story_value']['value'])
+                # em.add_field(name=cdt_eq['story_title']['value'], value=cdt_eq['story_value']['value'])
                 em.add_field(name='{} Rewards'.format(row.title()), value=cdt_eq[row]['rewardsregex'])
                 if 'champions' in cdt_eq and cdt_eq['champions']['value'] != "":
                     em.add_field(name='Introducing', value=cdt_eq['champions']['value'])
@@ -1128,207 +1495,6 @@ class MCOCTools:
 
             menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
             await menu.menu_start(page_list, page_number)
-            return
-
-class GuildAlliancePopupSystem:
-    def __init__(self, bot):
-        self.bot = bot
-
-    @checks.admin_or_permissions(manage_server=True, manage_roles=True)
-    @commands.command(pass_context=True, hidden=False)
-    async def gaps(self, ctx):
-        """Guild | Alliance Popup System
-        G.A.P.S. will configure your server for basic Alliance operations.
-        Roles, Channels, Permissions, and Notification settings are set.
-        """
-        user = ctx.message.author
-        warning_msg = ('G.A.P.S. will configure your server for basic Alliance operations.\n'
-                       'Roles will be added for summoners, alliance, officers, bg1, bg2, bg3\n'
-                       'Channels will be added for announcements, alliance, & battlegroups.\n'
-                       'Channel permissions will be configured.\n'
-                       'After the G.A.P.S. prepares your server, there will be additional instructions.\n'
-                       'If you consent, press OK')
-        em = discord.Embed(color=ctx.message.author.color, title='G.A.P.S. Warning Message', description=warning_msg)
-        em.set_author(name='CollectorDevTeam Guild Alliance Popup System', url=COLLECTOR_ICON)
-        message = await self.bot.say(embed=em)
-        await self.bot.add_reaction(message, '❌')
-        await self.bot.add_reaction(message, '🆗')
-        react = await self.bot.wait_for_reaction(message=message, user=ctx.message.author, timeout=30,
-                                                 emoji=['❌', '🆗'])
-        if react is not None:
-            if react.reaction.emoji == '❌':
-                await self.bot.say('G.A.P.S. canceled.')
-                return
-            elif react.reaction.emoji == '🆗':
-                message2 = await self.bot.say('G.A.P.S. in progress.')
-        else:
-            await self.bot.say('Ambiguous response.  G.A.P.S. canceled')
-            return
-
-        server = ctx.message.server
-        adminpermissions = discord.PermissionOverwrite(administrator=True)
-        moderatorpermissions = discord.PermissionOverwrite(manage_roles=True)
-        moderatorpermissions.manage_server = True
-        moderatorpermissions.kick_members = True
-        moderatorpermissions.ban_members = True
-        moderatorpermissions.manage_channels = True
-        moderatorpermissions.manage_server = True
-        moderatorpermissions.manage_messages = True
-        moderatorpermissions.view_audit_logs = True
-        moderatorpermissions.read_messages = True
-        moderatorpermissions.create_instant_invite = True
-
-        roles = server.roles
-        rolenames = []
-        for r in roles:
-            rolenames.append('{}'.format(r.name))
-        if 'admin' not in rolenames:
-            admin = await self.bot.create_role(server=server, name='admin', color=discord.Color.gold(), hoist=False,
-                                               mentionable=False)
-        if 'officers' not in rolenames:
-            officers = await self.bot.create_role(server=server, name='officers', color=discord.Color.light_grey(),
-                                                  hoist=False, mentionable=True)
-        if 'bg1' not in rolenames:
-            bg1 = await self.bot.create_role(server=server, name='bg1', color=discord.Color.blue(), hoist=False,
-                                             mentionable=True)
-        if 'bg2' not in rolenames:
-            bg2 = await self.bot.create_role(server=server, name='bg2', color=discord.Color.purple(), hoist=False,
-                                             mentionable=True)
-        if 'bg3' not in rolenames:
-            bg3 = await self.bot.create_role(server=server, name='bg3', color=discord.Color.orange(), hoist=False,
-                                             mentionable=True)
-        if 'alliance' not in rolenames:
-            alliance = await self.bot.create_role(server=server, name='alliance', color=discord.Color.teal(),
-                                                  hoist=True, mentionable=True)
-        if 'summoners' not in rolenames:
-            summoners = await self.bot.create_role(server=server, name='summoners', color=discord.Color.lighter_grey(),
-                                                   hoist=True, mentionable=True)
-        for r in server.roles:
-            if r.name == 'officers':
-                await self.bot.add_roles(user, r)
-            elif r.name == 'alliance':
-                await self.bot.add_roles(user, r)
-        roles = sorted(server.roles, key=lambda roles: roles.position, reverse=True)
-        em = discord.Embed(color=discord.Color.red(), title='Guild Alliance Popup System', description='')
-        positions = []
-        for r in roles:
-            positions.append('{} = {}'.format(r.position, r.mention))
-            if r.name == 'officers':
-                officers = r
-            elif r.name == 'bg1':
-                bg1 = r
-            elif r.name == 'bg2':
-                bg2 = r
-            elif r.name == 'bg3':
-                bg3 = r
-            elif r.name == 'alliance':
-                alliance = r
-            elif r.name == 'summoners':
-                summoners = r
-            elif r.name == 'admin':
-                admin = r
-            elif r.name == 'everyone':
-                everyone = r
-        em.add_field(name='Stage 1 Role Creation', value='\n'.join(positions), inline=False)
-        await self.bot.say(embed=em)
-        everyone_perms = discord.PermissionOverwrite(read_messages=False)
-        everyoneperms = discord.ChannelPermissions(target=server.default_role, overwrite=everyone_perms)
-        readperm = discord.PermissionOverwrite(read_messages=True)
-        officerperms = discord.ChannelPermissions(target=officers, overwrite=readperm)
-        allianceperms = discord.ChannelPermissions(target=alliance, overwrite=readperm)
-        summonerperms = discord.ChannelPermissions(target=summoners, overwrite=readperm)
-        bg1perms = discord.ChannelPermissions(target=bg1, overwrite=readperm)
-        bg2perms = discord.ChannelPermissions(target=bg2, overwrite=readperm)
-        bg3perms = discord.ChannelPermissions(target=bg3, overwrite=readperm)
-        channellist = []
-        for c in server.channels:
-            channellist.append(c.name)
-        if 'announcements' not in channellist:
-            await self.bot.create_channel(server, 'announcements', everyoneperms, allianceperms, summonerperms)
-        # if 'alliance' not in channellist:
-        #     await self.bot.create_channel(server, 'alliance', everyoneperms, allianceperms)
-        if 'alliance-chatter' not in channellist:
-            await self.bot.create_channel(server, 'alliance-chatter', everyoneperms, allianceperms)
-        if 'officers' not in channellist:
-            await self.bot.create_channel(server, 'officers', everyoneperms, officerperms)
-        if 'bg1aq' not in channellist:
-            await self.bot.create_channel(server, 'bg1aq', everyoneperms, officerperms, bg1perms)
-        if 'bg1aw' not in channellist:
-            await self.bot.create_channel(server, 'bg1aw', everyoneperms, officerperms, bg1perms)
-        if 'bg2aq' not in channellist:
-            await self.bot.create_channel(server, 'bg2aq', everyoneperms, officerperms, bg2perms)
-        if 'bg2aw' not in channellist:
-            await self.bot.create_channel(server, 'bg2aw', everyoneperms, officerperms, bg2perms)
-        if 'bg3aq' not in channellist:
-            await self.bot.create_channel(server, 'bg3aq', everyoneperms, officerperms, bg3perms)
-        if 'bg3aw' not in channellist:
-            await self.bot.create_channel(server, 'bg3aw', everyoneperms, officerperms, bg2perms)
-        channels = sorted(server.channels, key=lambda channels: channels.position, reverse=False)
-        channelnames = []
-        for c in channels:
-            channelnames.append('{} = {} '.format(c.position, c.mention))
-        em = discord.Embed(color=discord.Color.red(), title='Guild Alliance Popup System', description='')
-        em.add_field(name='Stage 2 Create Channels', value='\n'.join(channelnames), inline=False)
-        await self.bot.say(embed=em)
-        em = discord.Embed(color=discord.Color.red(), titel='Guild Alliance Popup System', descritpion='')
-        fixNotifcations = await self.bot.say('Stage 3: Attempting to set Default Notification to Direct Message Only')
-        try:
-            # mentions only
-            await self.bot.http.request(discord.http.Route('PATCH', '/guilds/{guild_id}', guild_id=server.id),
-                                        json={'default_message_notifications': 1})
-            em.add_field(name='Stage 3: Notification Settings',
-                         value='I have modified the servers to use better notification settings.')
-            await self.bot.delete_message(fixNotifcations)
-        except Exception as e:
-            await self.bot.edit_message(fixNotifcations, "An exception occurred. check your log.")
-
-        await self.bot.say(embed=em)
-        em = discord.Embed(color=ctx.message.author.color, titel='Guild Alliance Popup System',
-                           descritpion='Server Owner Instructions')
-        em.add_field(name='Enroll for Collector announcements',
-                     value='Enroll a channel for Collector announcements\n```/addchan #announcements```\n',
-                     inline=False)
-        em.add_field(name='Set up Autorole',
-                     value='Default Role should be {}\n```/autorole role summoners```\n```/autorole toggle``` '.format(
-                         summoners.mention), inline=False)
-        await self.bot.say(embed=em)
-        await self.bot.delete_message(message2)
-        try:
-            alliance = self.bot.get_cog("Alliance")
-            await alliance._reg(self.bot, ctx)
-        except:
-            await self.bot.say("Now register your alliance:\n```/alliance register```")
-        return
-
-    @commands.command(pass_context=True, hidden=True, name='inspectroles', aliases=['inspectrole', 'ir', ])
-    async def _inspect_roles(self, ctx):
-        server = ctx.message.server
-        roles = sorted(server.roles, key=lambda roles: roles.position, reverse=True)
-        positions = []
-        for r in roles:
-            positions.append('{} = {}'.format(r.position, r.name))
-        desc = '\n'.join(positions)
-        em = discord.Embed(color=discord.Color.red(), title='Collector Inspector: ROLES', description=desc)
-        await self.bot.say(embed=em)
-
-    @checks.admin_or_permissions(manage_roles=True)
-    @commands.command(name='norole', pass_context=True, hidden=True)
-    async def _no_role(self, ctx, role: discord.Role):
-        members = ctx.message.server.members
-        missing = []
-        print(str(len(missing)))
-        for member in members:
-            if not member.bot:
-                if role not in member.roles:
-                    missing.append('{0.name} : {0.id}'.format(member))
-        print(str(len(missing)))
-        if len(missing) == 0:
-            await self.bot.say('No users are missing the role: {}'.format(role.name))
-        else:
-            pages = chat.pagify('\n'.join(missing))
-            for page in pages:
-                await self.bot.say(chat.box(page))
-
 
 
 class Calculator:
@@ -1624,4 +1790,3 @@ def setup(bot):
     bot.add_cog(MCOCTools(bot))
     bot.add_cog(CDTReport(bot))
     bot.add_cog(Calculator(bot))
-    bot.add_cog(GuildAlliancePopupSystem(bot))
