@@ -703,31 +703,31 @@ class PagesMenu:
 class MCOCTools:
     '''Tools for Marvel Contest of Champions'''
 
-    lookup_links = {
-        # 'event': (
-        #     '<http://simians.tk/MCOC-Sched>',
-        #     '[Tiny MCoC Schedule](https://docs.google.com/spreadsheets/d/e/2PACX-1vT5A1MOwm3CvOGjn7fMvYaiTKDuIdvKMnH5XHRcgzi3eqLikm9SdwfkrSuilnZ1VQt8aSfAFJzZ02zM/pubhtml?gid=390226786)',
-        #     'Josh Morris Schedule',
-        #     'https://d2jixqqjqj5d23.cloudfront.net/assets/developer/imgs/icons/google-spreadsheet-icon.png'),
-        'rttl': (
-            '<https://drive.google.com/file/d/0B4ozoShtX2kFcDV4R3lQb1hnVnc/view>',
-            '[Road to the Labyrinth Opponent List](https://drive.google.com/file/d/0B4ozoShtX2kFcDV4R3lQb1hnVnc/view)',
-            'by Regal Empire {OG Wolvz}',
-            'http://svgur.com/s/48'),
-        'hook': (
-            '<http://hook.github.io/champions>',
-            '[hook/Champions by gabriel](http://hook.github.io/champions)',
-            'hook/champions for Collector',
-            'https://assets-cdn.github.com/favicon.ico'),
-        'spotlight': (
-            '<http://simians.tk/MCoCspotlight>',
-            '[MCOC Spotlight Dataset](http://simians.tk/MCoCspotlight)\nIf you would like to donate prestige, signatures or stats, join us at \n[CollectorDevTeam](https://discord.gg/BwhgZxk)'),
-        'alsciende': (
-            '<https://alsciende.github.io/masteries/v10.0.1/#>',
-            '[Alsciende Mastery Tool](https://alsciende.github.io/masteries/v17.0.2/#)',
-            'by u/alsciende',
-            'https://images-ext-2.discordapp.net/external/ymdMNrkhO9L5tUDupbFSEmu-JK0X2bpV0ZE-VYTBICc/%3Fsize%3D1024/https/cdn.discordapp.com/avatars/268829380262756357/b55ae7fc51d9b741450f949accd15fbe.webp?width=80&height=80'),
-    }
+    # lookup_links = {
+    #     # 'event': (
+    #     #     '<http://simians.tk/MCOC-Sched>',
+    #     #     '[Tiny MCoC Schedule](https://docs.google.com/spreadsheets/d/e/2PACX-1vT5A1MOwm3CvOGjn7fMvYaiTKDuIdvKMnH5XHRcgzi3eqLikm9SdwfkrSuilnZ1VQt8aSfAFJzZ02zM/pubhtml?gid=390226786)',
+    #     #     'Josh Morris Schedule',
+    #     #     'https://d2jixqqjqj5d23.cloudfront.net/assets/developer/imgs/icons/google-spreadsheet-icon.png'),
+    #     'rttl': (
+    #         '<https://drive.google.com/file/d/0B4ozoShtX2kFcDV4R3lQb1hnVnc/view>',
+    #         '[Road to the Labyrinth Opponent List](https://drive.google.com/file/d/0B4ozoShtX2kFcDV4R3lQb1hnVnc/view)',
+    #         'by Regal Empire {OG Wolvz}',
+    #         'http://svgur.com/s/48'),
+    #     'hook': (
+    #         '<http://hook.github.io/champions>',
+    #         '[hook/Champions by gabriel](http://hook.github.io/champions)',
+    #         'hook/champions for Collector',
+    #         'https://assets-cdn.github.com/favicon.ico'),
+    #     'spotlight': (
+    #         '<http://simians.tk/MCoCspotlight>',
+    #         '[MCOC Spotlight Dataset](http://simians.tk/MCoCspotlight)\nIf you would like to donate prestige, signatures or stats, join us at \n[CollectorDevTeam](https://discord.gg/BwhgZxk)'),
+    #     'alsciende': (
+    #         '<https://alsciende.github.io/masteries/v10.0.1/#>',
+    #         '[Alsciende Mastery Tool](https://alsciende.github.io/masteries/v17.0.2/#)',
+    #         'by u/alsciende',
+    #         'https://images-ext-2.discordapp.net/external/ymdMNrkhO9L5tUDupbFSEmu-JK0X2bpV0ZE-VYTBICc/%3Fsize%3D1024/https/cdn.discordapp.com/avatars/268829380262756357/b55ae7fc51d9b741450f949accd15fbe.webp?width=80&height=80'),
+    # }
     mcolor = discord.Color.red()
     COLLECTOR_ICON = 'https://raw.githubusercontent.com/JasonJW/mcoc-cogs/master/mcoc/data/cdt_icon.png'
     icon_sdf = 'https://raw.githubusercontent.com/JasonJW/mcoc-cogs/master/mcoc/data/sdf_icon.png'
@@ -736,7 +736,6 @@ class MCOCTools:
     def __init__(self, bot):
         self.bot = bot
         self.search_parser = SearchExpr.parser()
-        self.menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
 
         # self.settings = dataIO.load_json('data/mcocTools/settings.json')
 
@@ -756,12 +755,12 @@ class MCOCTools:
             ucolor=discord.Color.gold()
         else:
             ucolor=author.color
-        data = discord.embed(color=ucolor, title='Calendar', description='temp data', url=PATREON)
+        data = discord.embed(color=ucolor, title='Calendar', description='Temp Data\nCalendar function is being rewritten.', url=PATREON)
         data.set_footer(name='Requested by {}'.format(author.display_name), icon_url=author.avatar_url)
         await self.bot.say(embed=data)
 
     @commands.command(pass_context=True, no_pm=True)
-    async def topic(self, ctx, channel: discord.channel = None):
+    async def topic(self, ctx, channel: discord.Channel = None):
         '''Play the Channel Topic in the chat channel.'''
         if channel is None:
             channel = ctx.message.channel
@@ -811,8 +810,6 @@ class MCOCTools:
                 for member in members:
                     if role in member.roles:
                         patrons.append(member.display_name)
-
-
         author_repo = "https://github.com/Twentysix26"
         red_repo = author_repo + "/Red-DiscordBot"
         server_url = "https://discord.gg/wJqpYGS"
@@ -834,21 +831,19 @@ class MCOCTools:
                     owner = None
         if not owner:
             owner = "Unknown"
-
         about = (
-            "Collector is an instance of [Red, an open source Discord bot]({0}) "
+            "Collector is an instance of [Red, an open source Discord bot]({0}) " 
             "created by [Twentysix]({1}) and improved by many.\n\n"
             "★ The Collector Dev Team is backed by a passionate community who contributes and "
             "creates content for everyone to enjoy. [Join us today]({2}) "
             "and help us improve!\n\n"
             "★ If you would like to support the Collector, please visit {3}.\n"
-            "★ Patrons and Collaborators receive priority support and secrety stuff.\n\n~ JJW\n"
+            "★ Patrons and Collaborators receive priority support and secrety stuff.\n"
             "".format(red_repo, author_repo, server_url, collectorpatreon))
         if len(devteam) == 0:
             devteam = ("DeltaSigma#8530", "JJW#8071", "JM#7725")
         if len(supportteam) == 0:
             supportteam = ('phil_wo#3733', 'SpiderSebas#9910', 'suprmatt#2753', 'taoness#5565')
-
         embed = discord.Embed(colour=discord.Colour.red(), title="Collector", url=collectorpatreon)
         embed.add_field(name="Instance owned by", value=str(owner))
         embed.add_field(name="Python", value=py_version)
