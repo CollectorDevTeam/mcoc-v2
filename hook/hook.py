@@ -383,7 +383,7 @@ class ChampionRoster:
         champs_per_page = 15
         for i in range(0, len(strs)+1, champs_per_page):
             em = discord.Embed(title=user.display_name+':sparkles:', color=discord.Color.gold(), url=PATREON)
-            em.set_thumbnail(user.avatar_url)
+            # em.set_thumbnail(user.avatar_url)
             em.set_author(name='CollectorDevTeam', icon_url=COLLECTOR_ICON)
             em.set_footer(text='hook/champions for Collector',
                     icon_url=GITHUB_ICON)
