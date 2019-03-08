@@ -9,8 +9,8 @@ import json
 from .utils.dataIO import dataIO
 from discord.ext import commands
 from __main__ import send_cmd_help
-from .mcocTools import (StaticGameData, PagesMenu, KABAM_ICON, COLLECTOR_ICON, CDTHelperFunctions)
-from .mcoc import ChampConverter, ChampConverterDebug, Champion
+from cogs.mcocTools import (StaticGameData, PagesMenu, KABAM_ICON, COLLECTOR_ICON, CDTHelperFunctions)
+from cogs.mcoc import ChampConverter, ChampConverterDebug, Champion
 from .utils import chat_formatting as chat
 
 JPAGS = 'http://www.alliancewar.com'

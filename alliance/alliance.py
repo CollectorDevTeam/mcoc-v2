@@ -12,7 +12,7 @@ from .utils.dataIO import dataIO
 from .utils import checks
 # from .utils import chat_formatting as chat
 from cogs.mcocTools import (KABAM_ICON, COLLECTOR_ICON, PagesMenu, CDT_COLORS)
-from .hook import RosterUserConverter, ChampionRoster
+from cogs.hook import RosterUserConverter, ChampionRoster
 # import cogs.mcocTools
 
 logger = logging.getLogger('red.mcoc.alliance')

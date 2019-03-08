@@ -22,7 +22,7 @@ import re
 import asyncio
 ### Monkey Patch of JSONEncoder
 from json import JSONEncoder, dump, dumps
-from .mcocTools import (StaticGameData, PagesMenu, KABAM_ICON, COLLECTOR_ICON, COLLECTOR_FEATURED, CDTHelperFunctions, GSHandler, GSExport, CDT_COLORS)
+from cogs.mcocTools import (StaticGameData, PagesMenu, KABAM_ICON, COLLECTOR_ICON, COLLECTOR_FEATURED, CDTHelperFunctions, GSHandler, GSExport, CDT_COLORS)
 
 
 logger = logging.getLogger('red.roster')
