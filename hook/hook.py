@@ -623,9 +623,10 @@ class Hook:
         track = roster.update(champs)
         tracked = ''
         for k in ('new', 'modified', 'unchanged'):
-            tracked += '\n{} Champions : {}\n'.format(k.capitalize(), len(track[k]))
+            tracked += '{} Champions : {}\n'.format(k.capitalize(), len(track[k]))
+        tracked += '\n'
         for k in ('new', 'modified', 'unchanged'):
-            tracked += '\n[{}] '.format(k.capitalize()).join(sorted(track[k]))
+            tracked += '\n'.format(k.capitalize()).join('[{}] '.format(k.capitalize())+sorted(track[k]))
         total = len(track['new'])+len(track['modified'])
         pagified = chat.pagify(text=tracked, page_length=1700)
         pages = []
@@ -634,7 +635,7 @@ class Hook:
             data = discord.Embed(title='{} Roster Updates :sparkles:'.format(total), color=discord.Color.gold(),
                                  description=page, url=PATREON)
             data.set_author(name='CollectorDevTeam Roster Update', icon_url=COLLECTOR_ICON)
-            data.set_footer(text='``/roster update``', icon_url=COLLECTOR_ICON)
+            data.set_footer(text='``/roster update <champions>``', icon_url=COLLECTOR_ICON)
             data.set_thumbnail(url=COLLECTOR_FEATURED)
             pages.append(data)
         menu = PagesMenu(self.bot, timeout=240, delete_onX=True, add_pageof=True)
