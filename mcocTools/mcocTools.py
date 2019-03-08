@@ -784,6 +784,7 @@ class MCOCTools:
         cdtpartners = []
         mappartners = []
         members = server.members
+        await self.bot.say('{} CDT members found'.format(len(members)))
         for role in server.roles:
             # devteam
             if role.id == '553394314609164308':
