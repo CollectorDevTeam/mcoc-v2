@@ -774,7 +774,7 @@ class MCOCTools:
             data.set_footer(text='CollectorDevTeam', icon_url=self.COLLECTOR_ICON)
             await self.bot.say(embed=data)
 
-    @commands.command(pass_context=True, aliases={'collector', 'infocollector', 'about'})
+    # @commands.command(pass_context=True, aliases={'collector', 'infocollector', 'about'})
     # async def aboutcollector(self, ctx):
     #     """Shows info about Collector"""
     #     server = self.bot.get_server('215271081517383682')
@@ -892,35 +892,35 @@ class MCOCTools:
     #     lookup = self.lookup_links[x]
     #     await self.bot.say(embed=self.present(lookup))
         # await self.bot.say('iOS dumblink:\n{}'.format(lookup[0]))
-
-    @commands.command(help=lookup_links['spotlight'][0], )
-    async def spotlight(self):
-        '''CollectorDevTeam Spotlight Dataset'''
-        x = 'spotlight'
-        lookup = self.lookup_links[x]
-        await self.bot.say(embed=self.present(lookup))
-        # await self.bot.say('iOS dumblink:\n{}'.format(lookup[0]))
-
-    @commands.command(help=lookup_links['rttl'][0], )
-    async def rttl(self):
-        x = 'rttl'
-        lookup = self.lookup_links[x]
-        await self.bot.say(embed=self.present(lookup))
-        # await self.bot.say('iOS dumblink:\n{}'.format(lookup[0]))
-
-    @commands.command(help=lookup_links['alsciende'][0], aliases=('mrig',), hidden=True)
-    async def alsciende(self):
-        x = 'alsciende'
-        lookup = self.lookup_links[x]
-        await self.bot.say(embed=self.present(lookup))
-        # await self.bot.say('iOS dumblink:\n{}'.format(lookup[0]))
-
-    @commands.command(help=lookup_links['hook'][0], hidden=True)
-    async def hook(self):
-        x = 'hook'
-        lookup = self.lookup_links[x]
-        await self.bot.say(embed=self.present(lookup))
-        # await self.bot.say('iOS dumblink:\n{}'.format(lookup[0]))
+    #
+    # @commands.command(help=lookup_links['spotlight'][0], )
+    # async def spotlight(self):
+    #     '''CollectorDevTeam Spotlight Dataset'''
+    #     x = 'spotlight'
+    #     lookup = self.lookup_links[x]
+    #     await self.bot.say(embed=self.present(lookup))
+    #     # await self.bot.say('iOS dumblink:\n{}'.format(lookup[0]))
+    #
+    # @commands.command(help=lookup_links['rttl'][0], )
+    # async def rttl(self):
+    #     x = 'rttl'
+    #     lookup = self.lookup_links[x]
+    #     await self.bot.say(embed=self.present(lookup))
+    #     # await self.bot.say('iOS dumblink:\n{}'.format(lookup[0]))
+    #
+    # @commands.command(help=lookup_links['alsciende'][0], aliases=('mrig',), hidden=True)
+    # async def alsciende(self):
+    #     x = 'alsciende'
+    #     lookup = self.lookup_links[x]
+    #     await self.bot.say(embed=self.present(lookup))
+    #     # await self.bot.say('iOS dumblink:\n{}'.format(lookup[0]))
+    #
+    # @commands.command(help=lookup_links['hook'][0], hidden=True)
+    # async def hook(self):
+    #     x = 'hook'
+    #     lookup = self.lookup_links[x]
+    #     await self.bot.say(embed=self.present(lookup))
+    #     # await self.bot.say('iOS dumblink:\n{}'.format(lookup[0]))
 
     @commands.command(hidden=True, pass_context=True, name='parse_search', aliases=('ps', 'dm'))
     async def kabam_search2(self, ctx, *, phrase: str):
