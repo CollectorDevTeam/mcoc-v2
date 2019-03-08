@@ -739,14 +739,14 @@ class MCOCTools:
 
         # self.settings = dataIO.load_json('data/mcocTools/settings.json')
 
-    def present(self, lookup):
-        em = discord.Embed(color=self.mcolor, title='', description=lookup[1])
-        print(len(lookup))
-        if len(lookup) > 2:
-            em.set_footer(text=lookup[2], icon_url=lookup[3])
-        else:
-            em.set_footer(text='CollectorDevTeam', icon_url=self.COLLECTOR_ICON)
-        return em
+    # def present(self, lookup):
+    #     em = discord.Embed(color=self.mcolor, title='', description=lookup[1])
+    #     print(len(lookup))
+    #     if len(lookup) > 2:
+    #         em.set_footer(text=lookup[2], icon_url=lookup[3])
+    #     else:
+    #         em.set_footer(text='CollectorDevTeam', icon_url=self.COLLECTOR_ICON)
+    #     return em
 
     @commands.command(pass_context=True, aliases=('calendar','cal','events'))
     async def calendar(self, ctx):
