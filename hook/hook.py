@@ -382,8 +382,9 @@ class ChampionRoster:
                     key=attrgetter('prestige', 'chlgr_rating', 'star', 'klass', 'full_name'))]
         champs_per_page = 15
         for i in range(0, len(strs)+1, champs_per_page):
-            em = discord.Embed(title='', color=discord.Color.gold())
-            em.set_author(name=user.name, icon_url=user.avatar_url)
+            em = discord.Embed(title=user.display_name+':sparkles:', color=discord.Color.gold(), url=PATREON)
+            em.set_thumbnail(user.avatar_url)
+            em.set_author(name='CollectorDevTeam', icon_url=COLLECTOR_ICON)
             em.set_footer(text='hook/champions for Collector',
                     icon_url=GITHUB_ICON)
             page = strs[i:min(i+champs_per_page, len(strs))]
