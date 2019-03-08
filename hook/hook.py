@@ -621,33 +621,24 @@ class Hook:
 
     async def _update(self, roster, champs):
         track = roster.update(champs)
-        if len(champs) <= 20:
-            em = discord.Embed(title='Champion Update for {}'.format(roster.user.name),
-                               color=discord.Color.gold())
-            for k in ('new', 'modified', 'unchanged'):
-                if track[k]:
-                    em.add_field(name='{} Champions'.format(k.capitalize()),
-                                 value='\n'.join(sorted(track[k])), inline=False)
-                    await self.bot.say(embed=em)
-        else:
-            tracked = ''
-            for k in ('new', 'modified', 'unchanged'):
-                tracked += k.capitalize() + ' Champions : {}\n'.format(len(track[k]))
-                tracked += '\n'.join(sorted(track[k]))
-                tracked += '\n'
-            total = len(track['new'])+len(track['modified'])
-            pagified = chat.pagify(text=tracked, page_length=1700)
-            pages = []
+        tracked = ''
+        for k in ('new', 'modified', 'unchanged'):
+            tracked += k.capitalize() + ' Champions : {}\n'.format(len(track[k]))
+            tracked += '\n'.join(sorted(track[k]))
+            tracked += '\n'
+        total = len(track['new'])+len(track['modified'])
+        pagified = chat.pagify(text=tracked, page_length=1700)
+        pages = []
 
-            for page in pagified:
-                data = discord.Embed(title='{} Roster Updates :sparkles:'.format(total), color=discord.Color.gold(),
-                                     description=page, url=PATREON)
-                data.set_author(name='CollectorDevTeam Roster Update', icon_url=COLLECTOR_ICON)
-                data.set_footer(text='``/roster update``', icon_url=COLLECTOR_ICON)
-                data.set_thumbnail(url=COLLECTOR_FEATURED)
-                pages.append(data)
-            menu = PagesMenu(self.bot, timeout=240, delete_onX=True, add_pageof=True)
-            await menu.menu_start(pages=pages)
+        for page in pagified:
+            data = discord.Embed(title='{} Roster Updates :sparkles:'.format(total), color=discord.Color.gold(),
+                                 description=page, url=PATREON)
+            data.set_author(name='CollectorDevTeam Roster Update', icon_url=COLLECTOR_ICON)
+            data.set_footer(text='``/roster update``', icon_url=COLLECTOR_ICON)
+            data.set_thumbnail(url=COLLECTOR_FEATURED)
+            pages.append(data)
+        menu = PagesMenu(self.bot, timeout=240, delete_onX=True, add_pageof=True)
+        await menu.menu_start(pages=pages)
 
     @roster.command(pass_context=True, name='dupe')
     async def _roster_dupe(self, ctx, *, champs: ChampConverterMult):
