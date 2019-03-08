@@ -1223,8 +1223,8 @@ class MCOCEvents:
             page_list = []
             page_number = list(tiers).index(tier)
             for row in tiers:
-                if row in sgd.CDT_COLORS:
-                    color = sgd.CDT_COLORS[row]
+                if row in CDT_COLORS:
+                    color = CDT_COLORS[row]
                 else:
                     color = discord.Color.gold()
                 em = discord.Embed(color=color, title=cdt_eq['event_title']['value'].title(),
@@ -1239,7 +1239,7 @@ class MCOCEvents:
                 if 'champions' in cdt_eq and cdt_eq['champions']['value'] != "":
                     em.add_field(name='Introducing', value=cdt_eq['champions']['value'])
                 em.set_image(url=cdt_eq['story_image']['value'])
-                em.set_footer(text='CollectorDevTeam', icon_url=self.COLLECTOR_ICON)
+                em.set_footer(text='CollectorDevTeam', icon_url=COLLECTOR_ICON)
                 page_list.append(em)
 
             menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
