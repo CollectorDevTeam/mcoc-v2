@@ -730,8 +730,8 @@ class MCOCTools:
     # }
     mcolor = discord.Color.red()
     COLLECTOR_ICON = 'https://raw.githubusercontent.com/JasonJW/mcoc-cogs/master/mcoc/data/cdt_icon.png'
-    icon_sdf = 'https://raw.githubusercontent.com/JasonJW/mcoc-cogs/master/mcoc/data/sdf_icon.png'
-    dataset = 'data/mcoc/masteries.csv'
+    # icon_sdf = 'https://raw.githubusercontent.com/JasonJW/mcoc-cogs/master/mcoc/data/sdf_icon.png'
+    # dataset = 'data/mcoc/masteries.csv'
 
     def __init__(self, bot):
         self.bot = bot
@@ -865,6 +865,7 @@ class MCOCTools:
         embed.set_footer(text="Bringing joy since 02 Jan 2016 (over "
                               "{} days ago!)".format(days_since))
         await self.bot.say(embed=embed)
+        return
         # try:
         #     await self.bot.say(embed=embed)
         # except discord.HTTPException:
