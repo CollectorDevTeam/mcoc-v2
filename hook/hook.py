@@ -624,9 +624,9 @@ class Hook:
         tracked = ''
         for k in ('new', 'modified', 'unchanged'):
             tracked += '{} Champions : {}\n'.format(k.capitalize(), len(track[k]))
-        tracked += '\n'
         for k in ('new', 'modified', 'unchanged'):
-            tracked += '\n'.join('[{}] '.format(k.capitalize())+sorted(track[k]))
+            tracked += '\n{} Champions\n'.format(k.capitalize())
+            tracked += '\n'.join(sorted(track[k]))
         total = len(track['new'])+len(track['modified'])
         pagified = chat.pagify(text=tracked, page_length=1700)
         pages = []
