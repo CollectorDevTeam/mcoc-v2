@@ -754,11 +754,11 @@ class MCOCTools:
         return em
 
     @commands.command(pass_context=True, aliases=('calendar','cal','events'))
-    async def calendar(self, ctx):
+    async def mcoc_schedule(self, ctx):
         author = ctx.message.author
 
     @commands.command(pass_context=True, no_pm=True)
-    async def topic(self, ctx, channel: discord.channel = None):
+    async def topic(self, ctx, channel: discord.Channel = None):
         """Play the Channel Topic in the chat channel."""
         if channel is None:
             channel = ctx.message.channel
