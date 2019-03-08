@@ -1131,7 +1131,7 @@ class MCOCEvents:
     async def eq_recon(self, tier='part1'):
         """Nick Fury's Recon Initiatives"""
         event = 'eq_recon'
-        await self.format_eventquest(event, tier.lower())
+        await self.format_eventquest(event, tier.lower(), rewards=False)
 
     @eventquest.command(name='22', aliases=('secretinvasion','captainmarvel','nickfury','cm','nf',))
     async def eq_22(self, tier='Uncollected'):
