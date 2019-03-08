@@ -753,6 +753,8 @@ class MCOCTools:
 
     # @commands.command(pass_context=True, aliases=('calendar','cal','events'))
     # async def mcoc_schedule(self, ctx):
+    #     calurl = 'http://gsx2json.com/api?id=1a-gA4FCaChByM1oMoRn8mI3wx8BsHAJGlU0kbY9gQLE&sheet=5&rows=true'
+
     #     author = ctx.message.author
 
     @commands.command(pass_context=True, no_pm=True)

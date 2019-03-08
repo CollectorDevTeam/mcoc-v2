@@ -25,7 +25,7 @@ from __main__ import send_cmd_help
 from cogs.utils import checks
 
 ## experimental jjw
-import matplotlib.pyplot as plt
+# import matplotlib.pyplot as plt
 
 logger = logging.getLogger('red.mcoc')
 logger.setLevel(logging.INFO)
