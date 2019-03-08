@@ -1031,8 +1031,8 @@ class MCOCTools:
     #     return text
 
     @checks.admin_or_permissions(manage_server=True, manage_roles=True)
-    @commands.command(name='gaps', pass_context=True, hidden=False)
-    async def _alliance_popup(self, ctx):
+    @commands.command(pass_context=True, hidden=False)
+    async def gaps(self, ctx):
         """Guild | Alliance Popup System
         G.A.P.S. will configure your server for basic Alliance operations.
         Roles, Channels, Permissions, and Notification settings are set.
@@ -1198,8 +1198,7 @@ class MCOCTools:
         await self.bot.delete_message(message2)
         try:
             alliance = self.bot.get_cog("Alliance")
-            if alliance is not None:
-                await alliance._reg(self.bot, ctx)
+            await alliance._reg(self.bot, ctx)
         except:
             await self.bot.say("Now register your alliance:\n```/alliance register```")
     # @checks.is_owner()
