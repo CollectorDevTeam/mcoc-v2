@@ -652,16 +652,15 @@ class PagesMenu:
                                                  timeout=self.timeout, emoji=self.included_emojis)
         if react is None:
             try:
-                try:
-                    await self.bot.clear_reactions(message)
-                except discord.Forbidden:
-                    logger.warn("clear_reactions didn't work")
-                    for emoji in self.included_emojis:
-                        await self.bot.remove_reaction(message, emoji, self.bot.user)
-                return None
-            except:
-                raise
-                return
+                await self.bot.clear_reactions(message)
+            except discord.errors.NotFound:
+                logger.warn("Message has been deleted")
+                print('Message deleted')
+            except discord.Forbidden:
+                logger.warn("clear_reactions didn't work")
+                for emoji in self.included_emojis:
+                    await self.bot.remove_reaction(message, emoji, self.bot.user)
+            return None
 
         emoji = react.reaction.emoji
         pages_to_inc = self.all_emojis[emoji].page_inc if emoji in self.all_emojis else None
