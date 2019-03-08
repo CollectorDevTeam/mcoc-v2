@@ -635,15 +635,17 @@ class Hook:
                 tracked += k.capitalize() + ' Champions : {}\n'.format(len(track[k]))
                 tracked += '\n'.join(sorted(track[k]))
                 tracked += '\n'
+            total = len(track['new'])+len(track['modified'])
             pagified = chat.pagify(text=tracked, page_length=1700)
             pages = []
+
             for page in pagified:
-                data = discord.Embed(title='Roster Update :sparkles:', color=discord.Color.gold(), description=page, url=PATREON)
-                data.set_author(name='CollectorDevTeam Roster Update', url=COLLECTOR_ICON)
+                data = discord.Embed(title='{} Roster Updates :sparkles:'.format(total), color=discord.Color.gold(),
+                                     description=page, url=PATREON)
+                data.set_author(name='CollectorDevTeam Roster Update', icon_url=COLLECTOR_ICON)
                 data.set_footer(text='``/roster update``', icon_url=COLLECTOR_ICON)
                 data.set_thumbnail(url=COLLECTOR_FEATURED)
                 pages.append(data)
-            # em.add_field(name='{} Champions updated, confirmed.'.format(len(champs)), value='Number exceeds display limitation')
             menu = PagesMenu(self.bot, timeout=240, delete_onX=True, add_pageof=True)
             await menu.menu_start(pages=pages)
 
