@@ -389,7 +389,7 @@ class ChampionFactory():
         kwargs['full_name'] = kwargs['champ']
         kwargs['bold_name'] = chat.bold(' '.join(
                 [word.capitalize() for word in kwargs['full_name'].split(' ')]))
-        kwargs['class_color'] = class_color_codes[kwargs['klass']]
+        kwargs['class_color'] = CDT_COLORS[kwargs['klass']]
         kwargs['class_icon'] = class_emoji[kwargs['klass']]
 
         kwargs['class_tags'] = {'#' + kwargs['klass'].lower()}
@@ -2883,7 +2883,7 @@ async def raw_modok_says(bot, channel, word=None):
     if not word or word not in MODOKSAYS:
         word = random.choice(MODOKSAYS)
     modokimage='{}images/modok/{}.png'.format(remote_data_basepath, word)
-    em = discord.Embed(color=class_color_codes['Science'],
+    em = discord.Embed(color=CDT_COLORS['Science'],
             title='M.O.D.O.K. says', description='')
     em.set_image(url=modokimage)
     await bot.send_message(channel, embed=em)
@@ -2907,7 +2907,7 @@ def override_error_handler(bot):
 from . import hook as hook
 import cogs.mcocTools
 from .mcocTools import (KABAM_ICON, COLLECTOR_ICON, PagesMenu,
-    GSHandler, gapi_service_creds, GSExport, StaticGameData)
+    GSHandler, gapi_service_creds, GSExport, StaticGameData, CDT_COLORS)
 
 def setup(bot):
     override_error_handler(bot)

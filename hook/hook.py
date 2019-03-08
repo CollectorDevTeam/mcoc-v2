@@ -1,6 +1,6 @@
 import discord
 from discord.ext import commands
-from .mcoc import (class_color_codes, ChampConverter, ChampConverterMult,
+from .mcoc import (ChampConverter, ChampConverterMult,
                   QuietUserError, override_error_handler)
 from .utils.dataIO import dataIO
 from .utils.dataIO import fileIO
@@ -22,7 +22,7 @@ import re
 import asyncio
 ### Monkey Patch of JSONEncoder
 from json import JSONEncoder, dump, dumps
-from .mcocTools import (StaticGameData, PagesMenu, KABAM_ICON, COLLECTOR_ICON, COLLECTOR_FEATURED, CDTHelperFunctions, GSHandler, GSExport, star_color_codes)
+from .mcocTools import (StaticGameData, PagesMenu, KABAM_ICON, COLLECTOR_ICON, COLLECTOR_FEATURED, CDTHelperFunctions, GSHandler, GSExport, CDT_COLORS)
 
 
 logger = logging.getLogger('red.roster')
@@ -593,7 +593,7 @@ class Hook:
                            .format(collected, stats['top'][star]['sum']))
         pages.append(data)
         for star in (6, 5, 4, 3, 2, 1):
-            data = discord.Embed(color=star_color_codes[star], title='CollectorVerse {}★ Roster Stats'.format(star), url=PATREON)
+            data = discord.Embed(color=CDT_COLORS[star], title='CollectorVerse {}★ Roster Stats'.format(star), url=PATREON)
             data.set_author(name='CollectorDevTeam', icon_url=COLLECTOR_ICON)
             data.set_thumbnail(url=user.avatar_url)
             data.set_footer(text='{} Roster Stats'.format(user.display_name))

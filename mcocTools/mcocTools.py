@@ -37,8 +37,14 @@ GSX2JSON = 'http://gsx2json.com/api?id={}&sheet={}&columns=false&integers=false'
 
 gapi_service_creds = "data/mcoc/mcoc_service_creds.json"
 
-star_color_codes = {1: discord.Color(0x3c4d3b), 2: discord.Color(0xa05e44), 3: discord.Color(0xa0aeba),
-                    4: discord.Color(0xe1b963), 5: discord.Color(0xf55738), 6: discord.Color(0x07c6ed)}
+CDT_COLORS = {1: discord.Color(0x3c4d3b), 2: discord.Color(0xa05e44), 3: discord.Color(0xa0aeba),
+              4: discord.Color(0xe1b963), 5: discord.Color(0xf55738), 6: discord.Color(0x07c6ed),
+              'Cosmic': discord.Color(0x2799f7), 'Tech': discord.Color(0x0033ff),
+              'Mutant': discord.Color(0xffd400), 'Skill': discord.Color(0xdb1200),
+              'Science': discord.Color(0x0b8c13), 'Mystic': discord.Color(0x7f0da8),
+              'All': discord.Color(0x03f193), 'Superior': discord.Color(0x03f193),
+              'default': discord.Color.gold(),
+              }
 
 
 # class_color_codes = {
@@ -667,7 +673,7 @@ class PagesMenu:
                 await self.bot.say("Bot does not have the proper Permissions")
 
     async def confirm(self, ctx, question: str):
-        '''Returns Boolean'''
+        """Returns Boolean"""
         if ctx.message.channel.is_private:
             ucolor = discord.Color.gold()
         else:
@@ -699,7 +705,7 @@ class PagesMenu:
 
 
 class MCOCTools:
-    '''Tools for Marvel Contest of Champions'''
+    """Tools for Marvel Contest of Champions"""
 
     lookup_links = {
         'event': (
@@ -753,7 +759,7 @@ class MCOCTools:
 
     @commands.command(pass_context=True, no_pm=True)
     async def topic(self, ctx, channel: discord.channel = None):
-        '''Play the Channel Topic in the chat channel.'''
+        """Play the Channel Topic in the chat channel."""
         if channel is None:
             channel = ctx.message.channel
         topic = channel.topic
@@ -848,7 +854,7 @@ class MCOCTools:
 
     @commands.command(help=lookup_links['spotlight'][0], )
     async def spotlight(self):
-        '''CollectorDevTeam Spotlight Dataset'''
+        """CollectorDevTeam Spotlight Dataset"""
         x = 'spotlight'
         lookup = self.lookup_links[x]
         await self.bot.say(embed=self.present(lookup))
@@ -877,7 +883,7 @@ class MCOCTools:
 
     @commands.command(hidden=True, pass_context=True, name='parse_search', aliases=('ps', 'dm'))
     async def kabam_search2(self, ctx, *, phrase: str):
-        '''Enter a search term or a JSON key'''
+        """Enter a search term or a JSON key"""
         kdata = StaticGameData()
         cdt_data, cdt_versions = kdata.cdt_data, kdata.cdt_versions
         result = self.search_parser.parse_string(phrase)
@@ -906,7 +912,7 @@ class MCOCTools:
 
     # @commands.command(hidden=True, pass_context=True, name='datamine', aliases=('dm', 'search'))
     # async def kabam_search(self, ctx, *, term: str):
-    #     '''Enter a search term or a JSON key'''
+    #     """Enter a search term or a JSON key"""
     #     kdata = StaticGameData()
     #     cdt_data, cdt_versions = kdata.cdt_data, kdata.cdt_versions
     #     ksearchlist = []
@@ -962,8 +968,8 @@ class MCOCTools:
 
     # @commands.command()
     # async def keygen(self, prefix='SDCC17'):
-    #     '''SDCC Code Generator
-    #     No warranty :)'''
+    #     """SDCC Code Generator
+    #     No warranty :)"""
     #     letters='ABCDEFGHIJKLMNOPQURSTUVWXYZ'
     #     numbers='0123456789'
     #     package = []
@@ -979,10 +985,352 @@ class MCOCTools:
     #         text.append(row['Text'].format(row[str(rank)]))
     #     return text
 
+    async def cache_sgd_gsheets(self):
+        sgd = StaticGameData()
+        await sgd.cache_gsheets()
+
+    @commands.command(hidden=True)
+    async def aux_sheets(self):
+        await self.cache_sgd_gsheets()
+
+    @commands.command(name='trials', pass_context=True, aliases=('trial',), hidden=False)
+    async def _trials(self, ctx, trial, tier='epic'):
+        """Elemnts of the Trials
+        trials   | tier
+        Wind     | easy
+        Fire     | medium
+        Earth    | hard
+        Darkness | expert
+        Water    | epic
+        Light
+        Alchemist"""
+        trial = trial.lower()
+        tier = tier.lower()
+        tiers = ('easy', 'medium', 'hard', 'expert', 'epic')
+        sgd = StaticGameData()
+        # sgd = self.sgd
+        cdt_trials = await sgd.get_gsheets_data('elemental_trials')
+        trials = set(cdt_trials.keys()) - {'_headers'}
+        tiercolors = sgd.tiercolors
+
+        if trial not in trials:
+            em = discord.Embed(color=discord.Color.red(), title='Trials Error',
+                               description="Invalid trial '{}'".format(trial))
+            em.add_field(name='Valid Trials:', value='\n'.join(trials))
+            await self.bot.say(embed=em)
+        elif tier not in tiers:
+            em = discord.Embed(color=discord.Color.red(), title='Trials Error',
+                               description="Invalid tier '{}'".format(tier))
+            em.add_field(name='Valid Tiers:', value='\n'.join(tiers))
+            await self.bot.say(embed=em)
+        else:
+            em = discord.Embed(
+                color=tiercolors[tier],
+                title=tier.title() + " " + cdt_trials[trial]['name'],
+                description='',
+                url='https://forums.playcontestofchampions.com/en/discussion/114604/take-on-the-trials-of-the-elementals/p1'
+            )
+            em.add_field(name='Champions', value=cdt_trials[trial]['champs'])
+            em.add_field(name='Boosts', value=cdt_trials[trial][tier])
+            if trial == 'alchemist':
+                em.add_field(name=cdt_trials['alchemistrewards']['name'],
+                             value=cdt_trials['alchemistrewards'][tier])
+            else:
+                em.add_field(name=cdt_trials['rewards']['name'],
+                             value=cdt_trials['rewards'][tier])
+            em.set_footer(text='CollectorDevTeam',
+                          icon_url=self.COLLECTOR_ICON)
+            await self.bot.say(embed=em)
+
+    @commands.group(name='eq', pass_context=True, aliases=('eventquest',), hidden=False)
+    async def eventquest(self, ctx):
+        if ctx.invoked_subcommand is None:
+            await send_cmd_help(ctx)
+
+    # @eventquest.command(name='', aliases=(,))
+    # async def eq_(self, tier='Master'):
+    #     """TITLE"""
+    #     event = 'eq_'
+    #     await self.format_eventquest(event, tier.lower())
+
+    @eventquest.command(name='13', aliases=('guardians', 'yondu', 'nebula', 'guardiansvolzero',))
+    async def eq_guardiansvolzero(self, tier='Master'):
+        """GUARDIANS OF THE GALAX VOL ZERO"""
+        event = 'eq_13'
+        await self.format_eventquest(event, tier.lower())
+
+    @eventquest.command(name='13.1', aliases=('secretempireforever', 'punisher2099', 'carnage', 'p99',))
+    async def eq_secretempireforever(self, tier='Master'):
+        """SECRET EMPIRE FOREVER"""
+        event = 'eq_13.1'
+        await self.format_eventquest(event, tier.lower())
+
+    @eventquest.command(name='14.1', aliases=('sinisterfoes', 'sinisterfoesofspiderman', 'vulture', 'sparky', 'smse',))
+    async def eq_sinisterfoes(self, tier='Master'):
+        """Sinister Foes of Spider-Man"""
+        event = 'eq_14.1'
+        await self.format_eventquest(event, tier.lower())
+
+    @eventquest.command(name='15', aliases=('haveyouseenthisdog', 'kingping', 'medusa', 'kp',))
+    async def eq_haveyouseenthisdog(self, tier='Master'):
+        """Have You Seen This Dog?"""
+        event = 'eq_15'
+        await self.format_eventquest(event, tier.lower())
+
+    @eventquest.command(name='15.1', aliases=('blades', 'blade', 'mephisto', 'morningstar',))
+    async def eq_blades(self, tier='Master'):
+        """Blades"""
+        event = 'eq_15.1'
+        await self.format_eventquest(event, tier.lower())
+
+    @eventquest.command(name='16', aliases=('thorragnarok', 'hela', 'tr', 'godsofthearena', 'godsofarena',))
+    async def eq_godsofthearena(self, tier='Master'):
+        """Gods of the Arena"""
+        event = 'eq_16'
+        await self.format_eventquest(event, tier.lower())
+
+    @eventquest.command(name='16.1', aliases=('hotelmodok', 'modok', 'taskmaster', 'tm',))
+    async def eq_hotelmodok(self, tier='Uncollected'):
+        """HOTEL M.O.D.O.K."""
+        event = 'eq_16.1'
+        await self.format_eventquest(event, tier.lower())
+
+    @eventquest.command(name='17', aliases=('riseoftheblackpanther', 'hulkragnarok', 'killmonger', 'hr', 'km',))
+    async def eq_riseoftheblackpanther(self, tier='Uncollected'):
+        """Rise of the Black Panther"""
+        event = 'eq_17'
+        await self.format_eventquest(event, tier.lower())
+
+    @eventquest.command(name='17.1', aliases=('bishop', 'sabretooth', 'sentinel', 'savage', 'savagefuture',))
+    async def eq_savagefuture(self, tier='Uncollected'):
+        """X-Men: Savage Future"""
+        event = 'eq_17.1'
+        await self.format_eventquest(event, tier.lower())
+
+    @eventquest.command(name='17.2', aliases=(
+            'chaos', 'infinitychaos', 'corvus', 'proximamidnight', 'pm', 'corvusglaive', 'cg', 'proxima',))
+    async def eq_infinitychaos(self, tier='Uncollected'):
+        """Infinity Chaos"""
+        event = 'eq_17.2'
+        await self.format_eventquest(event, tier.lower())
+
+    @eventquest.command(name='18', aliases=('infinity', 'capiw', 'imiw', 'infinitywar', 'iw',))
+    async def eq_infinitynightmare(self, tier='Uncollected'):
+        """Infinity Nightmare"""
+        event = 'eq_18'
+        await self.format_eventquest(event, tier.lower())
+
+    @eventquest.command(name='18.1',
+                        aliases=('mercs', 'masacre', 'domino', 'goldpool', 'mercsformoney',))
+    async def eq_mercsforthemoney(self, tier='Uncollected'):
+        """Masacre and the Mercs for Money"""
+        event = 'eq_18.1'
+        await self.format_eventquest(event, tier.lower())
+
+    @eventquest.command(name='19.1', aliases=('cabal', 'enterthecabal', 'korg', 'redskull', 'heimdall',))
+    async def eq_enterthecabal(self, tier='Uncollected'):
+        """Enter The Cabal"""
+        event = 'eq_19.1'
+        await self.format_eventquest(event, tier.lower())
+
+    @eventquest.command(name='20', aliases=('omega', 'classomega', 'omegared', 'emma', 'emmafrost',))
+    async def eq_classomega(self, tier='Uncollected'):
+        """X-Men: Class Omega"""
+        event = 'eq_20'
+        await self.format_eventquest(event, tier)
+
+    @eventquest.command(name='20.1',
+                        aliases=('symbiotes', 'symbiomancer', 'venomtheduck', 'symbiotesupreme'))
+    async def eq_symbiomancer(self, tier='Epic'):
+        """Blood & Venom: Symbiomanncer"""
+        event = 'eq_20.1'
+        await self.format_eventquest(event, tier.lower())
+
+    @eventquest.command(name='21',
+                        aliases=('brawlinthebattlerealm', 'aegon', 'thechampion', 'brawl',))
+    async def eq_brawl(self, tier='Uncollected'):
+        """Brawl in the Battlerealm"""
+        event = 'eq_21'
+        await self.format_eventquest(event, tier.lower())
+
+    @eventquest.command(name='21.1', aliases=('nightriders', 'nightthrasher', 'darkhawk',))
+    async def eq_nightriders(self, tier='Uncollected'):
+        """Night Riders"""
+        event = 'eq_21.1'
+        await self.format_eventquest(event, tier.lower())
+
+    @eventquest.command(name='21.2', aliases=('monster', 'thismanthismonster', 'thing', 'diablo',))
+    async def eq_monster(self, tier='Uncollected'):
+        """This Man... This Monster"""
+        event = 'eq_21.2'
+        await self.format_eventquest(event, tier.lower())
+
+    @eventquest.command(name='21.3', aliases=('xenoclast', 'mrsinister', 'sinister', 'havok',))
+    async def eq_xenoclast(self, tier='Uncollected'):
+        """X-Men Xenoclast"""
+        event = 'eq_21.3'
+        await self.format_eventquest(event, tier.lower())
+
+    @eventquest.command(name='love3', aliases=('loveisabattlefield3',))
+    async def eq_love3(self, tier='Epic'):
+        """Love is a Battlefield 3"""
+        event = 'eq_love3'
+        await self.format_eventquest(event, tier.lower())
+
+    @eventquest.command(name='cmcc', aliases=('cmclash', 'captainmarvelclash',))
+    async def eq_cmcc(self, tier='Act'):
+        """Captain Marvel\'s Combat Clash"""
+        event = 'eq_cmcc'
+        await self.format_eventquest(event, tier.lower())
+
+    @eventquest.command(name='recon', aliases=('nickfuryrecon',))
+    async def eq_recon(self, tier='part1'):
+        """Nick Fury's Recon Initiatives"""
+        event = 'eq_recon'
+        await self.format_eventquest(event, tier.lower())
+
+    @eventquest.command(name='22', aliases=('secretinvasion','captainmarvel','nickfury','cm','nf',))
+    async def eq_22(self, tier='Uncollected'):
+        """Battlerealm: Under Siege"""
+        event = 'eq_22'
+        await self.format_eventquest(event, tier.lower())
+
+    # @eventquest.command(name='', aliases=(,))
+    # async def eq_(self, tier='Uncollected'):
+    #     """TITLE"""
+    #     event = 'eq_'
+    #     await self.format_eventquest(event, tier.lower())
+
+    @commands.command(name='variant', hidden=False)
+    async def eq_variant(self, chapter: str):
+        """Variant Quest
+        1.1 : Dark Portents
+        1.2 : A Villain Revealed
+        1.3 : The Collector's Task
+        2.1 : Ultron Strikes
+        2.2 : Drone Duel
+        2.3 : The Avengers
+        3.1 : The Campaign
+        3.2 : Heroes Arise
+        3.3 : Avengers Assemble
+        """
+
+        sgd = StaticGameData()
+        vq = await sgd.get_gsheets_data('variant')
+        chapters = ('1.1', '1.2', '1.3', '2.1', '2.2', '2.3', '3.1', '3.2', '3.3')
+        valid = ['1.1A', '1.1B', '1.1C', '1.1D', '1.1E', '1.1F', '1.1Boss', '1.2A', '1.2B', '1.2C', '1.2D', '1.2E',
+                 '1.2Boss', '1.3A', '1.3B', '1.3C', '1.3D', '1.3E', '1.3Boss', '2.1A', '2.1B', '2.1C', '2.1D', '2.1E',
+                 '2.1F', '2.1Boss', '2.2A', '2.2B', '2.2C', '2.2D', '2.2Boss', '2.3A', '2.3B', '2.3C', '2.3D', '2.3E',
+                 '2.3F', '2.3Boss', '3.1A', '3.1B', '3.1C', '3.1D', '3.1E', '3.1F', '3.1Boss', '3.2A', '3.2B', '3.2C',
+                 '3.2D', '3.2E', '3.2F', '3.2Boss', '3.3A', '3.3B', '3.3C', '3.3D', '3.3E', '3.3F', '3.3Boss']
+        if chapter not in chapters and chapter not in valid:
+            return
+        elif chapter in valid:
+            v = vq[chapter]
+            data = discord.Embed(color=discord.Color.gold(), title=v['title'])
+            data.set_footer(text='CollectorDevTeam + ƦƆ51', icon_url=self.COLLECTOR_ICON)
+            if 'imageurl' in v:
+                data.set_image(url=v['imageurl'])
+                data.url = v['imageurl']
+            if 'comments' in v:
+                data.description = 'ƦƆ51 Coments:\n{}'.format(v['comments'])
+            data.add_field(name='Fights', value=v['fights'])
+            data.add_field(name='Boosts', value=v['boosts'])
+            data.add_field(name='MVPs', value=v['mvps'])
+            data.add_field(name='Alternatives', value=v['options'])
+            data.add_field(name=v['af1_name'], value=v['af1_value'])
+
+            await self.bot.say(embed=data)
+            return
+        else:
+            page_number = valid.index(chapter + 'A')
+            page_list = []
+            for cp in valid:
+                v = vq[cp]
+                data = discord.Embed(color=discord.Color.gold(), title=v['title'])
+                data.set_footer(text='CollectorDevTeam + ƦƆ51', icon_url=self.COLLECTOR_ICON)
+                if 'imageurl' in v:
+                    data.set_image(url=v['imageurl'])
+                    data.url = v['imageurl']
+                if 'comments' in v:
+                    data.description = 'ƦƆ51 Coments:\n{}'.format(v['comments'])
+                data.add_field(name='Fights', value=v['fights'])
+                data.add_field(name='Boosts', value=v['boosts'])
+                data.add_field(name='MVPs', value=v['mvps'])
+                data.add_field(name='Alternatives', value=v['options'])
+                data.add_field(name=v['af1_name'], value=v['af1_value'])
+                page_list.append(data)
+            menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
+            await menu.menu_start(page_list, page_number)
+
+    async def format_eventquest(self, event, tier):  # , tiers=('beginner','normal','heroic','master')):
+        sgd = StaticGameData()
+        # sgd = self.sgd
+        cdt_eq = await sgd.get_gsheets_data(event)
+        # rows = set(cdt_eq.keys()) - {'_headers'}
+        # print(', '.join(rows))
+        tiers = cdt_eq['tiers']['value'].split(", ")
+        print(tiers)
+
+        if tier not in tiers:
+            await self.bot.say('Invalid tier selection')
+            return
+        else:
+            page_list = []
+            page_number = list(tiers).index(tier)
+            for row in tiers:
+                if row in sgd.tiercolors:
+                    color = sgd.tiercolors[row]
+                else:
+                    color = discord.Color.gold()
+                em = discord.Embed(color=color, title=cdt_eq['event_title']['value'],
+                                   url=cdt_eq['event_url']['value'])
+                em.set_author(name=cdt_eq['date']['value'])
+                em.description = '{}\n\n{}'.format(cdt_eq['story_title']['value'], cdt_eq['story_value']['value'])
+                # em.add_field(name=cdt_eq['story_title']['value'], value=cdt_eq['story_value']['value'])
+                em.add_field(name='{} Rewards'.format(row.title()), value=cdt_eq[row]['rewardsregex'])
+                if 'champions' in cdt_eq and cdt_eq['champions']['value'] != "":
+                    em.add_field(name='Introducing', value=cdt_eq['champions']['value'])
+                em.set_image(url=cdt_eq['story_image']['value'])
+                em.set_footer(text='CollectorDevTeam', icon_url=self.COLLECTOR_ICON)
+                page_list.append(em)
+
+            menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
+            await menu.menu_start(page_list, page_number)
+
+
+class Calculator:
+    def __init__(self, bot):
+        self.bot = bot
+
+    @commands.command(pass_context=True, name='calculator', aliases=('calc',))
+    async def _calc(self, context, *, m):
+        """Math is fun!
+        Type math, get fun."""
+        print(m)
+        m = ''.join(m)
+        math_filter = re.findall(r'[\[\]\-()*+/0-9=.,% ]|>|<|==|>=|<=|\||&|~|!=|^|sum'
+                                 + '|range|random|randint|choice|randrange|True|False|if|and|or|else'
+                                 + '|is|not|for|in|acos|acosh|asin|asinh|atan|atan2|atanh|ceil'
+                                 + '|copysign|cos|cosh|degrees|e|erf|erfc|exp|expm1|fabs|factorial'
+                                 + '|floor|fmod|frexp|fsum|gamma|gcd|hypot|inf|isclose|isfinite'
+                                 + '|isinf|isnan|ldexp|lgamma|log|log10|log1p|log2|modf|nan|pi'
+                                 + '|pow|radians|sin|sinh|sqrt|tan|tanh|round', m)
+        print(''.join(math_filter))
+        calculate_stuff = eval(''.join(math_filter))
+        if len(str(calculate_stuff)) > 0:
+            em = discord.Embed(color=discord.Color.blue(),
+                               description='**Input**\n`{}`\n\n**Result**\n`{}`'.format(m, calculate_stuff))
+            await self.bot.say(embed=em)
+
+class CDTGAPS:
+    def __init__(self, bot):
+        self.bot = bot
+        
     @checks.admin_or_permissions(manage_server=True, manage_roles=True)
     @commands.command(name='gaps', pass_context=True, hidden=True)
     async def _alliance_popup(self, ctx, *args):
-        '''Guild | Alliance Popup System'''
+        """Guild | Alliance Popup System"""
         user=ctx.message.author
         warning_msg = ('The G.A.P.S. System will configure your server for basic Alliance Operations.\n'
                        'Roles will be added for summoners, alliance, officers, bg1, bg2, bg3\n'
@@ -1183,347 +1531,9 @@ class MCOCTools:
             for page in pages:
                 await self.bot.say(chat.box(page))
 
-    async def cache_sgd_gsheets(self):
-        sgd = StaticGameData()
-        await sgd.cache_gsheets()
-
-    @commands.command(hidden=True)
-    async def aux_sheets(self):
-        await self.cache_sgd_gsheets()
-
-    @commands.command(name='trials', pass_context=True, aliases=('trial',), hidden=False)
-    async def _trials(self, ctx, trial, tier='epic'):
-        '''Elemnts of the Trials
-        trials   | tier
-        Wind     | easy
-        Fire     | medium
-        Earth    | hard
-        Darkness | expert
-        Water    | epic
-        Light
-        Alchemist'''
-        trial = trial.lower()
-        tier = tier.lower()
-        tiers = ('easy', 'medium', 'hard', 'expert', 'epic')
-        sgd = StaticGameData()
-        # sgd = self.sgd
-        cdt_trials = await sgd.get_gsheets_data('elemental_trials')
-        trials = set(cdt_trials.keys()) - {'_headers'}
-        tiercolors = sgd.tiercolors
-
-        if trial not in trials:
-            em = discord.Embed(color=discord.Color.red(), title='Trials Error',
-                               description="Invalid trial '{}'".format(trial))
-            em.add_field(name='Valid Trials:', value='\n'.join(trials))
-            await self.bot.say(embed=em)
-        elif tier not in tiers:
-            em = discord.Embed(color=discord.Color.red(), title='Trials Error',
-                               description="Invalid tier '{}'".format(tier))
-            em.add_field(name='Valid Tiers:', value='\n'.join(tiers))
-            await self.bot.say(embed=em)
-        else:
-            em = discord.Embed(
-                color=tiercolors[tier],
-                title=tier.title() + " " + cdt_trials[trial]['name'],
-                description='',
-                url='https://forums.playcontestofchampions.com/en/discussion/114604/take-on-the-trials-of-the-elementals/p1'
-            )
-            em.add_field(name='Champions', value=cdt_trials[trial]['champs'])
-            em.add_field(name='Boosts', value=cdt_trials[trial][tier])
-            if trial == 'alchemist':
-                em.add_field(name=cdt_trials['alchemistrewards']['name'],
-                             value=cdt_trials['alchemistrewards'][tier])
-            else:
-                em.add_field(name=cdt_trials['rewards']['name'],
-                             value=cdt_trials['rewards'][tier])
-            em.set_footer(text='CollectorDevTeam',
-                          icon_url=self.COLLECTOR_ICON)
-            await self.bot.say(embed=em)
-
-    @commands.group(name='eq', pass_context=True, aliases=('eventquest',), hidden=False)
-    async def eventquest(self, ctx):
-        if ctx.invoked_subcommand is None:
-            await send_cmd_help(ctx)
-
-    # @eventquest.command(name='', aliases=(,))
-    # async def eq_(self, tier='Master'):
-    #     '''TITLE'''
-    #     event = 'eq_'
-    #     await self.format_eventquest(event, tier.lower())
-
-    @eventquest.command(name='13', aliases=('guardians', 'yondu', 'nebula', 'guardiansvolzero',))
-    async def eq_guardiansvolzero(self, tier='Master'):
-        '''GUARDIANS OF THE GALAX VOL ZERO'''
-        event = 'eq_13'
-        await self.format_eventquest(event, tier.lower())
-
-    @eventquest.command(name='13.1', aliases=('secretempireforever', 'punisher2099', 'carnage', 'p99',))
-    async def eq_secretempireforever(self, tier='Master'):
-        '''SECRET EMPIRE FOREVER'''
-        event = 'eq_13.1'
-        await self.format_eventquest(event, tier.lower())
-
-    @eventquest.command(name='14.1', aliases=('sinisterfoes', 'sinisterfoesofspiderman', 'vulture', 'sparky', 'smse',))
-    async def eq_sinisterfoes(self, tier='Master'):
-        '''Sinister Foes of Spider-Man'''
-        event = 'eq_14.1'
-        await self.format_eventquest(event, tier.lower())
-
-    @eventquest.command(name='15', aliases=('haveyouseenthisdog', 'kingping', 'medusa', 'kp',))
-    async def eq_haveyouseenthisdog(self, tier='Master'):
-        '''Have You Seen This Dog?'''
-        event = 'eq_15'
-        await self.format_eventquest(event, tier.lower())
-
-    @eventquest.command(name='15.1', aliases=('blades', 'blade', 'mephisto', 'morningstar',))
-    async def eq_blades(self, tier='Master'):
-        '''Blades'''
-        event = 'eq_15.1'
-        await self.format_eventquest(event, tier.lower())
-
-    @eventquest.command(name='16', aliases=('thorragnarok', 'hela', 'tr', 'godsofthearena', 'godsofarena',))
-    async def eq_godsofthearena(self, tier='Master'):
-        '''Gods of the Arena'''
-        event = 'eq_16'
-        await self.format_eventquest(event, tier.lower())
-
-    @eventquest.command(name='16.1', aliases=('hotelmodok', 'modok', 'taskmaster', 'tm',))
-    async def eq_hotelmodok(self, tier='Uncollected'):
-        '''HOTEL M.O.D.O.K.'''
-        event = 'eq_16.1'
-        await self.format_eventquest(event, tier.lower())
-
-    @eventquest.command(name='17', aliases=('riseoftheblackpanther', 'hulkragnarok', 'killmonger', 'hr', 'km',))
-    async def eq_riseoftheblackpanther(self, tier='Uncollected'):
-        '''Rise of the Black Panther'''
-        event = 'eq_17'
-        await self.format_eventquest(event, tier.lower())
-
-    @eventquest.command(name='17.1', aliases=('bishop', 'sabretooth', 'sentinel', 'savage', 'savagefuture',))
-    async def eq_savagefuture(self, tier='Uncollected'):
-        '''X-Men: Savage Future'''
-        event = 'eq_17.1'
-        await self.format_eventquest(event, tier.lower())
-
-    @eventquest.command(name='17.2', aliases=(
-            'chaos', 'infinitychaos', 'corvus', 'proximamidnight', 'pm', 'corvusglaive', 'cg', 'proxima',))
-    async def eq_infinitychaos(self, tier='Uncollected'):
-        '''Infinity Chaos'''
-        event = 'eq_17.2'
-        await self.format_eventquest(event, tier.lower())
-
-    @eventquest.command(name='18', aliases=('infinity', 'capiw', 'imiw', 'infinitywar', 'iw',))
-    async def eq_infinitynightmare(self, tier='Uncollected'):
-        '''Infinity Nightmare'''
-        event = 'eq_18'
-        await self.format_eventquest(event, tier.lower())
-
-    @eventquest.command(name='18.1',
-                        aliases=('mercs', 'masacre', 'domino', 'goldpool', 'mercsformoney',))
-    async def eq_mercsforthemoney(self, tier='Uncollected'):
-        '''Masacre and the Mercs for Money'''
-        event = 'eq_18.1'
-        await self.format_eventquest(event, tier.lower())
-
-    @eventquest.command(name='19.1', aliases=('cabal', 'enterthecabal', 'korg', 'redskull', 'heimdall',))
-    async def eq_enterthecabal(self, tier='Uncollected'):
-        '''Enter The Cabal'''
-        event = 'eq_19.1'
-        await self.format_eventquest(event, tier.lower())
-
-    @eventquest.command(name='20', aliases=('omega', 'classomega', 'omegared', 'emma', 'emmafrost',))
-    async def eq_classomega(self, tier='Uncollected'):
-        '''X-Men: Class Omega'''
-        event = 'eq_20'
-        await self.format_eventquest(event, tier)
-
-    @eventquest.command(name='20.1',
-                        aliases=('symbiotes', 'symbiomancer', 'venomtheduck', 'symbiotesupreme'))
-    async def eq_symbiomancer(self, tier='Epic'):
-        '''Blood & Venom: Symbiomanncer'''
-        event = 'eq_20.1'
-        await self.format_eventquest(event, tier.lower())
-
-    @eventquest.command(name='21',
-                        aliases=('brawlinthebattlerealm', 'aegon', 'thechampion', 'brawl',))
-    async def eq_brawl(self, tier='Uncollected'):
-        '''Brawl in the Battlerealm'''
-        event = 'eq_21'
-        await self.format_eventquest(event, tier.lower())
-
-    @eventquest.command(name='21.1', aliases=('nightriders', 'nightthrasher', 'darkhawk',))
-    async def eq_nightriders(self, tier='Uncollected'):
-        '''Night Riders'''
-        event = 'eq_21.1'
-        await self.format_eventquest(event, tier.lower())
-
-    @eventquest.command(name='21.2', aliases=('monster', 'thismanthismonster', 'thing', 'diablo',))
-    async def eq_monster(self, tier='Uncollected'):
-        '''This Man... This Monster'''
-        event = 'eq_21.2'
-        await self.format_eventquest(event, tier.lower())
-
-    @eventquest.command(name='21.3', aliases=('xenoclast', 'mrsinister', 'sinister', 'havok',))
-    async def eq_xenoclast(self, tier='Uncollected'):
-        '''X-Men Xenoclast'''
-        event = 'eq_21.3'
-        await self.format_eventquest(event, tier.lower())
-
-    @eventquest.command(name='love3', aliases=('loveisabattlefield3',))
-    async def eq_love3(self, tier='Epic'):
-        '''Love is a Battlefield 3'''
-        event = 'eq_love3'
-        await self.format_eventquest(event, tier.lower())
-
-    @eventquest.command(name='cmcc', aliases=('cmclash', 'captainmarvelclash',))
-    async def eq_cmcc(self, tier='Act'):
-        '''Captain Marvel\'s Combat Clash'''
-        event = 'eq_cmcc'
-        await self.format_eventquest(event, tier.lower())
-
-    @eventquest.command(name='recon', aliases=('nickfuryrecon',))
-    async def eq_recon(self, tier='part1'):
-        '''Nick Fury's Recon Initiatives'''
-        event = 'eq_recon'
-        await self.format_eventquest(event, tier.lower())
-
-    @eventquest.command(name='22', aliases=('secretinvasion','captainmarvel','nickfury','cm','nf',))
-    async def eq_22(self, tier='Uncollected'):
-        '''Battlerealm: Under Siege'''
-        event = 'eq_22'
-        await self.format_eventquest(event, tier.lower())
-
-    # @eventquest.command(name='', aliases=(,))
-    # async def eq_(self, tier='Uncollected'):
-    #     '''TITLE'''
-    #     event = 'eq_'
-    #     await self.format_eventquest(event, tier.lower())
-
-    @commands.command(name='variant', hidden=False)
-    async def eq_variant(self, chapter: str):
-        '''Variant Quest
-        1.1 : Dark Portents
-        1.2 : A Villain Revealed
-        1.3 : The Collector's Task
-        2.1 : Ultron Strikes
-        2.2 : Drone Duel
-        2.3 : The Avengers
-        3.1 : The Campaign
-        3.2 : Heroes Arise
-        3.3 : Avengers Assemble
-        '''
-
-        sgd = StaticGameData()
-        vq = await sgd.get_gsheets_data('variant')
-        chapters = ('1.1', '1.2', '1.3', '2.1', '2.2', '2.3', '3.1', '3.2', '3.3')
-        valid = ['1.1A', '1.1B', '1.1C', '1.1D', '1.1E', '1.1F', '1.1Boss', '1.2A', '1.2B', '1.2C', '1.2D', '1.2E',
-                 '1.2Boss', '1.3A', '1.3B', '1.3C', '1.3D', '1.3E', '1.3Boss', '2.1A', '2.1B', '2.1C', '2.1D', '2.1E',
-                 '2.1F', '2.1Boss', '2.2A', '2.2B', '2.2C', '2.2D', '2.2Boss', '2.3A', '2.3B', '2.3C', '2.3D', '2.3E',
-                 '2.3F', '2.3Boss', '3.1A', '3.1B', '3.1C', '3.1D', '3.1E', '3.1F', '3.1Boss', '3.2A', '3.2B', '3.2C',
-                 '3.2D', '3.2E', '3.2F', '3.2Boss', '3.3A', '3.3B', '3.3C', '3.3D', '3.3E', '3.3F', '3.3Boss']
-        if chapter not in chapters and chapter not in valid:
-            return
-        elif chapter in valid:
-            v = vq[chapter]
-            data = discord.Embed(color=discord.Color.gold(), title=v['title'])
-            data.set_footer(text='CollectorDevTeam + ƦƆ51', icon_url=self.COLLECTOR_ICON)
-            if 'imageurl' in v:
-                data.set_image(url=v['imageurl'])
-                data.url = v['imageurl']
-            if 'comments' in v:
-                data.description = 'ƦƆ51 Coments:\n{}'.format(v['comments'])
-            data.add_field(name='Fights', value=v['fights'])
-            data.add_field(name='Boosts', value=v['boosts'])
-            data.add_field(name='MVPs', value=v['mvps'])
-            data.add_field(name='Alternatives', value=v['options'])
-            data.add_field(name=v['af1_name'], value=v['af1_value'])
-
-            await self.bot.say(embed=data)
-            return
-        else:
-            page_number = valid.index(chapter + 'A')
-            page_list = []
-            for cp in valid:
-                v = vq[cp]
-                data = discord.Embed(color=discord.Color.gold(), title=v['title'])
-                data.set_footer(text='CollectorDevTeam + ƦƆ51', icon_url=self.COLLECTOR_ICON)
-                if 'imageurl' in v:
-                    data.set_image(url=v['imageurl'])
-                    data.url = v['imageurl']
-                if 'comments' in v:
-                    data.description = 'ƦƆ51 Coments:\n{}'.format(v['comments'])
-                data.add_field(name='Fights', value=v['fights'])
-                data.add_field(name='Boosts', value=v['boosts'])
-                data.add_field(name='MVPs', value=v['mvps'])
-                data.add_field(name='Alternatives', value=v['options'])
-                data.add_field(name=v['af1_name'], value=v['af1_value'])
-                page_list.append(data)
-            menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
-            await menu.menu_start(page_list, page_number)
-
-    async def format_eventquest(self, event, tier):  # , tiers=('beginner','normal','heroic','master')):
-        sgd = StaticGameData()
-        # sgd = self.sgd
-        cdt_eq = await sgd.get_gsheets_data(event)
-        # rows = set(cdt_eq.keys()) - {'_headers'}
-        # print(', '.join(rows))
-        tiers = cdt_eq['tiers']['value'].split(", ")
-        print(tiers)
-
-        if tier not in tiers:
-            await self.bot.say('Invalid tier selection')
-            return
-        else:
-            page_list = []
-            page_number = list(tiers).index(tier)
-            for row in tiers:
-                if row in sgd.tiercolors:
-                    color = sgd.tiercolors[row]
-                else:
-                    color = discord.Color.gold()
-                em = discord.Embed(color=color, title=cdt_eq['event_title']['value'],
-                                   url=cdt_eq['event_url']['value'])
-                em.set_author(name=cdt_eq['date']['value'])
-                em.description = '{}\n\n{}'.format(cdt_eq['story_title']['value'], cdt_eq['story_value']['value'])
-                # em.add_field(name=cdt_eq['story_title']['value'], value=cdt_eq['story_value']['value'])
-                em.add_field(name='{} Rewards'.format(row.title()), value=cdt_eq[row]['rewardsregex'])
-                if 'champions' in cdt_eq and cdt_eq['champions']['value'] != "":
-                    em.add_field(name='Introducing', value=cdt_eq['champions']['value'])
-                em.set_image(url=cdt_eq['story_image']['value'])
-                em.set_footer(text='CollectorDevTeam', icon_url=self.COLLECTOR_ICON)
-                page_list.append(em)
-
-            menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
-            await menu.menu_start(page_list, page_number)
-
-
-class Calculator:
-    def __init__(self, bot):
-        self.bot = bot
-
-    @commands.command(pass_context=True, name='calculator', aliases=('calc',))
-    async def _calc(self, context, *, m):
-        '''Math is fun!
-        Type math, get fun.'''
-        print(m)
-        m = ''.join(m)
-        math_filter = re.findall(r'[\[\]\-()*+/0-9=.,% ]|>|<|==|>=|<=|\||&|~|!=|^|sum'
-                                 + '|range|random|randint|choice|randrange|True|False|if|and|or|else'
-                                 + '|is|not|for|in|acos|acosh|asin|asinh|atan|atan2|atanh|ceil'
-                                 + '|copysign|cos|cosh|degrees|e|erf|erfc|exp|expm1|fabs|factorial'
-                                 + '|floor|fmod|frexp|fsum|gamma|gcd|hypot|inf|isclose|isfinite'
-                                 + '|isinf|isnan|ldexp|lgamma|log|log10|log1p|log2|modf|nan|pi'
-                                 + '|pow|radians|sin|sinh|sqrt|tan|tanh|round', m)
-        print(''.join(math_filter))
-        calculate_stuff = eval(''.join(math_filter))
-        if len(str(calculate_stuff)) > 0:
-            em = discord.Embed(color=discord.Color.blue(),
-                               description='**Input**\n`{}`\n\n**Result**\n`{}`'.format(m, calculate_stuff))
-            await self.bot.say(embed=em)
-
 
 class CDTHelperFunctions:
-    '''Helper Functions'''
+    """Helper Functions"""
 
     def tabulate(table_data, width, rotate=True, header_sep=True, align_out=True):
         rows = []
@@ -1545,7 +1555,7 @@ class CDTHelperFunctions:
         return chat.box('\n'.join(rows))
 
     def tabulate_data(table_data, width=None, align=None, rotate=False, separate_header=True):
-        '''Turn a list of lists into a tabular string'''
+        """Turn a list of lists into a tabular string"""
         align_opts = {'center': '^', 'left': '<', 'right': '>'}
         default_align = 'center'
         default_width = 5
@@ -1569,7 +1579,7 @@ class CDTHelperFunctions:
         return '\n'.join(rows)
 
     def pad_list(lst, new_length, pad_value):
-        '''Pad out a list to a desired length'''
+        """Pad out a list to a desired length"""
         if lst is None:
             lst = []
         pad = [pad_value] * (new_length - len(lst))
@@ -1790,3 +1800,4 @@ def setup(bot):
     bot.add_cog(MCOCTools(bot))
     bot.add_cog(CDTReport(bot))
     bot.add_cog(Calculator(bot))
+    bot.add_cog(CDTGAPS(bot))
