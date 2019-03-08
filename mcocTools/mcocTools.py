@@ -22,10 +22,6 @@ from discord.ext import commands
 from .utils import chat_formatting as chat
 from .utils.dataIO import dataIO
 
-# for Calculator/
-
-# from . import hook as hook
-
 logger = logging.getLogger('red.mcoc.tools')
 logger.setLevel(logging.INFO)
 
@@ -54,15 +50,6 @@ CDT_COLORS = {1: discord.Color(0x3c4d3b), 2: discord.Color(0xa05e44), 3: discord
               'epic': discord.Color(0x2799f7), 'uncollected': discord.Color(0x2799f7),
               'symbiote': discord.Color.darker_grey(),
               }
-
-# def sync_to_async(func):
-#     @wraps(func)
-#     async def run(*args, loop=None, executor=None, **kwargs):
-#         if loop is None:
-#             loop = asyncio.get_event_loop()
-#         pfunc = partial(func, *args, **kwargs)
-#         return await loop.run_in_executor(executor, pfunc)
-#     return run
 
 class GSExport:
     default_settings = {
@@ -344,19 +331,6 @@ class StaticGameData:
     cdt_trials = None
     gsheets_data = None
     test = 3
-    tiercolors = {
-        'easy': discord.Color.green(),
-        'beginner': discord.Color.green(),
-        'medium': discord.Color.gold(),
-        'normal': discord.Color.gold(),
-        'heroic': discord.Color.red(),
-        'hard': discord.Color.red(),
-        'expert': discord.Color.purple(),
-        'master': discord.Color.purple(),
-        'epic': discord.Color(0x2799f7),
-        'uncollected': discord.Color(0x2799f7),
-        'symbiote': discord.Color.darker_grey(),
-    }
 
     def __new__(cls):
         if cls.instance is None:
@@ -386,7 +360,6 @@ class StaticGameData:
             sheet_name='collection',
             range_name='available_collection'
         )
-
         self.gsheet_handler.register_gsheet(
             name='variant',
             gkey='1ZnoP_Kz_dC1DuTYmRX0spQLcHjiUZtT-oVTF52MHO3g',
@@ -395,11 +368,9 @@ class StaticGameData:
             range_name='variant',
             # settings=dict(column_handler='champs: to_list')
         )
-
         # Update this list to add Events
         events = ['13', '13.1', '14', '14.1', '15', '15.1', '16', '16.1', '17', '17.1', '17.2', '18', '18.1', '19.1',
                   '20', '20.1', '21', '21.1', '21.2', '21.3', '22', 'love3', 'cmcc', 'recon']
-
         for event in events:
             self.gsheet_handler.register_gsheet(
                 name='eq_' + event,
@@ -434,7 +405,6 @@ class StaticGameData:
                 cdt_versions.maps.append(ver)
             self.cdt_data = cdt_data
             self.cdt_versions = cdt_versions
-
             self.cdt_masteries = await self.fetch_json(
                 self.remote_data_basepath + 'json/masteries.json',
                 session)
