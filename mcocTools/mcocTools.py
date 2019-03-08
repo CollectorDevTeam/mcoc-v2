@@ -1123,7 +1123,6 @@ class MCOCTools:
                 everyone = r
         em.add_field(name='Stage 1 Role Creation', value='\n'.join(positions), inline=False)
         await self.bot.say(embed=em)
-
         everyone_perms = discord.PermissionOverwrite(read_messages=False)
         everyoneperms = discord.ChannelPermissions(target=server.default_role, overwrite=everyone_perms)
         readperm = discord.PermissionOverwrite(read_messages=True)
@@ -1133,7 +1132,6 @@ class MCOCTools:
         bg1perms = discord.ChannelPermissions(target=bg1, overwrite=readperm)
         bg2perms = discord.ChannelPermissions(target=bg2, overwrite=readperm)
         bg3perms = discord.ChannelPermissions(target=bg3, overwrite=readperm)
-
         channellist = []
         for c in server.channels:
             channellist.append(c.name)
@@ -1157,7 +1155,6 @@ class MCOCTools:
             await self.bot.create_channel(server, 'bg3aq', everyoneperms, officerperms, bg3perms)
         if 'bg3aw' not in channellist:
             await self.bot.create_channel(server, 'bg3aw', everyoneperms, officerperms, bg2perms)
-
         channels = sorted(server.channels, key=lambda channels: channels.position, reverse=False)
         channelnames = []
         for c in channels:
@@ -1165,9 +1162,7 @@ class MCOCTools:
         em = discord.Embed(color=discord.Color.red(), title='Guild Alliance Popup System', description='')
         em.add_field(name='Stage 2 Create Channels', value='\n'.join(channelnames), inline=False)
         await self.bot.say(embed=em)
-
         em = discord.Embed(color=discord.Color.red(), titel='Guild Alliance Popup System', descritpion='')
-
         fixNotifcations = await self.bot.say('Stage 3: Attempting to set Default Notification to Direct Message Only')
         try:
             # mentions only
@@ -1195,6 +1190,8 @@ class MCOCTools:
             await alliance._reg(self.bot, ctx)
         except:
             await self.bot.say("Now register your alliance:\n```/alliance register```")
+        return
+
     # @checks.is_owner()
     # @commands.group(pass_context=True, hidden=True)
     # async def inspect(self, ctx):
@@ -1237,55 +1234,55 @@ class MCOCTools:
     async def aux_sheets(self):
         await self.cache_sgd_gsheets()
 
-    @commands.command(name='trials', pass_context=True, aliases=('trial',), hidden=False)
-    async def _trials(self, ctx, trial, tier='epic'):
-        '''Elemnts of the Trials
-        trials   | tier
-        Wind     | easy
-        Fire     | medium
-        Earth    | hard
-        Darkness | expert
-        Water    | epic
-        Light
-        Alchemist'''
-        trial = trial.lower()
-        tier = tier.lower()
-        tiers = ('easy', 'medium', 'hard', 'expert', 'epic')
-        sgd = StaticGameData()
-        # sgd = self.sgd
-        cdt_trials = await sgd.get_gsheets_data('elemental_trials')
-        trials = set(cdt_trials.keys()) - {'_headers'}
-        tiercolors = sgd.tiercolors
-
-        if trial not in trials:
-            em = discord.Embed(color=discord.Color.red(), title='Trials Error',
-                               description="Invalid trial '{}'".format(trial))
-            em.add_field(name='Valid Trials:', value='\n'.join(trials))
-            await self.bot.say(embed=em)
-        elif tier not in tiers:
-            em = discord.Embed(color=discord.Color.red(), title='Trials Error',
-                               description="Invalid tier '{}'".format(tier))
-            em.add_field(name='Valid Tiers:', value='\n'.join(tiers))
-            await self.bot.say(embed=em)
-        else:
-            em = discord.Embed(
-                color=tiercolors[tier],
-                title=tier.title() + " " + cdt_trials[trial]['name'],
-                description='',
-                url='https://forums.playcontestofchampions.com/en/discussion/114604/take-on-the-trials-of-the-elementals/p1'
-            )
-            em.add_field(name='Champions', value=cdt_trials[trial]['champs'])
-            em.add_field(name='Boosts', value=cdt_trials[trial][tier])
-            if trial == 'alchemist':
-                em.add_field(name=cdt_trials['alchemistrewards']['name'],
-                             value=cdt_trials['alchemistrewards'][tier])
-            else:
-                em.add_field(name=cdt_trials['rewards']['name'],
-                             value=cdt_trials['rewards'][tier])
-            em.set_footer(text='CollectorDevTeam',
-                          icon_url=self.COLLECTOR_ICON)
-            await self.bot.say(embed=em)
-
+    # @commands.command(name='trials', pass_context=True, aliases=('trial',), hidden=False)
+    # async def _trials(self, ctx, trial, tier='epic'):
+    #     '''Elemnts of the Trials
+    #     trials   | tier
+    #     Wind     | easy
+    #     Fire     | medium
+    #     Earth    | hard
+    #     Darkness | expert
+    #     Water    | epic
+    #     Light
+    #     Alchemist'''
+    #     trial = trial.lower()
+    #     tier = tier.lower()
+    #     tiers = ('easy', 'medium', 'hard', 'expert', 'epic')
+    #     sgd = StaticGameData()
+    #     # sgd = self.sgd
+    #     cdt_trials = await sgd.get_gsheets_data('elemental_trials')
+    #     trials = set(cdt_trials.keys()) - {'_headers'}
+    #     tiercolors = sgd.tiercolors
+    #
+    #     if trial not in trials:
+    #         em = discord.Embed(color=discord.Color.red(), title='Trials Error',
+    #                            description="Invalid trial '{}'".format(trial))
+    #         em.add_field(name='Valid Trials:', value='\n'.join(trials))
+    #         await self.bot.say(embed=em)
+    #     elif tier not in tiers:
+    #         em = discord.Embed(color=discord.Color.red(), title='Trials Error',
+    #                            description="Invalid tier '{}'".format(tier))
+    #         em.add_field(name='Valid Tiers:', value='\n'.join(tiers))
+    #         await self.bot.say(embed=em)
+    #     else:
+    #         em = discord.Embed(
+    #             color=tiercolors[tier],
+    #             title=tier.title() + " " + cdt_trials[trial]['name'],
+    #             description='',
+    #             url='https://forums.playcontestofchampions.com/en/discussion/114604/take-on-the-trials-of-the-elementals/p1'
+    #         )
+    #         em.add_field(name='Champions', value=cdt_trials[trial]['champs'])
+    #         em.add_field(name='Boosts', value=cdt_trials[trial][tier])
+    #         if trial == 'alchemist':
+    #             em.add_field(name=cdt_trials['alchemistrewards']['name'],
+    #                          value=cdt_trials['alchemistrewards'][tier])
+    #         else:
+    #             em.add_field(name=cdt_trials['rewards']['name'],
+    #                          value=cdt_trials['rewards'][tier])
+    #         em.set_footer(text='CollectorDevTeam',
+    #                       icon_url=self.COLLECTOR_ICON)
+    #         await self.bot.say(embed=em)
+    #
     @commands.group(name='eq', pass_context=True, aliases=('eventquest',), hidden=False)
     async def eventquest(self, ctx):
         if ctx.invoked_subcommand is None:
@@ -1506,6 +1503,7 @@ class MCOCTools:
                 page_list.append(data)
             menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
             await menu.menu_start(page_list, page_number)
+            return
 
     async def format_eventquest(self, event, tier):  # , tiers=('beginner','normal','heroic','master')):
         sgd = StaticGameData()
@@ -1515,7 +1513,6 @@ class MCOCTools:
         # print(', '.join(rows))
         tiers = cdt_eq['tiers']['value'].split(", ")
         print(tiers)
-
         if tier not in tiers:
             await self.bot.say('Invalid tier selection')
             return
@@ -1541,7 +1538,7 @@ class MCOCTools:
 
             menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
             await menu.menu_start(page_list, page_number)
-
+            return
 
 class Calculator:
     def __init__(self, bot):
