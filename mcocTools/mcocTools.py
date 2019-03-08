@@ -683,7 +683,7 @@ class MCOCTools:
         self.search_parser = SearchExpr.parser()
 
     @commands.command(pass_context=True, aliases=('calendar','cal','events'))
-    async def calendar(self, ctx):
+    async def mcoc_calendar(self, ctx):
         """MCOC Schedule
         Created by Josh Morris
         Maintained by JJW"""
