@@ -110,6 +110,7 @@ class GSExport:
         try:
             ss = self.gc.open_by_key(self.gkey)
         except:
+            raise 
             await self.bot.say("Error opening Spreadsheet <{}>".format(self.gkey))
             return
         if self.meta_sheet and self.settings['sheet_name'] is None:
@@ -706,50 +707,48 @@ class PagesMenu:
 
 class MCOCTools:
     """Tools for Marvel Contest of Champions"""
-
-    lookup_links = {
-        'event': (
-            '<http://simians.tk/MCOC-Sched>',
-            '[Tiny MCoC Schedule](https://docs.google.com/spreadsheets/d/e/2PACX-1vT5A1MOwm3CvOGjn7fMvYaiTKDuIdvKMnH5XHRcgzi3eqLikm9SdwfkrSuilnZ1VQt8aSfAFJzZ02zM/pubhtml?gid=390226786)',
-            'Josh Morris Schedule',
-            'https://d2jixqqjqj5d23.cloudfront.net/assets/developer/imgs/icons/google-spreadsheet-icon.png'),
-        'rttl': (
-            '<https://drive.google.com/file/d/0B4ozoShtX2kFcDV4R3lQb1hnVnc/view>',
-            '[Road to the Labyrinth Opponent List](https://drive.google.com/file/d/0B4ozoShtX2kFcDV4R3lQb1hnVnc/view)',
-            'by Regal Empire {OG Wolvz}',
-            'http://svgur.com/s/48'),
-        'hook': (
-            '<http://hook.github.io/champions>',
-            '[hook/Champions by gabriel](http://hook.github.io/champions)',
-            'hook/champions for Collector',
-            'https://assets-cdn.github.com/favicon.ico'),
-        'spotlight': (
-            '<http://simians.tk/MCoCspotlight>',
-            '[MCOC Spotlight Dataset](http://simians.tk/MCoCspotlight)\nIf you would like to donate prestige, signatures or stats, join us at \n[CollectorDevTeam](https://discord.gg/BwhgZxk)'),
-        'alsciende': (
-            '<https://alsciende.github.io/masteries/v10.0.1/#>',
-            '[Alsciende Mastery Tool](https://alsciende.github.io/masteries/v17.0.2/#)',
-            'by u/alsciende',
-            'https://images-ext-2.discordapp.net/external/ymdMNrkhO9L5tUDupbFSEmu-JK0X2bpV0ZE-VYTBICc/%3Fsize%3D1024/https/cdn.discordapp.com/avatars/268829380262756357/b55ae7fc51d9b741450f949accd15fbe.webp?width=80&height=80'),
-    }
-    mcolor = discord.Color.red()
-    COLLECTOR_ICON = 'https://raw.githubusercontent.com/JasonJW/mcoc-cogs/master/mcoc/data/cdt_icon.png'
-    icon_sdf = 'https://raw.githubusercontent.com/JasonJW/mcoc-cogs/master/mcoc/data/sdf_icon.png'
-    dataset = 'data/mcoc/masteries.csv'
-
     def __init__(self, bot):
         self.bot = bot
         self.search_parser = SearchExpr.parser()
-        self.menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
 
-    def present(self, lookup):
-        em = discord.Embed(color=self.mcolor, title='', description=lookup[1])
-        print(len(lookup))
-        if len(lookup) > 2:
-            em.set_footer(text=lookup[2], icon_url=lookup[3])
-        else:
-            em.set_footer(text='CollectorDevTeam', icon_url=self.COLLECTOR_ICON)
-        return em
+    # lookup_links = {
+    #     'event': (
+    #         '<http://simians.tk/MCOC-Sched>',
+    #         '[Tiny MCoC Schedule](https://docs.google.com/spreadsheets/d/e/2PACX-1vT5A1MOwm3CvOGjn7fMvYaiTKDuIdvKMnH5XHRcgzi3eqLikm9SdwfkrSuilnZ1VQt8aSfAFJzZ02zM/pubhtml?gid=390226786)',
+    #         'Josh Morris Schedule',
+    #         'https://d2jixqqjqj5d23.cloudfront.net/assets/developer/imgs/icons/google-spreadsheet-icon.png'),
+    #     'rttl': (
+    #         '<https://drive.google.com/file/d/0B4ozoShtX2kFcDV4R3lQb1hnVnc/view>',
+    #         '[Road to the Labyrinth Opponent List](https://drive.google.com/file/d/0B4ozoShtX2kFcDV4R3lQb1hnVnc/view)',
+    #         'by Regal Empire {OG Wolvz}',
+    #         'http://svgur.com/s/48'),
+    #     'hook': (
+    #         '<http://hook.github.io/champions>',
+    #         '[hook/Champions by gabriel](http://hook.github.io/champions)',
+    #         'hook/champions for Collector',
+    #         'https://assets-cdn.github.com/favicon.ico'),
+    #     'spotlight': (
+    #         '<http://simians.tk/MCoCspotlight>',
+    #         '[MCOC Spotlight Dataset](http://simians.tk/MCoCspotlight)\nIf you would like to donate prestige, signatures or stats, join us at \n[CollectorDevTeam](https://discord.gg/BwhgZxk)'),
+    #     'alsciende': (
+    #         '<https://alsciende.github.io/masteries/v10.0.1/#>',
+    #         '[Alsciende Mastery Tool](https://alsciende.github.io/masteries/v17.0.2/#)',
+    #         'by u/alsciende',
+    #         'https://images-ext-2.discordapp.net/external/ymdMNrkhO9L5tUDupbFSEmu-JK0X2bpV0ZE-VYTBICc/%3Fsize%3D1024/https/cdn.discordapp.com/avatars/268829380262756357/b55ae7fc51d9b741450f949accd15fbe.webp?width=80&height=80'),
+    # }
+    # mcolor = discord.Color.red()
+    # COLLECTOR_ICON = 'https://raw.githubusercontent.com/JasonJW/mcoc-cogs/master/mcoc/data/cdt_icon.png'
+    # icon_sdf = 'https://raw.githubusercontent.com/JasonJW/mcoc-cogs/master/mcoc/data/sdf_icon.png'
+    # dataset = 'data/mcoc/masteries.csv'
+
+    # def present(self, lookup):
+    #     em = discord.Embed(color=self.mcolor, title='', description=lookup[1])
+    #     print(len(lookup))
+    #     if len(lookup) > 2:
+    #         em.set_footer(text=lookup[2], icon_url=lookup[3])
+    #     else:
+    #         em.set_footer(text='CollectorDevTeam', icon_url=self.COLLECTOR_ICON)
+    #     return em
 
     # @commands.command(pass_context=True, aliases=('calendar','cal','events'))
     # async def mcoc_schedule(self, ctx):
@@ -757,120 +756,134 @@ class MCOCTools:
 
     #     author = ctx.message.author
 
-    @commands.command(pass_context=True, no_pm=True)
-    async def topic(self, ctx, channel: discord.Channel = None):
-        """Play the Channel Topic in the chat channel."""
-        if channel is None:
-            channel = ctx.message.channel
-        topic = channel.topic
-        if topic is not None and topic != '':
-            data = discord.Embed(color=ctx.message.author.color,
-                                 title='#{} Topic :sparkles:'.format(ctx.message.channel.name),
-                                 description=topic)
-            data.set_thumbnail(url=ctx.message.server.icon_url)
-            data.set_footer(text='CollectorDevTeam', icon_url=self.COLLECTOR_ICON)
-            await self.bot.say(embed=data)
+    # @commands.command(pass_context=True, no_pm=True)
+    # async def topic(self, ctx, channel: discord.Channel = None):
+    #     """Play the Channel Topic in the chat channel."""
+    #     if channel is None:
+    #         channel = ctx.message.channel
+    #     topic = channel.topic
+    #     if topic is not None and topic != '':
+    #         data = discord.Embed(color=ctx.message.author.color,
+    #                              title='#{} Topic :sparkles:'.format(ctx.message.channel.name),
+    #                              description=topic)
+    #         data.set_thumbnail(url=ctx.message.server.icon_url)
+    #         data.set_footer(text='CollectorDevTeam', icon_url=self.COLLECTOR_ICON)
+    #         await self.bot.say(embed=data)
+    #
+    # @commands.command(pass_context=True, aliases={'collector', 'infocollector', 'about'})
+    # async def aboutcollector(self, ctx):
+    #     """Shows info about Collector"""
+    #     author = ctx.message.author
+    #     if ctx.message.channel.is_private:
+    #         ucolor=discord.Color.gold()
+    #     else:
+    #         ucolor=author.color
+    #     author_repo = "https://github.com/Twentysix26"
+    #     red_repo = author_repo + "/Red-DiscordBot"
+    #     server_url = "https://discord.gg/wJqpYGS"
+    #     dpy_repo = "https://github.com/Rapptz/discord.py"
+    #     python_url = "https://www.python.org/"
+    #     collectorpatreon = 'https://patreon.com/collectorbot'
+    #     since = datetime.datetime(2016, 1, 2, 0, 0)
+    #     days_since = (datetime.datetime.utcnow() - since).days
+    #     dpy_version = "[{}]({})".format(discord.__version__, dpy_repo)
+    #     py_version = "[{}.{}.{}]({})".format(*os.sys.version_info[:3],
+    #                                          python_url)
+    #
+    #     owner_set = self.bot.settings.owner is not None
+    #     owner = self.bot.settings.owner if owner_set else None
+    #     if owner:
+    #         owner = discord.utils.get(self.bot.get_all_members(), id=owner)
+    #         if not owner:
+    #             try:
+    #                 owner = await self.bot.get_user_info(self.bot.settings.owner)
+    #             except:
+    #                 owner = None
+    #     if not owner:
+    #         owner = "Unknown"
+    #
+    #     about = (
+    #         "Collector is an instance of [Red, an open source Discord bot]({0}) "
+    #         "created by [Twentysix]({1}) and improved by many.\n\n"
+    #         "The Collector Dev Team is backed by a passionate community who contributes and "
+    #         "creates content for everyone to enjoy. [Join us today]({2}) "
+    #         "and help us improve!\n\n"
+    #         "★ If you would like to support the Collector, please visit {3}.\n"
+    #         "★ Patrons and Collaborators receive priority support and secrety stuff.\n\n~ JJW"
+    #         "".format(red_repo, author_repo, server_url, collectorpatreon))
+    #     devteam = ("DeltaSigma#8530\n"
+    #                "JJW#8071\n"
+    #                "JM#7725"
+    #                )
+    #     supportteam = ('phil_wo#3733\nSpiderSebas#9910\nsuprmatt#2753\ntaoness#5565')
+    #     embed = discord.Embed(colour=ucolor, title="Collector", url=collectorpatreon)
+    #     embed.add_field(name="Instance owned by", value=str(owner))
+    #     embed.add_field(name="Python", value=py_version)
+    #     embed.add_field(name="discord.py", value=dpy_version)
+    #     embed.add_field(name="About", value=about, inline=False)
+    #     embed.add_field(name="PrestigePartner", value='mutamatt#4704', inline=True)
+    #     embed.add_field(name='DuelsPartners', value='ƦƆ51#4587', inline=True)
+    #     embed.add_field(name='MapsPartners', value='jpags#5202\nBlooregarde#5848 ', inline=True)
+    #     embed.add_field(name='LabyrinthTeam', value='Kiryu#5755\nre-1#7595', inline=True)
+    #     embed.add_field(name='CollectorSupportTeam', value=supportteam, inline=True)
+    #     embed.add_field(name="CollectorDevTeam", value=devteam, inline=True)
+    #     embed.set_footer(text="Bringing joy since 02 Jan 2016 (over "
+    #                           "{} days ago!)".format(days_since))
+    #
+    #     try:
+    #         await self.bot.say(embed=embed)
+    #     except discord.HTTPException:
+    #         await self.bot.say("I need the `Embed links` permission "
+    #                            "to send this")
+    #
+    # @commands.command(help=lookup_links['event'][0], aliases=['events', 'schedule', ], hidden=True)
+    # async def event(self):
+    #     x = 'event'
+    #     lookup = self.lookup_links[x]
+    #     await self.bot.say(embed=self.present(lookup))
+    #     # await self.bot.say('iOS dumblink:\n{}'.format(lookup[0]))
+    #
+    # @commands.command(help=lookup_links['spotlight'][0], )
+    # async def spotlight(self):
+    #     """CollectorDevTeam Spotlight Dataset"""
+    #     x = 'spotlight'
+    #     lookup = self.lookup_links[x]
+    #     await self.bot.say(embed=self.present(lookup))
+    #     # await self.bot.say('iOS dumblink:\n{}'.format(lookup[0]))
+    #
+    # @commands.command(help=lookup_links['rttl'][0], )
+    # async def rttl(self):
+    #     x = 'rttl'
+    #     lookup = self.lookup_links[x]
+    #     await self.bot.say(embed=self.present(lookup))
+    #     # await self.bot.say('iOS dumblink:\n{}'.format(lookup[0]))
+    #
+    # @commands.command(help=lookup_links['alsciende'][0], aliases=('mrig',), hidden=True)
+    # async def alsciende(self):
+    #     x = 'alsciende'
+    #     lookup = self.lookup_links[x]
+    #     await self.bot.say(embed=self.present(lookup))
+    #     # await self.bot.say('iOS dumblink:\n{}'.format(lookup[0]))
+    #
+    # @commands.command(help=lookup_links['hook'][0], hidden=True)
+    # async def hook(self):
+    #     x = 'hook'
+    #     lookup = self.lookup_links[x]
+    #     await self.bot.say(embed=self.present(lookup))
+    #     # await self.bot.say('iOS dumblink:\n{}'.format(lookup[0]))
 
-    @commands.command(pass_context=True, aliases={'collector', 'infocollector', 'about'})
-    async def aboutcollector(self, ctx):
-        """Shows info about Collector"""
-        author_repo = "https://github.com/Twentysix26"
-        red_repo = author_repo + "/Red-DiscordBot"
-        server_url = "https://discord.gg/wJqpYGS"
-        dpy_repo = "https://github.com/Rapptz/discord.py"
-        python_url = "https://www.python.org/"
-        collectorpatreon = 'https://patreon.com/collectorbot'
-        since = datetime.datetime(2016, 1, 2, 0, 0)
-        days_since = (datetime.datetime.utcnow() - since).days
-        dpy_version = "[{}]({})".format(discord.__version__, dpy_repo)
-        py_version = "[{}.{}.{}]({})".format(*os.sys.version_info[:3],
-                                             python_url)
-
-        owner_set = self.bot.settings.owner is not None
-        owner = self.bot.settings.owner if owner_set else None
-        if owner:
-            owner = discord.utils.get(self.bot.get_all_members(), id=owner)
-            if not owner:
-                try:
-                    owner = await self.bot.get_user_info(self.bot.settings.owner)
-                except:
-                    owner = None
-        if not owner:
-            owner = "Unknown"
-
-        about = (
-            "Collector is an instance of [Red, an open source Discord bot]({0}) "
-            "created by [Twentysix]({1}) and improved by many.\n\n"
-            "The Collector Dev Team is backed by a passionate community who contributes and "
-            "creates content for everyone to enjoy. [Join us today]({2}) "
-            "and help us improve!\n\n"
-            "★ If you would like to support the Collector, please visit {3}.\n"
-            "★ Patrons and Collaborators receive priority support and secrety stuff.\n\n~ JJW"
-            "".format(red_repo, author_repo, server_url, collectorpatreon))
-        devteam = ("DeltaSigma#8530\n"
-                   "JJW#8071\n"
-                   "JM#7725"
-                   )
-        supportteam = ('phil_wo#3733\nSpiderSebas#9910\nsuprmatt#2753\ntaoness#5565')
-        embed = discord.Embed(colour=discord.Colour.red(), title="Collector", url=collectorpatreon)
-        embed.add_field(name="Instance owned by", value=str(owner))
-        embed.add_field(name="Python", value=py_version)
-        embed.add_field(name="discord.py", value=dpy_version)
-        embed.add_field(name="About", value=about, inline=False)
-        embed.add_field(name="PrestigePartner", value='mutamatt#4704', inline=True)
-        embed.add_field(name='DuelsPartners', value='ƦƆ51#4587', inline=True)
-        embed.add_field(name='MapsPartners', value='jpags#5202\nBlooregarde#5848 ', inline=True)
-        embed.add_field(name='LabyrinthTeam', value='Kiryu#5755\nre-1#7595', inline=True)
-        embed.add_field(name='CollectorSupportTeam', value=supportteam, inline=True)
-        embed.add_field(name="CollectorDevTeam", value=devteam, inline=True)
-        embed.set_footer(text="Bringing joy since 02 Jan 2016 (over "
-                              "{} days ago!)".format(days_since))
-
-        try:
-            await self.bot.say(embed=embed)
-        except discord.HTTPException:
-            await self.bot.say("I need the `Embed links` permission "
-                               "to send this")
-
-    @commands.command(help=lookup_links['event'][0], aliases=['events', 'schedule', ], hidden=True)
-    async def event(self):
-        x = 'event'
-        lookup = self.lookup_links[x]
-        await self.bot.say(embed=self.present(lookup))
-        # await self.bot.say('iOS dumblink:\n{}'.format(lookup[0]))
-
-    @commands.command(help=lookup_links['spotlight'][0], )
-    async def spotlight(self):
-        """CollectorDevTeam Spotlight Dataset"""
-        x = 'spotlight'
-        lookup = self.lookup_links[x]
-        await self.bot.say(embed=self.present(lookup))
-        # await self.bot.say('iOS dumblink:\n{}'.format(lookup[0]))
-
-    @commands.command(help=lookup_links['rttl'][0], )
-    async def rttl(self):
-        x = 'rttl'
-        lookup = self.lookup_links[x]
-        await self.bot.say(embed=self.present(lookup))
-        # await self.bot.say('iOS dumblink:\n{}'.format(lookup[0]))
-
-    @commands.command(help=lookup_links['alsciende'][0], aliases=('mrig',), hidden=True)
-    async def alsciende(self):
-        x = 'alsciende'
-        lookup = self.lookup_links[x]
-        await self.bot.say(embed=self.present(lookup))
-        # await self.bot.say('iOS dumblink:\n{}'.format(lookup[0]))
-
-    @commands.command(help=lookup_links['hook'][0], hidden=True)
-    async def hook(self):
-        x = 'hook'
-        lookup = self.lookup_links[x]
-        await self.bot.say(embed=self.present(lookup))
-        # await self.bot.say('iOS dumblink:\n{}'.format(lookup[0]))
-
-    @commands.command(hidden=True, pass_context=True, name='parse_search', aliases=('ps', 'dm'))
-    async def kabam_search2(self, ctx, *, phrase: str):
-        """Enter a search term or a JSON key"""
+    @commands.command(hidden=True, pass_context=True, aliases=('parse_search', 'ps', 'dm', 'km',))
+    async def kabam_search(self, ctx, *, phrase: str):
+        """Enter a search term or a JSON key
+        k: <term> | search in Keys
+        vn: <int> | search for version numbers
+        Use pipe "|" to chain terms
+        """
+        author = ctx.message.author
+        if ctx.message.channel.is_private:
+            ucolor = discord.Color.gold()
+        else:
+            ucolor = author.color
         kdata = StaticGameData()
         cdt_data, cdt_versions = kdata.cdt_data, kdata.cdt_versions
         result = self.search_parser.parse_string(phrase)
@@ -891,13 +904,12 @@ class MCOCTools:
         pages = chat.pagify('\n'.join(package))
         page_list = []
         for page in pages:
-            em = discord.Embed(title='Data Search', description=page)
+            em = discord.Embed(title='Data Search', description=page, color=ucolor)
+            em.set_author(name='CollectorDevTeam', icon_url=COLLECTOR_ICON)
             em.set_footer(text='MCOC Game Files', icon_url=KABAM_ICON)
             page_list.append(em)
         menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
         await menu.menu_start(page_list)
-
-    # @commands.command(hidden=True, pass_context=True, name='datamine', aliases=('dm', 'search'))
 
     def _bcg_recompile(self, str_data):
         hex_re = re.compile(r'\[[0-9a-f]{6,8}\](.+?)\[-\]', re.I)
@@ -913,9 +925,12 @@ class MCOCTools:
 
 
 class MCOCEvents:
+    def __init__(self, bot):
+        self.bot = bot
+
     @commands.command(name='trials', pass_context=True, aliases=('trial',), hidden=False)
     async def _trials(self, ctx, trial, tier='epic'):
-        """Elemnts of the Trials
+        """Elements of the Trials
         trials   | tier
         Wind     | easy
         Fire     | medium
@@ -1244,15 +1259,20 @@ class Calculator:
                                description='**Input**\n`{}`\n\n**Result**\n`{}`'.format(m, calculate_stuff))
             await self.bot.say(embed=em)
 
+
 class CDTGAPS:
     def __init__(self, bot):
         self.bot = bot
         
     @checks.admin_or_permissions(manage_server=True, manage_roles=True)
-    @commands.command(name='gaps', pass_context=True, hidden=True)
+    @commands.command(name='gaps', pass_context=True, hidden=False, allow_pm=False)
     async def _alliance_popup(self, ctx, *args):
-        """Guild | Alliance Popup System"""
-        user=ctx.message.author
+        """Guild | Alliance Popup System
+        The Guild Alliance Pop System (G.A.P.S) allows you to configure your Discord server (guild) for alliance operations.
+        Roles and channels are created: alliance, officers, bg1, bg2, bg3
+        Channels and Server notifications settings are adjusted.
+        """
+        user = ctx.message.author
         warning_msg = ('The G.A.P.S. System will configure your server for basic Alliance Operations.\n'
                        'Roles will be added for summoners, alliance, officers, bg1, bg2, bg3\n'
                        'Channels will be added for announcements, alliance, & battlegroups.\n'
@@ -1414,9 +1434,9 @@ class CDTGAPS:
         await self.bot.delete_message(message2)
         try:
             alliance = self.bot.get_cog("Alliance")
-            if alliance is not None:
-                await alliance._reg(self.bot, ctx)
+            await alliance._reg(self.bot, ctx)
         except:
+            raise
             await self.bot.say("Now register your alliance:\n```/alliance register```")
     # @checks.is_owner()
     # @commands.group(pass_context=True, hidden=True)
@@ -1718,8 +1738,8 @@ def setup(bot):
     sgd = StaticGameData()
     sgd.register_gsheets(bot)
     bot.loop.create_task(sgd.load_cdt_data())
-    bot.add_cog(MCOCTools(bot))
     bot.add_cog(CDTReport(bot))
     bot.add_cog(Calculator(bot))
     bot.add_cog(CDTGAPS(bot))
     bot.add_cog(MCOCEvents(bot))
+    bot.add_cog(MCOCTools(bot))
