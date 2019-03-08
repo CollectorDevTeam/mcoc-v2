@@ -909,6 +909,8 @@ class MCOCTools:
     async def aux_sheets(self):
         await self.cache_sgd_gsheets()
 
+
+class MCOCEvents:
     @commands.command(name='trials', pass_context=True, aliases=('trial',), hidden=False)
     async def _trials(self, ctx, trial, tier='epic'):
         """Elemnts of the Trials
@@ -1718,3 +1720,4 @@ def setup(bot):
     bot.add_cog(CDTReport(bot))
     bot.add_cog(Calculator(bot))
     bot.add_cog(CDTGAPS(bot))
+    bot.add_cog(MCOCEvents(bot))
