@@ -752,7 +752,7 @@ class MCOCTools:
     #     if len(lookup) > 2:
     #         em.set_footer(text=lookup[2], icon_url=lookup[3])
     #     else:
-    #         em.set_footer(text='CollectorDevTeam', icon_url=self.COLLECTOR_ICON)
+    #         em.set_footer(text='CollectorDevTeam', icon_url=COLLECTOR_ICON)
     #     return em
 
     # @commands.command(pass_context=True, aliases=('calendar','cal','events'))
@@ -772,7 +772,7 @@ class MCOCTools:
                                  title='#{} Topic :sparkles:'.format(ctx.message.channel.name),
                                  description=topic)
             data.set_thumbnail(url=ctx.message.server.icon_url)
-            data.set_footer(text='CollectorDevTeam', icon_url=self.COLLECTOR_ICON)
+            data.set_footer(text='CollectorDevTeam', icon_url=COLLECTOR_ICON)
             await self.bot.say(embed=data)
     #
     # @commands.command(pass_context=True, aliases={'collector', 'infocollector', 'about'})
@@ -1172,7 +1172,7 @@ class MCOCEvents:
         elif chapter in valid:
             v = vq[chapter]
             data = discord.Embed(color=discord.Color.gold(), title=v['title'])
-            data.set_footer(text='CollectorDevTeam + ƦƆ51', icon_url=self.COLLECTOR_ICON)
+            data.set_footer(text='CollectorDevTeam + ƦƆ51', icon_url=COLLECTOR_ICON)
             if 'imageurl' in v:
                 data.set_image(url=v['imageurl'])
                 data.url = v['imageurl']
@@ -1192,7 +1192,7 @@ class MCOCEvents:
             for cp in valid:
                 v = vq[cp]
                 data = discord.Embed(color=discord.Color.gold(), title=v['title'])
-                data.set_footer(text='CollectorDevTeam + ƦƆ51', icon_url=self.COLLECTOR_ICON)
+                data.set_footer(text='CollectorDevTeam + ƦƆ51', icon_url=COLLECTOR_ICON)
                 if 'imageurl' in v:
                     data.set_image(url=v['imageurl'])
                     data.url = v['imageurl']
