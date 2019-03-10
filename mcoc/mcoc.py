@@ -639,7 +639,7 @@ class MCOC(ChampionFactory):
                            'Support CollectorDevTeam: https://patreon.com/collectorbot'
         data.set_author(name='CollectorDevTeam', url=COLLECTOR_ICON)
         data.set_thumbnail(url=COLLECTOR_ICON)
-        
+
         if whisper:
             await self.bot.whisper(embed=data)
         else:
@@ -2737,15 +2737,19 @@ class Champion:
         descriptionkey = preamble + desc,
         '''
 
-        sgd = StaticGameData()
+        sgd = cogs.mcocTools.StaticGameData()
+        if sgd.cdt_data is None:
+            print("Sig Error: {} isn't pulling game data".format(self.mcocsig))
+            raise TitleError(self.full_name)
         mcocsig = self.mcocsig
-        #print(mcocsig)
+        if not self._TITLE or not self._SIMPLE or not self._DESC_LIST:
+            raise TitleError(self.full_name)
         title = self._TITLE
         #print(title)
         simple = self._SIMPLE
         #print(simple)
+        #print(mcocsig, self._TITLE, self._DESC_LIST)
         desc = [key.strip() for key in self._DESC_LIST.split(',') if key.strip()]
-        #print(self._DESC_LIST)
 
         # allow manual override of Kabam Keys
         champ_exceptions = champ_exceptions if champ_exceptions else {}
