@@ -88,7 +88,7 @@ local_files = {
 }
 
 async def postprocess_sig_data(bot, struct):
-    sgd = StaticGameData()
+    sgd = cogs.mcocTools.StaticGameData()
     sigs = sgd.cdt_data
     # sigs = load_kabam_json(kabam_bcg_stat_en, aux=struct.get("bcg_stat_en_aux"))
     mcoc = bot.get_cog('MCOC')
@@ -732,7 +732,7 @@ class MCOC(ChampionFactory):
         /mastery info "Deep Wounds" 4 [works]
         /mastery info deepwounds 4 [works]
         /mastery info Deep Wounds 4 [fails]'''
-        sgd = StaticGameData()
+        sgd = cogs.mcocTools.StaticGameData()
         #print(len(sgd.cdt_data), len(sgd.cdt_masteries), sgd.test)
         cm = sgd.cdt_masteries
         found = False
@@ -2370,7 +2370,7 @@ class Champion:
         return image
 
     async def get_bio(self):
-        sgd = StaticGameData()
+        sgd = cogs.mcocTools.StaticGameData()
         key = "ID_CHARACTER_BIOS_{}".format(self.mcocjson)
         if self.debug:
             dbg_str = "BIO:  " + key
@@ -2489,7 +2489,7 @@ class Champion:
         return pack
 
     def get_special_attacks(self):
-        sgd = StaticGameData()
+        sgd = cogs.mcocTools.StaticGameData()
         cdt_data = sgd.cdt_data
         prefix = 'ID_SPECIAL_ATTACK_'
         desc = 'DESCRIPTION_'
@@ -2912,7 +2912,7 @@ def override_error_handler(bot):
 from . import hook as hook
 import cogs.mcocTools
 from .mcocTools import (KABAM_ICON, COLLECTOR_ICON, PagesMenu,
-    GSHandler, gapi_service_creds, GSExport, StaticGameData, CDT_COLORS)
+    GSHandler, gapi_service_creds, GSExport, CDT_COLORS)
 
 def setup(bot):
     override_error_handler(bot)
