@@ -577,7 +577,6 @@ class MCOC(ChampionFactory):
 
     def __init__(self, bot):
         self.bot = bot
-
         self.settings = {
                 'siglvl': 1,
                 'sigstep': 20,
@@ -616,6 +615,9 @@ class MCOC(ChampionFactory):
             #'local': 'data/mcoc/xref_test.json',
             #},
 
+        if dataIO.valid_json(self.bot, local_files['synergy']) is False:
+            await self.gsheet_handler.cache_gsheets('synergy')
+        self.syn_data = dataIO.load_json(local_files['synergy'])
         logger.info("MCOC Init")
         super().__init__()
 
@@ -870,6 +872,10 @@ class MCOC(ChampionFactory):
         except:
             await self.bot.say('\n'.join(s.full_name for s in selected))
 
+
+
+    # START CHAMP GROUP
+    #
     @commands.group(pass_context=True, aliases=['champs',])
     async def champ(self, ctx):
         if ctx.invoked_subcommand is None:
