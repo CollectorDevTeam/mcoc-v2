@@ -614,7 +614,6 @@ class MCOC(ChampionFactory):
     #'crossreference': {'gkey': '1WghdD4mfchduobH0me4T6IvhZ-owesCIyLxb019744Y',
             #'local': 'data/mcoc/xref_test.json',
             #},
-
         if dataIO.valid_json(self.bot, local_files['synergy']) is False:
             await self.gsheet_handler.cache_gsheets('synergy')
         self.syn_data = dataIO.load_json(local_files['synergy'])
