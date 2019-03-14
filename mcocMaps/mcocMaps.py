@@ -706,7 +706,10 @@ class MCOCMaps:
                         v = 'No Recoil detected'
                     else:
                         v = '<:recoil:524641305347883009> Recoil activated'
-                    prettyname = '\n{0.collectoremoji}  {0.verbose_str}'.format(champ)
+                    try:
+                        prettyname = '\n{0.collectoremoji}  {0.verbose_str}'.format(champ)
+                    except:
+                        prettyname = '\n'+champ.verbose_str
 
                     if prettyname not in desc1:
                         desc1.append(prettyname)
