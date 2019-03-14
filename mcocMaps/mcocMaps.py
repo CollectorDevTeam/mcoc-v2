@@ -34,7 +34,7 @@ AWD_API_URL = 'http://scouterlensbot.herokuapp.com/awd'
 # MAS_API_URL = 'http://chocripplebot.herokuapp.com/mas'
 
 class MCOCMaps:
-    '''Maps for Marvel Contest of Champions'''
+    """Maps for Marvel Contest of Champions"""
     aw_maps = {'advanced': aw_advanced,
         'challenger': aw_challenger,
         'expert': aw_expert,
@@ -258,14 +258,14 @@ class MCOCMaps:
 
     @commands.group(pass_context=True, aliases=['aq',])
     async def alliancequest(self, ctx):
-        '''Alliance Quest Commands [WIP]'''
+        """Alliance Quest Commands [WIP]"""
 
     @alliancequest.command(pass_context=True, name='map')
     async def _aq_map(self, ctx, *, maptype: str):
-        '''Select a Map
+        """Select a Map
             cheatsheet : cheatsheet
             aq maps : 5, 5.1, 5.2, 5.3, 6, 6.1, 6.2, 6.3
-            /aq 5'''
+            /aq 5"""
         author = ctx.message.author
         embeds = []
         if maptype in ('7', '7.1', '7.2', '7.3'):
@@ -323,9 +323,9 @@ class MCOCMaps:
 
     @commands.command(pass_context=True, aliases=['lol'])
     async def lolmap(self, ctx, *, maptype: str = '0'):
-        '''Select a Map
+        """Select a Map
             LOL maps: 0, 1, 2, 3, 4, 5, 6, 7
-            /lol 5'''
+            /lol 5"""
         if maptype in self.lolmaps:
             pages = []
             for i in range(0, 8):
@@ -349,7 +349,7 @@ class MCOCMaps:
 
     @commands.command(pass_context=True, aliases=['lolteam, kiryu'])
     async def lolteams(self, ctx, *, team: int = 1):
-        '''Highly Effective LOL Teams'''
+        """Highly Effective LOL Teams"""
         maxkiryu = 5
         pages = []
         for i in range(1, maxkiryu+1):
@@ -366,8 +366,8 @@ class MCOCMaps:
 
     @commands.command(pass_context=True)
     async def warmap(self, ctx, *, maptype: str = 'expert'):
-        '''Alliance War 2.0 Map
-        '''
+        """Alliance War 2.0 Map
+        """
         warmaps = {
             'expert' : '_expert'
         }
@@ -401,7 +401,7 @@ class MCOCMaps:
 
     @commands.group(pass_context=True, aliases=['aw',])
     async def alliancewar(self, ctx):
-        '''Alliancewar.com Commands [WIP]'''
+        """Alliancewar.com Commands [WIP]"""
         if ctx.invoked_subcommand is None:
             await send_cmd_help(ctx)
 
@@ -423,7 +423,7 @@ class MCOCMaps:
 
     @alliancewar.command(pass_context=True, hidden=False, name="node")
     async def _node_info(self, ctx, node, tier = 'expert'):
-        '''Report Node information.'''
+        """Report Node information."""
         season = 2
         tier = tier.lower()
         if tier in self.aw_maps.keys():
@@ -435,8 +435,8 @@ class MCOCMaps:
 
     @alliancewar.command(pass_context=True, hidden=False, name="nodes")
     async def _nodes_info(self, ctx, tier: str, *, nodes):
-        '''Report Node information.
-        This command has a reported defect and it is being investigatedself.'''
+        """Report Node information.
+        This command has a reported defect and it is being investigatedself."""
         season = 2
         tier = tier.lower()
         pages = []
@@ -513,7 +513,7 @@ class MCOCMaps:
 
     @alliancewar.command(pass_context=True, hidden=False, name="map")
     async def _map(self, ctx, tier = 'expert'):
-        '''Report AW track information.'''
+        """Report AW track information."""
         season = 2
         # boosts = self.alliancewarboosts
         # if boosts is not None:
@@ -533,7 +533,7 @@ class MCOCMaps:
 
     # @alliancewar.command(pass_context=True, hidden=False, name="path", aliases=('tracks','track','paths'))
     # async def _path_info(self, ctx, track='A', tier = 'expert'):
-    #     '''Report AW track information.'''
+    #     """Report AW track information."""
     #     season = 2
     #     tiers = {'expert':discord.Color.gold(),'hard':discord.Color.red(),'challenger':discord.Color.orange(),'intermediate':discord.Color.blue(),'advanced':discord.Color.green()}
     #     tracks = {'A':1,'B':2,'C':3,'D':4,'E':5,'F':6,'G':7,'H':8,'I':9}
@@ -557,7 +557,7 @@ class MCOCMaps:
 
     @alliancewar.command(pass_context=False, hidden=False, name="tiers", aliases=['tier'])
     async def _tiers(self):
-        '''List Alliance War Tiers'''
+        """List Alliance War Tiers"""
         aw_tiers = self.aw_tiers
         # name = '\u200b'
         # value = [['Tier', 'Mult', 'Difficulty']]
@@ -575,7 +575,7 @@ class MCOCMaps:
 
     @alliancewar.command(pass_context=True, hidden=False, name="scout")
     async def _scout(self, ctx, *, scoutargs):
-        '''
+        """
         JM's Scouter Lens inspection tool.
         Req: The Scouter Lens Mastery must contain at least 1 point.
 
@@ -587,7 +587,7 @@ class MCOCMaps:
         [class] : science, skill, mutant, tech, cosmic, mystic
         [star]  : 4, 5, 6
 
-        '''
+        """
         sgd = StaticGameData()
         #print(len(sgd.cdt_data), len(sgd.cdt_masteries), sgd.test)
         cm = sgd.cdt_masteries
@@ -706,7 +706,7 @@ class MCOCMaps:
                         v = 'No Recoil detected'
                     else:
                         v = '<:recoil:524641305347883009> Recoil activated'
-                    prettyname = '\n{}  {}'.format(champ.collectoremoji, champ.verbose_str)
+                    prettyname = '\n{0.collectoremoji}  {0.verbose_str}'.format(champ)
 
                     if prettyname not in desc1:
                         desc1.append(prettyname)
@@ -780,16 +780,16 @@ class MCOCMaps:
 
         default = {'tier': 0, 'difficulty' : '', 'hp': 0, 'atk': 0, 'node': 0, 'nodes': '',
                    'color': discord.Color.gold(), 'debug': 0, 'test': False}
-        parse_re = re.compile(r'''\b(?:t(?:ier)?(?P<tier>[0-9]{1,2})
+        parse_re = re.compile(r"""\b(?:t(?:ier)?(?P<tier>[0-9]{1,2})
                     | hp?(?P<hp>[0-9]{2,6})
                     | a(?:tk)?(?P<atk>[0-9]{2,5})
                     | (?P<hpi>\d{2,6})\s(?:\s)*(?P<atki>\d{2,5})
                     # | (?P<nodes>(n\d+(n\d+(n\d+(n\d+(n\d+)?)?)?)?)?)? 
                     | n(?:ode)?(?P<node>[0-9]{1,2}))
                     | (?:d(?P<debug>[0-9]{1,2}))\b
-                    | (?P<star_filter>[1-6](?=(?:star|s)\b|(?:★|☆|\*)\B)) ''', re.X)
+                    | (?P<star_filter>[1-6](?=(?:star|s)\b|(?:★|☆|\*)\B)) """, re.X)
 
-        class_re = re.compile(r'''(?:(?P<class>sc(?:ience)?|sk(?:ill)?|mu(?:tant)?|my(?:stic)?|co(?:smic)?|te(?:ch)?))''',re.X)
+        class_re = re.compile(r"""(?:(?P<class>sc(?:ience)?|sk(?:ill)?|mu(?:tant)?|my(?:stic)?|co(?:smic)?|te(?:ch)?))""",re.X)
 
         for arg in nargs.lower().split(' '):
             for m in parse_re.finditer(arg):
@@ -836,7 +836,7 @@ class MCOCMaps:
         return(default)
 
     async def jm_send_request(self, url, data):
-        '''Send request to service'''
+        """Send request to service"""
         async with aiohttp.request('POST', url, data=json.dumps(data)) as response:
             if response.status == 200 or response.status == 400:
                 return await response.json()
@@ -845,7 +845,7 @@ class MCOCMaps:
 
 
     async def jm_format_champ(self, champ):
-        ''' Format champ name for display '''
+        """ Format champ name for display """
         print('starting jm_format_champ')
         attrs = {}
         token = champ[2:-2]
