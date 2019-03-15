@@ -39,8 +39,8 @@ class STORYQUEST:
     async def _load_sq(self):
         await self.gsheet_handler.cache_gsheets('act6_glossary')
         await self.gsheet_handler.cache_gsheets('act6_paths')
-        self.glossary = dataIO.load_json('data/storyquest/act6_glossary')
-        self.paths = dataIO.load_json('data/storyquest/act6_paths')
+        self.glossary = dataIO.load_json('data/storyquest/act6_glossary.json')
+        self.paths = dataIO.load_json('data/storyquest/act6_paths.json')
 
     @commands.group(pass_context=True, aliases=('sq',))
     async def storyquest(self, ctx):
