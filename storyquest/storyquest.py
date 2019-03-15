@@ -68,12 +68,7 @@ class STORYQUEST:
             ucolor = discord.Color.gold()
         else:
             ucolor = author.color
-        data = discord.Embed(color=ucolor, title='Story Quest Boost Glossary', description='', url=ACT6_SHEET)
-        data.set_thumbnail(url=REBIRTH)
-        # data.set_author(name='Glossary by StarFighter + DragonFei + Royal', icon_url=GSHEET_ICON)
-        data.set_footer(text='Glossary by StarFighter + DragonFei + Royal | Requested by {}'.format(author.display_name), icon_url=GSHEET_ICON)
-
-        if boost is None:
+        if boost is None or boost not in boost_keys:
             pages = []
             glossary = ''
             for key in boost_keys:
@@ -91,7 +86,7 @@ class STORYQUEST:
             if len(pages) > 0:
                 menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
                 await menu.menu_start(pages)
-        else:
+        elif boost in boost_keys:
             data = discord.Embed(color=ucolor, title='Story Quest Boost Glossary', description='', url=ACT6_SHEET)
             data.set_thumbnail(url=REBIRTH)
             # data.set_author(name='Glossary by StarFighter + DragonFei + Royal', icon_url=GSHEET_ICON)
