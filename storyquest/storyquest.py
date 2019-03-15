@@ -21,13 +21,15 @@ class STORYQUEST:
                 name='act6_glossary',
                 gkey='1Up5SpQDhp_SUOb5UFuD6BwkVKsJ4ZKN13DHHNJrNrEc',
                 local='data/storyquest/act6_glossary.json',
-                range='glossary'
+                sheet_name='glossary',
+                range_name='glossary'
             )
         self.gsheet_handler.register_gsheet(
                 name='act6_paths',
                 gkey='1Up5SpQDhp_SUOb5UFuD6BwkVKsJ4ZKN13DHHNJrNrEc',
                 local='data/storyquest/act6_paths.json',
-                range='export'
+                sheet_name='glossary',
+                range_name='export'
             )
         self.act6_glossary = None
         self.act6_paths = None
