@@ -398,7 +398,6 @@ class StaticGameData:
             sheet_name='collector_export',
             range_name='collector_export'
         )
-
         self.gsheet_handler.register_gsheet(
             name='variant',
             gkey='1ZnoP_Kz_dC1DuTYmRX0spQLcHjiUZtT-oVTF52MHO3g',
@@ -773,7 +772,7 @@ class MCOCTools:
     @commands.command(pass_context=True, name='calendar', aliases=('events',))
     async def _calendar(self, ctx):
         author = ctx.message.author
-        await self.gsheet_handler.cache_gsheets('calendar')
+        await StaticGameData.gsheet_handler.cache_gsheets('calendar')
         sgd = StaticGameData()
         calendar = sgd.get_gsheets_data('calendar')
         ucolor = discord.Color.gold()
