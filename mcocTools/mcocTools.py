@@ -767,17 +767,16 @@ class MCOCTools:
     async def _calendar(self, ctx):
         author = ctx.message.author
         gsh = GSHandler(self.bot)
-        sgd = StaticGameData()
         gsh.register_gsheet(
             name='calendar',
             gkey='1a-gA4FCaChByM1oMoRn8mI3wx8BsHAJGlU0kbY9gQLE',
-            local='data/mcoc/calendar.json',
+            local='data/mcocTools/calendar.json',
             sheet_name='collector_export',
             range_name='collector_export'
         )
         await gsh.cache_gsheets('calendar')
 
-        calendar = await sgd.get_gsheets_data('calendar')
+        calendar = dataIO.load_json('data/mcocTools/calendar.json')
         ucolor = discord.Color.gold()
         if ctx.message.channel.is_private is False:
             ucolor = author.color
