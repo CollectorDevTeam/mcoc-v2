@@ -513,7 +513,7 @@ class Hook:
         if user is None:
             user = ctx.message.author
         if ctx.message.channel.is_private:
-            color=discord.Color.gold()
+            ucolor=discord.Color.gold()
         else:
             ucolor = user.color
         roster = ChampionRoster(self.bot, user)
