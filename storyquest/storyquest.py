@@ -33,7 +33,7 @@ class STORYQUEST:
                 name='act6_paths',
                 gkey='1Up5SpQDhp_SUOb5UFuD6BwkVKsJ4ZKN13DHHNJrNrEc',
                 local='data/storyquest/act6_paths.json',
-                sheet_name='glossary',
+                sheet_name='export',
                 range_name='export'
             )
         try:
