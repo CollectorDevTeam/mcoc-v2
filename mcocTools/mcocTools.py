@@ -391,6 +391,13 @@ class StaticGameData:
             sheet_name='collection',
             range_name='available_collection'
         )
+        self.gsheet_handler.register_gsheet(
+            name='calendar',
+            gkey='1a-gA4FCaChByM1oMoRn8mI3wx8BsHAJGlU0kbY9gQLE',
+            local='data/mcoc/calendar',
+            sheet_name='collector_export',
+            range_name='collector_export'
+        )
 
         self.gsheet_handler.register_gsheet(
             name='variant',
@@ -763,6 +770,34 @@ class MCOCTools:
     #     calurl = 'http://gsx2json.com/api?id=1a-gA4FCaChByM1oMoRn8mI3wx8BsHAJGlU0kbY9gQLE&sheet=5&rows=true'
 
     #     author = ctx.message.author
+    @commands.command(pass_context=True, name='calendar', aliases=('events',))
+    async def _calendar(self, ctx):
+        author = ctx.message.author
+        await self.gsheet_handler.cache_gsheets('calendar')
+        sgd = StaticGameData()
+        calendar = sgd.get_gsheets_data('calendar')
+        ucolor = discord.Color.gold()
+        if ctx.message.channel.is_private is False:
+            ucolor = author.color
+        pages = []
+        for i in range(1, 16):
+            i = str(i)
+            data = discord.Embed(color=ucolor, title='{0.day}, {0.date}'.format(calendar[i]))
+            if calendar[i]['feature'] == 'Crystal':
+                data.add_field(name='Arena', value='Crystal Cornucopia')
+            else:
+                data.add_field(name='Featured Arena', value=calendar[i]['feature'])
+                data.add_field(name='Basic Arena', value=calendar[i]['basic'])
+            data.add_field(name='Alliance Events', value='1 Day Event: {0.1day}\n3 Day Event: {0.3day}'.format(calendar[i]))
+            if calendar[i]['aq'] != 'off':
+                day = calendar[i]['aq']
+                data.add_field(name='Alliance Quest', value='On, Day {}\n{}'.format(day[-1:], calendar[i]['aqseason']))
+            else:
+                data.add_field(name='Alliance Quest', value='Off')
+            data.add_field(name='Alliance War', value='Phase: {}'.format(calendar[i]['aw']))
+
+
+
 
     @commands.command(pass_context=True, no_pm=True)
     async def topic(self, ctx, channel: discord.Channel = None):
@@ -930,6 +965,34 @@ class MCOCTools:
     @commands.command(hidden=True)
     async def aux_sheets(self):
         await self.cache_sgd_gsheets()
+
+
+    @commands.command(hidden=True, pass_context=True)
+    async def get_file(self, ctx, *, filename:str):
+        if self.check_collectordevteam(ctx) is False:
+            return
+        elif filename is 'mcoc_service_creds':
+            return
+        elif dataIO.is_valid_json('data/mcoc/{}.json'.format(filename)) is True:
+            await self.bot.send_file(ctx.message.channel, 'data/mcoc/{}.json'.format(filename))
+            return
+        elif dataIO.is_valid_json('data/hook/{}/champs.json'.format(filename)) is True:
+            await self.bot.send_file(ctx.message.channel, 'data/hook/{}/champs.json'.format(filename))
+            return
+        elif dataIO.is_valid_json(filename) is True:
+            await self.bot.send_file(ctx.message.channel, filename)
+            return
+        else:
+            await self.bot.say('I could not find that file.')
+
+    async def check_collectordevteam(self, ctx):
+        author = ctx.message.author.id
+        if author in ('148622879817334784', '124984294035816448', '209339409655398400'):
+            print('{} is CollectorDevTeam'.format(author))
+            return True
+        else:
+            print('{} is not CollectorDevTeam'.format(author))
+            return False
 
 
 class MCOCEvents:
@@ -1661,7 +1724,7 @@ def cell_to_dict(cell):
     return ret
 
 def check_folders():
-    folders = ('data', 'data/mcocTools/')
+    folders = ('data', 'data/mcocTools/', 'data/storyquest/')
     for folder in folders:
         if not os.path.exists(folder):
             print("Creating " + folder + " folder...")
