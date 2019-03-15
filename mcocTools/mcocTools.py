@@ -772,8 +772,9 @@ class MCOCTools:
     @commands.command(pass_context=True, name='calendar', aliases=('events',))
     async def _calendar(self, ctx):
         author = ctx.message.author
-        sgd = StaticGameData()
+        sgd = GSHandler(self.bot)
         await sgd.cache_gsheets('calendar')
+        sgd = StaticGameData()
         calendar = sgd.get_gsheets_data('calendar')
         ucolor = discord.Color.gold()
         if ctx.message.channel.is_private is False:
@@ -794,6 +795,9 @@ class MCOCTools:
             else:
                 data.add_field(name='Alliance Quest', value='Off')
             data.add_field(name='Alliance War', value='Phase: {}'.format(calendar[i]['aw']))
+            pages.append(data)
+        menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
+        await menu.menu_start(pages=pages)
 
 
 
@@ -811,6 +815,7 @@ class MCOCTools:
             data.set_thumbnail(url=ctx.message.server.icon_url)
             data.set_footer(text='CollectorDevTeam', icon_url=COLLECTOR_ICON)
             await self.bot.say(embed=data)
+
     #
     # @commands.command(pass_context=True, aliases={'collector', 'infocollector', 'about'})
     # async def aboutcollector(self, ctx):
