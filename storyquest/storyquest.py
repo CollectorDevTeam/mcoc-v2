@@ -8,7 +8,7 @@ import json
 from .utils.dataIO import dataIO
 from discord.ext import commands
 from __main__ import send_cmd_help
-from cogs.mcocTools import (StaticGameData, PagesMenu, KABAM_ICON, COLLECTOR_ICON, CDTHelperFunctions, GSHandler, check_folders, check_files)
+from cogs.mcocTools import (StaticGameData, PagesMenu, KABAM_ICON, COLLECTOR_ICON, CDTHelperFunctions, GSHandler)
 from cogs.mcoc import ChampConverter, ChampConverterDebug, Champion
 
 
@@ -61,7 +61,27 @@ class STORYQUEST:
 
 
 
+def check_folders():
+    folders = ('data', 'data/storyquest/')
+    for folder in folders:
+        if not os.path.exists(folder):
+            print("Creating " + folder + " folder...")
+            os.makedirs(folder)
 
+
+def check_files():
+    ignore_list = {'SERVERS': [], 'CHANNELS': []}
+
+    files = {
+        'settings.json': {},
+        'act6_glossary.json': {},
+        'act6_paths.json': {}
+    }
+
+    for filename, value in files.items():
+        if not os.path.isfile('data/storyquest/{}'.format(filename)):
+            print("Creating empty {}".format(filename))
+            dataIO.save_json('data/storyquest/{}'.format(filename), value)
 
 def setup(bot):
     check_folders()
