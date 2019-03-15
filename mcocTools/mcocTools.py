@@ -777,7 +777,7 @@ class MCOCTools:
         )
         await gsh.cache_gsheets('calendar')
 
-        calendar = sgd.get_gsheets_data('calendar')
+        calendar = await sgd.get_gsheets_data('calendar')
         ucolor = discord.Color.gold()
         if ctx.message.channel.is_private is False:
             ucolor = author.color
