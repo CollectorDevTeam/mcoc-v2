@@ -73,7 +73,7 @@ class STORYQUEST:
             glossary = ''
             for key in boost_keys:
                 if key != '-':
-                    glossary += '{}\n{}'.format(key, self.glossary[key]['description'])
+                    glossary += '{}\n{}\n\n'.format(key, self.glossary[key]['description'])
             glossary = chat.pagify(glossary)
             for g in glossary:
                 data = discord.Embed(color=ucolor, title='Story Quest Boost Glossary', description=g, url=ACT6_SHEET)
