@@ -772,8 +772,8 @@ class MCOCTools:
     @commands.command(pass_context=True, name='calendar', aliases=('events',))
     async def _calendar(self, ctx):
         author = ctx.message.author
-        await StaticGameData.gsheet_handler.cache_gsheets('calendar')
         sgd = StaticGameData()
+        await sgd.cache_gsheets('calendar')
         calendar = sgd.get_gsheets_data('calendar')
         ucolor = discord.Color.gold()
         if ctx.message.channel.is_private is False:
