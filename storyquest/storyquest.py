@@ -64,7 +64,8 @@ class STORYQUEST:
     async def _boost_info(self, ctx, *, boost=None):
         keys = []
         for k in self.glossary.keys():
-            keys.append(k)
+            if k != "-" and k != "_headers":
+                keys.append(k)
         keys = sorted(keys)
         author = ctx.message.author
         if ctx.message.channel.is_private:
@@ -75,11 +76,10 @@ class STORYQUEST:
             pages = []
             glossary = ''
             for key in keys:
-                if key != '-':
-                    try:
-                        glossary += '{}\n{}\n\n'.format(key, self.glossary[key]['description'])
-                    except KeyError:
-                        raise KeyError('Cannot resolve {}'.format(key))
+                try:
+                    glossary += '{}\n{}\n\n'.format(key, self.glossary[key]['description'])
+                except KeyError:
+                    raise KeyError('Cannot resolve {}'.format(key))
             glossary = chat.pagify(glossary)
             for g in glossary:
                 data = discord.Embed(color=ucolor, title='Story Quest Boost Glossary', description=g, url=ACT6_SHEET)
