@@ -11,6 +11,7 @@ from __main__ import send_cmd_help
 from cogs.mcocTools import (StaticGameData, PagesMenu, KABAM_ICON, COLLECTOR_ICON, CDTHelperFunctions, GSHandler)
 from cogs.mcoc import ChampConverter, ChampConverterDebug, Champion
 
+GSHEET_ICON = 'https://d2jixqqjqj5d23.cloudfront.net/assets/developer/imgs/icons/google-spreadsheet-icon.png'
 
 class STORYQUEST:
 
@@ -63,12 +64,17 @@ class STORYQUEST:
             ucolor = discord.Color.gold()
         else:
             ucolor = author.color
-        if boost in boost_keys:
-            await self.bot.say('debug: boost found')
-            await self.bot.say(self.glossary[boost]['description'])
-        else:
-            await self.bot.say('boost not found '
-                               'available boosts')
+        data = discord.Embed(color=ucolor, title='Story Quest Boost Glossary', description='')
+        data.set_author(name='StarFighter + DragonFei', icon_url=GSHEET_ICON)
+        data.set_footer(text='Requested by {}'.format(author.display_name))
+        data.description = self.glossary[boost]['description']
+        await self.bot.say(embed=em)
+        # if boost in boost_keys:
+        #     await self.bot.say('debug: boost found')
+        #     await self.bot.say(self.glossary[boost]['description'])
+        # else:
+        #     await self.bot.say('boost not found '
+        #                        'available boosts')
 
 
 
