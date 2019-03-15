@@ -6,6 +6,8 @@ import requests
 import re
 import json
 from .utils.dataIO import dataIO
+from .utils import chat_formatting as chat
+
 from discord.ext import commands
 from __main__ import send_cmd_help
 from cogs.mcocTools import (StaticGameData, PagesMenu, KABAM_ICON, COLLECTOR_ICON, CDTHelperFunctions, GSHandler)
@@ -13,6 +15,7 @@ from cogs.mcoc import ChampConverter, ChampConverterDebug, Champion
 
 GSHEET_ICON = 'https://d2jixqqjqj5d23.cloudfront.net/assets/developer/imgs/icons/google-spreadsheet-icon.png'
 ACT6_SHEET = 'https://docs.google.com/spreadsheets/d/1xTw37M_fwYClNfgvi7-09M6MLIcgMziTfM5_MGbAs0Q/view'
+REBIRTH = 'https://cdn.discordapp.com/attachments/398210253923024902/556216721933991936/46BBFB298E7EEA7DD8A5A1FAC65FBA621A6212B5.jpg'
 
 class STORYQUEST:
 
@@ -58,7 +61,7 @@ class STORYQUEST:
         await self._load_sq(force=True)
 
     @storyquest.command(pass_context=True, name='boost')
-    async def _boost_info(self, ctx, boost):
+    async def _boost_info(self, ctx, *, boost=None):
         boost_keys = self.glossary.keys()
         author = ctx.message.author
         if ctx.message.channel.is_private:
@@ -66,10 +69,37 @@ class STORYQUEST:
         else:
             ucolor = author.color
         data = discord.Embed(color=ucolor, title='Story Quest Boost Glossary', description='', url=ACT6_SHEET)
+        data.set_thumbnail(url=REBIRTH)
         # data.set_author(name='Glossary by StarFighter + DragonFei + Royal', icon_url=GSHEET_ICON)
-        data.set_footer(text='Glossary by StarFighter + DragonFei + Royal\nRequested by {}'.format(author.display_name), icon_url=GSHEET_ICON)
-        data.description = self.glossary[boost]['description']
-        await self.bot.say(embed=data)
+        data.set_footer(text='Glossary by StarFighter + DragonFei + Royal | Requested by {}'.format(author.display_name), icon_url=GSHEET_ICON)
+
+        if boost is None:
+            pages = []
+            glossary = ''
+            for key in boost_keys:
+                if key != '-':
+                    glossary += '{}\n{}'.format(key, self.glossary[key])
+            glossary = chat.pagify(glossary)
+            for g in glossary:
+                data = discord.Embed(color=ucolor, title='Story Quest Boost Glossary', description=g, url=ACT6_SHEET)
+                data.set_thumbnail(url=REBIRTH)
+                # data.set_author(name='Glossary by StarFighter + DragonFei + Royal', icon_url=GSHEET_ICON)
+                data.set_footer(
+                    text='Glossary by StarFighter + DragonFei + Royal | Requested by {}'.format(author.display_name),
+                    icon_url=GSHEET_ICON)
+                pages.append(data)
+            if len(pages) > 0:
+                menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
+                await menu.menu_start(pages)
+        else:
+            data = discord.Embed(color=ucolor, title='Story Quest Boost Glossary', description='', url=ACT6_SHEET)
+            data.set_thumbnail(url=REBIRTH)
+            # data.set_author(name='Glossary by StarFighter + DragonFei + Royal', icon_url=GSHEET_ICON)
+            data.set_footer(
+                text='Glossary by StarFighter + DragonFei + Royal | Requested by {}'.format(author.display_name),
+                icon_url=GSHEET_ICON)
+            data.description = self.glossary[boost]['description']
+            await self.bot.say(embed=data)
         # if boost in boost_keys:
         #     await self.bot.say('debug: boost found')
         #     await self.bot.say(self.glossary[boost]['description'])
