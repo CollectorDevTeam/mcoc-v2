@@ -29,22 +29,29 @@ class STORYQUEST:
                 local='data/storyquest/act6_paths.json',
                 range='export'
             )
-        await self.gsheet_handler.cache_gsheets('act6_glossary')
-        await self.gsheet_handler.cache_gsheets('act6_paths')
-        self.glossary = dataIO.load_json('data/storyquest/act6_glossary')
-        self.paths = dataIO.load_json('data/storyquest/act6_paths')
+        self.act6_glossary = None
+        self.act6_paths = None
+
         # sgd = StaticGameData()
         # self.glossary = await sgd.get_gsheets_data('act6_glossary')
         # self.export = await sgd.get_gsheets_data('act6_paths')
 
+    async def _load_sq(self):
+        await self.gsheet_handler.cache_gsheets('act6_glossary')
+        await self.gsheet_handler.cache_gsheets('act6_paths')
+        self.glossary = dataIO.load_json('data/storyquest/act6_glossary')
+        self.paths = dataIO.load_json('data/storyquest/act6_paths')
+
     @commands.group(pass_context=True, aliases=('sq',))
     async def storyquest(self, ctx):
+        if self.act6_glossary is None:
+            await self._load_sq()
         if ctx.invoked_subcommand is None:
             await send_cmd_help(ctx)
 
     @storyquest.command(pass_context=True, name='boost')
     async def _boost_info(self, ctx, boost):
-        boosts = self.glossary.keys()
+        boosts = self.act6_glossary.keys()
         if boost in boosts:
             await self.bot.say('boost found')
         else:
