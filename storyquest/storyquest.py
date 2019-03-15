@@ -29,11 +29,15 @@ class STORYQUEST:
                 local='data/storyquest/act6_paths.json',
                 range='export'
             )
-        sgd = StaticGameData()
-        self.glossary = sgd.get_gsheets_data('act6_glossary')
-        self.export = sgd.get_gsheets_data('act6_paths')
+        await self.gsheet_handler.cache_gsheets('act6_glossary')
+        await self.gsheet_handler.cache_gsheets('act6_paths')
+        self.glossary = dataIO.load_json('data/storyquest/act6_glossary')
+        self.paths = dataIO.load_json('data/storyquest/act6_paths')
+        # sgd = StaticGameData()
+        # self.glossary = await sgd.get_gsheets_data('act6_glossary')
+        # self.export = await sgd.get_gsheets_data('act6_paths')
 
-    @commands.group(pass_context=True, aliases='sq')
+    @commands.group(pass_context=True, aliases=('sq',))
     async def storyquest(self, ctx):
         if ctx.invoked_subcommand is None:
             await send_cmd_help(ctx)
