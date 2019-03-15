@@ -65,10 +65,10 @@ class STORYQUEST:
         else:
             ucolor = author.color
         data = discord.Embed(color=ucolor, title='Story Quest Boost Glossary', description='')
-        data.set_author(name='StarFighter + DragonFei', icon_url=GSHEET_ICON)
+        data.set_author(name='StarFighter + DragonFei + Royal', icon_url=GSHEET_ICON)
         data.set_footer(text='Requested by {}'.format(author.display_name))
         data.description = self.glossary[boost]['description']
-        await self.bot.say(embed=em)
+        await self.bot.say(embed=data)
         # if boost in boost_keys:
         #     await self.bot.say('debug: boost found')
         #     await self.bot.say(self.glossary[boost]['description'])
