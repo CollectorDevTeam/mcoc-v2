@@ -783,16 +783,19 @@ class MCOCTools:
         pages = []
         for i in range(1, 16):
             i = str(i)
-            data = discord.Embed(color=ucolor, title='{0.day}, {0.date}'.format(calendar[i]))
+            data = discord.Embed(color=ucolor, title='{}, {}'
+                                 .format(calendar[i]['day'], calendar[i]['date`']))
             if calendar[i]['feature'] == 'Crystal':
                 data.add_field(name='Arena', value='Crystal Cornucopia')
             else:
                 data.add_field(name='Featured Arena', value=calendar[i]['feature'])
                 data.add_field(name='Basic Arena', value=calendar[i]['basic'])
-            data.add_field(name='Alliance Events', value='1 Day Event: {0.1day}\n3 Day Event: {0.3day}'.format(calendar[i]))
+            data.add_field(name='Alliance Events', value='1 Day Event: {}\n3 Day Event: {}'
+                           .format(calendar[i]['1day'],calendar[i]['3day']))
             if calendar[i]['aq'] != 'off':
                 day = calendar[i]['aq']
-                data.add_field(name='Alliance Quest', value='On, Day {}\n{}'.format(day[-1:], calendar[i]['aqseason']))
+                data.add_field(name='Alliance Quest', value='On, Day {}\n{}'
+                               .format(day[-1:], calendar[i]['aqseason']))
             else:
                 data.add_field(name='Alliance Quest', value='Off')
             data.add_field(name='Alliance War', value='Phase: {}'.format(calendar[i]['aw']))
