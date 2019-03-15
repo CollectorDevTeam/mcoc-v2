@@ -62,16 +62,19 @@ class STORYQUEST:
 
     @storyquest.command(pass_context=True, name='boost')
     async def _boost_info(self, ctx, *, boost=None):
-        boost_keys = self.glossary.keys()
+        keys = []
+        for k in self.glossary.keys():
+            keys.append(k)
+        keys = sorted(keys)
         author = ctx.message.author
         if ctx.message.channel.is_private:
             ucolor = discord.Color.gold()
         else:
             ucolor = author.color
-        if boost is None or boost not in boost_keys:
+        if boost is None or boost not in keys:
             pages = []
             glossary = ''
-            for key in boost_keys:
+            for key in keys:
                 if key != '-':
                     glossary += '{}\n{}\n\n'.format(key, self.glossary[key]['description'])
             glossary = chat.pagify(glossary)
@@ -86,7 +89,7 @@ class STORYQUEST:
             if len(pages) > 0:
                 menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
                 await menu.menu_start(pages)
-        elif boost in boost_keys:
+        elif boost in keys:
             data = discord.Embed(color=ucolor, title='Story Quest Boost Glossary', description='', url=ACT6_SHEET)
             data.set_thumbnail(url=REBIRTH)
             # data.set_author(name='Glossary by StarFighter + DragonFei + Royal', icon_url=GSHEET_ICON)
