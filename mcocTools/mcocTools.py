@@ -771,7 +771,7 @@ class MCOCTools:
         gsh.register_gsheet(
             name='calendar',
             gkey='1a-gA4FCaChByM1oMoRn8mI3wx8BsHAJGlU0kbY9gQLE',
-            local='data/mcoc/calendar',
+            local='data/mcoc/calendar.json',
             sheet_name='collector_export',
             range_name='collector_export'
         )
