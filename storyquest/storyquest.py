@@ -31,35 +31,45 @@ class STORYQUEST:
                 sheet_name='glossary',
                 range_name='export'
             )
-        self.act6_glossary = None
-        self.act6_paths = None
+        try:
+            self.glossary = dataIO.load_json('data/storyquest/act6_glossary.json')
+            self.paths = dataIO.load_json('data/storyquest/act6_paths.json')
+        except:
+            self.glossary = {}
+            self.paths = {}
 
-        # sgd = StaticGameData()
-        # self.glossary = await sgd.get_gsheets_data('act6_glossary')
-        # self.export = await sgd.get_gsheets_data('act6_paths')
-
-    async def _load_sq(self):
-        await self.gsheet_handler.cache_gsheets('act6_glossary')
-        await self.gsheet_handler.cache_gsheets('act6_paths')
+    async def _load_sq(self, force=False):
+        if self.glossary == {} or self.paths == {} or force is True:
+            await self.gsheet_handler.cache_gsheets('act6_glossary')
+            await self.gsheet_handler.cache_gsheets('act6_paths')
         self.glossary = dataIO.load_json('data/storyquest/act6_glossary.json')
         self.paths = dataIO.load_json('data/storyquest/act6_paths.json')
+        return
 
     @commands.group(pass_context=True, aliases=('sq',))
     async def storyquest(self, ctx):
-        if self.act6_glossary is None:
-            await self._load_sq()
         if ctx.invoked_subcommand is None:
             await send_cmd_help(ctx)
 
+    @storyquest.command(hidden=True, name='fetch')
+    async def _fetch(self):
+        await self._load_sq(force=True)
+
     @storyquest.command(pass_context=True, name='boost')
     async def _boost_info(self, ctx, boost):
-        boosts = self.act6_glossary.keys()
-        if boost in boosts:
-            await self.bot.say('boost found')
+        boost_keys = self.glossary.keys()
+        author = ctx.message.author
+        if ctx.message.channel.is_private:
+            ucolor = discord.Color.gold()
+        else:
+            ucolor = author.color
+        if boost in boost_keys:
+            await self.bot.say('debug: boost found')
+            await self.bot.say(self.glossary[boost]['description'])
         else:
             await self.bot.say('boost not found '
                                'available boosts')
-            await self.bot.say('\n'.join(b for b in boosts))
+
 
 
 
