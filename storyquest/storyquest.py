@@ -12,6 +12,7 @@ from cogs.mcocTools import (StaticGameData, PagesMenu, KABAM_ICON, COLLECTOR_ICO
 from cogs.mcoc import ChampConverter, ChampConverterDebug, Champion
 
 GSHEET_ICON = 'https://d2jixqqjqj5d23.cloudfront.net/assets/developer/imgs/icons/google-spreadsheet-icon.png'
+ACT6_SHEET = 'https://docs.google.com/spreadsheets/d/1xTw37M_fwYClNfgvi7-09M6MLIcgMziTfM5_MGbAs0Q/view'
 
 class STORYQUEST:
 
@@ -64,9 +65,9 @@ class STORYQUEST:
             ucolor = discord.Color.gold()
         else:
             ucolor = author.color
-        data = discord.Embed(color=ucolor, title='Story Quest Boost Glossary', description='')
-        data.set_author(name='StarFighter + DragonFei + Royal', icon_url=GSHEET_ICON)
-        data.set_footer(text='Requested by {}'.format(author.display_name))
+        data = discord.Embed(color=ucolor, title='Story Quest Boost Glossary', description='', url=ACT6_SHEET)
+        # data.set_author(name='Glossary by StarFighter + DragonFei + Royal', icon_url=GSHEET_ICON)
+        data.set_footer(text='Glossary by StarFighter + DragonFei + Royal\nRequested by {}'.format(author.display_name), icon_url=GSHEET_ICON)
         data.description = self.glossary[boost]['description']
         await self.bot.say(embed=data)
         # if boost in boost_keys:
