@@ -137,7 +137,8 @@ def check_files():
     files = {
         'settings.json': {},
         'act6_glossary.json': {},
-        'act6_paths.json': {}
+        'act6_paths.json': {},
+        'act6_path_keys.json': {}
     }
 
     for filename, value in files.items():
