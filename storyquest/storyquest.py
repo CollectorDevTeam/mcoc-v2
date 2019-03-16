@@ -36,9 +36,17 @@ class STORYQUEST:
                 sheet_name='export',
                 range_name='export'
             )
+        self.gsheet_handler.register_gsheet(
+            name='act6_path_keys',
+            gkey='1Up5SpQDhp_SUOb5UFuD6BwkVKsJ4ZKN13DHHNJrNrEc',
+            local='data/storyquest/act6_paths.json',
+            sheet_name='paths',
+            range_name='paths'
+        )
         try:
             self.glossary = dataIO.load_json('data/storyquest/act6_glossary.json')
             self.paths = dataIO.load_json('data/storyquest/act6_paths.json')
+            self.paths = dataIO.load_json('data/storyquest/act6_path_keys.json')
         except:
             self.glossary = {}
             self.paths = {}
@@ -47,8 +55,10 @@ class STORYQUEST:
         if self.glossary == {} or self.paths == {} or force is True:
             await self.gsheet_handler.cache_gsheets('act6_glossary')
             await self.gsheet_handler.cache_gsheets('act6_paths')
+            await self.gsheet_handler.cache_gsheets('act6_path_keys')
         self.glossary = dataIO.load_json('data/storyquest/act6_glossary.json')
         self.paths = dataIO.load_json('data/storyquest/act6_paths.json')
+        self.path_keys = dataIO.load_json('data/storyquest/act6_path_keys.json')
         return
 
     @commands.group(pass_context=True, aliases=('sq',))
@@ -77,7 +87,7 @@ class STORYQUEST:
             glossary = ''
             for key in keys:
                 try:
-                    glossary += '{}\n{}\n\n'.format(key, self.glossary[key]['description'])
+                    glossary += '__**{}**__\n{}\n\n'.format(key, self.glossary[key]['description'])
                 except KeyError:
                     raise KeyError('Cannot resolve {}'.format(key))
             glossary = chat.pagify(glossary)
@@ -108,7 +118,9 @@ class STORYQUEST:
         #     await self.bot.say('boost not found '
         #                        'available boosts')
 
-
+    @storyquest.command(pass_context=True, name='path')
+    async def _paths(self, ctx, map, *, path=None):
+        await self.bot.say('test')
 
 
 def check_folders():
