@@ -87,7 +87,7 @@ class STORYQUEST:
             glossary = ''
             for key in keys:
                 try:
-                    glossary += '__**{}**__\n{}\n\n'.format(key, self.glossary[key]['description'])
+                    glossary += '__{}__\n{}\n\n'.format(key, self.glossary[key]['description'])
                 except KeyError:
                     raise KeyError('Cannot resolve {}'.format(key))
             glossary = chat.pagify(glossary)
