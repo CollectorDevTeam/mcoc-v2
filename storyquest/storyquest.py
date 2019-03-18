@@ -131,7 +131,7 @@ class STORYQUEST:
         if map not in self.path_keys.keys():
             message = 'Select a valid map\n6.1.1\n6.1.2\n6.1.3\n6.1.4\n6.1.5\n6.1.6'
             data.description = message
-            await self.bot.send(embed=data)
+            await self.bot.say(embed=data)
             return
         elif map == '6.1.3':
             valid_paths = ('path0', 'path1', 'path2', 'path3', 'path4')
@@ -142,7 +142,7 @@ class STORYQUEST:
             message = 'Valid paths include:\n'
             message += '\n'.join(valid_paths)
             data.description = message
-            await self.bot.send(embed=data)
+            await self.bot.say(embed=data)
             return
         else:
             tiles = self.paths[map][path].split()
