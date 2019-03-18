@@ -49,6 +49,7 @@ class STORYQUEST:
             self.paths = dataIO.load_json('data/storyquest/act6_path_keys.json')
         except:
             self.glossary = {}
+            self.export = {}
             self.paths = {}
 
     async def _load_sq(self, force=False):
@@ -120,7 +121,58 @@ class STORYQUEST:
 
     @storyquest.command(pass_context=True, name='path')
     async def _paths(self, ctx, map, *, path=None):
-        await self.bot.say('test')
+        author = ctx.message.author
+        ucolor = discord.Color.gold()
+
+        if ctx.message.channel.is_private is False:
+            ucolor = author.color
+
+        data = discord.Embed(color=ucolor, title='Story Quest Help',)
+        if map not in self.path_keys.keys():
+            message = 'Select a valid map\n6.1.1\n6.1.2\n6.1.3\n6.1.4\n6.1.5\n6.1.6'
+            data.description = message
+            await self.bot.send(embed=data)
+            return
+        elif map == '6.1.3':
+            valid_paths = ('path0', 'path1', 'path2', 'path3', 'path4')
+        else:
+            valid_paths = ('path1', 'path2', 'path3', 'path4', 'path5', 'path6', 'path7', 'path8', 'path9', 'path10')
+
+        if path is None or path not in valid_paths:
+            message = 'Valid paths include:\n'
+            message += '\n'.join(valid_paths)
+            data.description = message
+            await self.bot.send(embed=data)
+            return
+        else:
+            tiles = self.paths[map][path].split()
+            pages = []
+            for t in tiles:
+                key = '{}-{}-{}'.format(map, path, t)
+                mob = self.paths[key]['mob']
+                power = self.paths[key]['power']
+                hp = self.paths[key]['hp']
+                boosts = self.paths[key]['boosts'].split(', ')
+                globals = self.paths[key]['global'].split(', ')
+                data = discord.Embed(color=ucolor, title='Story Quest: {} {} {}'.format(map, path, mob),
+                                     description=power)
+                if hp != '':
+                    data.description += '\n{}'.format(hp)
+                for g in globals:
+                    data.add_field(name='Global Boost: {}'.format(g),
+                                   value='{}'.format(self.glossary[g]['description']))
+                for b in boosts:
+                    data.add_field(name='Global Boost: {}'.format(b),
+                                   value='{}'.format(self.glossary[b]['description']))
+                data.set_footer(
+                    text='Glossary by StarFighter + DragonFei + Royal | Requested by {}'.format(author.display_name),
+                    icon_url=GSHEET_ICON)
+                pages.append(data)
+            menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
+            await menu.menu_start(pages)
+            return
+
+
 
 
 def check_folders():
