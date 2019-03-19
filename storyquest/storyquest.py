@@ -10,7 +10,7 @@ from .utils import chat_formatting as chat
 
 from discord.ext import commands
 from __main__ import send_cmd_help
-from cogs.mcocTools import (StaticGameData, PagesMenu, KABAM_ICON, COLLECTOR_ICON, CDTHelperFunctions, GSHandler)
+from cogs.mcocTools import (StaticGameData, PagesMenu, KABAM_ICON, COLLECTOR_ICON, CDTHelperFunctions, GSHandler, CDT_COLORS)
 from cogs.mcoc import ChampConverter, ChampConverterDebug, Champion
 
 GSHEET_ICON = 'https://d2jixqqjqj5d23.cloudfront.net/assets/developer/imgs/icons/google-spreadsheet-icon.png'
@@ -181,7 +181,7 @@ class STORYQUEST:
                     notes = self.export[key]['notes']
                     attack = self.export[key]['attack']
                     tiles = self.export[key]['tiles']
-                    data = discord.Embed(color=ucolor, title='Story Quest: {} Path {}'.format(map, path[-1:]),
+                    data = discord.Embed(color=CDT_COLORS[champion.klass], title='Story Quest: {} Path {}'.format(map, path[-1:]),
                                          description='', url=ACT6_SHEET)
                     data.set_author(name=champion.full_name)
                     data.set_thumbnail(url=champion.get_avatar())
