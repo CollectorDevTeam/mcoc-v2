@@ -45,7 +45,7 @@ class STORYQUEST:
         )
         try:
             self.glossary = dataIO.load_json('data/storyquest/act6_glossary.json')
-            self.paths = dataIO.load_json('data/storyquest/act6_paths.json')
+            self.export = dataIO.load_json('data/storyquest/act6_paths.json')
             self.paths = dataIO.load_json('data/storyquest/act6_path_keys.json')
         except:
             self.glossary = {}
@@ -53,13 +53,13 @@ class STORYQUEST:
             self.paths = {}
 
     async def _load_sq(self, force=False):
-        if self.glossary == {} or self.paths == {} or force is True:
+        if self.glossary == {} or self.export == {} or force is True:
             await self.gsheet_handler.cache_gsheets('act6_glossary')
             await self.gsheet_handler.cache_gsheets('act6_paths')
             await self.gsheet_handler.cache_gsheets('act6_path_keys')
         self.glossary = dataIO.load_json('data/storyquest/act6_glossary.json')
-        self.paths = dataIO.load_json('data/storyquest/act6_paths.json')
-        self.path_keys = dataIO.load_json('data/storyquest/act6_path_keys.json')
+        self.export = dataIO.load_json('data/storyquest/act6_paths.json')
+        self.paths = dataIO.load_json('data/storyquest/act6_path_keys.json')
         return
 
     @commands.group(pass_context=True, aliases=('sq',))
@@ -146,19 +146,19 @@ class STORYQUEST:
             await self.bot.say(embed=data)
             return
         else:
-            tiles = self.path_keys[map][path].split('')
+            tiles = self.paths[map][path].split('')
             pages = []
             for t in tiles:
                 key = '{}-{}-{}'.format(map, path, t)
                 attrs = {}
-                mob = self.paths[key]['mob']
+                mob = self.export[key]['mob']
                 attrs['star'] = 5
                 attrs['rank'] = 5
                 champion = await ChampConverter.get_champion(self, self.bot, mob, attrs)
-                power = self.paths[key]['power']
-                hp = self.paths[key]['hp']
-                boosts = self.paths[key]['boosts'].split(', ')
-                globals = self.paths[key]['global'].split(', ')
+                power = self.export[key]['power']
+                hp = self.export[key]['hp']
+                boosts = self.export[key]['boosts'].split(', ')
+                globals = self.export[key]['global'].split(', ')
                 data = discord.Embed(color=ucolor, title='Story Quest: {} {} {}'.format(map, path, mob),
                                      description=power)
                 data.set_thumbnail(champion.get_avatar())
