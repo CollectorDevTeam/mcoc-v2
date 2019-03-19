@@ -174,22 +174,22 @@ class STORYQUEST:
                     notes = self.export[key]['notes']
                     attack = self.export[key]['attack']
                     tiles = self.export[key]['tiles']
-                    data = discord.Embed(color=ucolor, title='Story Quest: {} {}'.format(map, path),
+                    data = discord.Embed(color=ucolor, title='Story Quest: {} Path {}'.format(map, path[-1:]),
                                          description='', url=ACT6_SHEET)
                     data.set_author(name=champion.full_name)
                     data.set_thumbnail(url=champion.get_avatar())
+                    if tiles != '':
+                        data.description += '\nTiles: {}\n<:energyrefill:416405801519939584>     {:,}'.format(tiles, tiles*3)
                     if power != '':
                         data.description += '\nPower  {:,}'.format(power)
                     if hp != '':
-                        data.description += '\n<:friendshp:344221218708389888> {:,}'.format(hp)
+                        data.description += '\n<:friendshp:344221218708389888>     {:,}'.format(hp)
                     else:
-                        data.description += '\n<:friendshp:344221218708389888> ???'
+                        data.description += '\n<:friendshp:344221218708389888>     ???'
                     if attack != '':
-                        data.description += '\n<:xassassins:487357359241297950> {}'.format(attack)
+                        data.description += '\n<:xassassins:487357359241297950>     {}'.format(attack)
                     else:
-                        data.description += '\n<:xassassins:487357359241297950> ???'
-                    if tiles != '':
-                        data.description += '\n{} Path {}\nTotal tiles: {}\n<:energyrefill:416405801519939584> {:,}'.format(map, path[-1:], tiles, tiles*3)
+                        data.description += '\n<:xassassins:487357359241297950>     ???'
                     for g in gboosts:
                         if g != '-' and g != '':
                             data.add_field(name='Global Boost: {}'.format(self.glossary[g.lower()]['name']),
