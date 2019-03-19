@@ -128,13 +128,20 @@ class STORYQUEST:
     @storyquest.command(pass_context=True, name='path')
     async def _paths(self, ctx, map:str, path=None, verbose=False):
         """[BETA] Story Quest
-        Act 6 Fights"""
+        Act 6 Fights
+        maps: 6.1.1, 6.1.2, 6.1.3, 6.1.4, 6.1.5, 6.1.6
+        paths:  path1 to path10
+        verbose: If true, will play all fights sequentially
+        """
+
         author = ctx.message.author
         ucolor = discord.Color.gold()
-
         if ctx.message.channel.is_private is False:
             ucolor = author.color
-
+        if verbose in ("-v", "verbose", "v"):
+            verbose = True
+        else:
+            verbose = False
         data = discord.Embed(color=ucolor, title='Story Quest Help',)
         valid_maps = ('6.1.1', '6.1.2', '6.1.3', '6.1.4', '6.1.5', '6.1.6')
         if map not in valid_maps:
