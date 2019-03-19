@@ -148,32 +148,33 @@ class STORYQUEST:
         else:
             tiles = self.paths[map][path]
             pages = []
-            for t in list(tiles):
-                key = '{}-{}-{}'.format(map, path, t)
-                attrs = {}
-                mob = self.export[key]['mob']
-                attrs['star'] = 5
-                attrs['rank'] = 5
-                champion = await ChampConverter.get_champion(self, self.bot, mob, attrs)
-                power = self.export[key]['power']
-                hp = self.export[key]['hp']
-                boosts = self.export[key]['boosts'].split(', ')
-                gboosts = self.export[key]['global'].split(', ')
-                data = discord.Embed(color=ucolor, title='Story Quest: {} {} {}'.format(map, path, mob),
-                                     description=power)
-                data.set_thumbnail(url=champion.get_avatar())
-                if hp != '':
-                    data.description += '\n{}'.format(hp)
-                for g in gboosts:
-                    data.add_field(name='Global Boost: {}'.format(g),
-                                   value='{}'.format(self.glossary[g]['description']))
-                for b in boosts:
-                    data.add_field(name='Global Boost: {}'.format(b),
-                                   value='{}'.format(self.glossary[b]['description']))
-                data.set_footer(
-                    text='Glossary by StarFighter + DragonFei + Royal | Requested by {}'.format(author.display_name),
-                    icon_url=GSHEET_ICON)
-                pages.append(data)
+            for tile in list(tiles):
+                if tile in list('abcdefghij'):
+                    key = '{}-{}-{}'.format(map, path, tile)
+                    attrs = {}
+                    mob = self.export[key]['mob']
+                    attrs['star'] = 5
+                    attrs['rank'] = 5
+                    champion = await ChampConverter.get_champion(self, self.bot, mob, attrs)
+                    power = self.export[key]['power']
+                    hp = self.export[key]['hp']
+                    boosts = self.export[key]['boosts'].split(', ')
+                    gboosts = self.export[key]['global'].split(', ')
+                    data = discord.Embed(color=ucolor, title='Story Quest: {} {} {}'.format(map, path, mob),
+                                         description=power)
+                    data.set_thumbnail(url=champion.get_avatar())
+                    if hp != '':
+                        data.description += '\n{}'.format(hp)
+                    for g in gboosts:
+                        data.add_field(name='Global Boost: {}'.format(g),
+                                       value='{}'.format(self.glossary[g]['description']))
+                    for b in boosts:
+                        data.add_field(name='Global Boost: {}'.format(b),
+                                       value='{}'.format(self.glossary[b]['description']))
+                    data.set_footer(
+                        text='Glossary by StarFighter + DragonFei + Royal | Requested by {}'.format(author.display_name),
+                        icon_url=GSHEET_ICON)
+                    pages.append(data)
             menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
             await menu.menu_start(pages)
             return
