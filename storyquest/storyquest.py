@@ -186,7 +186,7 @@ class STORYQUEST:
                     data.set_author(name=champion.full_name)
                     data.set_thumbnail(url=champion.get_avatar())
                     if tiles != '':
-                        data.description += '\nTiles: {}\n<:energyrefill:416405801519939584>     {:,}'.format(tiles, tiles*3)
+                        data.description += '\nTiles: {}\n<:energy:557675957515845634>     {:,}'.format(tiles, tiles*3)
                     if power != '':
                         data.description += '\nPower  {:,}'.format(power)
                     if hp != '':
