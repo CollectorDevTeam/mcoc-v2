@@ -30,14 +30,14 @@ class STORYQUEST:
                 range_name='glossary'
             )
         self.gsheet_handler.register_gsheet(
-                name='act6_paths',
+                name='act6_export',
                 gkey='1Up5SpQDhp_SUOb5UFuD6BwkVKsJ4ZKN13DHHNJrNrEc',
-                local='data/storyquest/act6_paths.json',
+                local='data/storyquest/act6_export.json',
                 sheet_name='export',
                 range_name='export'
             )
         self.gsheet_handler.register_gsheet(
-            name='act6_path_keys',
+            name='act6_paths',
             gkey='1Up5SpQDhp_SUOb5UFuD6BwkVKsJ4ZKN13DHHNJrNrEc',
             local='data/storyquest/act6_paths.json',
             sheet_name='paths',
@@ -45,8 +45,8 @@ class STORYQUEST:
         )
         try:
             self.glossary = dataIO.load_json('data/storyquest/act6_glossary.json')
-            self.export = dataIO.load_json('data/storyquest/act6_paths.json')
-            self.paths = dataIO.load_json('data/storyquest/act6_path_keys.json')
+            self.export = dataIO.load_json('data/storyquest/act6_export.json')
+            self.paths = dataIO.load_json('data/storyquest/act6_paths.json')
         except:
             self.glossary = {}
             self.export = {}
@@ -55,11 +55,11 @@ class STORYQUEST:
     async def _load_sq(self, force=False):
         if self.glossary == {} or self.export == {} or force is True:
             await self.gsheet_handler.cache_gsheets('act6_glossary')
+            await self.gsheet_handler.cache_gsheets('act6_export')
             await self.gsheet_handler.cache_gsheets('act6_paths')
-            await self.gsheet_handler.cache_gsheets('act6_path_keys')
         self.glossary = dataIO.load_json('data/storyquest/act6_glossary.json')
-        self.export = dataIO.load_json('data/storyquest/act6_paths.json')
-        self.paths = dataIO.load_json('data/storyquest/act6_path_keys.json')
+        self.export = dataIO.load_json('data/storyquest/act6_export.json')
+        self.paths = dataIO.load_json('data/storyquest/act6_paths.json')
         return
 
     @commands.group(pass_context=True, aliases=('sq',))
