@@ -64,6 +64,10 @@ class STORYQUEST:
 
     @commands.group(pass_context=True, aliases=('sq',))
     async def storyquest(self, ctx):
+        """[BETA]: Story Quest
+        Supporting Act 6.1.x
+        Boost Glossary & Paths"""
+
         if ctx.invoked_subcommand is None:
             await send_cmd_help(ctx)
 
@@ -73,6 +77,8 @@ class STORYQUEST:
 
     @storyquest.command(pass_context=True, name='boost')
     async def _boost_info(self, ctx, *, boost=None):
+        """Story Quest Glossary
+        Supporting Act 6 node boosts."""
         keys = []
         for k in self.glossary.keys():
             if k != "-" and k != "_headers":
@@ -120,7 +126,9 @@ class STORYQUEST:
         #                        'available boosts')
 
     @storyquest.command(pass_context=True, name='path')
-    async def _paths(self, ctx, map:str, *, path=None):
+    async def _paths(self, ctx, map:str, path=None, verbose=False):
+        """[BETA] Story Quest
+        Act 6 Fights"""
         author = ctx.message.author
         ucolor = discord.Color.gold()
 
@@ -139,6 +147,9 @@ class STORYQUEST:
         else:
             valid_paths = ('path1', 'path2', 'path3', 'path4', 'path5', 'path6', 'path7', 'path8', 'path9', 'path10')
 
+        if isinstance(path, int):
+            if 'path{}'.format(path) in valid_paths:
+                path = 'path{}'.format(path)
         if path is None or path not in valid_paths:
             message = 'Valid paths include:\n'
             message += '\n'.join(valid_paths)
@@ -162,10 +173,11 @@ class STORYQUEST:
                     gboosts = self.export[key]['global'].split(', ')
                     notes = self.export[key]['notes']
                     data = discord.Embed(color=ucolor, title='Story Quest: {} {} {}'.format(map, path, mob),
-                                         description=power)
+                                         description='Power: {:,}'.format(power), url=ACT6_SHEET)
+                    data.set_author(name=champion.full_name)
                     data.set_thumbnail(url=champion.get_avatar())
                     if hp != '':
-                        data.description += '\n{}'.format(hp)
+                        data.description += '\nHealth: {:,}'.format(hp)
                     for g in gboosts:
                         if g != '-' and g != '':
                             data.add_field(name='Global Boost: {}'.format(self.glossary[g.lower()]['name']),
@@ -180,8 +192,16 @@ class STORYQUEST:
                         text='Glossary by StarFighter + DragonFei + Royal | Requested by {}'.format(author.display_name),
                         icon_url=GSHEET_ICON)
                     pages.append(data)
-            menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
-            await menu.menu_start(pages)
+            if verbose:
+                i = 1
+                for page in pages:
+                    page.set_footer(text='Glossary by StarFighter + DragonFei + Royal | Requested by {} | Fight {} of {}'.format(author.display_name, i, len(pages)),
+                        icon_url=GSHEET_ICON)
+                    await self.bot.say(embed=page)
+                    i+=1
+            else:
+                menu = PagesMenu(self.bot, timeout=360, delete_onX=True, add_pageof=True)
+                await menu.menu_start(pages)
             return
 
 
