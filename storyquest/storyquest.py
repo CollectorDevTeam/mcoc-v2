@@ -146,14 +146,15 @@ class STORYQUEST:
             await self.bot.say(embed=data)
             return
         else:
-            tiles = self.paths[map][path].split()
+            tiles = self.path_keys[map][path].split('')
             pages = []
             for t in tiles:
                 key = '{}-{}-{}'.format(map, path, t)
+                attrs = {}
                 mob = self.paths[key]['mob']
                 attrs['star'] = 5
                 attrs['rank'] = 5
-                champion = await ChampConverter.get_champion(self, self.bot, token, attrs)
+                champion = await ChampConverter.get_champion(self, self.bot, mob, attrs)
                 power = self.paths[key]['power']
                 hp = self.paths[key]['hp']
                 boosts = self.paths[key]['boosts'].split(', ')
