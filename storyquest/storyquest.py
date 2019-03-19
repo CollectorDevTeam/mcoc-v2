@@ -169,7 +169,7 @@ class STORYQUEST:
                         data.add_field(name='Global Boost: {}'.format(self.glossary[g.lower()]['name']),
                                        value='{}'.format(self.glossary[g.lower()]['description']))
                     for b in boosts:
-                        data.add_field(name='Global Boost: {}'.format(self.glossary[b.lower()]['name']),
+                        data.add_field(name='Local Boost: {}'.format(self.glossary[b.lower()]['name']),
                                        value='{}'.format(self.glossary[b.lower()]['description']))
                     data.set_footer(
                         text='Glossary by StarFighter + DragonFei + Royal | Requested by {}'.format(author.display_name),
