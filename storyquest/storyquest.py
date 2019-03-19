@@ -189,7 +189,7 @@ class STORYQUEST:
                     else:
                         data.description += '\n<:xassassins:487357359241297950> ???'
                     if tiles != '':
-                        data.description += '\n{} Path {-1:}\nTotal tiles: {}\n<:energyrefill:416405801519939584> {:,}'.format(map, path, tiles, tiles*3)
+                        data.description += '\n{} Path {}\nTotal tiles: {}\n<:energyrefill:416405801519939584> {:,}'.format(map, path[-1:], tiles, tiles*3)
                     for g in gboosts:
                         if g != '-' and g != '':
                             data.add_field(name='Global Boost: {}'.format(self.glossary[g.lower()]['name']),
