@@ -88,9 +88,9 @@ class STORYQUEST:
             glossary = ''
             for key in keys:
                 try:
-                    glossary += '__{}__\n{}\n\n'.format(key, self.glossary[key]['description'])
+                    glossary += '__{}__\n{}\n\n'.format(self.glossary[key]['name'], self.glossary[key]['description'])
                 except KeyError:
-                    raise KeyError('Cannot resolve {}'.format(key))
+                    raise KeyError('Cannot resolve {}'.format(boost))
             glossary = chat.pagify(glossary)
             for g in glossary:
                 data = discord.Embed(color=ucolor, title='Story Quest Boost Glossary', description=g, url=ACT6_SHEET)
@@ -166,11 +166,11 @@ class STORYQUEST:
                     if hp != '':
                         data.description += '\n{}'.format(hp)
                     for g in gboosts:
-                        data.add_field(name='Global Boost: {}'.format(g),
-                                       value='{}'.format(self.glossary[g]['description']))
+                        data.add_field(name='Global Boost: {}'.format(self.glossary[g.lower()]['name']),
+                                       value='{}'.format(self.glossary[g.lower()]['description']))
                     for b in boosts:
-                        data.add_field(name='Global Boost: {}'.format(b),
-                                       value='{}'.format(self.glossary[b]['description']))
+                        data.add_field(name='Global Boost: {}'.format(self.glossary[b.lower()]['name']),
+                                       value='{}'.format(self.glossary[b.lower()]['description']))
                     data.set_footer(
                         text='Glossary by StarFighter + DragonFei + Royal | Requested by {}'.format(author.display_name),
                         icon_url=GSHEET_ICON)
