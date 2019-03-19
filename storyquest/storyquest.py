@@ -146,9 +146,9 @@ class STORYQUEST:
             await self.bot.say(embed=data)
             return
         else:
-            tiles = self.paths[map][path].split('')
+            tiles = self.paths[map][path]
             pages = []
-            for t in tiles:
+            for t in list(tiles):
                 key = '{}-{}-{}'.format(map, path, t)
                 attrs = {}
                 mob = self.export[key]['mob']
@@ -158,13 +158,13 @@ class STORYQUEST:
                 power = self.export[key]['power']
                 hp = self.export[key]['hp']
                 boosts = self.export[key]['boosts'].split(', ')
-                globals = self.export[key]['global'].split(', ')
+                gboosts = self.export[key]['global'].split(', ')
                 data = discord.Embed(color=ucolor, title='Story Quest: {} {} {}'.format(map, path, mob),
                                      description=power)
-                data.set_thumbnail(champion.get_avatar())
+                data.set_thumbnail(url=champion.get_avatar())
                 if hp != '':
                     data.description += '\n{}'.format(hp)
-                for g in globals:
+                for g in gboosts:
                     data.add_field(name='Global Boost: {}'.format(g),
                                    value='{}'.format(self.glossary[g]['description']))
                 for b in boosts:
