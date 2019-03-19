@@ -160,6 +160,7 @@ class STORYQUEST:
                     hp = self.export[key]['hp']
                     boosts = self.export[key]['boosts'].split(', ')
                     gboosts = self.export[key]['global'].split(', ')
+                    notes = self.export[key]['notes']
                     data = discord.Embed(color=ucolor, title='Story Quest: {} {} {}'.format(map, path, mob),
                                          description=power)
                     data.set_thumbnail(url=champion.get_avatar())
@@ -173,6 +174,8 @@ class STORYQUEST:
                         if b != '-' and b !='':
                             data.add_field(name='Local Boost: {}'.format(self.glossary[b.lower()]['name']),
                                            value='{}'.format(self.glossary[b.lower()]['description']))
+                    if notes != '':
+                        data.add_field(name='Notes', value=notes)
                     data.set_footer(
                         text='Glossary by StarFighter + DragonFei + Royal | Requested by {}'.format(author.display_name),
                         icon_url=GSHEET_ICON)
