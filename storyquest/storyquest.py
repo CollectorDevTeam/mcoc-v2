@@ -120,7 +120,7 @@ class STORYQUEST:
         #                        'available boosts')
 
     @storyquest.command(pass_context=True, name='path')
-    async def _paths(self, ctx, map, *, path=None):
+    async def _paths(self, ctx, map:str, *, path=None):
         author = ctx.message.author
         ucolor = discord.Color.gold()
 
@@ -128,7 +128,8 @@ class STORYQUEST:
             ucolor = author.color
 
         data = discord.Embed(color=ucolor, title='Story Quest Help',)
-        if map not in self.path_keys.keys():
+        valid_maps = ('6.1.1', '6.1.2', '6.1.3', '6.1.4', '6.1.5', '6.1.6')
+        if map not in valid_maps:
             message = 'Select a valid map\n6.1.1\n6.1.2\n6.1.3\n6.1.4\n6.1.5\n6.1.6'
             data.description = message
             await self.bot.say(embed=data)
