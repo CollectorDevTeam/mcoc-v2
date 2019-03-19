@@ -172,12 +172,20 @@ class STORYQUEST:
                     boosts = self.export[key]['boosts'].split(', ')
                     gboosts = self.export[key]['global'].split(', ')
                     notes = self.export[key]['notes']
-                    data = discord.Embed(color=ucolor, title='Story Quest: {} {} {}'.format(map, path, mob),
-                                         description='Power: {:,}'.format(power), url=ACT6_SHEET)
+                    attack = self.export[key]['attack']
+                    tiles = self.export[key]['tiles']
+                    data = discord.Embed(color=ucolor, title='Story Quest: {} {}'.format(map, path),
+                                         description='', url=ACT6_SHEET)
                     data.set_author(name=champion.full_name)
                     data.set_thumbnail(url=champion.get_avatar())
+                    if power != '':
+                        data.description += '\nPower  {:,}'.format(power)
                     if hp != '':
-                        data.description += '\nHealth: {:,}'.format(hp)
+                        data.description += '\n<:friendshp:344221218708389888>  {:,}'.format(hp)
+                    if attack != '':
+                        data.description += '\n<:xassassins:487357359241297950>   {:,}'.format(attack)
+                    if tiles != '':
+                        data.description += '\n{} Path {-1:}\nTotal tiles: {}\n<:energyrefill:416405801519939584> {:,}'.format(map, path, tiles, tiles*3)
                     for g in gboosts:
                         if g != '-' and g != '':
                             data.add_field(name='Global Boost: {}'.format(self.glossary[g.lower()]['name']),
