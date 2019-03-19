@@ -181,9 +181,13 @@ class STORYQUEST:
                     if power != '':
                         data.description += '\nPower  {:,}'.format(power)
                     if hp != '':
-                        data.description += '\n<:friendshp:344221218708389888>  {:,}'.format(hp)
+                        data.description += '\n<:friendshp:344221218708389888> {:,}'.format(hp)
+                    else:
+                        data.description += '\n<:friendshp:344221218708389888> ???'
                     if attack != '':
-                        data.description += '\n<:xassassins:487357359241297950>   {:,}'.format(attack)
+                        data.description += '\n<:xassassins:487357359241297950> {}'.format(attack)
+                    else:
+                        data.description += '\n<:xassassins:487357359241297950> ???'
                     if tiles != '':
                         data.description += '\n{} Path {-1:}\nTotal tiles: {}\n<:energyrefill:416405801519939584> {:,}'.format(map, path, tiles, tiles*3)
                     for g in gboosts:
