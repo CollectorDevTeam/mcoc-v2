@@ -150,12 +150,16 @@ class STORYQUEST:
             for t in tiles:
                 key = '{}-{}-{}'.format(map, path, t)
                 mob = self.paths[key]['mob']
+                attrs['star'] = 5
+                attrs['rank'] = 5
+                champion = await ChampConverter.get_champion(self, self.bot, token, attrs)
                 power = self.paths[key]['power']
                 hp = self.paths[key]['hp']
                 boosts = self.paths[key]['boosts'].split(', ')
                 globals = self.paths[key]['global'].split(', ')
                 data = discord.Embed(color=ucolor, title='Story Quest: {} {} {}'.format(map, path, mob),
                                      description=power)
+                data.set_thumbnail(champion.get_avatar())
                 if hp != '':
                     data.description += '\n{}'.format(hp)
                 for g in globals:
