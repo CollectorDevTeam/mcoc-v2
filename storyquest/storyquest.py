@@ -165,6 +165,7 @@ class STORYQUEST:
         else:
             tiles = self.paths[map][path]
             pages = []
+            i = 1
             for tile in list(tiles):
                 if tile in list('abcdefghij'):
                     key = '{}-{}-{}'.format(map, path, tile)
@@ -179,9 +180,9 @@ class STORYQUEST:
                     gboosts = self.export[key]['global'].split(', ')
                     notes = self.export[key]['notes']
                     # attack = self.export[key]['attack']
-                    tiles = self.export[key]['tiles']
-                    data = discord.Embed(color=CDT_COLORS[champion.klass], title='Story Quest: {} Path {}'.format(map, path[-1:]),
+                    data = discord.Embed(color=CDT_COLORS[champion.klass], title='Act {} Path {} | Fight {} of {}'.format(map, path[-1:], i, len(tiles)),
                                          description='', url=ACT6_SHEET)
+                    tiles = self.export[key]['tiles']
                     data.set_author(name='{} : {}'.format(champion.full_name,power))
                     data.set_thumbnail(url=champion.get_avatar())
                     if tiles != '':
@@ -213,14 +214,25 @@ class STORYQUEST:
                             icon_url=COLLECTOR_ICON)
                     else:
                         data.set_footer(
-                            text='Glossary by StarFighter + DragonFei + Royal | Requested by {}'.format(author.display_name),
+                            text='Glossary by StarFighter + DragonFei + Royal | Requested by {}'
+                                 ''.format(author.display_name),
                             icon_url=GSHEET_ICON)
                     pages.append(data)
+                    i+=1
             if verbose:
                 i = 1
                 for page in pages:
-                    page.set_footer(text='Glossary by StarFighter + DragonFei + Royal | Requested by {} | Fight {} of {}'.format(author.display_name, i, len(pages)),
-                        icon_url=GSHEET_ICON)
+                    if map in jjs_maps:
+                        page.set_footer(
+                            text='CollectorDevTeam Data | Requested by {}'
+                                 ''.format(
+                                author.display_name),
+                            icon_url=COLLECTOR_ICON)
+                    else:
+                        page.set_footer(
+                            text='Glossary by StarFighter + DragonFei + Royal | Requested by {} | Fight {} of {}'
+                                 ''.format(author.display_name, i, len(pages)),
+                            icon_url=GSHEET_ICON)
                     await self.bot.say(embed=page)
                     i+=1
             else:
