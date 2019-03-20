@@ -138,10 +138,6 @@ class STORYQUEST:
         ucolor = discord.Color.gold()
         if ctx.message.channel.is_private is False:
             ucolor = author.color
-        if verbose in ("-v", "verbose", "v"):
-            verbose = True
-        else:
-            verbose = False
         data = discord.Embed(color=ucolor, title='Story Quest Help',)
         jjs_maps = ('5.3.1', '5.3.2')
         valid_maps = ('5.3.1', '5.3.2', '6.1.1', '6.1.2', '6.1.3', '6.1.4', '6.1.5', '6.1.6')
