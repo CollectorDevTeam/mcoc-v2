@@ -196,10 +196,10 @@ class STORYQUEST:
                         data.description += '\n<:friendshp:344221218708389888>     {:,}'.format(hp)
                     else:
                         data.description += '\n<:friendshp:344221218708389888>     ???'
-                    if attack != '':
-                        data.description += '\n<:xassassins:487357359241297950>     {}'.format(attack)
-                    else:
-                        data.description += '\n<:xassassins:487357359241297950>     ???'
+                    # if attack != '':
+                    #     data.description += '\n<:xassassins:487357359241297950>     {}'.format(attack)
+                    # else:
+                    #     data.description += '\n<:xassassins:487357359241297950>     ???'
                     for g in gboosts:
                         if g != '-' and g != '':
                             data.add_field(name='Global Boost: {}'.format(self.glossary[g.lower()]['name']),
