@@ -167,6 +167,7 @@ class STORYQUEST:
             pages = []
             i = 1
             for tile in list(tiles):
+                max = len(list(tiles))
                 if tile in list('abcdefghij'):
                     key = '{}-{}-{}'.format(map, path, tile)
                     attrs = {}
@@ -180,7 +181,7 @@ class STORYQUEST:
                     gboosts = self.export[key]['global'].split(', ')
                     notes = self.export[key]['notes']
                     # attack = self.export[key]['attack']
-                    data = discord.Embed(color=CDT_COLORS[champion.klass], title='Act {} Path {} | Fight {} of {}'.format(map, path[-1:], i, len(tiles)),
+                    data = discord.Embed(color=CDT_COLORS[champion.klass], title='Act {} Path {} | Fight {} of {}'.format(map, path[-1:], i, max),
                                          description='', url=ACT6_SHEET)
                     tiles = self.export[key]['tiles']
                     data.set_author(name='{} : {}'.format(champion.full_name,power))
