@@ -143,12 +143,15 @@ class STORYQUEST:
         else:
             verbose = False
         data = discord.Embed(color=ucolor, title='Story Quest Help',)
-        valid_maps = ('6.1.1', '6.1.2', '6.1.3', '6.1.4', '6.1.5', '6.1.6')
+        jjs_maps = ('5.3.1', '5.3.2')
+        valid_maps = ('5.3.1', '5.3.2', '6.1.1', '6.1.2', '6.1.3', '6.1.4', '6.1.5', '6.1.6')
         if map not in valid_maps:
             message = 'Select a valid map\n6.1.1\n6.1.2\n6.1.3\n6.1.4\n6.1.5\n6.1.6'
             data.description = message
             await self.bot.say(embed=data)
             return
+        elif map in jjs_maps:
+            valid_paths = ('path1', 'path2', 'path3', 'path4', 'path5')
         elif map == '6.1.3':
             valid_paths = ('path0', 'path1', 'path2', 'path3', 'path4')
         else:
@@ -207,9 +210,15 @@ class STORYQUEST:
                                            value='{}'.format(self.glossary[b.lower()]['description']))
                     if notes != '':
                         data.add_field(name='Notes', value=notes)
-                    data.set_footer(
-                        text='Glossary by StarFighter + DragonFei + Royal | Requested by {}'.format(author.display_name),
-                        icon_url=GSHEET_ICON)
+                    if map in jjs_maps:
+                        data.set_footer(
+                            text='CollectorDevTeam Data | Requested by {}'.format(
+                                author.display_name),
+                            icon_url=COLLECTOR_ICON)
+                    else:
+                        data.set_footer(
+                            text='Glossary by StarFighter + DragonFei + Royal | Requested by {}'.format(author.display_name),
+                            icon_url=GSHEET_ICON)
                     pages.append(data)
             if verbose:
                 i = 1
