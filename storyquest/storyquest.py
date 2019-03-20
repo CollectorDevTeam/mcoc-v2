@@ -186,12 +186,12 @@ class STORYQUEST:
                     tiles = self.export[key]['tiles']
                     data = discord.Embed(color=CDT_COLORS[champion.klass], title='Story Quest: {} Path {}'.format(map, path[-1:]),
                                          description='', url=ACT6_SHEET)
-                    data.set_author(name=champion.full_name)
+                    data.set_author(name='{} : {}'.format(champion.full_name,power))
                     data.set_thumbnail(url=champion.get_avatar())
                     if tiles != '':
                         data.description += '\nTiles: {}\n<:energy:557675957515845634>     {:,}'.format(tiles, tiles*3)
-                    if power != '':
-                        data.description += '\nPower  {:,}'.format(power)
+                    # if power != '':
+                    #     data.description += '\nPower  {:,}'.format(power)
                     if hp != '':
                         data.description += '\n<:friendshp:344221218708389888>     {:,}'.format(hp)
                     else:
