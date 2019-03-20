@@ -182,7 +182,7 @@ class STORYQUEST:
                     boosts = self.export[key]['boosts'].split(', ')
                     gboosts = self.export[key]['global'].split(', ')
                     notes = self.export[key]['notes']
-                    attack = self.export[key]['attack']
+                    # attack = self.export[key]['attack']
                     tiles = self.export[key]['tiles']
                     data = discord.Embed(color=CDT_COLORS[champion.klass], title='Story Quest: {} Path {}'.format(map, path[-1:]),
                                          description='', url=ACT6_SHEET)
