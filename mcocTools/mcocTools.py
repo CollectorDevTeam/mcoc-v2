@@ -817,7 +817,7 @@ class MCOCTools:
             else:
                 data.add_field(name='Alliance Quest', value='Off')
             if ssurl is not None:
-                data.set_thumbnail(url=ssurl)
+                data.set_image(url=ssurl)
             data.add_field(name='Alliance War', value='Phase: {}'.format(calendar[i]['aw']))
             data.add_field(name='Link to MCOC Schedule', value='[MCOC Shcedule by CollectorDevTeam]({})'.format(PUBLISHED))
             pages.append(data)
