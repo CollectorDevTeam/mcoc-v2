@@ -721,13 +721,9 @@ class MCOCTools:
     def __init__(self, bot):
         self.bot = bot
         self.search_parser = SearchExpr.parser()
+        self.settings = dataIO.load_json('data/mcocTools/settings.json')
 
     # lookup_links = {
-    #     'event': (
-    #         '<http://simians.tk/MCOC-Sched>',
-    #         '[Tiny MCoC Schedule](https://docs.google.com/spreadsheets/d/e/2PACX-1vT5A1MOwm3CvOGjn7fMvYaiTKDuIdvKMnH5XHRcgzi3eqLikm9SdwfkrSuilnZ1VQt8aSfAFJzZ02zM/pubhtml?gid=390226786)',
-    #         'Josh Morris Schedule',
-    #         'https://d2jixqqjqj5d23.cloudfront.net/assets/developer/imgs/icons/google-spreadsheet-icon.png'),
     #     'rttl': (
     #         '<https://drive.google.com/file/d/0B4ozoShtX2kFcDV4R3lQb1hnVnc/view>',
     #         '[Road to the Labyrinth Opponent List](https://drive.google.com/file/d/0B4ozoShtX2kFcDV4R3lQb1hnVnc/view)',
@@ -761,13 +757,9 @@ class MCOCTools:
     #         em.set_footer(text='CollectorDevTeam', icon_url=COLLECTOR_ICON)
     #     return em
 
-    # @commands.command(pass_context=True, aliases=('calendar','cal','events'))
-    # async def mcoc_schedule(self, ctx):
-    #     calurl = 'http://gsx2json.com/api?id=1a-gA4FCaChByM1oMoRn8mI3wx8BsHAJGlU0kbY9gQLE&sheet=5&rows=true'
 
-    #     author = ctx.message.author
     @commands.command(pass_context=True, name='calendar', aliases=('events',))
-    async def _calendar(self, ctx, days:int):
+    async def _calendar(self, ctx, force=False):
         PUBLISHED = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vT5A1MOwm3CvOGjn7fMvYaiTKDuIdvKMnH5XHRcgzi3eqLikm9SdwfkrSuilnZ1VQt8aSfAFJzZ02zM/pubhtml?gid=390226786'
         author = ctx.message.author
         gsh = GSHandler(self.bot)
@@ -778,7 +770,18 @@ class MCOCTools:
             sheet_name='collector_export',
             range_name='collector_export'
         )
-        ssurl = await SCREENSHOT.get_screenshot(self, url=PUBLISHED)
+
+        time_delta = ctx.message.timestamp - self.settings['calendar']['time']
+        if time_delta > 43200 or force is True:
+            ssurl = await SCREENSHOT.get_screenshot(self, url=PUBLISHED)
+            if ssurl is not None:
+                self.settings['calendar']['screenshot'] = ssurl.attachements[0]['url']
+                self.settings['calendar']['time'] = ssurl.timestamp
+                dataIO.save_json('data/mcocTools/settings.json', self.settings)
+                ssurl = ssurl.attachments[0]['url']
+        else:
+            ssurl = self.settings['calendar']['screenshot']
+
 
         await gsh.cache_gsheets('calendar')
         calendar = dataIO.load_json('data/mcocTools/calendar.json')
@@ -786,7 +789,7 @@ class MCOCTools:
         if ctx.message.channel.is_private is False:
             ucolor = author.color
         pages = []
-        for i in range(1, 16):
+        for i in range(1, 7):
             i = str(i)
             data = discord.Embed(color=ucolor, title='{}, {}'
                                  .format(calendar[i]['day'], calendar[i]['date']), url=PUBLISHED)
@@ -794,20 +797,24 @@ class MCOCTools:
             data.set_footer(text='Requested by {}'.format(author.display_name), icon_url=author.avatar_url)
             if calendar[i]['feature'] == 'Crystal':
                 data.add_field(name='Arena', value='Crystal Cornucopia')
+            elif calendar[i]['feature'] != "?":
+                mcoc = self.bot.get_cog('MCOC')
+                feature = await mcoc.get_champion(calendar[i]['feature'])
+                data.add_field(name='Feature Arena', value='{} 4☆ / 5☆ {}'
+                               .format(feature.collectoremoji, feature.full_name))
+                data.set_thumbnail(url=feature.get_featured())
             else:
-                try:
-                    mcoc = self.bot.get_cog('MCOC')
-                    feature = await mcoc.get_champion(calendar[i]['feature'])
-                    basic = await mcoc.get_champion(calendar[i]['basic'])
-                    data.add_field(name='Featured Arena', value='{} 4☆ / 5☆ {}'
-                                   .format(feature.collectoremoji, feature.full_name))
-                    data.add_field(name='Basic Arena', value='{} 4☆ {}'
-                                   .format(basic.collectoremoji, basic.full_name))
-                    data.set_thumbnail(url=feature.get_featured())
-                except:
-                    raise KeyError('Could not identify champion')
-                    data.add_field(name='Featured Arena', value=calendar[i]['feature'])
-                    data.add_field(name='Basic Arena', value=calendar[i]['basic'])
+                data.add_field(name='Feature Arena', value='4☆ / 5☆ {}'.format(calendar[i]['feature']))
+            if calendar[i]['basic'] != "?":
+                basic = await mcoc.get_champion(calendar[i]['basic'])
+                data.add_field(name='Basic Arena', value='{} 4☆ {}'
+                               .format(basic.collectoremoji, basic.full_name))
+            else:
+                data.add_field(name='Basic Arena', value='4☆ {}'.format(calendar[i]['basic']))
+                # except:
+                #     raise KeyError('Could not identify champion')
+                #     data.add_field(name='Featured Arena', value=calendar[i]['feature'])
+                #     data.add_field(name='Basic Arena', value=calendar[i]['basic'])
             data.add_field(name='Alliance Events', value='1 Day Event: {}\n3 Day Event: {}'
                            .format(calendar[i]['1day'], calendar[i]['3day']), inline=False)
             if calendar[i]['aq'] != 'off':
@@ -1583,24 +1590,25 @@ class SCREENSHOT:
     """Save a Screenshot from x website in mcocTools"""
     def __init__(self, bot):
         self.bot = bot
+        self.settings = dataIO.load_json('data/mcocTools/settings.json')
+        self.settings['calendar'] = {'screenshot': '', 'time': 0}
 
 
     async def get_screenshot(self, url):
         chrome_options = Options()
         chrome_options.add_argument("--headless")
-        chrome_options.add_argument("--window-size=1920, 1080")
+        chrome_options.add_argument("--window-size=1080, 1080")
         # chrome_options.binary_location = '/Applications/Google Chrome   Canary.app/Contents/MacOS/Google Chrome Canary'
         driver = webdriver.Chrome(executable_path="C:\webdrivers\chromedriver_win32\chromedriver",   chrome_options=chrome_options)
         channel = self.bot.get_channel('391330316662341632')
         # DRIVER = 'chromedriver'
         # driver = webdriver.Chrome(DRIVER)
         driver.get(url)
-        screenshot = driver.save_screenshot('data/mcocTools/temp_screenshot.png')
+        screenshot = driver.save_screenshot('data/mcocTools/{}.png'.format(url))
         driver.quit()
-        message = await self.bot.send_file(channel, 'data/mcocTools/temp_screenshot.png')
+        message = await self.bot.send_file(channel, 'data/mcocTools/{}.png'.format(url))
         if len(message.attachments) > 0:
-            ssurl = message.attachments[0]['url']
-            return ssurl
+            return message
         else:
             return None
 
