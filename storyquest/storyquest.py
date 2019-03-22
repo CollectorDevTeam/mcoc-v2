@@ -5,11 +5,8 @@ import os
 import requests
 import re
 import json
-import asyncio
-from collections import namedtuple, OrderedDict
 from .utils.dataIO import dataIO
 from .utils import chat_formatting as chat
-
 
 from discord.ext import commands
 from __main__ import send_cmd_help
@@ -20,27 +17,10 @@ GSHEET_ICON = 'https://d2jixqqjqj5d23.cloudfront.net/assets/developer/imgs/icons
 ACT6_SHEET = 'https://docs.google.com/spreadsheets/d/1xTw37M_fwYClNfgvi7-09M6MLIcgMziTfM5_MGbAs0Q/view'
 REBIRTH = 'https://cdn.discordapp.com/attachments/398210253923024902/556216721933991936/46BBFB298E7EEA7DD8A5A1FAC65FBA621A6212B5.jpg'
 
-EmojiReact = namedtuple('EmojiReact', 'emoji include')
-
-
 class STORYQUEST:
 
     def __init__(self, bot):
         self.bot = bot
-        self.all_emojis = OrderedDict([(i.emoji, i) for i in (
-            self.EmojiReact(":zero:", 0),
-            self.EmojiReact(":one:", 1),
-            self.EmojiReact(":two:", 2),
-            self.EmojiReact(":three:", 3),
-            self.EmojiReact(":four:", 4),
-            self.EmojiReact(":five:", 5),
-            self.EmojiReact(":six:", 6),
-            self.EmojiReact(":seven:", 7),
-            self.EmojiReact(":eight:", 8),
-            self.EmojiReact(":nine:", 9),
-            self.EmojiReact("🔟",  10),
-        )])
-
         self.gsheet_handler = GSHandler(bot)
         self.gsheet_handler.register_gsheet(
                 name='act6_glossary',
@@ -159,37 +139,19 @@ class STORYQUEST:
         if ctx.message.channel.is_private is False:
             ucolor = author.color
         data = discord.Embed(color=ucolor, title='Story Quest Help',)
-        # jjs_maps = ('5.3.1', '5.3.2')
-        bg_maps = ('5.4.1', '5.4.2', '5.4.3', '5.4.4', '5.4.5', '5.4.6')
-        starfighter_maps = ('6.1.1', '6.1.2', '6.1.3', '6.1.4', '6.1.5', '6.1.6')
-        if map in starfighter_maps:
-            footer = 'Data by StarFighter + DragonFei + Royal | Requested by {}'.format(author.display_name)
-        elif map in bg_maps:
-            footer = '[Data by Brian Grant](https://www.reddit.com/r/ContestOfChampions/comments/7y4qgh/heres_the_spreadsheet_of_node_info_i_gathered_for/)' \
-                     ' | Requested by {}'.format(author.display_name)
-        else:
-            footer = 'CollectorDevTeam | Requested by {}'.format(author.display_name)
-        valid_maps = []
-        for k in self.paths.keys():
-            valid_maps.append(k)
+        jjs_maps = ('5.3.1', '5.3.2')
+        valid_maps = ('5.3.1', '5.3.2', '6.1.1', '6.1.2', '6.1.3', '6.1.4', '6.1.5', '6.1.6')
         if map not in valid_maps:
-            message = 'Select a valid map:\n'
-            message += '\n'.join(valid_maps)
+            message = 'Select a valid map\n6.1.1\n6.1.2\n6.1.3\n6.1.4\n6.1.5\n6.1.6'
             data.description = message
-            message = await self.bot.say(embed=data)
+            await self.bot.say(embed=data)
             return
-
-        valid_paths = []
-        for k in self.paths[map].keys():
-            if k != "":
-                valid_paths.append(k)
-
-        # elif map in jjs_maps:
-        #     valid_paths = ('path1', 'path2', 'path3', 'path4', 'path5')
-        # elif map == '6.1.3':
-        #     valid_paths = ('path0', 'path1', 'path2', 'path3', 'path4')
-        # else:
-        #     valid_paths = ('path1', 'path2', 'path3', 'path4', 'path5', 'path6', 'path7', 'path8', 'path9', 'path10')
+        elif map in jjs_maps:
+            valid_paths = ('path1', 'path2', 'path3', 'path4', 'path5')
+        elif map == '6.1.3':
+            valid_paths = ('path0', 'path1', 'path2', 'path3', 'path4')
+        else:
+            valid_paths = ('path1', 'path2', 'path3', 'path4', 'path5', 'path6', 'path7', 'path8', 'path9', 'path10')
 
         if isinstance(path, int):
             if 'path{}'.format(path) in valid_paths:
@@ -198,88 +160,81 @@ class STORYQUEST:
             message = 'Valid paths include:\n'
             message += '\n'.join(valid_paths)
             data.description = message
-            message = await self.bot.say(embed=data)
-            # return
-            ## this needs to be down in valid paths ##
-            included = []
-            for i in valid_paths:
-                included.append(int(i[4:]))
-
-            self.included_emojis = set()
-            for emoji in self.all_emojis.values():
-                if emoji.include in included:
-                    await self.bot.add_reaction(message, emoji.emoji)
-                    self.included_emojis.add(emoji.emoji)
-            await asyncio.sleep(1)
-            react = await self.bot.wait_for_reaction(message=message, timeout=120, emoji=self.included_emojis)
-            if react is None:
-                try:
-                    await self.bot.clear_reactions(message)
-                except discord.errors.NotFound:
-                    # logger.warn("Message has been deleted")
-                    print('Message deleted')
-                except discord.Forbidden:
-                    # logger.warn("clear_reactions didn't work")
-                    for emoji in self.included_emojis:
-                        await self.bot.remove_reaction(message, emoji, self.bot.user)
-                return None
-            # await self.bot.delete_message(message)
-            emoji = react.reaction.emoji
-            path = 'path{}'.format(emoji.include)
-
-        if path is not None:
+            await self.bot.say(embed=data)
+            return
+        else:
             tiles = self.paths[map][path]
-            tiles = list(tiles)
-            max = tiles[-1]
             pages = []
             i = 1
             for tile in list(tiles):
-                key = '{}-{}-{}'.format(map, path, tile)
-                attrs = {}
-                mob = self.export[key]['mob']
-                attrs['star'] = 5
-                attrs['rank'] = 5
-                champion = await ChampConverter.get_champion(self, self.bot, mob, attrs)
-                power = self.export[key]['power']
-                hp = self.export[key]['hp']
-                boosts = self.export[key]['boosts'].split(', ')
-                gboosts = self.export[key]['global'].split(', ')
-                notes = self.export[key]['notes']
-                # attack = self.export[key]['attack']
-                data = discord.Embed(color=CDT_COLORS[champion.klass], title='Act {} Path {} | Fight {}'.format(map, path[-1:], i),
-                                     description='', url=ACT6_SHEET)
-                tiles = self.export[key]['tiles']
-                data.set_author(name='{} : {}'.format(champion.full_name,power))
-                data.set_thumbnail(url=champion.get_avatar())
-                if tiles != '':
-                    data.description += '\nTiles: {}\n<:energy:557675957515845634>     {:,}'.format(tiles, tiles*3)
-                # if power != '':
-                #     data.description += '\nPower  {:,}'.format(power)
-                if hp != '':
-                    data.description += '\n<:friendshp:344221218708389888>     {:,}'.format(hp)
-                else:
-                    data.description += '\n<:friendshp:344221218708389888>     ???'
-                # if attack != '':
-                #     data.description += '\n<:xassassins:487357359241297950>     {}'.format(attack)
-                # else:
-                #     data.description += '\n<:xassassins:487357359241297950>     ???'
-                for g in gboosts:
-                    if g != '-' and g != '':
-                        data.add_field(name='Global Boost: {}'.format(self.glossary[g.lower()]['name']),
-                                       value='{}'.format(self.glossary[g.lower()]['description']))
-                for b in boosts:
-                    if b != '-' and b !='':
-                        data.add_field(name='Local Boost: {}'.format(self.glossary[b.lower()]['name']),
-                                       value='{}'.format(self.glossary[b.lower()]['description']))
-                if notes != '':
-                    data.add_field(name='Notes', value=notes)
-                foot = footer + ' | Fight {} of {}'.format(i, max)
-                data.set_footer(foot)
-                pages.append(data)
-                i += 1
+                if tile in list('abcdefghij'):
+                    key = '{}-{}-{}'.format(map, path, tile)
+                    attrs = {}
+                    mob = self.export[key]['mob']
+                    attrs['star'] = 5
+                    attrs['rank'] = 5
+                    champion = await ChampConverter.get_champion(self, self.bot, mob, attrs)
+                    power = self.export[key]['power']
+                    hp = self.export[key]['hp']
+                    boosts = self.export[key]['boosts'].split(', ')
+                    gboosts = self.export[key]['global'].split(', ')
+                    notes = self.export[key]['notes']
+                    # attack = self.export[key]['attack']
+                    data = discord.Embed(color=CDT_COLORS[champion.klass], title='Act {} Path {} | Fight {}'.format(map, path[-1:], i),
+                                         description='', url=ACT6_SHEET)
+                    tiles = self.export[key]['tiles']
+                    data.set_author(name='{} : {}'.format(champion.full_name,power))
+                    data.set_thumbnail(url=champion.get_avatar())
+                    if tiles != '':
+                        data.description += '\nTiles: {}\n<:energy:557675957515845634>     {:,}'.format(tiles, tiles*3)
+                    # if power != '':
+                    #     data.description += '\nPower  {:,}'.format(power)
+                    if hp != '':
+                        data.description += '\n<:friendshp:344221218708389888>     {:,}'.format(hp)
+                    else:
+                        data.description += '\n<:friendshp:344221218708389888>     ???'
+                    # if attack != '':
+                    #     data.description += '\n<:xassassins:487357359241297950>     {}'.format(attack)
+                    # else:
+                    #     data.description += '\n<:xassassins:487357359241297950>     ???'
+                    for g in gboosts:
+                        if g != '-' and g != '':
+                            data.add_field(name='Global Boost: {}'.format(self.glossary[g.lower()]['name']),
+                                           value='{}'.format(self.glossary[g.lower()]['description']))
+                    for b in boosts:
+                        if b != '-' and b !='':
+                            data.add_field(name='Local Boost: {}'.format(self.glossary[b.lower()]['name']),
+                                           value='{}'.format(self.glossary[b.lower()]['description']))
+                    if notes != '':
+                        data.add_field(name='Notes', value=notes)
+                    if map in jjs_maps:
+                        data.set_footer(
+                            text='CollectorDevTeam Data | Requested by {}'.format(
+                                author.display_name),
+                            icon_url=COLLECTOR_ICON)
+                    else:
+                        data.set_footer(
+                            text='Glossary by StarFighter + DragonFei + Royal | Requested by {}'
+                                 ''.format(author.display_name),
+                            icon_url=GSHEET_ICON)
+                    pages.append(data)
+                    i+=1
             if verbose:
+                i = 1
                 for page in pages:
+                    if map in jjs_maps:
+                        page.set_footer(
+                            text='CollectorDevTeam Data | Requested by {}'
+                                 ''.format(
+                                author.display_name),
+                            icon_url=COLLECTOR_ICON)
+                    else:
+                        page.set_footer(
+                            text='Glossary by StarFighter + DragonFei + Royal | Requested by {} | Fight {} of {}'
+                                 ''.format(author.display_name, i, len(pages)),
+                            icon_url=GSHEET_ICON)
                     await self.bot.say(embed=page)
+                    i+=1
             else:
                 menu = PagesMenu(self.bot, timeout=360, delete_onX=True, add_pageof=True)
                 await menu.menu_start(pages)
