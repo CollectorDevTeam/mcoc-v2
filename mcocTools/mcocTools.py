@@ -776,24 +776,24 @@ class MCOCTools:
             sheet_name='collector_export',
             range_name='collector_export'
         )
-        try:
-            ssurlmsg = self.bot.get_message(self.calendar['channel'], self.calendar['message'])
-            time_delta = ctx.message.timestamp - ssurlmsg.timestamp
-        except:
-            raise KeyError('Could not acquire time delta')
-            time_delta = 43201
-            force = True
-        if time_delta > 43200 or force is True:
-            ssurl = await SCREENSHOT.get_screenshot(self, url=PUBLISHED)
-            if ssurl is not None:
-                self.calendar['channel'] = ssurl.channel
-                self.calendar['message'] = ssurl.id
-                self.calendar['screenshot'] = ssurl.attachements[0]['url']
-                self.calendar['time'] = ssurl.timestamp
-                dataIO.save_json('data/mcocTools/calendar_settings.json', self.calendar)
-                ssurl = ssurl.attachments[0]['url']
-        else:
-            ssurl = self.calendar['screenshot']
+        # try:
+        #     ssurlmsg = self.bot.get_message(self.calendar['channel'], self.calendar['message'])
+        #     time_delta = ctx.message.timestamp - ssurlmsg.timestamp
+        # except:
+        #     raise KeyError('Could not acquire time delta')
+        #     time_delta = 43201
+        #     force = True
+        # if time_delta > 43200 or force is True:
+        ssurl = await SCREENSHOT.get_screenshot(self, url=PUBLISHED)
+        if ssurl is not None:
+            self.calendar['channel'] = ssurl.channel
+            self.calendar['message'] = ssurl.id
+            self.calendar['screenshot'] = ssurl.attachements[0]['url']
+            self.calendar['time'] = ssurl.timestamp
+            dataIO.save_json('data/mcocTools/calendar_settings.json', self.calendar)
+            ssurl = ssurl.attachments[0]['url']
+        # else:
+        #     ssurl = self.calendar['screenshot']
 
 
         await gsh.cache_gsheets('calendar')
