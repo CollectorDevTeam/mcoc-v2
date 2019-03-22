@@ -1815,7 +1815,7 @@ def check_files():
 
     files = {
         'settings.json': {},
-        'calendar_settings.json': {'screenshot': '', 'time': dateParse('0')}
+        'calendar_settings.json': {}
     }
 
     for filename, value in files.items():
