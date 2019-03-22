@@ -784,7 +784,7 @@ class MCOCTools:
         #     time_delta = 43201
         #     force = True
         # if time_delta > 43200 or force is True:
-        ssurl = await SCREENSHOT.get_screenshot(self, url=PUBLISHED, w=1400, h=400)
+        ssurl = await SCREENSHOT.get_screenshot(self, url=PUBLISHED, w=1600, h=400)
         if ssurl is not None:
             # self.calendar['channel'] = message.channel
             # self.calendar['message'] = ssurl.id
