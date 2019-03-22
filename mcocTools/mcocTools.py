@@ -786,7 +786,7 @@ class MCOCTools:
         if ctx.message.channel.is_private is False:
             ucolor = author.color
         pages = []
-        for i in range(1, 7):
+        for i in range(1, 16):
             i = str(i)
             data = discord.Embed(color=ucolor, title='{}, {}'
                                  .format(calendar[i]['day'], calendar[i]['date']), url=PUBLISHED)
