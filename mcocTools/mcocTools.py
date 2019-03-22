@@ -1591,7 +1591,9 @@ class SCREENSHOT:
     def __init__(self, bot):
         self.bot = bot
         self.settings = dataIO.load_json('data/mcocTools/settings.json')
-        self.settings['calendar'] = {'screenshot': '', 'time': 0}
+        if 'calendar' not in self.settings.keys():
+            self.settings['calendar'] = {'screenshot': '', 'time': 0}
+            dataIO.save_json('data/mcocTools/settings.json', self.settings)
 
 
     async def get_screenshot(self, url):
