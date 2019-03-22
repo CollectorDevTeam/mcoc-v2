@@ -799,13 +799,13 @@ class MCOCTools:
                                    .format(feature.collectoremoji, feature.full_name))
                     data.add_field(name='Basic Arena', value='{} 4☆ {}'
                                    .format(basic.collectoremoji, basic.full_name))
-                    data.set_thumbnail(feature.get_featured())
+                    data.set_thumbnail(url=feature.get_featured())
                 except:
                     raise KeyError('Could not identify champion')
                     data.add_field(name='Featured Arena', value=calendar[i]['feature'])
                     data.add_field(name='Basic Arena', value=calendar[i]['basic'])
             data.add_field(name='Alliance Events', value='1 Day Event: {}\n3 Day Event: {}'
-                           .format(calendar[i]['1day'],calendar[i]['3day']), inline=False)
+                           .format(calendar[i]['1day'], calendar[i]['3day']), inline=False)
             if calendar[i]['aq'] != 'off':
                 day = calendar[i]['aq']
                 data.add_field(name='Alliance Quest', value='On, Day {}\n{}'
