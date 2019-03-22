@@ -813,6 +813,7 @@ class MCOCTools:
             else:
                 data.add_field(name='Alliance Quest', value='Off')
             data.add_field(name='Alliance War', value='Phase: {}'.format(calendar[i]['aw']))
+            data.add_field(name='[Link to MCOC Schedule]({})'.format(PUBLISHED),value='')
             pages.append(data)
         menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
         await menu.menu_start(pages=pages)
