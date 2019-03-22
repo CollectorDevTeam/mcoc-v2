@@ -793,8 +793,8 @@ class MCOCTools:
             else:
                 try:
                     mcoc = self.bot.get_cog('MCOC')
-                    feature = await mcoc.get_champion(self.bot, token=calendar[i]['feature'])
-                    basic = await mcoc.get_champion(self.bot, token=calendar[i]['basic'])
+                    feature = await mcoc.get_champion(token=calendar[i]['feature'])
+                    basic = await mcoc.get_champion(token=calendar[i]['basic'])
                     data.add_field(name='Featured Arena', value='{} 4☆ / 5☆ {}'
                                    .format(feature.collectoremoji, feature.full_name))
                     data.add_field(name='Basic Arena', value='{} 4☆ {}'
