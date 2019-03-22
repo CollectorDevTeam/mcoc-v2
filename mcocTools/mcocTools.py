@@ -793,14 +793,15 @@ class MCOCTools:
             else:
                 try:
                     mcoc = self.bot.get_cog('MCOC')
-                    feature = mcoc.ChampConverter.get_champion(self.bot, token=calendar[i]['feature'])
-                    basic = mcoc.ChampConverter.get_champion(self.bot, token=calendar[i]['basic'])
+                    feature = await mcoc.get_champion(self.bot, token=calendar[i]['feature'])
+                    basic = await mcoc.get_champion(self.bot, token=calendar[i]['basic'])
                     data.add_field(name='Featured Arena', value='{} 4☆ / 5☆ {}'
                                    .format(feature.collectoremoji, feature.full_name))
                     data.add_field(name='Basic Arena', value='{} 4☆ {}'
                                    .format(basic.collectoremoji, basic.full_name))
                     data.set_thumbnail(feature.get_featured())
                 except:
+                    raise KeyError('Could not identify champion')
                     data.add_field(name='Featured Arena', value=calendar[i]['feature'])
                     data.add_field(name='Basic Arena', value=calendar[i]['basic'])
             data.add_field(name='Alliance Events', value='1 Day Event: {}\n3 Day Event: {}'
