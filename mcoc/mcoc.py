@@ -1556,9 +1556,9 @@ class MCOC(ChampionFactory):
             em.add_field(name='Kabam Spotlight', value='No URL found')
         else:
             em.add_field(name='Kabam Spotlight', value=champ.infopage)
-        if champ.writeup_url != '':
-        # if xref['writeup_url'] !='':
-            em.add_field(name=champ.'writeup', value=champ.'writeup_url')
+        # if champ.writeup_url != '':
+        # # if xref['writeup_url'] !='':
+        #     em.add_field(name=champ.'writeup', value=champ.'writeup_url')
         # if xref['royal_writeup'] != '':
         #     em.add_field(name='Royal Writeup', value=xref['royal_writeup'])
         em.add_field(name='Shortcode', value=champ.short)
