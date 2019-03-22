@@ -1588,6 +1588,7 @@ class SCREENSHOT:
     async def get_screenshot(self, url):
         chrome_options = Options()
         chrome_options.add_argument("--headless")
+        chrome_options.add_argument("--window-size=1920, 1080")
         # chrome_options.binary_location = '/Applications/Google Chrome   Canary.app/Contents/MacOS/Google Chrome Canary'
         driver = webdriver.Chrome(executable_path="C:\webdrivers\chromedriver_win32\chromedriver",   chrome_options=chrome_options)
         channel = self.bot.get_channel('391330316662341632')
