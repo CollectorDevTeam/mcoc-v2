@@ -793,7 +793,7 @@ class MCOCTools:
             dataIO.save_json('data/mcocTools/calendar_settings.json', self.calendar)
         else:
             ssurl = self.calendar['screenshot']
-
+        mcoc = self.bot.get_cog('MCOC')
 
         await gsh.cache_gsheets('calendar')
         calendar = dataIO.load_json('data/mcocTools/calendar.json')
@@ -809,20 +809,20 @@ class MCOCTools:
             data.set_footer(text='Requested by {}'.format(author.display_name), icon_url=author.avatar_url)
             if calendar[i]['feature'] == 'Crystal':
                 data.add_field(name='Arena', value='Crystal Cornucopia')
-            elif calendar[i]['feature'] != "?":
-                mcoc = self.bot.get_cog('MCOC')
-                feature = await mcoc.get_champion(calendar[i]['feature'])
-                data.add_field(name='Feature Arena', value='{} 4☆ / 5☆ {}'
-                               .format(feature.collectoremoji, feature.full_name))
-                data.set_thumbnail(url=feature.get_featured())
-            else:
-                data.add_field(name='Feature Arena', value='4☆ / 5☆ {}'.format(calendar[i]['feature']))
-            if calendar[i]['basic'] != "?":
-                basic = await mcoc.get_champion(calendar[i]['basic'])
-                data.add_field(name='Basic Arena', value='{} 4☆ {}'
-                               .format(basic.collectoremoji, basic.full_name))
-            else:
-                data.add_field(name='Basic Arena', value='4☆ {}'.format(calendar[i]['basic']))
+            elif calendar[i]['feature'] != "?" and calendar[i]['feature'] != "Crystal":
+                try:
+                    feature = await mcoc.get_champion(calendar[i]['feature'])
+                    basic = await mcoc.get_champion(calendar[i]['basic'])
+                    data.add_field(name='Feature Arena', value='{} 4☆ / 5☆ {}'
+                                   .format(feature.collectoremoji, feature.full_name))
+                    data.add_field(name='Basic Arena', value='{} 4☆ {}'
+                                   .format(basic.collectoremoji, basic.full_name))
+                    data.set_thumbnail(url=feature.get_featured())
+                except:
+                    raise KeyError('Failed to identify a champion.')
+                    data.add_field(name='Feature Arena', value='4☆ / 5☆ {}'.format(calendar[i]['feature']))
+                    data.add_field(name='Basic Arena', value='4☆ {}'.format(calendar[i]['basic']))
+
                 # except:
                 #     raise KeyError('Could not identify champion')
                 #     data.add_field(name='Featured Arena', value=calendar[i]['feature'])
