@@ -786,14 +786,13 @@ class MCOCTools:
         # if time_delta > 43200 or force is True:
         ssurl = await SCREENSHOT.get_screenshot(self, url=PUBLISHED)
         if ssurl is not None:
-            self.calendar['channel'] = ssurl.channel
-            self.calendar['message'] = ssurl.id
-            self.calendar['screenshot'] = ssurl.attachements[0]['url']
-            self.calendar['time'] = ssurl.timestamp
+            # self.calendar['channel'] = message.channel
+            # self.calendar['message'] = ssurl.id
+            self.calendar['screenshot'] = ssurl
+            # self.calendar['time'] = ssurl.timestamp
             dataIO.save_json('data/mcocTools/calendar_settings.json', self.calendar)
-            ssurl = ssurl.attachments[0]['url']
-        # else:
-        #     ssurl = self.calendar['screenshot']
+        else:
+            ssurl = self.calendar['screenshot']
 
 
         await gsh.cache_gsheets('calendar')
@@ -1625,7 +1624,7 @@ class SCREENSHOT:
         message = await self.bot.send_file(channel, 'data/mcocTools/temp.png')
         await asyncio.sleep(1)
         if len(message.attachments) > 0:
-            return message
+            return message.attachments[0]['url']
         else:
             return None
 
