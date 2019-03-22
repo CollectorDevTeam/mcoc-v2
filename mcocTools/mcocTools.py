@@ -1619,9 +1619,9 @@ class SCREENSHOT:
         # DRIVER = 'chromedriver'
         # driver = webdriver.Chrome(DRIVER)
         driver.get(url)
-        screenshot = driver.save_screenshot('data/mcocTools/{}.png'.format(url))
+        screenshot = driver.save_screenshot('data/mcocTools/temp.png')
         driver.quit()
-        message = await self.bot.send_file(channel, 'data/mcocTools/{}.png'.format(url))
+        message = await self.bot.send_file(channel, 'data/mcocTools/temp.png')
         if len(message.attachments) > 0:
             return message
         else:
