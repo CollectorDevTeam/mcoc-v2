@@ -781,10 +781,10 @@ class MCOCTools:
         if ctx.message.channel.is_private is False:
             ucolor = author.color
         pages = []
-        for i in range(1, 16):
+        for i in range(1, 7):
             i = str(i)
             data = discord.Embed(color=ucolor, title='{}, {}'
-                                 .format(calendar[i]['day'], calendar[i]['date`']))
+                                 .format(calendar[i]['day'], calendar[i]['date']))
             if calendar[i]['feature'] == 'Crystal':
                 data.add_field(name='Arena', value='Crystal Cornucopia')
             else:
