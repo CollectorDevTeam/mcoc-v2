@@ -723,6 +723,9 @@ class MCOCTools:
         self.search_parser = SearchExpr.parser()
         self.calendar = dataIO.load_json('data/mcocTools/calendar_settings.json')
         self.calendar['time'] = 0
+        self.calendar['screenshot'] = ''
+        dataIO.save_json('data/mcocTools/calendar_settings.json', self.calendar)
+        
 
     # lookup_links = {
     #     'rttl': (
