@@ -723,9 +723,10 @@ class MCOCTools:
         self.bot = bot
         self.search_parser = SearchExpr.parser()
         self.calendar = dataIO.load_json('data/mcocTools/calendar_settings.json')
-        self.calendar['time'] = dateParse(0)
-        self.calendar['screenshot'] = ''
-        dataIO.save_json('data/mcocTools/calendar_settings.json', self.calendar)
+        # self.calendar = {}
+        # self.calendar['time'] = dateParse(0)
+        # self.calendar['screenshot'] = ''
+        # dataIO.save_json('data/mcocTools/calendar_settings.json', self.calendar)
 
 
     # lookup_links = {
@@ -1807,7 +1808,7 @@ def check_files():
 
     files = {
         'settings.json': {},
-        'calendar_settings.json': {}
+        'calendar_settings.json': {'screenshot': '', 'time': dateParse('0')}
     }
 
     for filename, value in files.items():
