@@ -787,7 +787,7 @@ class MCOCTools:
             data = discord.Embed(color=ucolor, title='{}, {}'
                                  .format(calendar[i]['day'], calendar[i]['date']), url=PUBLISHED)
             data.set_author(name='CollectorDevTeam | MCOC Schedule', icon_url=COLLECTOR_ICON)
-            data.footer(text='Requested by {}'.format(author.display_name), icon_url=author.avatar_url)
+            data.set_footer(text='Requested by {}'.format(author.display_name), icon_url=author.avatar_url)
             if calendar[i]['feature'] == 'Crystal':
                 data.add_field(name='Arena', value='Crystal Cornucopia')
             else:
