@@ -765,6 +765,7 @@ class MCOCTools:
     #     author = ctx.message.author
     @commands.command(pass_context=True, name='calendar', aliases=('events',))
     async def _calendar(self, ctx):
+        PUBLISHED = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vT5A1MOwm3CvOGjn7fMvYaiTKDuIdvKMnH5XHRcgzi3eqLikm9SdwfkrSuilnZ1VQt8aSfAFJzZ02zM/pubhtml?gid=390226786'
         author = ctx.message.author
         gsh = GSHandler(self.bot)
         gsh.register_gsheet(
@@ -784,7 +785,9 @@ class MCOCTools:
         for i in range(1, 7):
             i = str(i)
             data = discord.Embed(color=ucolor, title='{}, {}'
-                                 .format(calendar[i]['day'], calendar[i]['date']))
+                                 .format(calendar[i]['day'], calendar[i]['date']), url=PUBLISHED)
+            data.set_author(name='CollectorDevTeam | MCOC Schedule', icon_url=COLLECTOR_ICON)
+            data.footer(text='Requested by {}'.format(author.display_name), icon_url=author.avatar_url)
             if calendar[i]['feature'] == 'Crystal':
                 data.add_field(name='Arena', value='Crystal Cornucopia')
             else:
