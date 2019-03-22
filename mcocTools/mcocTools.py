@@ -5,6 +5,9 @@ import json
 import logging
 import os
 import re
+from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.common.keys import Keys
 # defaultdict & partial needed for cache_gsheets
 from collections import defaultdict, ChainMap, namedtuple, OrderedDict
 from functools import partial
@@ -764,7 +767,7 @@ class MCOCTools:
 
     #     author = ctx.message.author
     @commands.command(pass_context=True, name='calendar', aliases=('events',))
-    async def _calendar(self, ctx):
+    async def _calendar(self, ctx, days:int):
         PUBLISHED = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vT5A1MOwm3CvOGjn7fMvYaiTKDuIdvKMnH5XHRcgzi3eqLikm9SdwfkrSuilnZ1VQt8aSfAFJzZ02zM/pubhtml?gid=390226786'
         author = ctx.message.author
         gsh = GSHandler(self.bot)
@@ -775,8 +778,9 @@ class MCOCTools:
             sheet_name='collector_export',
             range_name='collector_export'
         )
-        await gsh.cache_gsheets('calendar')
+        ssurl = await SCREENSHOT.get_screenshot(self, url=PUBLISHED)
 
+        await gsh.cache_gsheets('calendar')
         calendar = dataIO.load_json('data/mcocTools/calendar.json')
         ucolor = discord.Color.gold()
         if ctx.message.channel.is_private is False:
@@ -812,6 +816,8 @@ class MCOCTools:
                                .format(day[-1:], calendar[i]['aqseason']))
             else:
                 data.add_field(name='Alliance Quest', value='Off')
+            if ssurl is not None:
+                data.set_thumbnail(url=ssurl)
             data.add_field(name='Alliance War', value='Phase: {}'.format(calendar[i]['aw']))
             data.add_field(name='Link to MCOC Schedule', value='[MCOC Shcedule by CollectorDevTeam]({})'.format(PUBLISHED))
             pages.append(data)
@@ -1571,6 +1577,32 @@ class CDTGAPS:
             pages = chat.pagify('\n'.join(missing))
             for page in pages:
                 await self.bot.say(chat.box(page))
+
+
+class SCREENSHOT:
+    """Save a Screenshot from x website in mcocTools"""
+    def __init__(self, bot):
+        self.bot = bot
+
+
+    async def get_screenshot(self, url):
+        chrome_options = Options()
+        chrome_options.add_argument("--headless")
+        # chrome_options.binary_location = '/Applications/Google Chrome   Canary.app/Contents/MacOS/Google Chrome Canary'
+        driver = webdriver.Chrome(executable_path="C:\webdrivers\chromedriver_win32\chromedriver",   chrome_options=chrome_options)
+        channel = self.bot.get_channel('391330316662341632')
+        # DRIVER = 'chromedriver'
+        # driver = webdriver.Chrome(DRIVER)
+        driver.get(url)
+        screenshot = driver.save_screenshot('data/mcocTools/temp_screenshot.png')
+        driver.quit()
+        message = await self.bot.send_file(channel, 'data/mcocTools/temp_screenshot.png')
+        if len(message.attachments) > 0:
+            ssurl = message.attachments[0]['url']
+            return ssurl
+        else:
+            return None
+
 
 
 class CDTHelperFunctions:
