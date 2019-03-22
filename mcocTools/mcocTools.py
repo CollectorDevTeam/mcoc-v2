@@ -1612,7 +1612,7 @@ class SCREENSHOT:
     async def get_screenshot(self, url):
         chrome_options = Options()
         chrome_options.add_argument("--headless")
-        chrome_options.add_argument("--window-size=1080, 1080")
+        chrome_options.add_argument("--window-size=1200, 1080")
         # chrome_options.binary_location = '/Applications/Google Chrome   Canary.app/Contents/MacOS/Google Chrome Canary'
         driver = webdriver.Chrome(executable_path="C:\webdrivers\chromedriver_win32\chromedriver",   chrome_options=chrome_options)
         channel = self.bot.get_channel('391330316662341632')
@@ -1621,6 +1621,7 @@ class SCREENSHOT:
         driver.get(url)
         screenshot = driver.save_screenshot('data/mcocTools/temp.png')
         driver.quit()
+        await asyncio.sleep(3)
         message = await self.bot.send_file(channel, 'data/mcocTools/temp.png')
         if len(message.attachments) > 0:
             return message
