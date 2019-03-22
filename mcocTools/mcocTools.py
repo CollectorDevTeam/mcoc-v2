@@ -1,6 +1,7 @@
 import asyncio
 import csv
 import datetime
+from dateutil.parser import parse as dateParse
 import json
 import logging
 import os
@@ -722,10 +723,10 @@ class MCOCTools:
         self.bot = bot
         self.search_parser = SearchExpr.parser()
         self.calendar = dataIO.load_json('data/mcocTools/calendar_settings.json')
-        self.calendar['time'] = 0
+        self.calendar['time'] = dateParse(0)
         self.calendar['screenshot'] = ''
         dataIO.save_json('data/mcocTools/calendar_settings.json', self.calendar)
-        
+
 
     # lookup_links = {
     #     'rttl': (
