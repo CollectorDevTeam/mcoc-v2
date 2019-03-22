@@ -974,18 +974,18 @@ class MCOC(ChampionFactory):
         released = await self.check_release(ctx, champ)
         if released:
             data = champ.get_spotlight(default='x')
-            title = 'Base Attributes for {}'.format(champ.verbose_str)
+            # title = 'Base Attributes for {}'.format(champ.verbose_str)
             em = discord.Embed(color=champ.class_color,
                     title='Base Attributes')
             em.set_author(name=champ.verbose_str, icon_url=champ.get_avatar())
             titles = ('Health', 'Attack', 'Crit Rate', 'Crit Dmg', 'Armor', 'Block Prof')
             keys = ('health', 'attack', 'critical', 'critdamage', 'armor', 'blockprof')
-            xref = get_csv_row(data_files['crossreference']['local'],'champ',champ.full_name)
+            # xref = get_csv_row(data_files['crossreference']['local'],'champ',champ.full_name)
 
             if champ.debug:
                 em.add_field(name='Attrs', value='\n'.join(titles))
                 em.add_field(name='Values', value='\n'.join([data[k] for k in keys]), inline=True)
-                em.add_field(name='Added to PHC', value=xref['4basic'])
+                em.add_field(name='Added to PHC', value=champ.basic4)
             else:
                 stats = [[titles[i], data[keys[i]]] for i in range(len(titles))]
                 em.add_field(name='Base Stats',
@@ -1072,8 +1072,8 @@ class MCOC(ChampionFactory):
             print('check_release')
             released = await self.check_release(ctx, champ)
             if released:
-                xref = get_csv_row(data_files['crossreference']['local'],'champ',champ.full_name)
-                em=discord.Embed(color=champ.class_color, title='Release Date & Estimated Pull Chance', url=SPOTLIGHT_DATASET)
+                # xref = get_csv_row(data_files['crossreference']['local'],'champ',champ.full_name)
+                em = discord.Embed(color=champ.class_color, title='Release Date & Estimated Pull Chance', url=SPOTLIGHT_DATASET)
                 em.set_author(name=champ.full_name, icon_url=champ.get_avatar())
                 daily4 = 0.10
                 daily3 = 0.30
@@ -1084,28 +1084,28 @@ class MCOC(ChampionFactory):
                 em.add_field(name='Daily Special Drop Rates', value='2{0.star_char} {1}%\n3{0.star_char} {2}%\n4{0.star_char} {3}%\n'.format(champ, round(daily2*100,0), round(daily3*100,0), round(daily4*100),0))
                 em.add_field(name='PHC Drop Rates', value='2{0.star_char} {1}%\n3{0.star_char} {2}%\n4{0.star_char} {3}%\n'.format(champ, round(p2*100,0), round(p3*100,0), round(p4*100),0))
                 em.add_field(name='Release Date', value='{0.released}'.format(champ))
-                if xref['basic4'] != '':
-                    em.add_field(name='4{0.star_char} Basic + PHC Date'.format(champ), value='{0}'.format(xref['basic4']), inline=True)
-                if float(xref['chanced']) > 0:
-                    dchance = round(daily4*float(xref['chanced'])*100, 4)
-                    em.add_field(name='4{0.star_char} {0.klass} Special Odds'.format(champ), value='{0}%'.format(dchance), inline=True)
-                if float(xref['chance4']) > 0:
-                    chance4 = round(float(xref['chance4'])*100,4)
-                    pchance = round(chance4*p4,4)
-                    em.add_field(name='PHC 4{0.star_char} Odds'.format(champ), value='{0}%'.format(pchance), inline=True)
-                    em.add_field(name='4{0.star_char} {1} Odds'.format(champ, xref['4b']), value='{0}%'.format(chance4),inline=True)
-                if float(xref['chance5b']) >0 :
-                    chance5=round(float(xref['chance5b'])*100,4)
-                    em.add_field(name='5{0.star_char} Basic Odds'.format(champ), value='{0}%'.format(chance5),inline=True)
-                if float(xref['chance5f']) >0 :
-                    chance5=round(float(xref['chance5f'])*100,4)
-                    em.add_field(name='5{0.star_char} {1} Odds'.format(champ, xref['5f']), value='{0}%'.format(chance5),inline=True)
-                if xref['chance6b'] != '' and float(xref['chance6b']) >0 :
-                    chance6=round(float(xref['chance6b'])*100,4)
-                    em.add_field(name='6{0.star_char} Basic Odds'.format(champ), value='{0}%'.format(chance6),inline=True)
-                if xref['chance6f'] != '' and float(xref['chance6f']) >0 :
-                    chance6=round(float(xref['chance6f'])*100,4)
-                    em.add_field(name='6{0.star_char} Featured Odds'.format(champ), value='{0}%'.format(chance6),inline=True)
+                if champ.basic4 != '':
+                    em.add_field(name='4{0.star_char} Basic + PHC Date'.format(champ), value='{0}'.format(champ.basic4), inline=True)
+                # if float(xref['chanced']) > 0:
+                #     dchance = round(daily4*float(xref['chanced'])*100, 4)
+                #     em.add_field(name='4{0.star_char} {0.klass} Special Odds'.format(champ), value='{0}%'.format(dchance), inline=True)
+                # if float(xref['chance4']) > 0:
+                #     chance4 = round(float(xref['chance4'])*100,4)
+                #     pchance = round(chance4*p4,4)
+                #     em.add_field(name='PHC 4{0.star_char} Odds'.format(champ), value='{0}%'.format(pchance), inline=True)
+                #     em.add_field(name='4{0.star_char} {1} Odds'.format(champ, xref['4b']), value='{0}%'.format(chance4),inline=True)
+                # if float(xref['chance5b']) >0 :
+                #     chance5=round(float(xref['chance5b'])*100,4)
+                #     em.add_field(name='5{0.star_char} Basic Odds'.format(champ), value='{0}%'.format(chance5),inline=True)
+                # if float(xref['chance5f']) >0 :
+                #     chance5=round(float(xref['chance5f'])*100,4)
+                #     em.add_field(name='5{0.star_char} {1} Odds'.format(champ, xref['5f']), value='{0}%'.format(chance5),inline=True)
+                # if xref['chance6b'] != '' and float(xref['chance6b']) >0 :
+                #     chance6=round(float(xref['chance6b'])*100,4)
+                #     em.add_field(name='6{0.star_char} Basic Odds'.format(champ), value='{0}%'.format(chance6),inline=True)
+                # if xref['chance6f'] != '' and float(xref['chance6f']) >0 :
+                #     chance6=round(float(xref['chance6f'])*100,4)
+                #     em.add_field(name='6{0.star_char} Featured Odds'.format(champ), value='{0}%'.format(chance6),inline=True)
 
                 em.add_field(name='Shortcode', value=champ.short, inline=True)
                 em.set_thumbnail(url=champ.get_featured())
@@ -1211,7 +1211,7 @@ class MCOC(ChampionFactory):
                 em.set_footer(text='CollectorDevTeam Dataset', icon_url=COLLECTOR_ICON)
                 titles = ('Health', 'Attack', 'Crit Rate', 'Crit Dmg', 'Armor Penetration', 'Block Penetration', 'Crit Resistance', 'Armor', 'Block Prof')
                 keys = ('health', 'attack', 'critical', 'critdamage', 'armor_pen', 'block_pen', 'crit_resist', 'armor', 'blockprof')
-                xref = get_csv_row(data_files['crossreference']['local'],'champ',champ.full_name)
+                # xref = get_csv_row(data_files['crossreference']['local'],'champ',champ.full_name)
                 # if champ.debug:
                 #     em.add_field(name='Attrs', value='\n'.join(titles))
                 #     em.add_field(name='Values', value='\n'.join([data[k] for k in keys]), inline=True)
@@ -1223,7 +1223,7 @@ class MCOC(ChampionFactory):
                 # em.set_thumbnail(url=champ.get_featured())
                 embeds.append(em)
 
-                em2 = discord.Embed(color=champ.class_color, title='Champion Stats',url=SPOTLIGHT_SURVEY)
+                em2 = discord.Embed(color=champ.class_color, title='Champion Stats', url=SPOTLIGHT_SURVEY)
                 em2.set_author(name=champ.verbose_str, icon_url=champ.get_avatar())
                 em2.set_footer(text='CollectorDevTeam Dataset', icon_url=COLLECTOR_ICON)
                 # em2.set_thumbnail(url=champ.get_featured())
@@ -1239,7 +1239,7 @@ class MCOC(ChampionFactory):
                 else:
                     critdmg=round(0.5+5*from_flat(int(data[keys[3]].replace(',','')), int(champ.chlgr_rating)),2)
                     flats.append('% {}'.format(critdmg))
-                for k in range(4,len(keys)):
+                for k in range(4, len(keys)):
                     if data[keys[k]] == 'x':
                         flats.append('x')
                     else:
@@ -1549,15 +1549,16 @@ class MCOC(ChampionFactory):
     @champ.command(pass_context=True, name='info', aliases=('infopage',))
     async def champ_info(self, ctx, *, champ : ChampConverterDebug):
         '''Champion Spotlight link'''
-        xref = get_csv_row(data_files['crossreference']['local'],'champ',champ.full_name)
-        em = discord.Embed(color=champ.class_color, title='Champ Info',url=SPOTLIGHT_SURVEY)
+        # xref = get_csv_row(data_files['crossreference']['local'],'champ',champ.full_name)
+        em = discord.Embed(color=champ.class_color, title='Champ Info', url=SPOTLIGHT_SURVEY)
         em.set_author(name='{0.full_name}'.format(champ), icon_url=champ.get_avatar())
         if champ.infopage == 'none':
             em.add_field(name='Kabam Spotlight', value='No URL found')
         else:
             em.add_field(name='Kabam Spotlight', value=champ.infopage)
-        if xref['writeup_url'] !='':
-            em.add_field(name=xref['writeup'], value=xref['writeup_url'])
+        if champ.writeup_url != '':
+        # if xref['writeup_url'] !='':
+            em.add_field(name=champ.'writeup', value=champ.'writeup_url')
         # if xref['royal_writeup'] != '':
         #     em.add_field(name='Royal Writeup', value=xref['royal_writeup'])
         em.add_field(name='Shortcode', value=champ.short)
