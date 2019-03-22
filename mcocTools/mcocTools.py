@@ -784,7 +784,7 @@ class MCOCTools:
         #     time_delta = 43201
         #     force = True
         # if time_delta > 43200 or force is True:
-        ssurl = await SCREENSHOT.get_screenshot(self, url=PUBLISHED)
+        ssurl = await SCREENSHOT.get_screenshot(self, url=PUBLISHED, w=1400, h=400)
         if ssurl is not None:
             # self.calendar['channel'] = message.channel
             # self.calendar['message'] = ssurl.id
@@ -1608,10 +1608,10 @@ class SCREENSHOT:
             dataIO.save_json('data/mcocTools/settings.json', self.settings)
 
 
-    async def get_screenshot(self, url):
+    async def get_screenshot(self, url, w=1920, h=1080):
         chrome_options = Options()
         chrome_options.add_argument("--headless")
-        chrome_options.add_argument("--window-size=1400, 400")
+        chrome_options.add_argument("--window-size={}, {}".format(w, h))
         # chrome_options.binary_location = '/Applications/Google Chrome   Canary.app/Contents/MacOS/Google Chrome Canary'
         driver = webdriver.Chrome(executable_path="C:\webdrivers\chromedriver_win32\chromedriver",   chrome_options=chrome_options)
         channel = self.bot.get_channel('391330316662341632')
