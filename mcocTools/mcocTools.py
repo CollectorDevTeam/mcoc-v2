@@ -721,7 +721,8 @@ class MCOCTools:
     def __init__(self, bot):
         self.bot = bot
         self.search_parser = SearchExpr.parser()
-        self.settings = dataIO.load_json('data/mcocTools/settings.json')
+        self.calendar = dataIO.load_json('data/mcocTools/calendar_settings.json')
+        self.calendar['time'] = 0
 
     # lookup_links = {
     #     'rttl': (
@@ -771,16 +772,16 @@ class MCOCTools:
             range_name='collector_export'
         )
 
-        time_delta = ctx.message.timestamp - self.settings['calendar']['time']
+        time_delta = ctx.message.timestamp - self.calendar['time']
         if time_delta > 43200 or force is True:
             ssurl = await SCREENSHOT.get_screenshot(self, url=PUBLISHED)
             if ssurl is not None:
-                self.settings['calendar']['screenshot'] = ssurl.attachements[0]['url']
-                self.settings['calendar']['time'] = ssurl.timestamp
-                dataIO.save_json('data/mcocTools/settings.json', self.settings)
+                self.calendar['screenshot'] = ssurl.attachements[0]['url']
+                self.calendar['time'] = ssurl.timestamp
+                dataIO.save_json('data/mcocTools/calendar_settings.json', self.calendar)
                 ssurl = ssurl.attachments[0]['url']
         else:
-            ssurl = self.settings['calendar']['screenshot']
+            ssurl = self.calendar['screenshot']
 
 
         await gsh.cache_gsheets('calendar')
@@ -1801,7 +1802,8 @@ def check_files():
     ignore_list = {'SERVERS': [], 'CHANNELS': []}
 
     files = {
-        'settings.json': {}
+        'settings.json': {},
+        'calendar_settings.json': {}
     }
 
     for filename, value in files.items():
