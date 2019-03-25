@@ -784,7 +784,7 @@ class MCOCTools:
         mcoc = self.bot.get_cog('MCOC')
         filetime = datetime.datetime.fromtimestamp(os.path.getctime('data/mcocTools/calendar.json'))
         if os.path.exists('data/mcocTools/calendar.json'):
-            if filetime.date() != datetime.now().date():
+            if filetime.date() != datetime.datetime.now().date():
                 await gsh.cache_gsheets('calendar')
         else:
             await gsh.cache_gsheets('calendar')
