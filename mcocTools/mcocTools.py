@@ -793,12 +793,12 @@ class MCOCTools:
         if ctx.message.channel.is_private is False:
             ucolor = author.color
         pages = []
-        for start in range(1, 4):
+        for start in range(1, 5):
             data = discord.Embed(color=ucolor, title='CollectorDevTeam | MCOC Schedule', url=PUBLISHED)
             data.set_thumbnail(url=COLLECTOR_FEATURED)
             data.set_footer(text='Requested by {}'.format(author.display_name), icon_url=author.avatar_url)
             data.set_image(url=ssurl)
-            for i in range(start, start+3):
+            for i in range(start, start+2):
                 i = str(i)
                 if i == '1':
                     name = 'Today, {}'.format(calendar[i]['date'])
@@ -814,15 +814,19 @@ class MCOCTools:
                     basic = await mcoc.get_champion(calendar[i]['basic'])
                     if i == '1':
                         data.set_thumbnail(url=feature.get_featured())
-                    package += '__Feature__\n{0.collectoremoji} {0.full_name}\n' \
-                               '__Basic__\n{1.collectoremoji} {1.full_name}\n'.format(feature, basic)
-                    package += '__Alliance Events__\n1 Day Event: {}\n3 Day Event: {}\n'.format(calendar[i]['1day'], calendar[i]['3day'])
+                    package += '__Arena__\n' \
+                               '4☆ / 5☆ {0.full_name}\n' \
+                               '4☆ {1.full_name}\n'.format(feature, basic)
+                package += 'Event Version: {}\n'.format(calendar[i]['eq'])
+                if calendar[i]['notes'] != '':
+                    package += 'Notes: {}'.format(calendar[i]['notes'])
+                package += '__Alliance Events__\n1 Day Event: {}\n3 Day Event: {}\n'.format(calendar[i]['1day'], calendar[i]['3day'])
                 if calendar[i]['aq'] != 'off':
                     day = calendar[i]['aq']
-                    package += 'Alliance Quest: On, Day {} | {}\n'.format(day[-1:], calendar[i]['aqseason'])
+                    package += 'Quest: On, Day {} | {}\n'.format(day[-1:], calendar[i]['aqseason'])
                 else:
-                    package += 'Alliance Quest: Off\n'
-                package += 'Alliance War: {}'.format(calendar[i]['aw'])
+                    package += 'Quest: Off\n'
+                package += 'War: {}'.format(calendar[i]['aw'])
                 data.add_field(name=name, value=package)
             data.add_field(name='Link to MCOC Schedule', value='[MCOC Shcedule by CollectorDevTeam]({})'.format(PUBLISHED))
             pages.append(data)
