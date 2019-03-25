@@ -777,7 +777,8 @@ class MCOCTools:
             sheet_name='collector_export',
             range_name='collector_export'
         )
-
+        if force:
+            await gsh.cache_gsheets('calendar')
         if self.ssurl == '':
             self.ssurl = await SCREENSHOT.get_screenshot(self, url=PUBLISHED, w=1700, h=400)
         ssurl = self.ssurl
