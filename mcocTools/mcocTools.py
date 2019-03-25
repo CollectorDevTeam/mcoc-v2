@@ -801,47 +801,75 @@ class MCOCTools:
         if ctx.message.channel.is_private is False:
             ucolor = author.color
         pages = []
-        for i in range(1, 7):
-            i = str(i)
-            data = discord.Embed(color=ucolor, title='{}, {}'
-                                 .format(calendar[i]['day'], calendar[i]['date']), url=PUBLISHED)
-            data.set_author(name='CollectorDevTeam | MCOC Schedule', icon_url=COLLECTOR_ICON)
+        for start in range(1, 4):
+            data = discord.Embed(color=ucolor, title='CollectorDevTeam | MCOC Schedule', url=PUBLISHED)
+            data.set_thumbnail(url=COLLECTOR_FEATURED)
             data.set_footer(text='Requested by {}'.format(author.display_name), icon_url=author.avatar_url)
-            if calendar[i]['feature'] == 'Crystal':
-                data.add_field(name='Arena', value='Crystal Cornucopia')
-            elif calendar[i]['feature'] != "?" and calendar[i]['feature'] != "Crystal":
-                try:
+            data.set_image(url=ssurl)
+            for i in range(start, start+3):
+                name = '{}, {}'.format(calendar[i]['day'], calendar[i]['date'])
+                package = ''
+                if calendar[i]['feature'] == 'Crystal':
+                    package +='Arena: Crystal Cornucopia\n'
+                elif calendar[i]['feature'] != "?" and calendar[i]['feature'] != "Crystal":
                     feature = await mcoc.get_champion(calendar[i]['feature'])
                     basic = await mcoc.get_champion(calendar[i]['basic'])
-                    data.add_field(name='Feature Arena', value='{} 4☆ / 5☆ {}'
-                                   .format(feature.collectoremoji, feature.full_name))
-                    data.add_field(name='Basic Arena', value='{} 4☆ {}'
-                                   .format(basic.collectoremoji, basic.full_name))
-                    data.set_thumbnail(url=feature.get_featured())
-                except:
-                    raise KeyError('Failed to identify a champion.')
-                    data.add_field(name='Feature Arena', value='4☆ / 5☆ {}'.format(calendar[i]['feature']))
-                    data.add_field(name='Basic Arena', value='4☆ {}'.format(calendar[i]['basic']))
-
-                # except:
-                #     raise KeyError('Could not identify champion')
-                #     data.add_field(name='Featured Arena', value=calendar[i]['feature'])
-                #     data.add_field(name='Basic Arena', value=calendar[i]['basic'])
-            data.add_field(name='Alliance Events', value='1 Day Event: {}\n3 Day Event: {}'
-                           .format(calendar[i]['1day'], calendar[i]['3day']), inline=False)
-            if calendar[i]['aq'] != 'off':
-                day = calendar[i]['aq']
-                data.add_field(name='Alliance Quest', value='On, Day {}\n{}'
-                               .format(day[-1:], calendar[i]['aqseason']))
-            else:
-                data.add_field(name='Alliance Quest', value='Off')
-            if ssurl is not None:
-                data.set_image(url=ssurl)
-            data.add_field(name='Alliance War', value='Phase: {}'.format(calendar[i]['aw']))
-            data.add_field(name='Link to MCOC Schedule', value='[MCOC Shcedule by CollectorDevTeam]({})'.format(PUBLISHED))
+                    package += 'Feature : {0.collectoremoji}{0.full_name}\n' \
+                               'Basic : {1.collectoremoji}{}1.full_name}\n'.format(feature, basic)
+                    package += '__Alliance Events__\n1 Day Event: {}\n3 Day Event: {}\n'.format(calendar[i]['1day'], calendar[i]['3day'])
+                    if calendar[i]['aq'] != 'off':
+                        day = calendar[i]['aq']
+                        package += 'AQ: On, Day {} | {}\n'.format(day[-1:], calendar[i]['aqseason'])
+                    else:
+                        package+='AQ: Off\n'
+                data.add_field(name=name, value=package)
             pages.append(data)
         menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
         await menu.menu_start(pages=pages)
+
+
+        # pages = []
+        # for i in range(1, 7):
+        #     i = str(i)
+        #     data = discord.Embed(color=ucolor, title='{}, {}'
+        #                          .format(calendar[i]['day'], calendar[i]['date']), url=PUBLISHED)
+        #     data.set_author(name='CollectorDevTeam | MCOC Schedule', icon_url=COLLECTOR_ICON)
+        #     data.set_footer(text='Requested by {}'.format(author.display_name), icon_url=author.avatar_url)
+        #     if calendar[i]['feature'] == 'Crystal':
+        #         data.add_field(name='Arena', value='Crystal Cornucopia')
+        #     elif calendar[i]['feature'] != "?" and calendar[i]['feature'] != "Crystal":
+        #         try:
+        #             feature = await mcoc.get_champion(calendar[i]['feature'])
+        #             basic = await mcoc.get_champion(calendar[i]['basic'])
+        #             data.add_field(name='Feature Arena', value='{} 4☆ / 5☆ {}'
+        #                            .format(feature.collectoremoji, feature.full_name))
+        #             data.add_field(name='Basic Arena', value='{} 4☆ {}'
+        #                            .format(basic.collectoremoji, basic.full_name))
+        #             data.set_thumbnail(url=feature.get_featured())
+        #         except:
+        #             raise KeyError('Failed to identify a champion.')
+        #             data.add_field(name='Feature Arena', value='4☆ / 5☆ {}'.format(calendar[i]['feature']))
+        #             data.add_field(name='Basic Arena', value='4☆ {}'.format(calendar[i]['basic']))
+        #
+        #         # except:
+        #         #     raise KeyError('Could not identify champion')
+        #         #     data.add_field(name='Featured Arena', value=calendar[i]['feature'])
+        #         #     data.add_field(name='Basic Arena', value=calendar[i]['basic'])
+        #     data.add_field(name='Alliance Events', value='1 Day Event: {}\n3 Day Event: {}'
+        #                    .format(calendar[i]['1day'], calendar[i]['3day']), inline=False)
+        #     if calendar[i]['aq'] != 'off':
+        #         day = calendar[i]['aq']
+        #         data.add_field(name='Alliance Quest', value='On, Day {}\n{}'
+        #                        .format(day[-1:], calendar[i]['aqseason']))
+        #     else:
+        #         data.add_field(name='Alliance Quest', value='Off')
+        #     if ssurl is not None:
+        #         data.set_image(url=ssurl)
+        #     data.add_field(name='Alliance War', value='Phase: {}'.format(calendar[i]['aw']))
+        #     data.add_field(name='Link to MCOC Schedule', value='[MCOC Shcedule by CollectorDevTeam]({})'.format(PUBLISHED))
+        #     pages.append(data)
+        # menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
+        # await menu.menu_start(pages=pages)
 
 
 
