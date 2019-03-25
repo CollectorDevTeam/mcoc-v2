@@ -820,7 +820,7 @@ class MCOCTools:
                                '4☆ {1.full_name}\n'.format(feature, basic)
                 package += 'Event Version: {}\n'.format(calendar[i]['eq'])
                 if calendar[i]['notes'] != '':
-                    package += 'Notes: {}'.format(calendar[i]['notes'])
+                    package += 'Notes: {}\n'.format(calendar[i]['notes'])
                 package += '__Alliance Events__\n1 Day Event: {}\n3 Day Event: {}\n'.format(calendar[i]['1day'], calendar[i]['3day'])
                 if calendar[i]['aq'] != 'off':
                     day = calendar[i]['aq']
