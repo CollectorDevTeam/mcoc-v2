@@ -815,12 +815,12 @@ class MCOCTools:
                     basic = await mcoc.get_champion(calendar[i]['basic'])
                     data.set_thumbnail(url=feature.get_featured())
                     package += '__Arena__\n' \
-                               '4☆ / 5☆ {0.full_name}\n' \
-                               '4☆ {1.full_name}\n'.format(feature, basic)
-                package += 'Event Version: {}\n'.format(calendar[i]['eq'])
+                               'Feature: 4★ / 5★ {0.full_name}\n' \
+                               'Basic:   4☆ {1.full_name}\n'.format(feature, basic)
+                package += 'Event Quest vn: {0}\n``/eq {0}``\n'.format(calendar[i]['eq'])
                 if calendar[i]['notes'] != '':
                     package += 'Notes: {}\n'.format(calendar[i]['notes'])
-                package += '__Alliance Events__\n1 Day Event: {}\n3 Day Event: {}\n'.format(calendar[i]['1day'], calendar[i]['3day'])
+                package += '__Alliance Events__\n1 Day : {}\n3 Day : {}\n'.format(calendar[i]['1day'], calendar[i]['3day'])
                 if calendar[i]['aq'] != 'off':
                     day = calendar[i]['aq']
                     package += 'Quest: On, Day {} | {}\n'.format(day[-1:], calendar[i]['aqseason'])
