@@ -807,10 +807,11 @@ class MCOCTools:
             data.set_footer(text='Requested by {}'.format(author.display_name), icon_url=author.avatar_url)
             data.set_image(url=ssurl)
             for i in range(start, start+3):
+                i = str(i)
                 name = '{}, {}'.format(calendar[i]['day'], calendar[i]['date'])
                 package = ''
                 if calendar[i]['feature'] == 'Crystal':
-                    package +='Arena: Crystal Cornucopia\n'
+                    package += 'Arena: Crystal Cornucopia\n'
                 elif calendar[i]['feature'] != "?" and calendar[i]['feature'] != "Crystal":
                     feature = await mcoc.get_champion(calendar[i]['feature'])
                     basic = await mcoc.get_champion(calendar[i]['basic'])
