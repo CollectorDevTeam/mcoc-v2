@@ -808,22 +808,30 @@ class MCOCTools:
             data.set_image(url=ssurl)
             for i in range(start, start+3):
                 i = str(i)
-                name = '{}, {}'.format(calendar[i]['day'], calendar[i]['date'])
+                if i is '1':
+                    name = 'Today, {}'.format(calendar[i]['date'])
+                elif i is '2':
+                    name = 'Tomorrow, {}'.format(calendar[i]['date'])
+                else:
+                    name = '{}, {}'.format(calendar[i]['day'], calendar[i]['date'])
                 package = ''
                 if calendar[i]['feature'] == 'Crystal':
                     package += 'Arena: Crystal Cornucopia\n'
                 elif calendar[i]['feature'] != "?" and calendar[i]['feature'] != "Crystal":
                     feature = await mcoc.get_champion(calendar[i]['feature'])
                     basic = await mcoc.get_champion(calendar[i]['basic'])
-                    package += 'Feature : {0.collectoremoji}{0.full_name}\n' \
-                               'Basic : {1.collectoremoji}{1.full_name}\n'.format(feature, basic)
+                    package += '__Feature__\n{0.collectoremoji} {0.full_name}\n' \
+                               '__Basic__\n{1.collectoremoji} {1.full_name}\n'.format(feature, basic)
                     package += '__Alliance Events__\n1 Day Event: {}\n3 Day Event: {}\n'.format(calendar[i]['1day'], calendar[i]['3day'])
-                    if calendar[i]['aq'] != 'off':
-                        day = calendar[i]['aq']
-                        package += 'AQ: On, Day {} | {}\n'.format(day[-1:], calendar[i]['aqseason'])
-                    else:
-                        package+='AQ: Off\n'
+                if calendar[i]['aq'] != 'off':
+                    day = calendar[i]['aq']
+                    package += 'Alliance Quest: On, Day {} | {}\n'.format(day[-1:], calendar[i]['aqseason'])
+                else:
+                    package += 'Alliance Quest: Off\n'
+                package += 'Alliance War: {}'.format(calendar[i]['aw'])
                 data.add_field(name=name, value=package)
+                data.add_field(name='Link to MCOC Schedule', value='[MCOC Shcedule by CollectorDevTeam]({})'.format(PUBLISHED))
+
             pages.append(data)
         menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
         await menu.menu_start(pages=pages)
