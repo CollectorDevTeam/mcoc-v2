@@ -821,7 +821,7 @@ class MCOCTools:
                     feature = await mcoc.get_champion(calendar[i]['feature'])
                     basic = await mcoc.get_champion(calendar[i]['basic'])
                     if i == '1':
-                        data.set_thumbnail(feature.get_featured())
+                        data.set_thumbnail(url=feature.get_featured())
                     package += '__Feature__\n{0.collectoremoji} {0.full_name}\n' \
                                '__Basic__\n{1.collectoremoji} {1.full_name}\n'.format(feature, basic)
                     package += '__Alliance Events__\n1 Day Event: {}\n3 Day Event: {}\n'.format(calendar[i]['1day'], calendar[i]['3day'])
