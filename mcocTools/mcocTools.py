@@ -794,7 +794,7 @@ class MCOCTools:
         if ctx.message.channel.is_private is False:
             ucolor = author.color
         pages = []
-        for start in range(1, 5):
+        for start in range(1, 10):
             data = discord.Embed(color=ucolor, title='CollectorDevTeam | MCOC Schedule', url=PUBLISHED)
             data.set_thumbnail(url=COLLECTOR_FEATURED)
             data.set_footer(text='Requested by {}'.format(author.display_name), icon_url=author.avatar_url)
@@ -813,8 +813,7 @@ class MCOCTools:
                 elif calendar[i]['feature'] != "?" and calendar[i]['feature'] != "Crystal":
                     feature = await mcoc.get_champion(calendar[i]['feature'])
                     basic = await mcoc.get_champion(calendar[i]['basic'])
-                    if i == '1':
-                        data.set_thumbnail(url=feature.get_featured())
+                    data.set_thumbnail(url=feature.get_featured())
                     package += '__Arena__\n' \
                                '4☆ / 5☆ {0.full_name}\n' \
                                '4☆ {1.full_name}\n'.format(feature, basic)
