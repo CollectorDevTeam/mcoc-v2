@@ -832,7 +832,7 @@ class MCOCTools:
             data.add_field(name='Link to MCOC Schedule', value='[MCOC Shcedule by CollectorDevTeam]({})'.format(PUBLISHED))
             pages.append(data)
         menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
-        await menu.menu_start(pages=pages, page_number=3)
+        await menu.menu_start(pages=pages, page_number=2)
         # take a new ssurl after the fact
         if self.ssurldate != datetime.datetime.now().date():
             self.ssurl = await SCREENSHOT.get_screenshot(self, url=PUBLISHED, w=1700, h=400)
