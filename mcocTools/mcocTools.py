@@ -724,6 +724,7 @@ class MCOCTools:
         self.search_parser = SearchExpr.parser()
         self.calendar = dataIO.load_json('data/mcocTools/calendar_settings.json')
         self.ssurl = ''
+        self.ssurldate = ''
         # self.calendar = {}
         # self.calendar['time'] = dateParse(0)
         # self.calendar['screenshot'] = ''
@@ -833,7 +834,9 @@ class MCOCTools:
         menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
         await menu.menu_start(pages=pages)
         # take a new ssurl after the fact
-        self.ssurl = await SCREENSHOT.get_screenshot(self, url=PUBLISHED, w=1700, h=400)
+        if self.ssurldate != datetime.datetime.now().date():
+            self.ssurl = await SCREENSHOT.get_screenshot(self, url=PUBLISHED, w=1700, h=400)
+            self.ssurldate = datetime.datetime.now().date()
 
 
         # pages = []
