@@ -723,6 +723,7 @@ class MCOCTools:
         self.bot = bot
         self.search_parser = SearchExpr.parser()
         self.calendar = dataIO.load_json('data/mcocTools/calendar_settings.json')
+        self.ssurl = ''
         # self.calendar = {}
         # self.calendar['time'] = dateParse(0)
         # self.calendar['screenshot'] = ''
@@ -776,26 +777,17 @@ class MCOCTools:
             sheet_name='collector_export',
             range_name='collector_export'
         )
-        # try:
-        #     ssurlmsg = self.bot.get_message(self.calendar['channel'], self.calendar['message'])
-        #     time_delta = ctx.message.timestamp - ssurlmsg.timestamp
-        # except:
-        #     raise KeyError('Could not acquire time delta')
-        #     time_delta = 43201
-        #     force = True
-        # if time_delta > 43200 or force is True:
-        ssurl = await SCREENSHOT.get_screenshot(self, url=PUBLISHED, w=1700, h=400)
-        if ssurl is not None:
-            # self.calendar['channel'] = message.channel
-            # self.calendar['message'] = ssurl.id
-            self.calendar['screenshot'] = ssurl
-            # self.calendar['time'] = ssurl.timestamp
-            dataIO.save_json('data/mcocTools/calendar_settings.json', self.calendar)
-        else:
-            ssurl = self.calendar['screenshot']
-        mcoc = self.bot.get_cog('MCOC')
 
-        await gsh.cache_gsheets('calendar')
+        if self.ssurl == '':
+            self.ssurl = await SCREENSHOT.get_screenshot(self, url=PUBLISHED, w=1700, h=400)
+        ssurl = self.ssurl
+        mcoc = self.bot.get_cog('MCOC')
+        filetime = datetime.datetime.fromtimestamp(os.path.getctime('data/mcocTools/calendar.json'))
+        if os.path.exists('data/mcocTools/calendar.json'):
+            if filetime.date() != datetime.now().date():
+                await gsh.cache_gsheets('calendar')
+        else:
+            await gsh.cache_gsheets('calendar')
         calendar = dataIO.load_json('data/mcocTools/calendar.json')
         ucolor = discord.Color.gold()
         if ctx.message.channel.is_private is False:
@@ -836,6 +828,8 @@ class MCOCTools:
             pages.append(data)
         menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
         await menu.menu_start(pages=pages)
+        # take a new ssurl after the fact
+        self.ssurl = await SCREENSHOT.get_screenshot(self, url=PUBLISHED, w=1700, h=400)
 
 
         # pages = []
