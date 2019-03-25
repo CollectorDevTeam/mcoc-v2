@@ -808,9 +808,9 @@ class MCOCTools:
             data.set_image(url=ssurl)
             for i in range(start, start+3):
                 i = str(i)
-                if i is '1':
+                if i == '1':
                     name = 'Today, {}'.format(calendar[i]['date'])
-                elif i is '2':
+                elif i == '2':
                     name = 'Tomorrow, {}'.format(calendar[i]['date'])
                 else:
                     name = '{}, {}'.format(calendar[i]['day'], calendar[i]['date'])
@@ -820,6 +820,8 @@ class MCOCTools:
                 elif calendar[i]['feature'] != "?" and calendar[i]['feature'] != "Crystal":
                     feature = await mcoc.get_champion(calendar[i]['feature'])
                     basic = await mcoc.get_champion(calendar[i]['basic'])
+                    if i == '1':
+                        data.set_thumbnail(feature.get_featured())
                     package += '__Feature__\n{0.collectoremoji} {0.full_name}\n' \
                                '__Basic__\n{1.collectoremoji} {1.full_name}\n'.format(feature, basic)
                     package += '__Alliance Events__\n1 Day Event: {}\n3 Day Event: {}\n'.format(calendar[i]['1day'], calendar[i]['3day'])
@@ -830,8 +832,7 @@ class MCOCTools:
                     package += 'Alliance Quest: Off\n'
                 package += 'Alliance War: {}'.format(calendar[i]['aw'])
                 data.add_field(name=name, value=package)
-                data.add_field(name='Link to MCOC Schedule', value='[MCOC Shcedule by CollectorDevTeam]({})'.format(PUBLISHED))
-
+            data.add_field(name='Link to MCOC Schedule', value='[MCOC Shcedule by CollectorDevTeam]({})'.format(PUBLISHED))
             pages.append(data)
         menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
         await menu.menu_start(pages=pages)
