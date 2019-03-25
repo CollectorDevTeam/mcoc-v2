@@ -802,9 +802,9 @@ class MCOCTools:
             data.set_image(url=ssurl)
             for i in range(start, start+2):
                 i = str(i)
-                if i == '1':
+                if i == '3':
                     name = 'Today, {}'.format(calendar[i]['date'])
-                elif i == '2':
+                elif i == '4':
                     name = 'Tomorrow, {}'.format(calendar[i]['date'])
                 else:
                     name = '{}, {}'.format(calendar[i]['day'], calendar[i]['date'])
@@ -832,7 +832,7 @@ class MCOCTools:
             data.add_field(name='Link to MCOC Schedule', value='[MCOC Shcedule by CollectorDevTeam]({})'.format(PUBLISHED))
             pages.append(data)
         menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
-        await menu.menu_start(pages=pages)
+        await menu.menu_start(pages=pages, page_number=3)
         # take a new ssurl after the fact
         if self.ssurldate != datetime.datetime.now().date():
             self.ssurl = await SCREENSHOT.get_screenshot(self, url=PUBLISHED, w=1700, h=400)
