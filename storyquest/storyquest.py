@@ -73,7 +73,7 @@ class STORYQUEST:
             self.EmojiReact(":seven:", 7, 'path7'),
             self.EmojiReact(":eight:", 8, 'path8'),
             self.EmojiReact(":nine:", 9, 'path9'),
-            self.EmojiReact("🔟", 10, 'path10'),
+            self.EmojiReact(":keycap_ten:", 10, 'path10'),
         )])
 
     async def _load_sq(self, force=False):
