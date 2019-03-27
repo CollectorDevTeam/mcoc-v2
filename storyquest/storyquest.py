@@ -153,9 +153,9 @@ class STORYQUEST:
             await self.bot.say(embed=data)
             return
 
-        valid_paths = self.paths['_headers']
+        valid_paths = self.paths['_headers']['paths']
+        valid_paths = list(filter(lambda a: a != '', valid_paths)) #remove "" from valid paths
         print(valid_paths)
-        # valid_paths = list(filter(lambda a: a != '', valid_paths)) #remove "" from valid paths
 
 
 
