@@ -63,17 +63,17 @@ class STORYQUEST:
             self.paths = {}
             self.globals = {}
         self.all_emojis = OrderedDict([(i.emoji, i) for i in (
-            self.EmojiReact("0️⃣", 0, 'path0'),
-            self.EmojiReact("1️⃣", 1, 'path1'),
-            self.EmojiReact("2️⃣", 2, 'path2'),
-            self.EmojiReact("3️⃣", 3, 'path3'),
-            self.EmojiReact("4️⃣", 4, 'path4'),
-            self.EmojiReact("5️⃣", 5, 'path5'),
-            self.EmojiReact("6️⃣", 6, 'path6'),
-            self.EmojiReact("7️⃣", 7, 'path7'),
-            self.EmojiReact("8️⃣", 8, 'path8'),
-            self.EmojiReact("9️⃣", 9, 'path9'),
-            self.EmojiReact("🔟", 10, 'path10'),
+            # self.EmojiReact("0️⃣", 0, 'path0'),
+            self.EmojiReact("\N{KEYCAP DIGIT ONE}", 1, 'path1'),
+            self.EmojiReact("\N{DIGIT ONE}", 2, 'path2'),
+            # self.EmojiReact("3️⃣", 3, 'path3'),
+            # self.EmojiReact("4️⃣", 4, 'path4'),
+            # self.EmojiReact("5️⃣", 5, 'path5'),
+            # self.EmojiReact("6️⃣", 6, 'path6'),
+            # self.EmojiReact("7️⃣", 7, 'path7'),
+            # self.EmojiReact("8️⃣", 8, 'path8'),
+            # self.EmojiReact("9️⃣", 9, 'path9'),
+            # self.EmojiReact("🔟", 10, 'path10'),
         )])
 
     async def _load_sq(self, force=False):
@@ -205,7 +205,7 @@ class STORYQUEST:
                     try:
                         print(emoji.emoji)
                         await self.bot.add_reaction(message, emoji.emoji)
-                    except KeyError:
+                    except:
                         raise KeyError('Unknwon Emoji : {}'.format(emoji.emoji))
                     self.included_emojis.add(emoji.emoji)
 
