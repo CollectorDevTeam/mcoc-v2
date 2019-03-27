@@ -143,7 +143,7 @@ class STORYQUEST:
         starfire_maps = ('6.1.1', '6.1.2', '6.1.3', '6.1.4', '6.1.5', '6.1.6')
         valid_maps = []
         for k in self.paths.keys():
-            if k != '_headers' and k != 'emoji':
+            if k != '_headers' and k != 'emoji' and k != 'map':
                 valid_maps.append(k)
                 valid_maps.sort()
         if map not in valid_maps or map is None:
@@ -178,11 +178,10 @@ class STORYQUEST:
             await self.bot.say(embed=data)
             return
         else:
-            tiles = self.paths[map][path]
-            tiles = tiles.split(',')
+            tiles = self.paths[map][path].split()
             pages = []
             i = 1
-            for tile in list(tiles):
+            for tile in tiles:
                 key = '{}-{}-{}'.format(map, path, tile)
                 attrs = {}
                 mob = self.export[key]['mob']
