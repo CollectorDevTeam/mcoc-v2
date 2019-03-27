@@ -178,7 +178,8 @@ class STORYQUEST:
             await self.bot.say(embed=data)
             return
         else:
-            tiles = self.paths[map][path].split()
+            tiles = self.paths[map][path]
+            tiles = tiles.split(',')
             pages = []
             i = 1
             for tile in tiles:
