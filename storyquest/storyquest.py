@@ -19,9 +19,9 @@ ACT6_SHEET = 'https://docs.google.com/spreadsheets/d/1xTw37M_fwYClNfgvi7-09M6MLI
 REBIRTH = 'https://cdn.discordapp.com/attachments/398210253923024902/556216721933991936/46BBFB298E7EEA7DD8A5A1FAC65FBA621A6212B5.jpg'
 
 class STORYQUEST:
+    EmojiReact = namedtuple('EmojiReact', 'emoji include path')
 
     def __init__(self, bot):
-        EmojiReact = namedtuple('EmojiReact', 'emoji include path')
         self.bot = bot
         self.gsheet_handler = GSHandler(bot)
         self.gsheet_handler.register_gsheet(
