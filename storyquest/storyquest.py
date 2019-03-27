@@ -200,9 +200,10 @@ class STORYQUEST:
             attrs = {}
             attrs['star'] = 5
             attrs['rank'] = 5
-            boss = await ChampConverter.get_champion(self, self.bot, self.globals[map]['chapter_champ'], attrs)
-            data.title = 'Map {}\n{}\n{}'.format(map, self.globals[map]['act'], self.globals[map]['chapter'])
-            data.set_thumbnail(url=boss.get_avatar())
+            if self.globasl[map]['chapter_champ'] != '':
+                boss = await ChampConverter.get_champion(self, self.bot, self.globals[map]['chapter_champ'], attrs)
+                data.title = 'Map {}\n{}\n{}'.format(map, self.globals[map]['act'], self.globals[map]['chapter'])
+                data.set_thumbnail(url=boss.get_avatar())
             for p in valid_paths:
                 key = '{}-path{}-1'.format(map, path)
                 data.add_field(name=p, value='Energy: {}\nNotes: {}'.format(self.export[key]['energy'],self.export[key]['notes']))
