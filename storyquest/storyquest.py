@@ -142,11 +142,10 @@ class STORYQUEST:
         jjs_maps = ('5.3.1', '5.3.2')
         # valid_maps = ('5.3.1', '5.3.2', '6.1.1', '6.1.2', '6.1.3', '6.1.4', '6.1.5', '6.1.6')
         valid_maps = []
-        for k in self.export.keys():
-            if k not in ('name', '', '_headers', '-'):
+        for k in self.paths.keys():
+            if k != '_headers':
                 valid_maps.append(k)
                 valid_maps.sort()
-
         if map not in valid_maps or map is None:
             message = 'Select a valid map\n'
             message += ', '.join(valid_maps)
@@ -154,12 +153,9 @@ class STORYQUEST:
             await self.bot.say(embed=data)
             return
 
-        valid_paths = []
-        for k in self.paths[map].keys():
-            if k not in ('name', '', '_headers', '-'):
-                valid_paths.append(k[-1:])
-                valid_paths.sort()
-                print(valid_paths)
+        valid_paths = self.paths['_headers']
+        valid_paths = list(filter(lambda a: a != '', valid_paths)) #remove "" from valid paths
+
 
 
         # if path is None
