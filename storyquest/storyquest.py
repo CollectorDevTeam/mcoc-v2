@@ -199,23 +199,24 @@ class STORYQUEST:
             data.description = message
             data.set_thumbnail(url=self.globals[map]['chapter_image'])
             self.included_emojis = set()
+            message = await self.bot.say(embed=data)
             for emoji in self.all_emojis.values():
                 if emoji.path in valid_paths:
                     await self.bot.add_reaction(message, emoji.emoji)
                     self.included_emojis.add(emoji.emoji)
-            question = await self.bot.say(embed=data)
-            react = await self.bot.wait_for_reaction(message=question,
+
+            react = await self.bot.wait_for_reaction(message=message,
                                                      timeout=30, emoji=self.included_emojis)
             if react is None:
                 try:
-                    await self.bot.clear_reactions(question)
+                    await self.bot.clear_reactions(message)
                 except discord.errors.NotFound:
                     # logger.warn("Message has been deleted")
                     print('Message deleted')
                 except discord.Forbidden:
                     # logger.warn("clear_reactions didn't work")
                     for emoji in self.included_emojis:
-                        await self.bot.remove_reaction(question, emoji, self.bot.user)
+                        await self.bot.remove_reaction(message, emoji, self.bot.user)
                 return
             emoji = react.reaction.emoji
             path = self.all_emojis[emoji].path if emoji in self.all_emojis else None
