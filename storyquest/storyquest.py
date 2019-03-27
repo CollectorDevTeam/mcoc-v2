@@ -179,6 +179,7 @@ class STORYQUEST:
             return
         else:
             tiles = self.paths[map][path]
+            tiles = tiles.split(',')
             pages = []
             i = 1
             for tile in list(tiles):
