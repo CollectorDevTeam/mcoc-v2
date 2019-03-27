@@ -203,6 +203,7 @@ class STORYQUEST:
             for emoji in self.all_emojis.values():
                 if emoji.path in valid_paths:
                     try:
+                        print(emoji.emoji)
                         await self.bot.add_reaction(message, emoji.emoji)
                     except KeyError:
                         raise KeyError('Unknwon Emoji : {}'.format(emoji.emoji))
