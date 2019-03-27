@@ -75,10 +75,10 @@ class STORYQUEST:
     async def _fetch(self):
         await self._load_sq(force=True)
 
-    @storyquest.command(pass_context=True, name='boost')
+    @commands.command(pass_context=True, name='glossary', aliases=('boost',))
     async def _boost_info(self, ctx, *, boost=None):
         """Story Quest Glossary
-        Supporting Act 6 node boosts."""
+        Supporting Act 5 & Act 6 node boosts."""
         keys = []
         for k in self.glossary.keys():
             if k != "-" and k != "_headers":
@@ -125,7 +125,7 @@ class STORYQUEST:
         #     await self.bot.say('boost not found '
         #                        'available boosts')
 
-    @storyquest.command(pass_context=True, name='path')
+    @commands.command(pass_context=True, name='act', aliases=('sq path',))
     async def _paths(self, ctx, map:str, path=None, verbose=False):
         """[BETA] Story Quest
         Act 6 Fights
@@ -138,7 +138,7 @@ class STORYQUEST:
         ucolor = discord.Color.gold()
         if ctx.message.channel.is_private is False:
             ucolor = author.color
-        data = discord.Embed(color=ucolor, title='Story Quest Help',)
+        data = discord.Embed(color=ucolor, title='Story Quest Help', description='')
         jjs_maps = ('5.3.1', '5.3.2')
         # valid_maps = ('5.3.1', '5.3.2', '6.1.1', '6.1.2', '6.1.3', '6.1.4', '6.1.5', '6.1.6')
         valid_maps = []
@@ -159,6 +159,7 @@ class STORYQUEST:
             if k not in ('name', '', '_headers', '-'):
                 valid_paths.append(k[-1:])
                 valid_paths.sort()
+                print(valid_paths)
 
 
         # if path is None
