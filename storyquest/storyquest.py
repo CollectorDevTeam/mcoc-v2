@@ -197,7 +197,7 @@ class STORYQUEST:
             # message += valid_paths
             message += '\n'.join(valid_paths)
             data.description = message
-            data.set_thumbnail(url=self.globals[map]['act_image'])
+            data.set_thumbnail(url=self.globals[map]['chapter_image'])
             self.included_emojis = set()
             for emoji in self.all_emojis.values():
                 if emoji.path in valid_paths:
