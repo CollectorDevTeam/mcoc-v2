@@ -185,7 +185,7 @@ class STORYQUEST:
             for tile in tiles:
                 key = '{}-{}-{}'.format(map, path, tile)
                 attrs = {}
-                mob = self.export[key]['mob']
+                mob = self.export[key]['mob'].lower()
                 attrs['star'] = 5
                 attrs['rank'] = 5
                 champion = await ChampConverter.get_champion(self, self.bot, mob, attrs)
