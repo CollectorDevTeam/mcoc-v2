@@ -152,7 +152,7 @@ class STORYQUEST:
         #                        'available boosts')
 
     @commands.command(pass_context=True, name='act', aliases=('sq path',))
-    async def _paths(self, ctx, map=None, path=None, verbose=False):
+    async def _paths(self, ctx, map=None, path=None, verbose=True):
         """[BETA] Story Quest
         Act 6 Fights
         maps: 6.1.1, 6.1.2, 6.1.3, 6.1.4, 6.1.5, 6.1.6
@@ -193,11 +193,20 @@ class STORYQUEST:
                 return
 
         if path is None or path not in valid_paths:
-            message = 'Select a path:\n'
-            # message += valid_paths
-            message += '\n'.join(valid_paths)
-            data.description = message
-            data.set_thumbnail(url=self.globals[map]['chapter_image'])
+            # message = 'Select a path:\n'
+            # # message += valid_paths
+            # message += '\n'.join(valid_paths)
+            # data.description = message
+            attrs = {}
+            attrs['star'] = 5
+            attrs['rank'] = 5
+            boss = await ChampConverter.get_champion(self, self.bot, self.globals[map]['chapter_champ'], attrs)
+            data.title = 'Map {}\n{}\n{}'.format(map, self.globals[map]['act'], self.globals[map]['chapter'])
+            data.set_thumbnail(url=boss.get_avatar())
+            for p in valid_paths:
+                key = '{}-path{}-1'.format(map, path)
+                data.add_field(name=p, value='Energy: {}\nNotes: {}'.format(self.export[key]['energy'],self.export[key]['notes']))
+            data.set_image(url=self.globals[map]['chapter_image'])
             self.included_emojis = set()
             message = await self.bot.say(embed=data)
             for emoji in self.all_emojis.values():
@@ -208,7 +217,7 @@ class STORYQUEST:
                     except:
                         raise KeyError('Unknwon Emoji : {}'.format(emoji.emoji))
                     self.included_emojis.add(emoji.emoji)
-            
+
             react = await self.bot.wait_for_reaction(message=message, user=ctx.message.author,
                                                      timeout=30, emoji=self.included_emojis)
             if react is None:
