@@ -63,16 +63,16 @@ class STORYQUEST:
             self.paths = {}
             self.globals = {}
         self.all_emojis = OrderedDict([(i.emoji, i) for i in (
-            self.EmojiReact("0⃣ ", 0, 'path0'),
-            self.EmojiReact("1⃣ ", 1, 'path1'),
-            self.EmojiReact("2⃣ ", 2, 'path2'),
-            self.EmojiReact("3⃣ ", 3, 'path3'),
-            self.EmojiReact("4⃣ ", 4, 'path4'),
-            self.EmojiReact("5⃣ ", 5, 'path5'),
-            self.EmojiReact("6⃣ ", 6, 'path6'),
-            self.EmojiReact("7⃣ ", 7, 'path7'),
-            self.EmojiReact("8⃣ ", 8, 'path8'),
-            self.EmojiReact("9⃣ ", 9, 'path9'),
+            self.EmojiReact("0️⃣", 0, 'path0'),
+            self.EmojiReact("1️⃣", 1, 'path1'),
+            self.EmojiReact("2️⃣", 2, 'path2'),
+            self.EmojiReact("3️⃣", 3, 'path3'),
+            self.EmojiReact("4️⃣", 4, 'path4'),
+            self.EmojiReact("5️⃣", 5, 'path5'),
+            self.EmojiReact("6️⃣", 6, 'path6'),
+            self.EmojiReact("7️⃣", 7, 'path7'),
+            self.EmojiReact("8️⃣", 8, 'path8'),
+            self.EmojiReact("9️⃣", 9, 'path9'),
             self.EmojiReact("🔟", 10, 'path10'),
         )])
 
