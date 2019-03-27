@@ -7,6 +7,7 @@ import re
 import json
 from .utils.dataIO import dataIO
 from .utils import chat_formatting as chat
+from collections import defaultdict, ChainMap, namedtuple, OrderedDict
 
 from discord.ext import commands
 from __main__ import send_cmd_help
@@ -20,6 +21,7 @@ REBIRTH = 'https://cdn.discordapp.com/attachments/398210253923024902/55621672193
 class STORYQUEST:
 
     def __init__(self, bot):
+        EmojiReact = namedtuple('EmojiReact', 'emoji include path')
         self.bot = bot
         self.gsheet_handler = GSHandler(bot)
         self.gsheet_handler.register_gsheet(
@@ -43,23 +45,47 @@ class STORYQUEST:
             sheet_name='paths',
             range_name='paths'
         )
+        self.gsheet_handler.register_gsheet(
+            name='act6_globals',
+            gkey='1Up5SpQDhp_SUOb5UFuD6BwkVKsJ4ZKN13DHHNJrNrEc',
+            local='data/storyquest/act6_globals.json',
+            sheet_name='globals',
+            range_name='globals'
+        )
         try:
             self.glossary = dataIO.load_json('data/storyquest/act6_glossary.json')
             self.export = dataIO.load_json('data/storyquest/act6_export.json')
             self.paths = dataIO.load_json('data/storyquest/act6_paths.json')
+            self.globals = dataIO.load_json('data/storyquest/act6_globals.json')
         except:
             self.glossary = {}
             self.export = {}
             self.paths = {}
+            self.globals = {}
+        self.all_emojis = OrderedDict([(i.emoji, i) for i in (
+            self.EmojiReact(":zero:", 0, 'path0'),
+            self.EmojiReact(":one:", 1, 'path1'),
+            self.EmojiReact(":two:", 2, 'path2'),
+            self.EmojiReact(":three:", 3, 'path3'),
+            self.EmojiReact(":four:", 4, 'path4'),
+            self.EmojiReact(":five:", 5, 'path5'),
+            self.EmojiReact(":six:", 6, 'path6'),
+            self.EmojiReact(":seven:", 7, 'path7'),
+            self.EmojiReact(":eight:", 8, 'path8'),
+            self.EmojiReact(":nine:", 9, 'path9'),
+            self.EmojiReact("🔟", 10, 'path10'),
+        )])
 
     async def _load_sq(self, force=False):
         if self.glossary == {} or self.export == {} or force is True:
             await self.gsheet_handler.cache_gsheets('act6_glossary')
             await self.gsheet_handler.cache_gsheets('act6_export')
             await self.gsheet_handler.cache_gsheets('act6_paths')
+            await self.gsheet_handler.cache_gsheets('act6_globals')
         self.glossary = dataIO.load_json('data/storyquest/act6_glossary.json')
         self.export = dataIO.load_json('data/storyquest/act6_export.json')
         self.paths = dataIO.load_json('data/storyquest/act6_paths.json')
+        self.globals = dataIO.load_json('data/storyquest/act6_globals.json')
         return
 
     @commands.group(pass_context=True, aliases=('sq',))
@@ -160,24 +186,41 @@ class STORYQUEST:
             if a in self.paths[map].keys() and self.paths[map][a] != "":
                 valid_paths.append(a)
 
-
-
-
         if path not in valid_paths and path is not None:
             if "path{}".format(path) in valid_paths:
                 path = "path{}".format(path)
             else:
                 return
 
-
         if path is None or path not in valid_paths:
-            message = 'Valid paths include:\n'
+            message = 'Select a path:\n'
             # message += valid_paths
             message += '\n'.join(valid_paths)
             data.description = message
-            await self.bot.say(embed=data)
-            return
-        else:
+            data.set_thumbnail(url=self.globals[map]['act_image'])
+            self.included_emojis = set()
+            for emoji in self.all_emojis.values():
+                if emoji.path in valid_paths:
+                    await self.bot.add_reaction(message, emoji.emoji)
+                    self.included_emojis.add(emoji.emoji)
+            question = await self.bot.say(embed=data)
+            react = await self.bot.wait_for_reaction(message=question,
+                                                     timeout=30, emoji=self.included_emojis)
+            if react is None:
+                try:
+                    await self.bot.clear_reactions(question)
+                except discord.errors.NotFound:
+                    # logger.warn("Message has been deleted")
+                    print('Message deleted')
+                except discord.Forbidden:
+                    # logger.warn("clear_reactions didn't work")
+                    for emoji in self.included_emojis:
+                        await self.bot.remove_reaction(question, emoji, self.bot.user)
+                return
+            emoji = react.reaction.emoji
+            path = self.all_emojis[emoji].path if emoji in self.all_emojis else None
+
+        if path in valid_paths:
             tiles = self.paths[map][path]
             tiles = tiles.split(',')
             pages = []
@@ -198,7 +241,7 @@ class STORYQUEST:
                 data = discord.Embed(color=CDT_COLORS[champion.klass], title='Act {} Path {} | Fight {}'.format(map, path[-1:], i),
                                      description='', url=ACT6_SHEET)
                 tiles = self.export[key]['tiles']
-                data.set_author(name='{} : {}'.format(champion.full_name,power))
+                data.set_author(name='{} : {:,}'.format(champion.full_name, power))
                 data.set_thumbnail(url=champion.get_avatar())
                 if tiles != '':
                     data.description += '\nTiles: {}\n<:energy:557675957515845634>     {:,}'.format(tiles, tiles*3)
