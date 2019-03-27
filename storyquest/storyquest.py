@@ -64,8 +64,8 @@ class STORYQUEST:
             self.globals = {}
         self.all_emojis = OrderedDict([(i.emoji, i) for i in (
             # self.EmojiReact("0️⃣", 0, 'path0'),
-            self.EmojiReact("\N{KEYCAP DIGIT ONE}", 1, 'path1'),
-            self.EmojiReact("\N{DIGIT ONE}", 2, 'path2'),
+            self.EmojiReact("\N{DIGIT ONE}", 1, 'path1'),
+            self.EmojiReact(":two:", 2, 'path2'),
             # self.EmojiReact("3️⃣", 3, 'path3'),
             # self.EmojiReact("4️⃣", 4, 'path4'),
             # self.EmojiReact("5️⃣", 5, 'path5'),
