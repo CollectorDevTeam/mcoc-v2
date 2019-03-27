@@ -406,8 +406,9 @@ class StaticGameData:
         )
 
         # Update this list to add Events
-        events = ['13', '13.1', '14', '14.1', '15', '15.1', '16', '16.1', '17', '17.1', '17.2', '18', '18.1', '19.1',
-                  '20', '20.1', '21', '21.1', '21.2', '21.3', '22', 'love3', 'cmcc', 'recon']
+        events = ['13', '13.1', '14', '14.1', '15', '15.1', '16', '16.1', '17', '17.1', '17.2', '18', '18.1', '19',
+                  '19.1', '20', '20.1', '21', '21.1', '21.2', '21.3', '22',
+                  'love3', 'cmcc', 'recon']
 
         for event in events:
             self.gsheet_handler.register_gsheet(
@@ -1152,13 +1153,13 @@ class MCOCEvents:
 
     @eventquest.command(name='13', aliases=('guardians', 'yondu', 'nebula', 'guardiansvolzero',))
     async def eq_guardiansvolzero(self, tier='Master'):
-        """GUARDIANS OF THE GALAX VOL ZERO"""
+        """Guardians of the Galaxy Vol Zero"""
         event = 'eq_13'
         await self.format_eventquest(event, tier.lower())
 
     @eventquest.command(name='13.1', aliases=('secretempireforever', 'punisher2099', 'carnage', 'p99',))
     async def eq_secretempireforever(self, tier='Master'):
-        """SECRET EMPIRE FOREVER"""
+        """Secret Empire Forever"""
         event = 'eq_13.1'
         await self.format_eventquest(event, tier.lower())
 
@@ -1188,7 +1189,7 @@ class MCOCEvents:
 
     @eventquest.command(name='16.1', aliases=('hotelmodok', 'modok', 'taskmaster', 'tm',))
     async def eq_hotelmodok(self, tier='Uncollected'):
-        """HOTEL M.O.D.O.K."""
+        """Hotel M.O.D.O.K."""
         event = 'eq_16.1'
         await self.format_eventquest(event, tier.lower())
 
@@ -1222,6 +1223,12 @@ class MCOCEvents:
     async def eq_mercsforthemoney(self, tier='Uncollected'):
         """Masacre and the Mercs for Money"""
         event = 'eq_18.1'
+        await self.format_eventquest(event, tier.lower())
+
+    @eventquest.command(name='19', aliases=('wasp', 'ghost'))
+    async def eq_returntomicrorealm(self, tier='Uncollected'):
+        """Return to the Micro-Realm"""
+        event = 'eq_19'
         await self.format_eventquest(event, tier.lower())
 
     @eventquest.command(name='19.1', aliases=('cabal', 'enterthecabal', 'korg', 'redskull', 'heimdall',))
