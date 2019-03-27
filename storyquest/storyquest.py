@@ -202,7 +202,10 @@ class STORYQUEST:
             message = await self.bot.say(embed=data)
             for emoji in self.all_emojis.values():
                 if emoji.path in valid_paths:
-                    await self.bot.add_reaction(message, emoji.emoji)
+                    try:
+                        await self.bot.add_reaction(message, emoji.emoji)
+                    except KeyError:
+                        raise KeyError('Unknwon Emoji : {}'.format(emoji.emoji))
                     self.included_emojis.add(emoji.emoji)
 
             react = await self.bot.wait_for_reaction(message=message,
