@@ -126,7 +126,7 @@ class STORYQUEST:
         #                        'available boosts')
 
     @commands.command(pass_context=True, name='act', aliases=('sq path',))
-    async def _paths(self, ctx, map:str, path=None, verbose=False):
+    async def _paths(self, ctx, map=None, path=None, verbose=False):
         """[BETA] Story Quest
         Act 6 Fights
         maps: 6.1.1, 6.1.2, 6.1.3, 6.1.4, 6.1.5, 6.1.6
@@ -140,10 +140,10 @@ class STORYQUEST:
             ucolor = author.color
         data = discord.Embed(color=ucolor, title='Story Quest Help', description='')
         jjs_maps = ('5.3.1', '5.3.2')
-        # valid_maps = ('5.3.1', '5.3.2', '6.1.1', '6.1.2', '6.1.3', '6.1.4', '6.1.5', '6.1.6')
+        starfire_maps = ('6.1.1', '6.1.2', '6.1.3', '6.1.4', '6.1.5', '6.1.6')
         valid_maps = []
         for k in self.paths.keys():
-            if k != '_headers':
+            if k != '_headers' and k != 'emoji':
                 valid_maps.append(k)
                 valid_maps.sort()
         if map not in valid_maps or map is None:
@@ -153,23 +153,23 @@ class STORYQUEST:
             await self.bot.say(embed=data)
             return
 
-        valid_paths = self.paths['_headers']['paths']
-        valid_paths = list(filter(lambda a: a != '', valid_paths)) #remove "" from valid paths
-        print(valid_paths)
+        all_paths = self.paths['_headers']['paths']
+        all_paths = list(filter(lambda a: a != '', all_paths)) #remove "" from valid paths
+        valid_paths = []
+        for a in all_paths:
+            if a in self.paths[map].keys() and self.paths[map][a] != "":
+                valid_paths.append(a)
 
 
 
-        # if path is None
-        # elif map in jjs_maps:
-        #     valid_paths = ('path1', 'path2', 'path3', 'path4', 'path5')
-        # elif map == '6.1.3':
-        #     valid_paths = ('path0', 'path1', 'path2', 'path3', 'path4')
-        # else:
-        #     valid_paths = ('path1', 'path2', 'path3', 'path4', 'path5', 'path6', 'path7', 'path8', 'path9', 'path10')
 
-        if isinstance(path, int):
-            if 'path{}'.format(path) in valid_paths:
-                path = 'path{}'.format(path)
+        if path not in valid_paths and path is not None:
+            if "path{}".format(path) in valid_paths:
+                path = "path{}".format(path)
+            else:
+                return
+
+
         if path is None or path not in valid_paths:
             message = 'Valid paths include:\n'
             # message += valid_paths
@@ -182,72 +182,72 @@ class STORYQUEST:
             pages = []
             i = 1
             for tile in list(tiles):
-                if tile in list('abcdefghij'):
-                    key = '{}-{}-{}'.format(map, path, tile)
-                    attrs = {}
-                    mob = self.export[key]['mob']
-                    attrs['star'] = 5
-                    attrs['rank'] = 5
-                    champion = await ChampConverter.get_champion(self, self.bot, mob, attrs)
-                    power = self.export[key]['power']
-                    hp = self.export[key]['hp']
-                    boosts = self.export[key]['boosts'].split(', ')
-                    gboosts = self.export[key]['global'].split(', ')
-                    notes = self.export[key]['notes']
-                    # attack = self.export[key]['attack']
-                    data = discord.Embed(color=CDT_COLORS[champion.klass], title='Act {} Path {} | Fight {}'.format(map, path[-1:], i),
-                                         description='', url=ACT6_SHEET)
-                    tiles = self.export[key]['tiles']
-                    data.set_author(name='{} : {}'.format(champion.full_name,power))
-                    data.set_thumbnail(url=champion.get_avatar())
-                    if tiles != '':
-                        data.description += '\nTiles: {}\n<:energy:557675957515845634>     {:,}'.format(tiles, tiles*3)
-                    # if power != '':
-                    #     data.description += '\nPower  {:,}'.format(power)
-                    if hp != '':
-                        data.description += '\n<:friendshp:344221218708389888>     {:,}'.format(hp)
-                    else:
-                        data.description += '\n<:friendshp:344221218708389888>     ???'
-                    # if attack != '':
-                    #     data.description += '\n<:xassassins:487357359241297950>     {}'.format(attack)
-                    # else:
-                    #     data.description += '\n<:xassassins:487357359241297950>     ???'
-                    for g in gboosts:
-                        if g != '-' and g != '':
-                            data.add_field(name='Global Boost: {}'.format(self.glossary[g.lower()]['name']),
-                                           value='{}'.format(self.glossary[g.lower()]['description']))
-                    for b in boosts:
-                        if b != '-' and b !='':
-                            data.add_field(name='Local Boost: {}'.format(self.glossary[b.lower()]['name']),
-                                           value='{}'.format(self.glossary[b.lower()]['description']))
-                    if notes != '':
-                        data.add_field(name='Notes', value=notes)
-                    if map in jjs_maps:
-                        data.set_footer(
-                            text='CollectorDevTeam Data | Requested by {}'.format(
-                                author.display_name),
-                            icon_url=COLLECTOR_ICON)
-                    else:
-                        data.set_footer(
-                            text='Glossary by StarFighter + DragonFei + Royal | Requested by {}'
-                                 ''.format(author.display_name),
-                            icon_url=GSHEET_ICON)
-                    pages.append(data)
-                    i+=1
+                key = '{}-{}-{}'.format(map, path, tile)
+                attrs = {}
+                mob = self.export[key]['mob']
+                attrs['star'] = 5
+                attrs['rank'] = 5
+                champion = await ChampConverter.get_champion(self, self.bot, mob, attrs)
+                power = self.export[key]['power']
+                hp = self.export[key]['hp']
+                boosts = self.export[key]['boosts'].split(', ')
+                gboosts = self.export[key]['global'].split(', ')
+                notes = self.export[key]['notes']
+                # attack = self.export[key]['attack']
+                data = discord.Embed(color=CDT_COLORS[champion.klass], title='Act {} Path {} | Fight {}'.format(map, path[-1:], i),
+                                     description='', url=ACT6_SHEET)
+                tiles = self.export[key]['tiles']
+                data.set_author(name='{} : {}'.format(champion.full_name,power))
+                data.set_thumbnail(url=champion.get_avatar())
+                if tiles != '':
+                    data.description += '\nTiles: {}\n<:energy:557675957515845634>     {:,}'.format(tiles, tiles*3)
+                # if power != '':
+                #     data.description += '\nPower  {:,}'.format(power)
+                if hp != '':
+                    data.description += '\n<:friendshp:344221218708389888>     {:,}'.format(hp)
+                else:
+                    data.description += '\n<:friendshp:344221218708389888>     ???'
+                # if attack != '':
+                #     data.description += '\n<:xassassins:487357359241297950>     {}'.format(attack)
+                # else:
+                #     data.description += '\n<:xassassins:487357359241297950>     ???'
+                for g in gboosts:
+                    if g != '-' and g != '':
+                        data.add_field(name='Global Boost: {}'.format(self.glossary[g.lower()]['name']),
+                                       value='{}'.format(self.glossary[g.lower()]['description']))
+                for b in boosts:
+                    if b != '-' and b !='':
+                        data.add_field(name='Local Boost: {}'.format(self.glossary[b.lower()]['name']),
+                                       value='{}'.format(self.glossary[b.lower()]['description']))
+                if notes != '':
+                    data.add_field(name='Notes', value=notes)
+                if map in jjs_maps:
+                    data.set_footer(
+                        text='CollectorDevTeam Data | Requested by {}'.format(
+                            author.display_name),
+                        icon_url=COLLECTOR_ICON)
+                else:
+                    data.set_footer(
+                        text='Glossary by StarFighter + DragonFei + Royal | Requested by {}'
+                             ''.format(author.display_name),
+                        icon_url=GSHEET_ICON)
+                pages.append(data)
+                i+=1
             if verbose:
                 i = 1
                 for page in pages:
-                    if map in jjs_maps:
+                    if map in starfire_maps:
+                        page.set_footer(
+                            text='Glossary by StarFighter + DragonFei + Royal | Requested by {} | Fight {} of {}'
+                                 ''.format(author.display_name, i, len(pages)),
+                            icon_url=GSHEET_ICON)
+
+                    else:
                         page.set_footer(
                             text='CollectorDevTeam Data | Requested by {}'
                                  ''.format(
                                 author.display_name),
                             icon_url=COLLECTOR_ICON)
-                    else:
-                        page.set_footer(
-                            text='Glossary by StarFighter + DragonFei + Royal | Requested by {} | Fight {} of {}'
-                                 ''.format(author.display_name, i, len(pages)),
-                            icon_url=GSHEET_ICON)
                     await self.bot.say(embed=page)
                     i+=1
             else:
