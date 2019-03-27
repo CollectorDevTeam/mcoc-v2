@@ -140,18 +140,34 @@ class STORYQUEST:
             ucolor = author.color
         data = discord.Embed(color=ucolor, title='Story Quest Help',)
         jjs_maps = ('5.3.1', '5.3.2')
-        valid_maps = ('5.3.1', '5.3.2', '6.1.1', '6.1.2', '6.1.3', '6.1.4', '6.1.5', '6.1.6')
-        if map not in valid_maps:
-            message = 'Select a valid map\n6.1.1\n6.1.2\n6.1.3\n6.1.4\n6.1.5\n6.1.6'
+        # valid_maps = ('5.3.1', '5.3.2', '6.1.1', '6.1.2', '6.1.3', '6.1.4', '6.1.5', '6.1.6')
+        valid_maps = []
+        for k in self.export.keys():
+            if k not in ('name', '', '_headers', '-'):
+                valid_maps.append(k)
+                valid_maps.sort()
+
+        if map not in valid_maps or map is None:
+            message = 'Select a valid map\n'
+            message += ', '.join(valid_maps)
             data.description = message
             await self.bot.say(embed=data)
             return
-        elif map in jjs_maps:
-            valid_paths = ('path1', 'path2', 'path3', 'path4', 'path5')
-        elif map == '6.1.3':
-            valid_paths = ('path0', 'path1', 'path2', 'path3', 'path4')
-        else:
-            valid_paths = ('path1', 'path2', 'path3', 'path4', 'path5', 'path6', 'path7', 'path8', 'path9', 'path10')
+
+        valid_paths = []
+        for k in self.paths[map].keys():
+            if k not in ('name', '', '_headers', '-'):
+                valid_paths.append(k[-1:])
+                valid_paths.sort()
+
+
+        # if path is None
+        # elif map in jjs_maps:
+        #     valid_paths = ('path1', 'path2', 'path3', 'path4', 'path5')
+        # elif map == '6.1.3':
+        #     valid_paths = ('path0', 'path1', 'path2', 'path3', 'path4')
+        # else:
+        #     valid_paths = ('path1', 'path2', 'path3', 'path4', 'path5', 'path6', 'path7', 'path8', 'path9', 'path10')
 
         if isinstance(path, int):
             if 'path{}'.format(path) in valid_paths:
