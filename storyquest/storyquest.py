@@ -208,8 +208,8 @@ class STORYQUEST:
                     except:
                         raise KeyError('Unknwon Emoji : {}'.format(emoji.emoji))
                     self.included_emojis.add(emoji.emoji)
-
-            react = await self.bot.wait_for_reaction(message=message, author=ctx.message.author,
+            
+            react = await self.bot.wait_for_reaction(message=message, user=ctx.message.author,
                                                      timeout=30, emoji=self.included_emojis)
             if react is None:
                 try:
