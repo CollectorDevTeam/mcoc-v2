@@ -154,7 +154,8 @@ class STORYQUEST:
             return
 
         valid_paths = self.paths['_headers']
-        valid_paths = list(filter(lambda a: a != '', valid_paths)) #remove "" from valid paths
+        print(valid_paths)
+        # valid_paths = list(filter(lambda a: a != '', valid_paths)) #remove "" from valid paths
 
 
 
@@ -171,7 +172,8 @@ class STORYQUEST:
                 path = 'path{}'.format(path)
         if path is None or path not in valid_paths:
             message = 'Valid paths include:\n'
-            message += '\n'.join(valid_paths)
+            message += valid_paths
+            # message += '\n'.join(valid_paths)
             data.description = message
             await self.bot.say(embed=data)
             return
