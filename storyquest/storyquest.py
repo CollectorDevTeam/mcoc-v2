@@ -212,8 +212,8 @@ class STORYQUEST:
                 if p is not None and p != "":
                     key = '{}-{}-1'.format(map, p)
                     data.add_field(name=p, value='Tiles: {}\nEnergy: {}\nNotes: {}'
-                                   .format(self.export[key]['tile'],
-                                           self.export[key]['tile']*3,
+                                   .format(self.export[key]['tiles'],
+                                           self.export[key]['tiles']*3,
                                            self.export[key]['notes']))
             data.set_image(url=self.globals[map]['chapter_image'])
             self.included_emojis = set()
