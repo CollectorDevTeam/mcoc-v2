@@ -126,8 +126,7 @@ class STORYQUEST:
             ucolor = discord.Color.gold()
         else:
             ucolor = author.color
-
-        if boost in keys:
+        if boost is not None and boost.lower() in keys:
             data = discord.Embed(color=ucolor, title='Support CollectorDevTeam',
                                  description='', url=PATREON)
             data.set_thumbnail(url=COLLECTOR_ICON)
@@ -137,7 +136,7 @@ class STORYQUEST:
             data.set_footer(
                 text='Glossary by StarFighter + DragonFei + Royal | Requested by {}'.format(author.display_name),
                 icon_url=GSHEET_ICON)
-            data.description = self.glossary[boost]
+            data.description = self.glossary[boost.lower()]
             await self.bot.say(embed=data)
             return
         elif boost is None:
@@ -145,9 +144,9 @@ class STORYQUEST:
             glossary = ''
             for key in keys:
                 try:
-                    glossary += '__{}__\n{}\n\n'.format(key, self.glossary[key])
+                    glossary += '__{}__\n{}\n\n'.format(key.title(), self.glossary[key].capitalize())
                 except KeyError:
-                    raise KeyError('Cannot resolve {}'.format(boost))
+                    raise KeyError('Cannot resolve {}'.format(boost.lower()))
             glossary = chat.pagify(glossary)
             for g in glossary:
                 data = discord.Embed(color=ucolor, title='Story Quest Boost Glossary', description=g, url=ACT6_SHEET)
@@ -173,7 +172,7 @@ class STORYQUEST:
             for page in pages:
                 data = discord.Embed(title='Support CollectorDevTeam', description=page, color=ucolor, url=PATREON)
                 data.set_thumbnail(url=COLLECTOR_ICON)
-                data.set_author(name='Glossary Search: [{}]'.format(boost))
+                data.set_author(name='Glossary Search: [{}]'.format(boost.lower()))
                 data.set_footer(
                     text='Glossary by StarFighter + DragonFei + Royal | Requested by {}'.format(author.display_name),
                     icon_url=GSHEET_ICON)
@@ -319,11 +318,11 @@ class STORYQUEST:
                 #     data.description += '\n<:xassassins:487357359241297950>     ???'
                 for g in gboosts:
                     if g != '-' and g != '':
-                        data.add_field(name='Global Boost: {}'.format(g),
+                        data.add_field(name='Global Boost: {}'.format(g.title()),
                                        value='{}'.format(self.glossary[g]))
                 for b in boosts:
                     if b != '-' and b !='':
-                        data.add_field(name='Local Boost: {}'.format(b),
+                        data.add_field(name='Local Boost: {}'.format(b.title()),
                                        value='{}'.format(self.glossary[b]))
                 if notes != '':
                     data.add_field(name='Notes', value=notes)
