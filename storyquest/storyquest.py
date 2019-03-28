@@ -207,9 +207,10 @@ class STORYQUEST:
                            self.globals[map]['chapter_title'],
                            self.globals[map]['quest_title'])
                 data.set_thumbnail(url=boss.get_avatar())
+            print(valid_paths)
             for p in valid_paths:
-                if p is not None:
-                    key = '{}-path{}-1'.format(map, path)
+                if p is not None and p != "":
+                    key = '{}-path{}-1'.format(map, p)
                     data.add_field(name=p, value='Energy: {}\nNotes: {}'.format(self.export[key]['energy'],self.export[key]['notes']))
             data.set_image(url=self.globals[map]['chapter_image'])
             self.included_emojis = set()
