@@ -118,7 +118,7 @@ class STORYQUEST:
         Supporting Act 5 & Act 6 node boosts."""
         keys = []
         for k in self.glossary.keys():
-            if k != "-" and k != "_headers":
+            if k != "-" and k != "_headers" and k != "":
                 keys.append(k)
         keys = sorted(keys)
         author = ctx.message.author
@@ -126,9 +126,7 @@ class STORYQUEST:
             ucolor = discord.Color.gold()
         else:
             ucolor = author.color
-        result = self.search_parser.parse_string(boost)
-        print(result.elements)
-        matches = result.match(self.glossary, self.glossary)
+
         if boost in keys:
             data = discord.Embed(color=ucolor, title='Support CollectorDevTeam',
                                  description='', url=PATREON)
@@ -141,24 +139,6 @@ class STORYQUEST:
                 icon_url=GSHEET_ICON)
             data.description = self.glossary[boost]
             await self.bot.say(embed=data)
-            return
-        elif len(matches) > 0:
-            package = []
-            for k in sorted(matches):
-                package.append('\n**{}**\n{}'.format(
-                    k, self.glossary[k]))
-            pages = chat.pagify('\n'.join(package))
-            page_list = []
-            for page in pages:
-                data = discord.Embed(title='Support CollectorDevTeam', description=page, color=ucolor, url=PATREON)
-                data.set_thumbnail(url=COLLECTOR_ICON)
-                data.set_author(name='Glossary Search: [{}]'.format(boost))
-                data.set_footer(
-                    text='Glossary by StarFighter + DragonFei + Royal | Requested by {}'.format(author.display_name),
-                    icon_url=GSHEET_ICON)
-                page_list.append(data)
-            menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
-            await menu.menu_start(page_list)
             return
         elif boost is None:
             pages = []
@@ -180,6 +160,28 @@ class STORYQUEST:
             if len(pages) > 0:
                 menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
                 await menu.menu_start(pages)
+        else:
+            result = self.search_parser.parse_string(boost)
+            print(result.elements)
+            matches = result.match(self.glossary, self.glossary)
+            package = []
+            for k in sorted(matches):
+                package.append('\n**{}**\n{}'.format(
+                    k, self.glossary[k]))
+            pages = chat.pagify('\n'.join(package))
+            page_list = []
+            for page in pages:
+                data = discord.Embed(title='Support CollectorDevTeam', description=page, color=ucolor, url=PATREON)
+                data.set_thumbnail(url=COLLECTOR_ICON)
+                data.set_author(name='Glossary Search: [{}]'.format(boost))
+                data.set_footer(
+                    text='Glossary by StarFighter + DragonFei + Royal | Requested by {}'.format(author.display_name),
+                    icon_url=GSHEET_ICON)
+                page_list.append(data)
+            menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
+            await menu.menu_start(page_list)
+            return
+
 
         # if boost in boost_keys:
         #     await self.bot.say('debug: boost found')
