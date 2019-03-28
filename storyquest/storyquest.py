@@ -131,7 +131,7 @@ class STORYQUEST:
             data = discord.Embed(color=ucolor, title='Support CollectorDevTeam',
                                  description='', url=PATREON)
             data.set_thumbnail(url=COLLECTOR_ICON)
-            data.set_author('Boost Glossary')
+            data.set_author(name='Boost Glossary')
             data.set_thumbnail(url=REBIRTH)
             # data.set_author(name='Glossary by StarFighter + DragonFei + Royal', icon_url=GSHEET_ICON)
             data.set_footer(
@@ -327,16 +327,16 @@ class STORYQUEST:
                                        value='{}'.format(self.glossary[b]))
                 if notes != '':
                     data.add_field(name='Notes', value=notes)
-                if map in jjs_maps:
-                    data.set_footer(
-                        text='CollectorDevTeam Data | Requested by {}'.format(
-                            author.display_name),
-                        icon_url=COLLECTOR_ICON)
-                else:
+                if map in starfire_maps:
                     data.set_footer(
                         text='Glossary by StarFighter + DragonFei + Royal | Requested by {}'
                              ''.format(author.display_name),
                         icon_url=GSHEET_ICON)
+                else:
+                    data.set_footer(
+                        text='CollectorDevTeam Data + StarFighter | Requested by {}'.format(
+                            author.display_name),
+                        icon_url=COLLECTOR_ICON)
                 pages.append(data)
                 i+=1
             if verbose:
@@ -347,10 +347,9 @@ class STORYQUEST:
                             text='Glossary by StarFighter + DragonFei + Royal | Requested by {} | Fight {} of {}'
                                  ''.format(author.display_name, i, len(pages)),
                             icon_url=GSHEET_ICON)
-
                     else:
                         page.set_footer(
-                            text='CollectorDevTeam Data | Requested by {}'
+                            text='CollectorDevTeam Data + StarFighter | Requested by {}'
                                  ''.format(
                                 author.display_name),
                             icon_url=COLLECTOR_ICON)
