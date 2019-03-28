@@ -84,7 +84,12 @@ class STORYQUEST:
             await self.gsheet_handler.cache_gsheets('act6_export')
             await self.gsheet_handler.cache_gsheets('act6_paths')
             await self.gsheet_handler.cache_gsheets('act6_globals')
-        self.glossary = dataIO.load_json('data/storyquest/act6_glossary.json')
+        temp = dataIO.load_json('data/storyquest/act6_glossary.json')
+        for t in temp.keys():
+            if t not in ('', '-', '_headers'):
+                self.glossary[t] = temp[t]['description']
+
+        # self.glossary = dataIO.load_json('data/storyquest/act6_glossary.json')
         self.export = dataIO.load_json('data/storyquest/act6_export.json')
         self.paths = dataIO.load_json('data/storyquest/act6_paths.json')
         self.globals = dataIO.load_json('data/storyquest/act6_globals.json')
@@ -127,7 +132,7 @@ class STORYQUEST:
             data.set_footer(
                 text='Glossary by StarFighter + DragonFei + Royal | Requested by {}'.format(author.display_name),
                 icon_url=GSHEET_ICON)
-            data.description = self.glossary[boost]['description']
+            data.description = self.glossary[boost]
             await self.bot.say(embed=data)
             return
         elif len(matches) > 0:
@@ -152,7 +157,7 @@ class STORYQUEST:
             glossary = ''
             for key in keys:
                 try:
-                    glossary += '__{}__\n{}\n\n'.format(self.glossary[key], self.glossary[key]['description'])
+                    glossary += '__{}__\n{}\n\n'.format(key, self.glossary[key])
                 except KeyError:
                     raise KeyError('Cannot resolve {}'.format(boost))
             glossary = chat.pagify(glossary)
