@@ -200,7 +200,7 @@ class STORYQUEST:
             attrs = {}
             attrs['star'] = 5
             attrs['rank'] = 5
-            if self.globasl[map]['chapter_champ'] != '':
+            if self.globals[map]['chapter_champ'] != '':
                 boss = await ChampConverter.get_champion(self, self.bot, self.globals[map]['chapter_champ'], attrs)
                 data.title = 'Map {}\n{}\n{}'.format(map, self.globals[map]['act'], self.globals[map]['chapter'])
                 data.set_thumbnail(url=boss.get_avatar())
