@@ -152,7 +152,7 @@ class STORYQUEST:
             glossary = ''
             for key in keys:
                 try:
-                    glossary += '__{}__\n{}\n\n'.format(self.glossary[key]['name'], self.glossary[key]['description'])
+                    glossary += '__{}__\n{}\n\n'.format(self.glossary[key], self.glossary[key]['description'])
                 except KeyError:
                     raise KeyError('Cannot resolve {}'.format(boost))
             glossary = chat.pagify(glossary)
@@ -304,12 +304,12 @@ class STORYQUEST:
                 #     data.description += '\n<:xassassins:487357359241297950>     ???'
                 for g in gboosts:
                     if g != '-' and g != '':
-                        data.add_field(name='Global Boost: {}'.format(self.glossary[g.lower()]['name']),
-                                       value='{}'.format(self.glossary[g.lower()]['description']))
+                        data.add_field(name='Global Boost: {}'.format(g),
+                                       value='{}'.format(self.glossary[g]['description']))
                 for b in boosts:
                     if b != '-' and b !='':
-                        data.add_field(name='Local Boost: {}'.format(self.glossary[b.lower()]['name']),
-                                       value='{}'.format(self.glossary[b.lower()]['description']))
+                        data.add_field(name='Local Boost: {}'.format(b),
+                                       value='{}'.format(self.glossary[b]['description']))
                 if notes != '':
                     data.add_field(name='Notes', value=notes)
                 if map in jjs_maps:
