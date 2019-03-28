@@ -18,6 +18,7 @@ from cogs.mcoc import ChampConverter, ChampConverterDebug, Champion
 GSHEET_ICON = 'https://d2jixqqjqj5d23.cloudfront.net/assets/developer/imgs/icons/google-spreadsheet-icon.png'
 ACT6_SHEET = 'https://docs.google.com/spreadsheets/d/1xTw37M_fwYClNfgvi7-09M6MLIcgMziTfM5_MGbAs0Q/view'
 REBIRTH = 'https://cdn.discordapp.com/attachments/398210253923024902/556216721933991936/46BBFB298E7EEA7DD8A5A1FAC65FBA621A6212B5.jpg'
+PATREON = 'https://patreon.com/collectorbot'
 
 class STORYQUEST:
     EmojiReact = namedtuple('EmojiReact', 'emoji include path')
@@ -129,7 +130,10 @@ class STORYQUEST:
         print(result.elements)
         matches = result.match(self.glossary, self.glossary)
         if boost in keys:
-            data = discord.Embed(color=ucolor, title='Story Quest Boost Glossary', description='', url=ACT6_SHEET)
+            data = discord.Embed(color=ucolor, title='Support CollectorDevTeam',
+                                 description='', url=PATREON)
+            data.set_thumbnail(url=COLLECTOR_ICON)
+            data.set_author('Boost Glossary')
             data.set_thumbnail(url=REBIRTH)
             # data.set_author(name='Glossary by StarFighter + DragonFei + Royal', icon_url=GSHEET_ICON)
             data.set_footer(
@@ -146,8 +150,9 @@ class STORYQUEST:
             pages = chat.pagify('\n'.join(package))
             page_list = []
             for page in pages:
-                data = discord.Embed(title='Story Quest Glossary Search', description=page, color=ucolor)
-                data.set_author(name='CollectorDevTeam', icon_url=COLLECTOR_ICON)
+                data = discord.Embed(title='Support CollectorDevTeam', description=page, color=ucolor, url=PATREON)
+                data.set_thumbnail(url=COLLECTOR_ICON)
+                data.set_author(name='Glossary Search: [{}]'.format(boost))
                 data.set_footer(
                     text='Glossary by StarFighter + DragonFei + Royal | Requested by {}'.format(author.display_name),
                     icon_url=GSHEET_ICON)
