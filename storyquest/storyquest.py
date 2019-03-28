@@ -202,7 +202,10 @@ class STORYQUEST:
             attrs['rank'] = 5
             if self.globals[map]['chapter_champ'] != '':
                 boss = await ChampConverter.get_champion(self, self.bot, self.globals[map]['chapter_champ'], attrs)
-                data.title = 'Map {}\n{}\n{}'.format(map, self.globals[map]['act'], self.globals[map]['chapter'])
+                data.title = 'Map {}\nAct: {}\nChapter: {}\nQuest: {}'.\
+                    format(map, self.globals[map]['act_title'],
+                           self.globals[map]['chapter_title'],
+                           self.globals[map]['quest_title'])
                 data.set_thumbnail(url=boss.get_avatar())
             for p in valid_paths:
                 key = '{}-path{}-1'.format(map, path)
