@@ -211,7 +211,10 @@ class STORYQUEST:
             for p in valid_paths:
                 if p is not None and p != "":
                     key = '{}-{}-1'.format(map, p)
-                    data.add_field(name=p, value='Energy: {}\nNotes: {}'.format(self.export[key]['energy'],self.export[key]['notes']))
+                    data.add_field(name=p, value='Tiles: {}\nEnergy: {}\nNotes: {}'
+                                   .format(self.export[key]['tile'],
+                                           self.export[key]['tile']*3,
+                                           self.export[key]['notes']))
             data.set_image(url=self.globals[map]['chapter_image'])
             self.included_emojis = set()
             message = await self.bot.say(embed=data)
