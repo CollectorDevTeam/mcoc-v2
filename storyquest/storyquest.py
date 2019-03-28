@@ -12,6 +12,7 @@ from collections import defaultdict, ChainMap, namedtuple, OrderedDict
 from discord.ext import commands
 from __main__ import send_cmd_help
 from cogs.mcocTools import (StaticGameData, PagesMenu, KABAM_ICON, COLLECTOR_ICON, CDTHelperFunctions, GSHandler, CDT_COLORS)
+from cogs.mcocTools import (SearchExpr, P0Expr, ParenExpr, SearchNumber, SearchPhrase, ExplicitKeyword, SearchNumber, SearchWord, SearchPhrase) #search stuff
 from cogs.mcoc import ChampConverter, ChampConverterDebug, Champion
 
 GSHEET_ICON = 'https://d2jixqqjqj5d23.cloudfront.net/assets/developer/imgs/icons/google-spreadsheet-icon.png'
@@ -23,6 +24,7 @@ class STORYQUEST:
 
     def __init__(self, bot):
         self.bot = bot
+        self.search_parser = SearchExpr.parser()
         self.gsheet_handler = GSHandler(bot)
         self.gsheet_handler.register_gsheet(
                 name='act6_glossary',
@@ -115,7 +117,37 @@ class STORYQUEST:
             ucolor = discord.Color.gold()
         else:
             ucolor = author.color
-        if boost is None or boost not in keys:
+        result = self.search_parser.parse_string(boost)
+        print(result.elements)
+        matches = result.match(self.glossary, self.glossary)
+        if boost in keys:
+            data = discord.Embed(color=ucolor, title='Story Quest Boost Glossary', description='', url=ACT6_SHEET)
+            data.set_thumbnail(url=REBIRTH)
+            # data.set_author(name='Glossary by StarFighter + DragonFei + Royal', icon_url=GSHEET_ICON)
+            data.set_footer(
+                text='Glossary by StarFighter + DragonFei + Royal | Requested by {}'.format(author.display_name),
+                icon_url=GSHEET_ICON)
+            data.description = self.glossary[boost]['description']
+            await self.bot.say(embed=data)
+            return
+        elif len(matches) > 0:
+            package = []
+            for k in sorted(matches):
+                package.append('\n**{}**\n{}'.format(
+                    k, self.glossary[k]))
+            pages = chat.pagify('\n'.join(package))
+            page_list = []
+            for page in pages:
+                data = discord.Embed(title='Story Quest Glossary Search', description=page, color=ucolor)
+                data.set_author(name='CollectorDevTeam', icon_url=COLLECTOR_ICON)
+                data.set_footer(
+                    text='Glossary by StarFighter + DragonFei + Royal | Requested by {}'.format(author.display_name),
+                    icon_url=GSHEET_ICON)
+                page_list.append(data)
+            menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
+            await menu.menu_start(page_list)
+            return
+        elif boost is None:
             pages = []
             glossary = ''
             for key in keys:
@@ -135,15 +167,7 @@ class STORYQUEST:
             if len(pages) > 0:
                 menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
                 await menu.menu_start(pages)
-        elif boost in keys:
-            data = discord.Embed(color=ucolor, title='Story Quest Boost Glossary', description='', url=ACT6_SHEET)
-            data.set_thumbnail(url=REBIRTH)
-            # data.set_author(name='Glossary by StarFighter + DragonFei + Royal', icon_url=GSHEET_ICON)
-            data.set_footer(
-                text='Glossary by StarFighter + DragonFei + Royal | Requested by {}'.format(author.display_name),
-                icon_url=GSHEET_ICON)
-            data.description = self.glossary[boost]['description']
-            await self.bot.say(embed=data)
+
         # if boost in boost_keys:
         #     await self.bot.say('debug: boost found')
         #     await self.bot.say(self.glossary[boost]['description'])
@@ -322,7 +346,45 @@ class STORYQUEST:
                 await menu.menu_start(pages)
             return
 
-
+    # @commands.command(hidden=True, pass_context=True, aliases=('parse_search', 'ps', 'dm', 'km',))
+    # async def glossary_search(self, ctx, *, phrase: str):
+    #     """Enter a search term or a JSON key
+    #     k: <term> | search in Keys
+    #     vn: <int> | search for version numbers
+    #     Use pipe "|" to chain terms
+    #     """
+    #     author = ctx.message.author
+    #     if ctx.message.channel.is_private:
+    #         ucolor = discord.Color.gold()
+    #     else:
+    #         ucolor = author.color
+    #     kdata = StaticGameData()
+    #     cdt_data, cdt_versions = kdata.cdt_data, kdata.cdt_versions
+    #     result = self.search_parser.parse_string(phrase)
+    #     print(result.elements)
+    #     matches = result.match(cdt_data, cdt_versions)
+    #     # print(matches)
+    #     if len(matches) == 0:
+    #         await self.bot.say('**Search resulted in 0 matches**')
+    #         return
+    #     package = []
+    #     for k in sorted(matches):
+    #         if k in cdt_versions:
+    #             ver = '\nvn: {}'.format(cdt_versions[k])
+    #         else:
+    #             ver = ''
+    #         package.append('\n**{}**\n{}{}'.format(
+    #             k, self._bcg_recompile(cdt_data[k]), ver))
+    #     pages = chat.pagify('\n'.join(package))
+    #     page_list = []
+    #     for page in pages:
+    #         em = discord.Embed(title='Data Search', description=page, color=ucolor)
+    #         em.set_author(name='CollectorDevTeam', icon_url=COLLECTOR_ICON)
+    #         em.set_footer(text='MCOC Game Files', icon_url=KABAM_ICON)
+    #         page_list.append(em)
+    #     menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
+    #     await menu.menu_start(page_list)
+    #
 
 
 def check_folders():
