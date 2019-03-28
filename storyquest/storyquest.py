@@ -90,7 +90,7 @@ class STORYQUEST:
             if t not in ('', '-', '_headers'):
                 glossary.update({t: temp[t]['description']})
         self.glossary = glossary
-        dataIO.save_json('data/storyquest/act6_glossary.json')
+        dataIO.save_json('data/storyquest/act6_glossary.json', self.glossary)
 
         # self.glossary = dataIO.load_json('data/storyquest/act6_glossary.json')
         self.export = dataIO.load_json('data/storyquest/act6_export.json')
