@@ -85,9 +85,12 @@ class STORYQUEST:
             await self.gsheet_handler.cache_gsheets('act6_paths')
             await self.gsheet_handler.cache_gsheets('act6_globals')
         temp = dataIO.load_json('data/storyquest/act6_glossary.json')
+        glossary = {}
         for t in temp.keys():
             if t not in ('', '-', '_headers'):
-                self.glossary[t] = temp[t]['description']
+                glossary.update({t: temp[t]['description']})
+        self.glossary = glossary
+        dataIO.save_json('data/storyquest/act6_glossary.json')
 
         # self.glossary = dataIO.load_json('data/storyquest/act6_glossary.json')
         self.export = dataIO.load_json('data/storyquest/act6_export.json')
@@ -310,11 +313,11 @@ class STORYQUEST:
                 for g in gboosts:
                     if g != '-' and g != '':
                         data.add_field(name='Global Boost: {}'.format(g),
-                                       value='{}'.format(self.glossary[g]['description']))
+                                       value='{}'.format(self.glossary[g]))
                 for b in boosts:
                     if b != '-' and b !='':
                         data.add_field(name='Local Boost: {}'.format(b),
-                                       value='{}'.format(self.glossary[b]['description']))
+                                       value='{}'.format(self.glossary[b]))
                 if notes != '':
                     data.add_field(name='Notes', value=notes)
                 if map in jjs_maps:
