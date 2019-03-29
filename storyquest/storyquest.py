@@ -165,8 +165,8 @@ class STORYQUEST:
             matches = result.match(self.glossary, self.glossary)
             package = []
             for k in sorted(matches):
-                package.append('\n**{}**\n{}'.format(
-                    k, self.glossary[k]))
+                package.append('\n__{}__\n{}'.format(
+                    k.title(), self.glossary[k]))
             pages = chat.pagify('\n'.join(package))
             page_list = []
             for page in pages:
