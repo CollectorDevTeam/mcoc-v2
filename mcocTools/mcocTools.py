@@ -782,7 +782,7 @@ class MCOCTools:
         if force:
             await gsh.cache_gsheets('calendar')
         if self.ssurl == '':
-            self.ssurl = await SCREENSHOT.get_screenshot(self, url=PUBLISHED, w=1700, h=400)
+            self.ssurl = await SCREENSHOT.get_screenshot(self, url=PUBLISHED, w=1700, h=800)
         ssurl = self.ssurl
         mcoc = self.bot.get_cog('MCOC')
         filetime = datetime.datetime.fromtimestamp(os.path.getctime('data/mcocTools/calendar.json'))
