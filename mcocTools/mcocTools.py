@@ -825,10 +825,10 @@ class MCOCTools:
                 package += '__Alliance Events__\n1 Day : {}\n3 Day : {}\n'.format(calendar[i]['1day'], calendar[i]['3day'])
                 if calendar[i]['aq'] != 'off':
                     day = calendar[i]['aq']
-                    package += 'Quest: On, Day {} | {}\n'.format(day[-1:], calendar[i]['aqseason'])
+                    package += 'Quest: On, Day {}\n'.format(day[-1:])
                 else:
                     package += 'Quest: Off\n'
-                package += 'War: {}'.format(calendar[i]['aw'])
+                package += ' {} War: {}'.format(calendar[i]['aqseason'], calendar[i]['aw'])
                 data.add_field(name=name, value=package)
             data.add_field(name='Link to MCOC Schedule', value='[MCOC Shcedule by CollectorDevTeam]({})'.format(PUBLISHED))
             pages.append(data)
