@@ -32,7 +32,7 @@ class STORYQUEST:
                 gkey='1Up5SpQDhp_SUOb5UFuD6BwkVKsJ4ZKN13DHHNJrNrEc',
                 local='data/storyquest/act6_glossary.json',
                 sheet_name='glossary',
-                range_name='glossary'
+                range_name='glossary_export'
             )
         self.gsheet_handler.register_gsheet(
                 name='act6_export',
@@ -144,7 +144,7 @@ class STORYQUEST:
             glossary = ''
             for key in keys:
                 try:
-                    glossary += '__{}__\n{}\n\n'.format(key.title(), self.glossary[key].capitalize())
+                    glossary += '__{}__\n{}\n\n'.format(key.title(), self.glossary[key])
                 except KeyError:
                     raise KeyError('Cannot resolve {}'.format(boost.lower()))
             glossary = chat.pagify(glossary)
