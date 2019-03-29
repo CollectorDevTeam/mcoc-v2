@@ -511,7 +511,7 @@ class SearchNumber(md.Grammar):
 
 
 class SearchWord(md.Grammar):
-    grammar = md.WORD('-.,0-9A-Za-z_')
+    grammar = md.WORD('-.,0-9A-Za-z_%')
 
 
 class SearchPhrase(md.Grammar):
