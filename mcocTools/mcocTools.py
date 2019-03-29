@@ -408,7 +408,7 @@ class StaticGameData:
         # Update this list to add Events
         events = ['13', '13.1', '14', '14.1', '15', '15.1', '16', '16.1', '17', '17.1', '17.2', '18', '18.1', '19',
                   '19.1', '20', '20.1', '21', '21.1', '21.2', '21.3', '22',
-                  'love3', 'cmcc', 'recon']
+                  'love3', 'cmcc', 'recon', 'nzbounties']
 
         for event in events:
             self.gsheet_handler.register_gsheet(
@@ -1293,11 +1293,24 @@ class MCOCEvents:
         event = 'eq_recon'
         await self.format_eventquest(event, tier.lower(), rewards=False)
 
+    @eventquest.command(name='negativezone', aliases=('nzbounties',))
+    async def eq_nzbounties(self, tier='Epic'):
+        """Negative Zone Bounty Missions"""
+        event = 'eq_nzbounties'
+        await self.format_eventquest(event, tier.lower())
+
+
     @eventquest.command(name='22', aliases=('secretinvasion','captainmarvel','nickfury','cm','nf',))
     async def eq_22(self, tier='Uncollected'):
         """Battlerealm: Under Siege"""
         event = 'eq_22'
         await self.format_eventquest(event, tier.lower())
+
+    # @eventquest.command(name='22.1', aliases=('annihilus','humantorch',))
+    # async def eq_negativezone(self, tier='Uncollected'):
+    #     """The Living Death Who Walks"""
+    #     event = 'eq_22.1'
+    #     await self.format_eventquest(event, tier.lower())
 
     # @eventquest.command(name='', aliases=(,))
     # async def eq_(self, tier='Uncollected'):
