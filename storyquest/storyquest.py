@@ -150,6 +150,8 @@ class STORYQUEST:
                 text='Glossary by StarFighter + DragonFei + Royal | Requested by {}'.format(author.display_name),
                 icon_url=GSHEET_ICON)
             data.description = self.glossary[boost.lower()]
+            if self.glossary_tips[boost.lower()] != "":
+                data.add_field(name='CollectorVerse Tips', value=self.glossary_tips[boost.lower()])
             await self.bot.say(embed=data)
             return
         elif boost is None:
@@ -333,10 +335,15 @@ class STORYQUEST:
                     if g != '-' and g != '':
                         data.add_field(name='Global Boost: {}'.format(g.title()),
                                        value='{}'.format(self.glossary[g]))
+                        if self.glossary_tips[g] != "":
+                            data.add_field(name='CollectorVerse Tips', value=self.glossary_tips[g])
+
                 for b in boosts:
                     if b != '-' and b !='':
                         data.add_field(name='Local Boost: {}'.format(b.title()),
                                        value='{}'.format(self.glossary[b]))
+                        if self.glossary_tips[b] != "":
+                            data.add_field(name='CollectorVerse Tips', value=self.glossary_tips[b])
                 if notes != '':
                     data.add_field(name='Notes', value=notes)
                 if map in starfire_maps:
