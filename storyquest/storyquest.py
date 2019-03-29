@@ -57,11 +57,13 @@ class STORYQUEST:
         )
         try:
             self.glossary = dataIO.load_json('data/storyquest/act6_glossary.json')
+            self.glossary = dataIO.load_json('data/storyquest/act6_glossary_keys.json')
             self.export = dataIO.load_json('data/storyquest/act6_export.json')
             self.paths = dataIO.load_json('data/storyquest/act6_paths.json')
             self.globals = dataIO.load_json('data/storyquest/act6_globals.json')
         except:
             self.glossary = {}
+            self.glossary_keys = {}
             self.export = {}
             self.paths = {}
             self.globals = {}
@@ -87,16 +89,19 @@ class STORYQUEST:
             await self.gsheet_handler.cache_gsheets('act6_globals')
         temp = dataIO.load_json('data/storyquest/act6_glossary.json')
         glossary = {}
+        glossary_keys = {}
         for t in temp.keys():
             if t not in ('', '-', '_headers'):
                 glossary.update({t: temp[t]['description']})
+                glossary_keys.update({t: t})
         self.glossary = glossary
         dataIO.save_json('data/storyquest/act6_glossary.json', self.glossary)
-
-        # self.glossary = dataIO.load_json('data/storyquest/act6_glossary.json')
+        dataIO.save_json('data/storyquest/act6_glossary_keys.json', self.glossary)
+        # self.glossary_keys = dataIO.load_json('data/storyquest/act6_glossary_keys.json')
         self.export = dataIO.load_json('data/storyquest/act6_export.json')
         self.paths = dataIO.load_json('data/storyquest/act6_paths.json')
         self.globals = dataIO.load_json('data/storyquest/act6_globals.json')
+
         return
 
     @commands.group(pass_context=True, aliases=('sq',))
@@ -162,7 +167,7 @@ class STORYQUEST:
         else:
             result = self.search_parser.parse_string(boost)
             print(result.elements)
-            matches = result.match(self.glossary, self.glossary)
+            matches = result.match(self.glossary, self.glossary_keys)
             package = []
             for k in sorted(matches):
                 package.append('\n__{}__\n{}'.format(
