@@ -1409,7 +1409,7 @@ class MCOCEvents:
                     em.add_field(name='{} Rewards'.format(row.title()), value=cdt_eq[row]['rewardsregex'])
                 else:
                     em.add_field(name='{}'.format(row.title()), value=cdt_eq[row]['rewardsregex'])
-                if 'champions' in cdt_eq and cdt_eq['champions']['value'] != "":
+                if 'champions' in cdt_eq and 'value' in cdt_eq['champions'] != "":
                     em.add_field(name='Introducing', value=cdt_eq['champions']['value'])
                 em.set_image(url=cdt_eq['story_image']['value'])
                 em.set_footer(text='CollectorDevTeam', icon_url=COLLECTOR_ICON)
