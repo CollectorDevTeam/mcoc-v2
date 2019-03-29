@@ -57,12 +57,15 @@ class STORYQUEST:
         )
         try:
             self.glossary = dataIO.load_json('data/storyquest/act6_glossary.json')
-            self.glossary = dataIO.load_json('data/storyquest/act6_glossary_keys.json')
+            self.glossary_tips = dataIO.load_json('data/storyquest/act6_glossary_tips.json')
+            self.glossary_keys = dataIO.load_json('data/storyquest/act6_glossary_keys.json')
             self.export = dataIO.load_json('data/storyquest/act6_export.json')
             self.paths = dataIO.load_json('data/storyquest/act6_paths.json')
             self.globals = dataIO.load_json('data/storyquest/act6_globals.json')
         except:
+
             self.glossary = {}
+            self.glossary_tips = {}
             self.glossary_keys = {}
             self.export = {}
             self.paths = {}
@@ -90,13 +93,18 @@ class STORYQUEST:
         temp = dataIO.load_json('data/storyquest/act6_glossary.json')
         glossary = {}
         glossary_keys = {}
+        glossary_tips = {}
         for t in temp.keys():
             if t not in ('', '-', '_headers'):
                 glossary.update({t: temp[t]['description']})
+                glossary_tips.update({t: temp[t]['tips']})
                 glossary_keys.update({t: t})
         self.glossary = glossary
+        self.glossary_keys = glossary_keys
+        self.glossary_tips = glossary_tips
         dataIO.save_json('data/storyquest/act6_glossary.json', self.glossary)
-        dataIO.save_json('data/storyquest/act6_glossary_keys.json', self.glossary)
+        dataIO.save_json('data/storyquest/act6_glossary_keys.json', self.glossary_keys)
+        dataIO.save_json('data/storyquest/act6_glossary_tips.json', self.glossary_tips)
         # self.glossary_keys = dataIO.load_json('data/storyquest/act6_glossary_keys.json')
         self.export = dataIO.load_json('data/storyquest/act6_export.json')
         self.paths = dataIO.load_json('data/storyquest/act6_paths.json')
