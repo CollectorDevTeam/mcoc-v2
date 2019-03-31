@@ -29,8 +29,8 @@ aw_hard = json.loads(requests.get('https://raw.githubusercontent.com/CollectorDe
 aw_intermediate = json.loads(requests.get('https://raw.githubusercontent.com/CollectorDevTeam/assets/master/data/json/alliancewar/aw_intermediate.json').text)
 
 
-AWD_API_URL_TEST = 'http://chocripplebot.herokuapp.com/awd'
-AWD_API_URL = 'http://scouterlensbot.herokuapp.com/awd'
+AWD_API_URL_TEST = 'http://scouter-staging.herokuapp.com/awd'
+AWD_API_URL = 'http://scouter-prod.herokuapp.com/awd'
 # MAS_API_URL = 'http://chocripplebot.herokuapp.com/mas'
 
 class MCOCMaps:
