@@ -2509,6 +2509,15 @@ class Champion:
             s2d = cdt_data[prefix + desc + self.mcocjson + two]
             specials = (s0, s1, s2, s0d, s1d, s2d)
             return specials
+        elif prefix+self.mcocsig+one in cdt_data:
+            s0 = cdt_data[prefix + self.mcocsig + zero]
+            s1 = cdt_data[prefix + self.mcocsig + one]
+            s2 = cdt_data[prefix + self.mcocsig + two]
+            s0d = cdt_data[prefix + desc + self.mcocsig + zero]
+            s1d = cdt_data[prefix + desc + self.mcocsig + one]
+            s2d = cdt_data[prefix + desc + self.mcocsig + two]
+            specials = (s0, s1, s2, s0d, s1d, s2d)
+            return specials
 
 
     @property
