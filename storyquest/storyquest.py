@@ -393,9 +393,10 @@ class STORYQUEST:
         if map not in valid_maps and map is not None and path is None:
             if '.' in map:
                 map, path = map.split('.')
-            if "rttl_{}".format(map) in valid_maps:
                 map = "rttl_{}".format(map)
                 path = 'path{}'.format(path)
+            elif "rttl_{}".format(map) in valid_maps:
+                map = "rttl_{}".format(map)
             else:
                 return
         else:
@@ -417,8 +418,7 @@ class STORYQUEST:
                 path = "path{}".format(path)
             else:
                 return
-
-        if path is None or path not in valid_paths:
+        elif path is None or path not in valid_paths:
             attrs = {}
             attrs['star'] = 5
             attrs['rank'] = 5
