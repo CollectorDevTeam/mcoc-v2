@@ -212,17 +212,15 @@ class STORYQUEST:
         paths:  path1 to path10
         verbose: If true, will play all fights sequentially
         """
-
         author = ctx.message.author
         ucolor = discord.Color.gold()
         if ctx.message.channel.is_private is False:
             ucolor = author.color
         data = discord.Embed(color=ucolor, title='Story Quest Help', description='')
-        jjs_maps = ('5.3.1', '5.3.2')
         starfire_maps = ('6.1.1', '6.1.2', '6.1.3', '6.1.4', '6.1.5', '6.1.6')
         valid_maps = []
         for k in self.paths.keys():
-            if k != '_headers' and k != 'emoji' and k != 'map':
+            if k != '_headers' and k != 'emoji' and k != 'map' and k != 'rttl':
                 valid_maps.append(k)
                 valid_maps.sort()
         if map not in valid_maps or map is None:
@@ -246,10 +244,6 @@ class STORYQUEST:
                 return
 
         if path is None or path not in valid_paths:
-            # message = 'Select a path:\n'
-            # # message += valid_paths
-            # message += '\n'.join(valid_paths)
-            # data.description = message
             attrs = {}
             attrs['star'] = 5
             attrs['rank'] = 5
@@ -379,45 +373,159 @@ class STORYQUEST:
                 await menu.menu_start(pages)
             return
 
-    # @commands.command(hidden=True, pass_context=True, aliases=('parse_search', 'ps', 'dm', 'km',))
-    # async def glossary_search(self, ctx, *, phrase: str):
-    #     """Enter a search term or a JSON key
-    #     k: <term> | search in Keys
-    #     vn: <int> | search for version numbers
-    #     Use pipe "|" to chain terms
-    #     """
-    #     author = ctx.message.author
-    #     if ctx.message.channel.is_private:
-    #         ucolor = discord.Color.gold()
-    #     else:
-    #         ucolor = author.color
-    #     kdata = StaticGameData()
-    #     cdt_data, cdt_versions = kdata.cdt_data, kdata.cdt_versions
-    #     result = self.search_parser.parse_string(phrase)
-    #     print(result.elements)
-    #     matches = result.match(cdt_data, cdt_versions)
-    #     # print(matches)
-    #     if len(matches) == 0:
-    #         await self.bot.say('**Search resulted in 0 matches**')
-    #         return
-    #     package = []
-    #     for k in sorted(matches):
-    #         if k in cdt_versions:
-    #             ver = '\nvn: {}'.format(cdt_versions[k])
-    #         else:
-    #             ver = ''
-    #         package.append('\n**{}**\n{}{}'.format(
-    #             k, self._bcg_recompile(cdt_data[k]), ver))
-    #     pages = chat.pagify('\n'.join(package))
-    #     page_list = []
-    #     for page in pages:
-    #         em = discord.Embed(title='Data Search', description=page, color=ucolor)
-    #         em.set_author(name='CollectorDevTeam', icon_url=COLLECTOR_ICON)
-    #         em.set_footer(text='MCOC Game Files', icon_url=KABAM_ICON)
-    #         page_list.append(em)
-    #     menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
-    #     await menu.menu_start(page_list)
-    #
+    @commands.command(pass_context=True, name='rttl')
+    async def rttl_paths(self, ctx, map:str =None, verbose=True):
+        """Road To The Labyrinth Guide
+
+        """
+        author = ctx.message.author
+        ucolor = discord.Color.gold()
+        if ctx.message.channel.is_private is False:
+            ucolor = author.color
+        data = discord.Embed(color=ucolor, title='Story Quest Help', description='')
+
+        # starfire_maps = ('6.1.1', '6.1.2', '6.1.3', '6.1.4', '6.1.5', '6.1.6')
+        valid_maps = []
+        for k in self.paths.keys():
+            if k != '_headers' and k != 'emoji' and k != 'map' and k != 'rttl':
+                valid_maps.append(k)
+                valid_maps.sort()
+        if map not in valid_maps and map is not None:
+            if '.' in map:
+                map, path = map.split('.')
+            if "rttl_{}".format(map) in valid_maps:
+                map = "rttl_{}".format(map)
+            else:
+                return
+        else:
+            data.description('Please select a valid Road to the Labyrinth Chapter:'
+                             '1, 2, 3, 4')
+            await self.bot.say(embed=data)
+            return
+
+        all_paths = self.paths['_headers']['paths']
+        all_paths = list(filter(lambda a: a != '', all_paths)) #remove "" from valid paths
+        valid_paths = []
+        for a in all_paths:
+            if a in self.paths[map].keys() and self.paths[map][a] != "":
+                valid_paths.append(a)
+
+        if path not in valid_paths and path is not None:
+            if "path{}".format(path) in valid_paths:
+                path = "path{}".format(path)
+            else:
+                return
+
+        if path is None or path not in valid_paths:
+            attrs = {}
+            attrs['star'] = 5
+            attrs['rank'] = 5
+            if self.globals[map]['chapter_champ'] != '':
+                boss = await ChampConverter.get_champion(self, self.bot, self.globals[map]['chapter_champ'], attrs)
+                data.title = '{} | {}\nQuest: {}'.\
+                    format(self.globals[map]['act_title'],
+                           self.globals[map]['chapter_title'],
+                           self.globals[map]['quest_title'])
+                data.set_thumbnail(url=boss.get_avatar())
+            print(valid_paths)
+            for p in valid_paths:
+                if p is not None and p != "":
+                    key = '{}-{}-1'.format(map, p)
+                    data.add_field(name=p, value='Notes: {}'
+                                   .format(self.export[key]['notes']))
+            data.set_image(url=self.globals[map]['chapter_image'])
+            self.included_emojis = set()
+            message = await self.bot.say(embed=data)
+            for emoji in self.all_emojis.values():
+                if emoji.path in valid_paths:
+                    try:
+                        print(emoji.emoji)
+                        await self.bot.add_reaction(message, emoji.emoji)
+                    except:
+                        raise KeyError('Unknwon Emoji : {}'.format(emoji.emoji))
+                    self.included_emojis.add(emoji.emoji)
+
+            react = await self.bot.wait_for_reaction(message=message, user=ctx.message.author,
+                                                     timeout=30, emoji=self.included_emojis)
+            if react is None:
+                try:
+                    await self.bot.clear_reactions(message)
+                except discord.errors.NotFound:
+                    # logger.warn("Message has been deleted")
+                    print('Message deleted')
+                except discord.Forbidden:
+                    # logger.warn("clear_reactions didn't work")
+                    for emoji in self.included_emojis:
+                        await self.bot.remove_reaction(message, emoji, self.bot.user)
+                return
+            emoji = react.reaction.emoji
+            path = self.all_emojis[emoji].path if emoji in self.all_emojis else None
+
+        if path in valid_paths:
+            tiles = self.paths[map][path]
+            tiles = tiles.split(',')
+            pages = []
+            i = 1
+            for tile in tiles:
+                key = '{}-{}-{}'.format(map, path, tile)
+                attrs = {}
+                mob = self.export[key]['mob'].lower()
+                attrs['star'] = 5
+                attrs['rank'] = 5
+                champion = await ChampConverter.get_champion(self, self.bot, mob, attrs)
+                power = self.export[key]['power']
+                hp = self.export[key]['hp']
+                boosts = self.export[key]['boosts'].split(', ')
+                gboosts = self.export[key]['global'].split(', ')
+                notes = self.export[key]['notes']
+                # attack = self.export[key]['attack']
+                data = discord.Embed(color=CDT_COLORS[champion.klass], title='RTTL {} Quest {} | Fight {}'.format(map[-1:], path[-1:], i),
+                                     description='', url=ACT6_SHEET)
+                tiles = self.export[key]['tiles']
+                data.set_author(name='{} : {:,}'.format(champion.full_name, power))
+                data.set_thumbnail(url=champion.get_avatar())
+                if tiles != '':
+                    data.description += '\nTiles: {}\n<:energy:557675957515845634>     {:,}'.format(tiles, tiles*3)
+                # if power != '':
+                #     data.description += '\nPower  {:,}'.format(power)
+                if hp != '':
+                    data.description += '\n<:friendshp:344221218708389888>     {:,}'.format(hp)
+                else:
+                    data.description += '\n<:friendshp:344221218708389888>     ???'
+                # if attack != '':
+                #     data.description += '\n<:xassassins:487357359241297950>     {}'.format(attack)
+                # else:
+                #     data.description += '\n<:xassassins:487357359241297950>     ???'
+                for g in gboosts:
+                    if g != '-' and g != '':
+                        data.add_field(name='Global Boost: {}'.format(g.title()),
+                                       value='{}'.format(self.glossary[g]))
+                        if self.glossary_tips[g] != "":
+                            data.add_field(name='CollectorVerse Tips', value=self.glossary_tips[g])
+
+                for b in boosts:
+                    if b != '-' and b !='':
+                        data.add_field(name='Local Boost: {}'.format(b.title()),
+                                       value='{}'.format(self.glossary[b]))
+                        if self.glossary_tips[b] != "":
+                            data.add_field(name='CollectorVerse Tips', value=self.glossary_tips[b])
+                if notes != '':
+                    data.add_field(name='Notes', value=notes)
+                data.set_footer(
+                    text='CollectorDevTeam Data + StarFighter | Requested by {}'.format(
+                        author.display_name),
+                    icon_url=COLLECTOR_ICON)
+                pages.append(data)
+                i+=1
+            if verbose:
+                for page in pages:
+                    await self.bot.say(embed=page)
+            else:
+                menu = PagesMenu(self.bot, timeout=360, delete_onX=True, add_pageof=True)
+                await menu.menu_start(pages)
+            return
+
+
 
 
 def check_folders():
