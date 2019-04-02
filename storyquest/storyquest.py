@@ -398,8 +398,7 @@ class STORYQUEST:
             else:
                 return
         else:
-            data.description('Please select a valid Road to the Labyrinth Chapter:'
-                             '1, 2, 3, 4')
+            data.description ='Please select a valid Road to the Labyrinth Chapter:\n1, 2, 3, 4'
             await self.bot.say(embed=data)
             return
 
