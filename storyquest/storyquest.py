@@ -334,7 +334,7 @@ class STORYQUEST:
 
                 for b in boosts:
                     if b != '-' and b !='':
-                        data.add_field(name='Local Boost: {}'.format(b.title()),
+                        data.add_field(name='{}'.format(b.title()),
                                        value='{}'.format(self.glossary[b]))
                         if self.glossary_tips[b] != "":
                             data.add_field(name='CollectorVerse Tips', value=self.glossary_tips[b])
@@ -510,7 +510,7 @@ class STORYQUEST:
 
                 for b in boosts:
                     if b != '-' and b !='':
-                        data.add_field(name='Local Boost: {}'.format(b.title()),
+                        data.add_field(name='{}'.format(b.title()),
                                        value='{}'.format(self.glossary[b]))
                         if self.glossary_tips[b] != "":
                             data.add_field(name='CollectorVerse Tips', value=self.glossary_tips[b])
