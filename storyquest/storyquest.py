@@ -374,7 +374,7 @@ class STORYQUEST:
             return
 
     @commands.command(pass_context=True, name='rttl')
-    async def rttl_paths(self, ctx, map:str =None, verbose=True):
+    async def rttl_paths(self, ctx, map=None, path=None, verbose=True):
         """Road To The Labyrinth Guide
 
         """
@@ -390,11 +390,12 @@ class STORYQUEST:
             if k != '_headers' and k != 'emoji' and k != 'map' and k != 'rttl':
                 valid_maps.append(k)
                 valid_maps.sort()
-        if map not in valid_maps and map is not None:
+        if map not in valid_maps and map is not None and path is None:
             if '.' in map:
                 map, path = map.split('.')
             if "rttl_{}".format(map) in valid_maps:
                 map = "rttl_{}".format(map)
+                path = 'path{}'.format(path)
             else:
                 return
         else:
@@ -402,6 +403,8 @@ class STORYQUEST:
             await self.bot.say(embed=data)
             return
 
+        print(map)
+        print(path)
         all_paths = self.paths['_headers']['paths']
         all_paths = list(filter(lambda a: a != '', all_paths)) #remove "" from valid paths
         valid_paths = []
