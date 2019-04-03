@@ -1081,44 +1081,44 @@ class MCOC(ChampionFactory):
             p3 = 0.20
             p4 = 0.03
             gmc = {3: 0.03, 4: 0.15, 5: 0.82}
-            em.add_field(name='PHC Drop Rates', value='2★ {}%\n3★ {}%\n4★ {}%\n'
+            em.add_field(name='PHC Drop Rates', value='2★ {} %\n3★ {} %\n4★ {} %\n'
                          .format(round(p2*100, 0), round(p3*100, 0), round(p4*100), 0))
             em.add_field(name='Release Date', value='{0.released}'.format(champ))
             if champ.chance4 is not None and float(champ.chance4) > 0:
                 chance4 = round(float(champ.chance4)*100, 4)
-                em.add_field(name='4★ Basic Odds', value='{0}%'.format(chance4), inline=True)
+                em.add_field(name='4★ Basic Odds', value='{0} %'.format(chance4), inline=True)
             else:
                 em.add_field(name='Expected 4★ Basic & PHC Release', value=champ.basic4)
             # if champ.basic4 != '':
             #     em.add_field(name='4{0.star_char} Basic + PHC Date'.format(champ), value='{0}'.format(champ.basic4), inline=True)
             # if float(xref['chanced']) > 0:
             #     dchance = round(daily4*float(xref['chanced'])*100, 4)
-            #     em.add_field(name='4{0.star_char} {0.klass} Special Odds'.format(champ), value='{0}%'.format(dchance), inline=True)
+            #     em.add_field(name='4{0.star_char} {0.klass} Special Odds'.format(champ), value='{0} %'.format(dchance), inline=True)
             # if float(xref['chance4']) > 0:
             #     chance4 = round(float(xref['chance4'])*100,4)
             #     pchance = round(chance4*p4,4)
-            #     em.add_field(name='PHC 4{0.star_char} Odds'.format(champ), value='{0}%'.format(pchance), inline=True)
-            #     em.add_field(name='4{0.star_char} {1} Odds'.format(champ, xref['4b']), value='{0}%'.format(chance4),inline=True)
+            #     em.add_field(name='PHC 4{0.star_char} Odds'.format(champ), value='{0} %'.format(pchance), inline=True)
+            #     em.add_field(name='4{0.star_char} {1} Odds'.format(champ, xref['4b']), value='{0} %'.format(chance4),inline=True)
             if champ.chance5b is not None and float(champ.chance5b) > 0:
                 chance5 = round(float(champ.chance5b)*100, 4)
                 gmc5 = round(float(champ.chance5b)*float(gmc[5])*100, 4)
                 gmc4 = round(float(champ.chance4)*float(gmc[4])*100, 4)
                 gmc3 = round(float(champ.chance4)*float(gmc[3])*100, 4)
-                em.add_field(name='5★ Basic Odds', value='{0}%'.format(chance5), inline=True)
-                em.add_field(name='Grandmaster Crystal Odds', value='5★ {}%\n4★ {}%\n3★ {}%'.format(gmc5, gmc4, gmc3), inline=True)
+                em.add_field(name='5★ Basic Odds', value='{0} %'.format(chance5), inline=True)
+                em.add_field(name='Grandmaster Crystal Odds', value='5★ {} %\n4★ {} %\n3★ {} %'.format(gmc5, gmc4, gmc3), inline=True)
             else:
                 em.add_field(name='Expected 5★ Basic Release', value=champ.basic5)
             if champ.chance5f is not None and float(champ.chance5f) > 0:
-                chance5 = round(float(champ.chance5b)*100, 4)
-                em.add_field(name='5★ Featured Odds', value='{0}%'.format(chance5), inline=True)
+                chance5 = round(float(champ.chance5f)*100, 4)
+                em.add_field(name='5★ Featured Odds', value='{0} %'.format(chance5), inline=True)
             if champ.chance6b is not None and float(champ.chance6b) > 0:
                 chance6 = round(float(champ.chance6b)*100,4)
-                em.add_field(name='6★ Basic Odds', value='{0}%'.format(chance6), inline=True)
+                em.add_field(name='6★ Basic Odds', value='{0} %'.format(chance6), inline=True)
             else:
                 em.add_field(name='Expected 6★ Basic Release', value=champ.basic6)
             if champ.chance6f is not None and float(champ.chance6f) > 0:
                 chance6=round(float(champ.chance6f)*100,4)
-                em.add_field(name='6★ Featured Odds', value='{0}%'.format(chance6), inline=True)
+                em.add_field(name='6★ Featured Odds', value='{0} %'.format(chance6), inline=True)
 
             em.add_field(name='Shortcode', value=champ.short, inline=True)
             em.set_thumbnail(url=champ.get_featured())
