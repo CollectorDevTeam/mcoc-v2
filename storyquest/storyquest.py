@@ -21,7 +21,7 @@ REBIRTH = 'https://cdn.discordapp.com/attachments/398210253923024902/55621672193
 PATREON = 'https://patreon.com/collectorbot'
 
 class STORYQUEST:
-    EmojiReact = namedtuple('EmojiReact', 'emoji include path')
+    EmojiReact = namedtuple('EmojiReact', 'emoji include path text')
 
     def __init__(self, bot):
         self.bot = bot
@@ -71,17 +71,17 @@ class STORYQUEST:
             self.paths = {}
             self.globals = {}
         self.all_emojis = OrderedDict([(i.emoji, i) for i in (
-            self.EmojiReact("0⃣", 0, 'path0'),
-            self.EmojiReact("1⃣", 1, 'path1'),
-            self.EmojiReact("2⃣", 2, 'path2'),
-            self.EmojiReact("3⃣", 3, 'path3'),
-            self.EmojiReact("4⃣", 4, 'path4'),
-            self.EmojiReact("5⃣", 5, 'path5'),
-            self.EmojiReact("6⃣", 6, 'path6'),
-            self.EmojiReact("7⃣", 7, 'path7'),
-            self.EmojiReact("8⃣", 8, 'path8'),
-            self.EmojiReact("9⃣", 9, 'path9'),
-            self.EmojiReact("🔟", 10, 'path10'),
+            self.EmojiReact("0⃣", 0, 'path0', ':zero:'),
+            self.EmojiReact("1⃣", 1, 'path1', ':one:'),
+            self.EmojiReact("2⃣", 2, 'path2', ':two:'),
+            self.EmojiReact("3⃣", 3, 'path3', ':three:'),
+            self.EmojiReact("4⃣", 4, 'path4', ':four:'),
+            self.EmojiReact("5⃣", 5, 'path5', ':five:'),
+            self.EmojiReact("6⃣", 6, 'path6', ':six:'),
+            self.EmojiReact("7⃣", 7, 'path7', ':seven:'),
+            self.EmojiReact("8⃣", 8, 'path8', ':eight:'),
+            self.EmojiReact("9⃣", 9, 'path9', ':nine:'),
+            self.EmojiReact("🔟", 10, 'path10', ':keycap_ten:'),
         )])
 
     async def _load_sq(self, force=False):
@@ -271,7 +271,7 @@ class STORYQUEST:
                     key = '{}-{}-1'.format(map, p)
                     for emoji in self.included_emojis:
                         if emoji['path'] == p:
-                            data.add_field(name=emoji[emoji], value='Tiles: {}\nEnergy: {}\nNotes: {}'
+                            data.add_field(name=emoji['text'], value='Tiles: {}\nEnergy: {}\nNotes: {}'
                                            .format(self.export[key]['tiles'],
                                                    self.export[key]['tiles']*3,
                                                    self.export[key]['notes']))
@@ -450,7 +450,7 @@ class STORYQUEST:
                     key = '{}-{}-1'.format(map, p)
                     for emoji in self.included_emojis:
                         if emoji['path'] == p:
-                            data.add_field(name=emoji[emoji], value='Tiles: {}\nEnergy: {}\nNotes: {}'
+                            data.add_field(name=emoji['text'], value='Tiles: {}\nEnergy: {}\nNotes: {}'
                                            .format(self.export[key]['tiles'],
                                                    self.export[key]['tiles']*3,
                                                    self.export[key]['notes']))
