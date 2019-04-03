@@ -220,7 +220,7 @@ class STORYQUEST:
         starfire_maps = ('6.1.1', '6.1.2', '6.1.3', '6.1.4', '6.1.5', '6.1.6')
         valid_maps = []
         for k in self.paths.keys():
-            if k != '_headers' and k != 'emoji' and k != 'map' and k != 'rttl':
+            if k != '_headers' and k != 'emoji' and k != 'map' and 'rttl_' not in k:
                 valid_maps.append(k)
                 valid_maps.sort()
         if map not in valid_maps or map is None:
