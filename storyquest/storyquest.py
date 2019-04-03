@@ -262,8 +262,8 @@ class STORYQUEST:
                 if p is not None and p != "":
                     key = '{}-{}-1'.format(map, p)
                     for emoji in self.all_emojis:
-                        if emoji['path'] == p:
-                            data.add_field(name=emoji['text'], value='Tiles: {}\nEnergy: {}\nNotes: {}'
+                        if emoji.path == p:
+                            data.add_field(name=emoji.text, value='Tiles: {}\nEnergy: {}\nNotes: {}'
                                            .format(self.export[key]['tiles'],
                                                    self.export[key]['tiles']*3,
                                                    self.export[key]['notes']))
@@ -441,8 +441,8 @@ class STORYQUEST:
                 if p is not None and p != "":
                     key = '{}-{}-1'.format(map, p)
                     for emoji in self.all_emojis:
-                        if emoji['path'] == p:
-                            data.add_field(name=emoji['text'], value='Tiles: {}\nEnergy: {}\nNotes: {}'
+                        if emoji.path == p:
+                            data.add_field(name=emoji.text, value='Tiles: {}\nEnergy: {}\nNotes: {}'
                                            .format(self.export[key]['tiles'],
                                                    self.export[key]['tiles']*3,
                                                    self.export[key]['notes']))
