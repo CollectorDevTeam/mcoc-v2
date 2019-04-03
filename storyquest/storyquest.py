@@ -268,6 +268,13 @@ class STORYQUEST:
                                                    self.export[key]['tiles']*3,
                                                    self.export[key]['notes']))
                             continue
+            gboosts = self.export[key]['global'].split(', ')
+            for g in gboosts:
+                if g != '-' and g != '':
+                    data.add_field(name='Global Boost: {}'.format(g.title()),
+                                   value='{}'.format(self.glossary[g]))
+                    if self.glossary_tips[g] != "":
+                        data.add_field(name='CollectorVerse Tips', value=self.glossary_tips[g])
 
             message = await self.bot.say(embed=data)
             self.included_emojis = set()
@@ -447,7 +454,14 @@ class STORYQUEST:
                                                    self.export[key]['tiles']*3,
                                                    self.export[key]['notes']))
                             continue
-
+            gboosts = self.export[key]['global'].split(', ')
+            for g in gboosts:
+                if g != '-' and g != '':
+                    data.add_field(name='Global Boost: {}'.format(g.title()),
+                                   value='{}'.format(self.glossary[g]))
+                    if self.glossary_tips[g] != "":
+                        data.add_field(name='CollectorVerse Tips', value=self.glossary_tips[g])
+                        
             message = await self.bot.say(embed=data)
             self.included_emojis = set()
             for emoji in self.all_emojis.values():
