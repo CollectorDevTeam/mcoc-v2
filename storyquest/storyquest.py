@@ -255,16 +255,8 @@ class STORYQUEST:
                            self.globals[map]['quest_title'])
                 data.set_thumbnail(url=boss.get_avatar())
             print(valid_paths)
-            for p in valid_paths:
-                if p is not None and p != "":
-                    key = '{}-{}-1'.format(map, p)
-                    data.add_field(name=p, value='Tiles: {}\nEnergy: {}\nNotes: {}'
-                                   .format(self.export[key]['tiles'],
-                                           self.export[key]['tiles']*3,
-                                           self.export[key]['notes']))
             data.set_image(url=self.globals[map]['chapter_image'])
             self.included_emojis = set()
-            message = await self.bot.say(embed=data)
             for emoji in self.all_emojis.values():
                 if emoji.path in valid_paths:
                     try:
@@ -273,6 +265,19 @@ class STORYQUEST:
                     except:
                         raise KeyError('Unknwon Emoji : {}'.format(emoji.emoji))
                     self.included_emojis.add(emoji.emoji)
+
+            for p in valid_paths:
+                if p is not None and p != "":
+                    key = '{}-{}-1'.format(map, p)
+                    for emoji in self.included_emojis:
+                        if emoji['path'] == p:
+                            data.add_field(name=emoji[emoji], value='Tiles: {}\nEnergy: {}\nNotes: {}'
+                                           .format(self.export[key]['tiles'],
+                                                   self.export[key]['tiles']*3,
+                                                   self.export[key]['notes']))
+                            continue
+
+            message = await self.bot.say(embed=data)
 
             react = await self.bot.wait_for_reaction(message=message, user=ctx.message.author,
                                                      timeout=30, emoji=self.included_emojis)
@@ -430,14 +435,7 @@ class STORYQUEST:
                            self.globals[map]['quest_title'])
                 data.set_thumbnail(url=boss.get_avatar())
             print(valid_paths)
-            for p in valid_paths:
-                if p is not None and p != "":
-                    key = '{}-{}-1'.format(map, p)
-                    data.add_field(name=p, value='Notes: {}'
-                                   .format(self.export[key]['notes']))
-            data.set_image(url=self.globals[map]['chapter_image'])
             self.included_emojis = set()
-            message = await self.bot.say(embed=data)
             for emoji in self.all_emojis.values():
                 if emoji.path in valid_paths:
                     try:
@@ -446,6 +444,19 @@ class STORYQUEST:
                     except:
                         raise KeyError('Unknwon Emoji : {}'.format(emoji.emoji))
                     self.included_emojis.add(emoji.emoji)
+
+            for p in valid_paths:
+                if p is not None and p != "":
+                    key = '{}-{}-1'.format(map, p)
+                    for emoji in self.included_emojis:
+                        if emoji['path'] == p:
+                            data.add_field(name=emoji[emoji], value='Tiles: {}\nEnergy: {}\nNotes: {}'
+                                           .format(self.export[key]['tiles'],
+                                                   self.export[key]['tiles']*3,
+                                                   self.export[key]['notes']))
+                            continue
+
+            message = await self.bot.say(embed=data)
 
             react = await self.bot.wait_for_reaction(message=message, user=ctx.message.author,
                                                      timeout=30, emoji=self.included_emojis)
