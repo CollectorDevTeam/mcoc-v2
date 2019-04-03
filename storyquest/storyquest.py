@@ -481,7 +481,7 @@ class STORYQUEST:
                 gboosts = self.export[key]['global'].split(', ')
                 notes = self.export[key]['notes']
                 # attack = self.export[key]['attack']
-                data = discord.Embed(color=CDT_COLORS[champion.klass], title='RTTL {} Quest {} | Fight {}'.format(map[-1:], path[-1:], i),
+                data = discord.Embed(color=CDT_COLORS[champion.klass], title='Road To The Labyrinth\nChapter {} Quest {} | Fight {}'.format(map[-1:], path[-1:], i),
                                      description='', url=ACT6_SHEET)
                 tiles = self.export[key]['tiles']
                 if power != '':
