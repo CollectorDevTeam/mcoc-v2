@@ -1088,7 +1088,7 @@ class MCOC(ChampionFactory):
                 chance4 = round(float(champ.chance4)*100, 4)
                 em.add_field(name='4★ Basic Odds', value='{0}%'.format(chance4), inline=True)
             else:
-                em.add_field(name='Expected 4★ Basic, 5★ Basic & PHC Release', value=champ.basic4)
+                em.add_field(name='Expected 4★ Basic & PHC Release', value=champ.basic4)
             # if champ.basic4 != '':
             #     em.add_field(name='4{0.star_char} Basic + PHC Date'.format(champ), value='{0}'.format(champ.basic4), inline=True)
             # if float(xref['chanced']) > 0:
@@ -1101,9 +1101,11 @@ class MCOC(ChampionFactory):
             #     em.add_field(name='4{0.star_char} {1} Odds'.format(champ, xref['4b']), value='{0}%'.format(chance4),inline=True)
             if champ.chance5b is not None and float(champ.chance5b) > 0:
                 chance5 = round(float(champ.chance5b)*100, 4)
-                gmc5 = round(float(champ.chance5b*gmc[5])*100, 4)
+                gmc5 = round(float(champ.chance5b*float(gmc[5]))*100, 4)
+                gmc4 = round(float(champ.chance4*float(gmc[4]))*100, 4)
+                gmc3 = round(float(champ.chance4*float(gmc[3]))*100, 4)
                 em.add_field(name='5★ Basic Odds', value='{0}%'.format(chance5), inline=True)
-                em.add_field(name='5★ Grandmaster Crystal Odds', value='{0}%'.format(gmc5), inline=True)
+                em.add_field(name='Grandmaster Crystal Odds', value='5★ {}%\n4★ {}%\n3★ {}%'.format(gmc5, gmc4, gmc3), inline=True)
             else:
                 em.add_field(name='Expected 5★ Basic Release', value=champ.basic5)
             if champ.chance5f is not None and float(champ.chance5f) > 0:
