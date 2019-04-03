@@ -461,7 +461,7 @@ class STORYQUEST:
                                    value='{}'.format(self.glossary[g]))
                     if self.glossary_tips[g] != "":
                         data.add_field(name='CollectorVerse Tips', value=self.glossary_tips[g])
-                        
+
             message = await self.bot.say(embed=data)
             self.included_emojis = set()
             for emoji in self.all_emojis.values():
