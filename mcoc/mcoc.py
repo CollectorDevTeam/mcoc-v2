@@ -1101,9 +1101,9 @@ class MCOC(ChampionFactory):
             #     em.add_field(name='4{0.star_char} {1} Odds'.format(champ, xref['4b']), value='{0}%'.format(chance4),inline=True)
             if champ.chance5b is not None and float(champ.chance5b) > 0:
                 chance5 = round(float(champ.chance5b)*100, 4)
-                gmc5 = round(float(champ.chance5b*float(gmc[5]))*100, 4)
-                gmc4 = round(float(champ.chance4*float(gmc[4]))*100, 4)
-                gmc3 = round(float(champ.chance4*float(gmc[3]))*100, 4)
+                gmc5 = round(float(champ.chance5b)*float(gmc[5])*100, 4)
+                gmc4 = round(float(champ.chance4)*float(gmc[4])*100, 4)
+                gmc3 = round(float(champ.chance4)*float(gmc[3])*100, 4)
                 em.add_field(name='5★ Basic Odds', value='{0}%'.format(chance5), inline=True)
                 em.add_field(name='Grandmaster Crystal Odds', value='5★ {}%\n4★ {}%\n3★ {}%'.format(gmc5, gmc4, gmc3), inline=True)
             else:
