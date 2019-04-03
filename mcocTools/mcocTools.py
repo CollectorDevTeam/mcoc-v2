@@ -1306,11 +1306,11 @@ class MCOCEvents:
         event = 'eq_22'
         await self.format_eventquest(event, tier.lower())
 
-    # @eventquest.command(name='22.1', aliases=('annihilus','humantorch',))
-    # async def eq_negativezone(self, tier='Uncollected'):
-    #     """The Living Death Who Walks"""
-    #     event = 'eq_22.1'
-    #     await self.format_eventquest(event, tier.lower())
+    @eventquest.command(name='22.1', aliases=('annihilus','humantorch',))
+    async def eq_livingdeath(self, tier='Uncollected'):
+        """The Living Death Who Walks"""
+        event = 'eq_22.1'
+        await self.format_eventquest(event, tier.lower())
 
     # @eventquest.command(name='', aliases=(,))
     # async def eq_(self, tier='Uncollected'):
