@@ -263,8 +263,8 @@ class STORYQUEST:
                     key = '{}-{}-1'.format(map, p)
                     for emoji in self.all_emojis.values():
                         if emoji.path == p:
-                            data.add_field(name=emoji.text, value='Tiles: {}\nEnergy: {}\nNotes: {}'
-                                           .format(self.export[key]['tiles'],
+                            data.add_field(name=emoji.text, value='Quest: {}\nTiles: {}\nEnergy: {}\nNotes: {}'
+                                           .format(p[-1:],self.export[key]['tiles'],
                                                    self.export[key]['tiles']*3,
                                                    self.export[key]['notes']))
                             continue
@@ -442,8 +442,8 @@ class STORYQUEST:
                     key = '{}-{}-1'.format(map, p)
                     for emoji in self.all_emojis.values():
                         if emoji.path == p:
-                            data.add_field(name=emoji.text, value='Tiles: {}\nEnergy: {}\nNotes: {}'
-                                           .format(self.export[key]['tiles'],
+                            data.add_field(name=emoji.text, value='Quest: {}\nTiles: {}\nEnergy: {}\nNotes: {}'
+                                           .format(p[-1:],self.export[key]['tiles'],
                                                    self.export[key]['tiles']*3,
                                                    self.export[key]['notes']))
                             continue
