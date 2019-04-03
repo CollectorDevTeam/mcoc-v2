@@ -1066,51 +1066,64 @@ class MCOC(ChampionFactory):
         await roster.display(hargs.tags) #imported from hook
 
     @champ.command(pass_context=True, name='released', aliases=('odds','chances',))
-    async def champ_released(self, ctx, *, champs : ChampConverterMult):
+    async def champ_released(self, ctx, champ: ChampConverter, crystals=1):
         '''Champion(s) Release Date'''
-        for champ in champs:
-            print('check_release')
-            released = await self.check_release(ctx, champ)
-            if released:
-                # xref = get_csv_row(data_files['crossreference']['local'],'champ',champ.full_name)
-                em = discord.Embed(color=champ.class_color, title='Release Date & Estimated Pull Chance', url=SPOTLIGHT_DATASET)
-                em.set_author(name=champ.full_name, icon_url=champ.get_avatar())
-                daily4 = 0.10
-                daily3 = 0.30
-                daily2 = 0.60
-                p2 = 0.84
-                p3 = 0.14
-                p4 = 0.02
-                em.add_field(name='Daily Special Drop Rates', value='2{0.star_char} {1}%\n3{0.star_char} {2}%\n4{0.star_char} {3}%\n'.format(champ, round(daily2*100,0), round(daily3*100,0), round(daily4*100),0))
-                em.add_field(name='PHC Drop Rates', value='2{0.star_char} {1}%\n3{0.star_char} {2}%\n4{0.star_char} {3}%\n'.format(champ, round(p2*100,0), round(p3*100,0), round(p4*100),0))
-                em.add_field(name='Release Date', value='{0.released}'.format(champ))
-                if champ.basic4 != '':
-                    em.add_field(name='4{0.star_char} Basic + PHC Date'.format(champ), value='{0}'.format(champ.basic4), inline=True)
-                # if float(xref['chanced']) > 0:
-                #     dchance = round(daily4*float(xref['chanced'])*100, 4)
-                #     em.add_field(name='4{0.star_char} {0.klass} Special Odds'.format(champ), value='{0}%'.format(dchance), inline=True)
-                # if float(xref['chance4']) > 0:
-                #     chance4 = round(float(xref['chance4'])*100,4)
-                #     pchance = round(chance4*p4,4)
-                #     em.add_field(name='PHC 4{0.star_char} Odds'.format(champ), value='{0}%'.format(pchance), inline=True)
-                #     em.add_field(name='4{0.star_char} {1} Odds'.format(champ, xref['4b']), value='{0}%'.format(chance4),inline=True)
-                # if float(xref['chance5b']) >0 :
-                #     chance5=round(float(xref['chance5b'])*100,4)
-                #     em.add_field(name='5{0.star_char} Basic Odds'.format(champ), value='{0}%'.format(chance5),inline=True)
-                # if float(xref['chance5f']) >0 :
-                #     chance5=round(float(xref['chance5f'])*100,4)
-                #     em.add_field(name='5{0.star_char} {1} Odds'.format(champ, xref['5f']), value='{0}%'.format(chance5),inline=True)
-                # if xref['chance6b'] != '' and float(xref['chance6b']) >0 :
-                #     chance6=round(float(xref['chance6b'])*100,4)
-                #     em.add_field(name='6{0.star_char} Basic Odds'.format(champ), value='{0}%'.format(chance6),inline=True)
-                # if xref['chance6f'] != '' and float(xref['chance6f']) >0 :
-                #     chance6=round(float(xref['chance6f'])*100,4)
-                #     em.add_field(name='6{0.star_char} Featured Odds'.format(champ), value='{0}%'.format(chance6),inline=True)
+        print('check_release')
+        # released = await self.check_release(ctx, champ)
+        released = True
+        if released:
+            em = discord.Embed(color=champ.class_color, title='Release Date & Estimated Pull Chance',
+                               url=SPOTLIGHT_DATASET, description='Release Dates & Estimated Crystal Opening Odds')
+            daily4 = 0.10
+            daily3 = 0.30
+            daily2 = 0.60
+            p2 = 0.77
+            p3 = 0.20
+            p4 = 0.03
+            gmc = {3: 0.03, 4: 0.15, 5: 0.82}
+            # em.add_field(name='Daily Special Drop Rates', value='2{0.star_char} {1}%\n3{0.star_char} {2}%\n4{0.star_char} {3}%\n'.format(champ, round(daily2*100,0), round(daily3*100,0), round(daily4*100),0))
+            em.add_field(name='PHC Drop Rates', value='2★ {}%\n3★ {}%\n4★ {}%\n'.format(round(p2*100,0), round(p3*100,0), round(p4*100),0))
+            em.add_field(name='Release Date', value='{0.released}'.format(champ))
+            if float(champ.chance4b) > 0:
+                chance4 = round(float(champ.chance4b)*100, 4)
+                em.add_field(name='4★ Basic Odds', value='{0}%'.format(chance4), inline=True)
+            else:
+                em.add_field(name='Expected 5★ Basic Release', value=champ.basic5)
+            # if champ.basic4 != '':
+            #     em.add_field(name='4{0.star_char} Basic + PHC Date'.format(champ), value='{0}'.format(champ.basic4), inline=True)
+            # if float(xref['chanced']) > 0:
+            #     dchance = round(daily4*float(xref['chanced'])*100, 4)
+            #     em.add_field(name='4{0.star_char} {0.klass} Special Odds'.format(champ), value='{0}%'.format(dchance), inline=True)
+            # if float(xref['chance4']) > 0:
+            #     chance4 = round(float(xref['chance4'])*100,4)
+            #     pchance = round(chance4*p4,4)
+            #     em.add_field(name='PHC 4{0.star_char} Odds'.format(champ), value='{0}%'.format(pchance), inline=True)
+            #     em.add_field(name='4{0.star_char} {1} Odds'.format(champ, xref['4b']), value='{0}%'.format(chance4),inline=True)
+            if float(champ.chance5b) > 0:
+                chance5 = round(float(champ.chance5b)*100, 4)
+                gmc5 = round(float(champ.chance5b*gmc[5])*100, 4)
+                em.add_field(name='5★ Basic Odds', value='{0}%'.format(chance5), inline=True)
+                em.add_field(name='5★ Grandmaster Crystal Odds', value='{0}%'.format(gmc5), inline=True)
+            else:
+                em.add_field(name='Expected 5★ Basic Release', value=champ.basic5)
+            if float(champ.chance5f) > 0:
+                chance5 = round(float(champ.chance5b)*100, 4)
+                em.add_field(name='5★ Featured Odds', value='{0}%'.format(chance5), inline=True)
+            if float(champ.chance6b) > 0:
+                chance6 = round(float(champ.chance6b)*100,4)
+                em.add_field(name='6★ Basic Odds', value='{0}%'.format(chance6), inline=True)
+            else:
+                em.add_field(name='Expected 6★ Basic Release', value=champ.basic6)
+            if float(champ.chance6f) > 0:
+                chance6=round(float(champ.chance6f)*100,4)
+                em.add_field(name='6★ Featured Odds', value='{0}%'.format(chance6), inline=True)
 
-                em.add_field(name='Shortcode', value=champ.short, inline=True)
-                em.set_thumbnail(url=champ.get_featured())
-                em.set_footer(text='CollectorDevTeam Dataset', icon_url=COLLECTOR_ICON)
-                await self.bot.say(embed=em)
+            em.add_field(name='Shortcode', value=champ.short, inline=True)
+            em.set_thumbnail(url=champ.get_featured())
+            em.set_author(name='CollectorDevTeam', url=COLLECTOR_ICON)
+            em.set_footer(text='Requested by {}'.format(ctx.message.author.display_name),
+                          icon_url=ctx.message.author.avatar_url)
+            await self.bot.say(embed=em)
 
     @champ.command(pass_context=True, name='sig', aliases=['signature',])
     async def champ_sig(self, ctx, *, champ : ChampConverterSig):
