@@ -1080,9 +1080,14 @@ class MCOC(ChampionFactory):
             p2 = 0.77
             p3 = 0.20
             p4 = 0.03
-            gmc = {3: 0.03, 4: 0.15, 5: 0.82}
+            gmc = {3: float(0.03), 4: float(0.15), 5: float(0.82)}
+            fgmc = {3: float(0.03), 4: float(0.15), 5: float(0.82)}
             em.add_field(name='PHC Drop Rates', value='2★ {} %\n3★ {} %\n4★ {} %\n'
                          .format(round(p2*100, 0), round(p3*100, 0), round(p4*100), 0))
+            em.add_field(name='Grandmaster Drop Rates', value='3★ {} %\n4★ {} %\n5★ {} %\n'
+                         .format(round(gmc[3]*100, 0), round(gmc[4]*100, 0), round(gmc[5]*100), 0))
+            # em.add_field(name='Featured Grandmaster Drop Rates', value='3★ {} %\n4★ {} %\n5★ {} %\n'
+            #              .format(round(fgmc[3]*100, 0), round(fgmc[4]*100, 0), round(fgmc[5]*100), 0))
             em.add_field(name='Release Date', value='{0.released}'.format(champ))
             if champ.chance4 is not None and float(champ.chance4) > 0:
                 chance4 = round(float(champ.chance4)*100, 4)
@@ -1101,9 +1106,9 @@ class MCOC(ChampionFactory):
             #     em.add_field(name='4{0.star_char} {1} Odds'.format(champ, xref['4b']), value='{0} %'.format(chance4),inline=True)
             if champ.chance5b is not None and float(champ.chance5b) > 0:
                 chance5 = round(float(champ.chance5b)*100, 4)
-                gmc5 = round(float(champ.chance5b)*float(gmc[5])*100, 4)
-                gmc4 = round(float(champ.chance4)*float(gmc[4])*100, 4)
-                gmc3 = round(float(champ.chance4)*float(gmc[3])*100, 4)
+                gmc5 = round(float(champ.chance5b)*gmc[5]*100, 4)
+                gmc4 = round(float(champ.chance4)*gmc[4]*100, 4)
+                gmc3 = round(float(champ.chance4)*gmc[3]*100, 4)
                 em.add_field(name='5★ Basic Odds', value='{0} %'.format(chance5), inline=True)
                 em.add_field(name='Grandmaster Crystal Odds', value='5★ {} %\n4★ {} %\n3★ {} %'.format(gmc5, gmc4, gmc3), inline=True)
             else:
