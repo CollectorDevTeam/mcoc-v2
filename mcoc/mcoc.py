@@ -1072,7 +1072,7 @@ class MCOC(ChampionFactory):
         # released = await self.check_release(ctx, champ)
         released = True
         if released:
-            em = discord.Embed(color=champ.class_color, title=champ.full_name,
+            em = discord.Embed(color=champ.class_color, title='{} | Released {}'.format(champ.full_name, champ.released),
                                url=SPOTLIGHT_DATASET, description='Release Dates & Estimated Crystal Opening Odds')
             daily4 = 0.10
             daily3 = 0.30
@@ -1088,26 +1088,22 @@ class MCOC(ChampionFactory):
                          .format(round(gmc[3]*100, 0), round(gmc[4]*100, 0), round(gmc[5]*100), 0))
             # em.add_field(name='Featured Grandmaster Drop Rates', value='3★ {} %\n4★ {} %\n5★ {} %\n'
             #              .format(round(fgmc[3]*100, 0), round(fgmc[4]*100, 0), round(fgmc[5]*100), 0))
-            em.add_field(name='Release Date', value='{0.released}'.format(champ))
+            # em.add_field(name='Release Date', value='{0.released}'.format(champ), inline=False)
             if champ.chance4 is not None and float(champ.chance4) > 0:
-                chance4 = round(float(champ.chance4)*100, 4)
                 phc2 = round(p2*float(champ.chance4)*100, 4)
                 phc3 = round(p3*float(champ.chance4)*100, 4)
                 phc4 = round(p4*float(champ.chance4)*100, 4)
                 em.add_field(name='PHC Odds', value='2★ {} %\n3★ {} %\n 4★ {} %'.format(phc2, phc3, phc4))
+            if champ.chance5b is not None and float(champ.chance5b) > 0:
+                gmc5 = round(float(champ.chance5b)*gmc[5]*100, 4)
+                gmc4 = round(float(champ.chance4)*gmc[4]*100, 4)
+                gmc3 = round(float(champ.chance4)*gmc[3]*100, 4)
+                em.add_field(name='Grandmaster Crystal Odds', value='5★ {} %\n4★ {} %\n3★ {} %'.format(gmc5, gmc4, gmc3), inline=False)
+            if champ.chance4 is not None and float(champ.chance4) > 0:
+                chance4 = round(float(champ.chance4)*100, 4)
                 em.add_field(name='4★ Basic Odds', value='{0} %'.format(chance4), inline=True)
             elif champ.basic4 is not None:
                 em.add_field(name='Expected 4★ Basic & PHC Release', value=champ.basic4)
-            # if champ.basic4 != '':
-            #     em.add_field(name='4{0.star_char} Basic + PHC Date'.format(champ), value='{0}'.format(champ.basic4), inline=True)
-            # if float(xref['chanced']) > 0:
-            #     dchance = round(daily4*float(xref['chanced'])*100, 4)
-            #     em.add_field(name='4{0.star_char} {0.klass} Special Odds'.format(champ), value='{0} %'.format(dchance), inline=True)
-            # if float(xref['chance4']) > 0:
-            #     chance4 = round(float(xref['chance4'])*100,4)
-            #     pchance = round(chance4*p4,4)
-            #     em.add_field(name='PHC 4{0.star_char} Odds'.format(champ), value='{0} %'.format(pchance), inline=True)
-            #     em.add_field(name='4{0.star_char} {1} Odds'.format(champ, xref['4b']), value='{0} %'.format(chance4),inline=True)
             if champ.chance5b is not None and float(champ.chance5b) > 0:
                 chance5 = round(float(champ.chance5b)*100, 4)
                 em.add_field(name='5★ Basic Odds', value='{0} %'.format(chance5), inline=True)
@@ -1124,11 +1120,6 @@ class MCOC(ChampionFactory):
             if champ.chance6f is not None and float(champ.chance6f) > 0:
                 chance6=round(float(champ.chance6f)*100,4)
                 em.add_field(name='6★ Featured Odds', value='{0} %'.format(chance6), inline=True)
-            if champ.chance5b is not None and float(champ.chance5b) > 0:
-                gmc5 = round(float(champ.chance5b)*gmc[5]*100, 4)
-                gmc4 = round(float(champ.chance4)*gmc[4]*100, 4)
-                gmc3 = round(float(champ.chance4)*gmc[3]*100, 4)
-                em.add_field(name='Grandmaster Crystal Odds', value='5★ {} %\n4★ {} %\n3★ {} %'.format(gmc5, gmc4, gmc3), inline=True)
 
             em.add_field(name='Shortcode', value=champ.short, inline=True)
             em.set_thumbnail(url=champ.get_featured())
