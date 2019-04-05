@@ -957,6 +957,7 @@ class MCOCTools:
         pages = []
         for d in arena_pages:
             data = discord.Embed(color=ucolor, title='Arena Cutoffs', url=PATREON, description=chat.box(d))
+            data.add_field(name='[Arena Results History](https://docs.google.com/spreadsheets/d/1sJtSVnjhhRNxpiuMR5uXrsTlrsXMjp9TNO7JHDXhtsk/htmlview)', value='Maintained by u/ArenaResultsKnight & u/bdawg923')
             data.set_author(name='CollectorDevTeam | Powered by ArenaResultsKnight', icon_url=COLLECTOR_ICON)
             data.set_footer(text='Requested by {}'.format(author.display_name), icon_url=author.avatar_url)
             data.set_image(url=self.mcoctools['cutoffs'])
