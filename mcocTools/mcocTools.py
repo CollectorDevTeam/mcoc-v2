@@ -931,7 +931,7 @@ class MCOCTools:
         if champ is not None:
             mcoc = self.bot.get_cog('MCOC')
             try:
-                champ = await mcoc.get_champion(champ)
+                champ = await mcoc.get_champion(champ.lower())
                 thumbnail = champ.get_featured()
                 # if champ is not None:
                     # cutoffs = dataIO.load_json('data/mcocTools/cutoffs.json')
