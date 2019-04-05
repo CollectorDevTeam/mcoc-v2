@@ -922,11 +922,11 @@ class MCOCTools:
             max = self.cutoffs["1"]['max']
             for k in range(1, int(max)):
                 k = str(k)
-                if self.cutoffs[k]['feature'] != '' and self.cutoffs[k]['5feature'] != '':
+                if '5feature' in self.cutoffs[k] and self.cutoffs[k]['feature'] != '' and self.cutoffs[k]['5feature'] != '':
                     description.append(
                         '{} [F5★ {}] {}\n'.format(self.cutoffs[k]['arena_date'], self.cutoffs[k]['5feature'],
                                                   self.cutoffs[k]['feature']))
-                if self.cutoffs[k]['feature'] != '' and self.cutoffs[k]['4feature'] != '':
+                if '4feature' in self.cutoffs[k] and self.cutoffs[k]['feature'] != '' and self.cutoffs[k]['4feature'] != '':
                     description.append(
                         '{} [F4★ {}] {}\n'.format(self.cutoffs[k]['arena_date'], self.cutoffs[k]['4feature'],
                                                   self.cutoffs[k]['feature']))
@@ -942,15 +942,15 @@ class MCOCTools:
             max = int(self.cutoffs["1"]['max'])
             for k in range(1, max):
                 k = str(k)
-                if self.cutoffs[k]['5feature'] != '' and self.cutoffs[k]['feature'] == champ.full_name:
+                if '5feature' in self.cutoffs[k] and self.cutoffs[k]['5feature'] != '' and self.cutoffs[k]['feature'] == champ.full_name:
                     description.append(
                         '{} [F5★ {}] {}\n'.format(self.cutoffs[k]['arena_date'], self.cutoffs[k]['5feature'],
                                                      self.cutoffs[k]['feature']))
-                if self.cutoffs[k]['4feature'] != '' and self.cutoffs[k]['feature'] == champ.full_name:
+                if '4feature' in self.cutoffs[k] and self.cutoffs[k]['4feature'] != '' and self.cutoffs[k]['feature'] == champ.full_name:
                     description.append(
                         '{} [F4★ {}] {}\n'.format(self.cutoffs[k]['arena_date'], self.cutoffs[k]['4feature'],
                                                      self.cutoffs[k]['feature']))
-                if self.cutoffs[k]['4basic'] != '' and self.cutoffs[k]['basic'] == champ.full_name:
+                if '4basic' in self.cutoffs[k] and self.cutoffs[k]['4basic'] != '' and self.cutoffs[k]['basic'] == champ.full_name:
                     description.append('{} [B4★ {}] {}\n'.format(self.cutoffs[k]['arena_date'], self.cutoffs[k]['4basic'],
                                                                     self.cutoffs[k]['basic']))
             description = ''.join(description)
