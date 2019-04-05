@@ -911,32 +911,31 @@ class MCOCTools:
                 await gsh.cache_gsheets('cutoffs')
         else:
             await gsh.cache_gsheets('cutoffs')
-        cutoffs = dataIO.load_json('data/mcocTools/cutoffs.json')
         ucolor = discord.Color.gold()
         if ctx.message.channel.is_private is False:
             ucolor = author.color
-        description = []
-        pages = []
-        for k in cutoffs.keys():
-            description.append('__{}__\n'.format(k))
-            if '5★ Featured' in cutoffs[k]:
-                description.append('Featured\n5★ {} : {}\n'.format(cutoffs[k]['feature'], cutoffs[k]['5★ Featured']))
-            if '4★ Featured' in cutoffs[k]:
-                description.append('Featured\n4★ {} : {}\n'.format(cutoffs[k]['feature'], cutoffs[k]['4★ Featured']))
-            if '4★ Basic' in cutoffs[k]:
-                description.append('Basic\n5★ {} : {}\n'.format(cutoffs[k]['basic'], cutoffs[k]['4★ Basic']))
-        description = ''.join(description)
-        description = chat.pagify(description)
-        for d in description:
-            data = discord.Embed(color=ucolor, title='Arena Cutoffs', url=PATREON, description=d)
-            data.set_author(name='CollectorDevTeam | Powered by ArenaResultsKnight', icon_url=COLLECTOR_ICON)
-            data.set_footer(text='Requested by {}'.format(author.displayname), icon_url=author.avatar_url)
-            data.set_image(url=self.cutoffs_url)
-            # await self.bot.send(embed=data)
-            pages.append(data)
+        # cutoffs = dataIO.load_json('data/mcocTools/cutoffs.json')
+        # description = []
         # pages = []
-        menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
-        await menu.menu_start(pages=pages)
+        # for k in cutoffs.keys():
+        #     description.append('__{}__\n'.format(k))
+        #     if '5★ Featured' in cutoffs[k]:
+        #         description.append('Featured\n5★ {} : {}\n'.format(cutoffs[k]['feature'], cutoffs[k]['5★ Featured']))
+        #     if '4★ Featured' in cutoffs[k]:
+        #         description.append('Featured\n4★ {} : {}\n'.format(cutoffs[k]['feature'], cutoffs[k]['4★ Featured']))
+        #     if '4★ Basic' in cutoffs[k]:
+        #         description.append('Basic\n5★ {} : {}\n'.format(cutoffs[k]['basic'], cutoffs[k]['4★ Basic']))
+        # description = ''.join(description)
+        # description = chat.pagify(description)
+        # for d in description:
+        data = discord.Embed(color=ucolor, title='Arena Cutoffs', url=PATREON) #, description=d)
+        data.set_author(name='CollectorDevTeam | Powered by ArenaResultsKnight', icon_url=COLLECTOR_ICON)
+        data.set_footer(text='Requested by {}'.format(author.displayname), icon_url=author.avatar_url)
+        data.set_image(url=self.cutoffs_url)
+        await self.bot.send(embed=data)
+        #     pages.append(data)
+        # menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
+        # await menu.menu_start(pages=pages)
         if self.mcoctools['cutoffs_date'] != now:
             self.cutoffs_url = await SCREENSHOT.get_screenshot(self, url=PUBLISHED, w=1700, h=800)
             self.mcoctools['cuttoffs'] = self.cutoffs_url
