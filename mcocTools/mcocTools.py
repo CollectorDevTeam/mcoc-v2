@@ -949,6 +949,7 @@ class MCOCTools:
                         description.append('{} [B4★ {}] {}\n'.format(self.cutoffs[k]['arena_date'], self.cutoffs[k]['4basic'],
                                                                         self.cutoffs[k]['basic']))
                 description = ''.join(description)
+                self.arena_pages = arena_pages
                 arena_pages = chat.pagify(description, page_length=500)
         except:
             await self.bot.say('Not a valid champion.')
