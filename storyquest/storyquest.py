@@ -152,7 +152,7 @@ class STORYQUEST:
             data.set_footer(
                 text='Glossary by StarFighter + DragonFei + Royal | Requested by {}'.format(author.display_name),
                 icon_url=GSHEET_ICON)
-            data.description = self.glossary[boost.lower()]['definition']
+            data.description = self.glossary[boost.lower()]['description']
             if self.glossary[boost.lower()]['tips'] != "":
                 data.add_field(name='CollectorVerse Tips', value=self.glossary[boost.lower()]['tips'])
             await self.bot.say(embed=data)
@@ -162,7 +162,7 @@ class STORYQUEST:
             glossary = ''
             for key in keys:
                 try:
-                    glossary += '__{}__\n{}\n\n'.format(key.title(), self.glossary[key]['definition'])
+                    glossary += '__{}__\n{}\n\n'.format(key.title(), self.glossary[key]['description'])
                 except KeyError:
                     raise KeyError('Cannot resolve {}'.format(boost.lower()))
             glossary = chat.pagify(glossary)
@@ -184,7 +184,7 @@ class STORYQUEST:
             package = []
             for k in sorted(matches):
                 package.append('\n__{}__\n{}'.format(
-                    self.glossary[k]['title'], self.glossary[k]['definition']))
+                    self.glossary[k]['title'], self.glossary[k]['description']))
             pages = chat.pagify('\n'.join(package))
             page_list = []
             for page in pages:
