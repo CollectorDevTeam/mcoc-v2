@@ -726,7 +726,7 @@ class MCOCTools:
         self.mcoctools = dataIO.load_json('data/mcocTools/mcoctools.json')
         self.calendar_url = ''
         # self.cutoffs_url = ''
-        self.arena_pages = []
+        self.arena = ''
         self.cutoffs = dataIO.load_json('data/mcocTools/cutoffs.json')
         # self.date = ''
         # self.calendar = {}
@@ -888,6 +888,10 @@ class MCOCTools:
     async def _cutoffs(self, ctx, champ=None):
         PUBLISHED = 'https://docs.google.com/spreadsheets/d/15F7_kKpiudp3FJu_poQohkWlCRi1CSylQOdGoyuVqSE/pubhtml'
         author = ctx.message.author
+        if ctx.message.channel.is_private is False:
+            ucolor = author.color
+        else:
+            ucolor = discord.Color.gold()
         now = datetime.datetime.now().date()
         gsh = GSHandler(self.bot)
         gsh.register_gsheet(
@@ -898,7 +902,7 @@ class MCOCTools:
             range_name='export'
         )
         thumbnail = COLLECTOR_FEATURED
-        arena_pages = self.arena_pages
+        description = self.arena
         if self.mcoctools['cutoffs'] == '' or self.mcoctools['cutoffs_date'] != now:
             print('debug cutoffs url '+self.mcoctools['cutoffs'])
             print('debug cutoffs date '+self.mcoctools['cutoffs_date'])
@@ -923,12 +927,10 @@ class MCOCTools:
                         '{} [B4★ {}] {}\n'.format(self.cutoffs[k]['arena_date'], self.cutoffs[k]['4basic'],
                                                   self.cutoffs[k]['basic']))
             description = ''.join(description)
-            arena_pages = chat.pagify(description, page_length=500)
-            self.arena_pages = arena_pages
-            # dataIO.save_json('data/mcocTools/mcoctools.json', self.mcoctools)
-        try:
-            if champ is not None:
-                mcoc = self.bot.get_cog('MCOC')
+            self.arena = description
+        if champ is not None:
+            mcoc = self.bot.get_cog('MCOC')
+            try:
                 champ = await mcoc.get_champion(champ)
                 thumbnail = champ.get_featured()
                 # if champ is not None:
@@ -949,19 +951,16 @@ class MCOCTools:
                         description.append('{} [B4★ {}] {}\n'.format(self.cutoffs[k]['arena_date'], self.cutoffs[k]['4basic'],
                                                                         self.cutoffs[k]['basic']))
                 description = ''.join(description)
-                arena_pages = chat.pagify(description, page_length=500)
-        except:
-            await self.bot.say('Not a valid champion.')
-
+            except:
+                await self.bot.say('Not a valid champion.')
+        arena_pages = chat.pagify(description, page_length=500)
         filetime = datetime.datetime.fromtimestamp(os.path.getctime('data/mcocTools/cutoffs.json'))
         if os.path.exists('data/mcocTools/cutoffs.json'):
             if filetime.date() != datetime.datetime.now().date():
                 await gsh.cache_gsheets('cutoffs')
         else:
             await gsh.cache_gsheets('cutoffs')
-        ucolor = discord.Color.gold()
-        if ctx.message.channel.is_private is False:
-            ucolor = author.color
+
         pages = []
         for d in arena_pages:
             data = discord.Embed(color=ucolor, title='Arena Cutoffs', url=PATREON, description=chat.box(d))
