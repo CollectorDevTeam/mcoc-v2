@@ -922,28 +922,31 @@ class MCOCTools:
             arena_pages = chat.pagify(description, page_length=500)
             self.arena_pages = arena_pages
             # dataIO.save_json('data/mcocTools/mcoctools.json', self.mcoctools)
-        if champ is not None:
-            mcoc = self.bot.get_cog('MCOC')
-            champ = await mcoc.get_champion(champ)
-            thumbnail = champ.get_featured()
-            # if champ is not None:
-                # cutoffs = dataIO.load_json('data/mcocTools/cutoffs.json')
-            description = []
-            for k in range(1, 23):
-                k = str(k)
-                if '5feature' in self.cutoffs[k] and self.cutoffs[k]['feature'] == champ.full_name:
-                    description.append(
-                        '{} [F5★ {}] {}\n'.format(self.cutoffs[k]['arena_date'], self.cutoffs[k]['5feature'],
-                                                     self.cutoffs[k]['feature']))
-                if '4feature' in self.cutoffs[k] and self.cutoffs[k]['feature'] == champ.full_name:
-                    description.append(
-                        '{} [F4★ {}] {}\n'.format(self.cutoffs[k]['arena_date'], self.cutoffs[k]['4feature'],
-                                                     self.cutoffs[k]['feature']))
-                if '4basic' in self.cutoffs[k] and self.cutoffs[k]['basic'] == champ.full_name:
-                    description.append('{} [B4★ {}] {}\n'.format(self.cutoffs[k]['arena_date'], self.cutoffs[k]['4basic'],
-                                                                    self.cutoffs[k]['basic']))
-            description = ''.join(description)
-            arena_pages = chat.pagify(description, page_length=500)
+        try:
+            if champ is not None:
+                mcoc = self.bot.get_cog('MCOC')
+                champ = await mcoc.get_champion(champ)
+                thumbnail = champ.get_featured()
+                # if champ is not None:
+                    # cutoffs = dataIO.load_json('data/mcocTools/cutoffs.json')
+                description = []
+                for k in range(1, 23):
+                    k = str(k)
+                    if '5feature' in self.cutoffs[k] and self.cutoffs[k]['feature'] == champ.full_name:
+                        description.append(
+                            '{} [F5★ {}] {}\n'.format(self.cutoffs[k]['arena_date'], self.cutoffs[k]['5feature'],
+                                                         self.cutoffs[k]['feature']))
+                    if '4feature' in self.cutoffs[k] and self.cutoffs[k]['feature'] == champ.full_name:
+                        description.append(
+                            '{} [F4★ {}] {}\n'.format(self.cutoffs[k]['arena_date'], self.cutoffs[k]['4feature'],
+                                                         self.cutoffs[k]['feature']))
+                    if '4basic' in self.cutoffs[k] and self.cutoffs[k]['basic'] == champ.full_name:
+                        description.append('{} [B4★ {}] {}\n'.format(self.cutoffs[k]['arena_date'], self.cutoffs[k]['4basic'],
+                                                                        self.cutoffs[k]['basic']))
+                description = ''.join(description)
+                arena_pages = chat.pagify(description, page_length=500)
+        except:
+            await self.bot.say('Not a valid champion.')
 
         filetime = datetime.datetime.fromtimestamp(os.path.getctime('data/mcocTools/cutoffs.json'))
         if os.path.exists('data/mcocTools/cutoffs.json'):
