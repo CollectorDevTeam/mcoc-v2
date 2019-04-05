@@ -67,6 +67,7 @@ class STORYQUEST:
             self.glossary = {}
             self.glossary_tips = {}
             self.glossary_keys = {}
+            self.glossary_desc = {}
             self.export = {}
             self.paths = {}
             self.globals = {}
@@ -91,17 +92,20 @@ class STORYQUEST:
             await self.gsheet_handler.cache_gsheets('act6_paths')
             await self.gsheet_handler.cache_gsheets('act6_globals')
         temp = dataIO.load_json('data/storyquest/act6_glossary.json')
-        glossary = {}
         glossary_keys = {}
         glossary_tips = {}
+        glossary_desc = {}
+        # glossary_titles = {}
         for t in temp.keys():
             if t not in ('', '-', '_headers'):
-                glossary.update({t: temp[t]['description']})
+                glossary_desc.update({t: temp[t]['description']})
                 glossary_tips.update({t: temp[t]['tips']})
-                glossary_keys.update({t: t})
-        self.glossary = glossary
+                glossary_keys.update({t: temp[t]['title']})
+                # glossary_titles.update({t: temp[t]['title']})
+        self.glossary_desc = glossary_desc
         self.glossary_keys = glossary_keys
         self.glossary_tips = glossary_tips
+        self.glossary = temp
         dataIO.save_json('data/storyquest/act6_glossary.json', self.glossary)
         dataIO.save_json('data/storyquest/act6_glossary_keys.json', self.glossary_keys)
         dataIO.save_json('data/storyquest/act6_glossary_tips.json', self.glossary_tips)
@@ -140,18 +144,17 @@ class STORYQUEST:
         else:
             ucolor = author.color
         if boost is not None and boost.lower() in keys:
-            data = discord.Embed(color=ucolor, title='Support CollectorDevTeam',
-                                 description='', url=PATREON)
+            data = discord.Embed(color=ucolor, title='Boost: {}'.format(self.glossary[boost.lower()]['title']), description='', url=PATREON)
             data.set_thumbnail(url=COLLECTOR_ICON)
-            data.set_author(name='Boost Glossary')
+            data.set_author(name='Support CollectorDevTeam')
             data.set_thumbnail(url=REBIRTH)
             # data.set_author(name='Glossary by StarFighter + DragonFei + Royal', icon_url=GSHEET_ICON)
             data.set_footer(
                 text='Glossary by StarFighter + DragonFei + Royal | Requested by {}'.format(author.display_name),
                 icon_url=GSHEET_ICON)
-            data.description = self.glossary[boost.lower()]
-            if self.glossary_tips[boost.lower()] != "":
-                data.add_field(name='CollectorVerse Tips', value=self.glossary_tips[boost.lower()])
+            data.description = self.glossary[boost.lower()]['definition']
+            if self.glossary[boost.lower()]['tips'] != "":
+                data.add_field(name='CollectorVerse Tips', value=self.glossary[boost.lower()]['tips'])
             await self.bot.say(embed=data)
             return
         elif boost is None:
@@ -159,7 +162,7 @@ class STORYQUEST:
             glossary = ''
             for key in keys:
                 try:
-                    glossary += '__{}__\n{}\n\n'.format(key.title(), self.glossary[key])
+                    glossary += '__{}__\n{}\n\n'.format(key.title(), self.glossary[key]['definition'])
                 except KeyError:
                     raise KeyError('Cannot resolve {}'.format(boost.lower()))
             glossary = chat.pagify(glossary)
@@ -177,11 +180,11 @@ class STORYQUEST:
         else:
             result = self.search_parser.parse_string(boost)
             print(result.elements)
-            matches = result.match(self.glossary, self.glossary_keys)
+            matches = result.match(self.glossary_desc, self.glossary_keys)
             package = []
             for k in sorted(matches):
                 package.append('\n__{}__\n{}'.format(
-                    k.title(), self.glossary[k]))
+                    self.glossary[k]['title'], self.glossary[k]['definition']))
             pages = chat.pagify('\n'.join(package))
             page_list = []
             for page in pages:
