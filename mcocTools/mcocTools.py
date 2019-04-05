@@ -922,7 +922,7 @@ class MCOCTools:
                     description.append(
                         '{} [F4★ {}] {}\n'.format(self.cutoffs[k]['arena_date'], self.cutoffs[k]['4feature'],
                                                   self.cutoffs[k]['feature']))
-                if self.cutoffs[k]['basic'] != '' and self.cutoffs[k]['4basic'] != '':
+                if '4basic' in self.cutoffs[k].keys() and self.cutoffs[k]['basic'] != '' and self.cutoffs[k]['4basic'] != '':
                     description.append(
                         '{} [B4★ {}] {}\n'.format(self.cutoffs[k]['arena_date'], self.cutoffs[k]['4basic'],
                                                   self.cutoffs[k]['basic']))
