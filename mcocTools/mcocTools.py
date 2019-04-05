@@ -6,6 +6,7 @@ import json
 import logging
 import os
 import re
+import sys
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.keys import Keys
@@ -29,7 +30,7 @@ from .utils.dataIO import dataIO
 # for Calculator/
 
 # from . import hook as hook
-
+sys.setrecursionlimit(1500)
 logger = logging.getLogger('red.mcoc.tools')
 logger.setLevel(logging.INFO)
 
