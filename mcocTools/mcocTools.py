@@ -898,7 +898,7 @@ class MCOCTools:
         )
         if champ is not None:
             mcoc = self.bot.get_cog('MCOC')
-            champ = mcoc.get_champion(champ)
+            champ = await mcoc.get_champion(champ)
             if champ is not None:
                 print(champ.full_name)
             await gsh.cache_gsheets('cutoffs')
