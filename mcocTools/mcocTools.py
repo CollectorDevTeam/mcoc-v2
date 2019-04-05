@@ -896,13 +896,9 @@ class MCOCTools:
             sheet_name='export',
             range_name='export'
         )
-        if champ is not None:
-            mcoc = self.bot.get_cog('MCOC')
-            champ = await mcoc.get_champion(champ)
-            if champ is not None:
-                print(champ.full_name)
+        arena_pages = self.arena_pages
+        if self.cutoffs_url == '' or self.mcoctools['cutoffs_date'] != now or champ is True:
             await gsh.cache_gsheets('cutoffs')
-        if self.cutoffs_url == '' or self.mcoctools['cutoffs_date'] != now or champ is not None:
             self.cutoffs_url = await SCREENSHOT.get_screenshot(self, url=PUBLISHED, w=1440, h=900)
             self.mcoctools['cuttoffs'] = self.cutoffs_url
             self.mcoctools['cuttoffs_date'] = now
@@ -920,9 +916,30 @@ class MCOCTools:
                     description.append('{} [B] {} | 4★ {}\n'.format(cutoffs[k]['arena_date'], cutoffs[k]['4basic'],
                                                                     cutoffs[k]['basic']))
             description = ''.join(description)
-            description = chat.pagify(description, page_length=500)
-            self.arena_pages = description
+            arena_pages = chat.pagify(description, page_length=500)
+            self.arena_pages = arena_pages
             # dataIO.save_json('data/mcocTools/mcoctools.json', self.mcoctools)
+        if champ is not None and champ is not True:
+            mcoc = self.bot.get_cog('MCOC')
+            champ = await mcoc.get_champion(champ)
+            if champ is not None:
+                cutoffs = dataIO.load_json('data/mcocTools/cutoffs.json')
+                description = []
+                for k in range(1, 23):
+                    k = str(k)
+                    if '5feature' in cutoffs[k] and cutoffs[k]['5feature'] == champ.full_name:
+                        description.append(
+                            '{} [F] {} | 5★ {}\n'.format(cutoffs[k]['arena_date'], cutoffs[k]['5feature'],
+                                                         cutoffs[k]['feature']))
+                    if '4feature' in cutoffs[k] and cutoffs[k]['4feature'] == champ.full_name:
+                        description.append(
+                            '{} [F] {} | 4★ {}\n'.format(cutoffs[k]['arena_date'], cutoffs[k]['4feature'],
+                                                         cutoffs[k]['feature']))
+                    if '4basic' in cutoffs[k] and cutoffs[k]['4basic'] == champ.full_name:
+                        description.append('{} [B] {} | 4★ {}\n'.format(cutoffs[k]['arena_date'], cutoffs[k]['4basic'],
+                                                                        cutoffs[k]['basic']))
+                description = ''.join(description)
+                arena_pages = chat.pagify(description, page_length=500)
 
         filetime = datetime.datetime.fromtimestamp(os.path.getctime('data/mcocTools/cutoffs.json'))
         if os.path.exists('data/mcocTools/cutoffs.json'):
@@ -934,7 +951,7 @@ class MCOCTools:
         if ctx.message.channel.is_private is False:
             ucolor = author.color
         pages = []
-        for d in self.arena_pages:
+        for d in arena_pages:
             data = discord.Embed(color=ucolor, title='Arena Cutoffs', url=PATREON, description=chat.box(d))
             data.set_author(name='CollectorDevTeam | Powered by ArenaResultsKnight', icon_url=COLLECTOR_ICON)
             data.set_footer(text='Requested by {}'.format(author.display_name), icon_url=author.avatar_url)
