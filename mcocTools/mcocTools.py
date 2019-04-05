@@ -724,8 +724,8 @@ class MCOCTools:
         self.bot = bot
         self.search_parser = SearchExpr.parser()
         self.mcoctools = dataIO.load_json('data/mcocTools/mcoctools.json')
-        self.calendar_url = self.mcoctools['calendar']
-        self.cutoffs_url = self.mcoctools['cutoffs']
+        self.calendar_url = ''
+        # self.cutoffs_url = ''
         self.arena_pages = ''
         self.cutoffs = dataIO.load_json('data/mcocTools/cutoffs.json')
         # self.date = ''
@@ -897,11 +897,13 @@ class MCOCTools:
             sheet_name='export',
             range_name='export'
         )
+        thumbnail = COLLECTOR_FEATURED
         arena_pages = self.arena_pages
-        if self.cutoffs_url == '' or self.mcoctools['cutoffs_date'] != now:
+        if self.mcoctools['cutoffs'] == '' or self.mcoctools['cutoffs_date'] != now:
+            print('debug cutoffs url '+self.mcoctools['cutoffs'])
+            print('debug cutoffs date '+self.mcoctools['cuttoffs_date'])
             await gsh.cache_gsheets('cutoffs')
-            self.cutoffs_url = await SCREENSHOT.get_screenshot(self, url=PUBLISHED, w=1440, h=900)
-            self.mcoctools['cuttoffs'] = self.cutoffs_url
+            self.mcoctools['cutoffs'] = await SCREENSHOT.get_screenshot(self, url=PUBLISHED, w=1440, h=900)
             self.mcoctools['cuttoffs_date'] = now
             self.cutoffs = dataIO.load_json('data/mcocTools/cutoffs.json')
             description = []
@@ -923,6 +925,7 @@ class MCOCTools:
         if champ is not None:
             mcoc = self.bot.get_cog('MCOC')
             champ = await mcoc.get_champion(champ)
+            thumbnail = champ.get_featured()
             # if champ is not None:
                 # cutoffs = dataIO.load_json('data/mcocTools/cutoffs.json')
             description = []
@@ -956,14 +959,15 @@ class MCOCTools:
             data = discord.Embed(color=ucolor, title='Arena Cutoffs', url=PATREON, description=chat.box(d))
             data.set_author(name='CollectorDevTeam | Powered by ArenaResultsKnight', icon_url=COLLECTOR_ICON)
             data.set_footer(text='Requested by {}'.format(author.display_name), icon_url=author.avatar_url)
-            data.set_image(url=self.cutoffs_url)
+            data.set_image(url=self.mcoctools['cutoffs'])
+            data.set_thumbnail(url=thumbnail)
         # await self.bot.send(embed=data)
             pages.append(data)
         menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
         await menu.menu_start(pages=pages)
         if self.mcoctools['cutoffs_date'] != now:
-            self.cutoffs_url = await SCREENSHOT.get_screenshot(self, url=PUBLISHED, w=1440, h=900)
-            self.mcoctools['cuttoffs'] = self.cutoffs_url
+            self.mcoctools['cutoffs'] = await SCREENSHOT.get_screenshot(self, url=PUBLISHED, w=1440, h=900)
+            self.mcoctools['cuttoffs'] = self.mcoctools['cutoffs']
             self.mcoctools['cuttoffs_date'] = now
         # dataIO.save_json('data/mcocTools/mcoctools.json', self.mcoctools)
 
