@@ -884,7 +884,7 @@ class MCOCTools:
         # await menu.menu_start(pages=pages)
 
     @commands.command(pass_context=True, name='cutoffs')
-    async def _cutoffs(self, ctx, force=False):
+    async def _cutoffs(self, ctx, champ=None):
         PUBLISHED = 'https://docs.google.com/spreadsheets/d/15F7_kKpiudp3FJu_poQohkWlCRi1CSylQOdGoyuVqSE/pubhtml'
         author = ctx.message.author
         now = datetime.datetime.now().date()
@@ -896,9 +896,13 @@ class MCOCTools:
             sheet_name='export',
             range_name='export'
         )
-        if force:
+        if champ is not None:
+            mcoc = self.bot.get_cog('MCOC')
+            champ = mcoc.get_champion(champ)
+            if champ is not None:
+                print(champ.full_name)
             await gsh.cache_gsheets('cutoffs')
-        if self.cutoffs_url == '' or self.mcoctools['cutoffs_date'] != now or force:
+        if self.cutoffs_url == '' or self.mcoctools['cutoffs_date'] != now or champ is not None:
             self.cutoffs_url = await SCREENSHOT.get_screenshot(self, url=PUBLISHED, w=1440, h=900)
             self.mcoctools['cuttoffs'] = self.cutoffs_url
             self.mcoctools['cuttoffs_date'] = now
@@ -916,10 +920,10 @@ class MCOCTools:
                     description.append('{} [B] {} | 4★ {}\n'.format(cutoffs[k]['arena_date'], cutoffs[k]['4basic'],
                                                                     cutoffs[k]['basic']))
             description = ''.join(description)
-            description = chat.pagify(description)
+            description = chat.pagify(description, page_length=500)
             self.arena_pages = description
             # dataIO.save_json('data/mcocTools/mcoctools.json', self.mcoctools)
-        # mcoc = self.bot.get_cog('MCOC')
+
         filetime = datetime.datetime.fromtimestamp(os.path.getctime('data/mcocTools/cutoffs.json'))
         if os.path.exists('data/mcocTools/cutoffs.json'):
             if filetime.date() != datetime.datetime.now().date():
