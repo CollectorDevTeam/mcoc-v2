@@ -726,6 +726,7 @@ class MCOCTools:
         self.mcoctools = dataIO.load_json('data/mcocTools/mcoctools.json')
         self.calendar_url = self.mcoctools['calendar']
         self.cutoffs_url = self.mcoctools['cutoffs']
+        self.arena_pages = ''
         # self.date = ''
         # self.calendar = {}
         # self.calendar['time'] = dateParse(0)
@@ -901,6 +902,22 @@ class MCOCTools:
             self.cutoffs_url = await SCREENSHOT.get_screenshot(self, url=PUBLISHED, w=1440, h=900)
             self.mcoctools['cuttoffs'] = self.cutoffs_url
             self.mcoctools['cuttoffs_date'] = now
+            cutoffs = dataIO.load_json('data/mcocTools/cutoffs.json')
+            description = []
+            for k in range(1, 23):
+                k = str(k)
+                if '5feature' in cutoffs[k]:
+                    description.append('{} [F] {} | 5★ {}\n'.format(cutoffs[k]['arena_date'], cutoffs[k]['5feature'],
+                                                                    cutoffs[k]['feature']))
+                if '4feature' in cutoffs[k]:
+                    description.append('{} [F] {} | 4★ {}\n'.format(cutoffs[k]['arena_date'], cutoffs[k]['4feature'],
+                                                                    cutoffs[k]['feature']))
+                if '4basic' in cutoffs[k]:
+                    description.append('{} [B] {} | 4★ {}\n'.format(cutoffs[k]['arena_date'], cutoffs[k]['4basic'],
+                                                                    cutoffs[k]['basic']))
+            description = ''.join(description)
+            description = chat.pagify(description)
+            self.arena_pages = description
             # dataIO.save_json('data/mcocTools/mcoctools.json', self.mcoctools)
         # mcoc = self.bot.get_cog('MCOC')
         filetime = datetime.datetime.fromtimestamp(os.path.getctime('data/mcocTools/cutoffs.json'))
@@ -912,20 +929,8 @@ class MCOCTools:
         ucolor = discord.Color.gold()
         if ctx.message.channel.is_private is False:
             ucolor = author.color
-        cutoffs = dataIO.load_json('data/mcocTools/cutoffs.json')
-        description = []
         pages = []
-        for k in range(1, 23):
-            k = str(k)
-            if '5feature' in cutoffs[k]:
-                description.append('{} [F] {} | 5★ {}\n'.format(cutoffs[k]['arena_date'], cutoffs[k]['5featured'], cutoffs[k]['feature']))
-            if '4feature' in cutoffs[k]:
-                description.append('{} [F] {} | 4★ {}\n'.format(cutoffs[k]['arena_date'], cutoffs[k]['4featured'], cutoffs[k]['feature']))
-            if '4basic' in cutoffs[k]:
-                description.append('{} [B] {} | 4★ {}\n'.format(cutoffs[k]['arena_date'], cutoffs[k]['4basic'], cutoffs[k]['basic']))
-        description = ''.join(description)
-        description = chat.pagify(description)
-        for d in description:
+        for d in self.arena_pages:
             data = discord.Embed(color=ucolor, title='Arena Cutoffs', url=PATREON, description=chat.box(d))
             data.set_author(name='CollectorDevTeam | Powered by ArenaResultsKnight', icon_url=COLLECTOR_ICON)
             data.set_footer(text='Requested by {}'.format(author.display_name), icon_url=author.avatar_url)
