@@ -726,7 +726,7 @@ class MCOCTools:
         self.mcoctools = dataIO.load_json('data/mcocTools/mcoctools.json')
         self.calendar_url = ''
         # self.cutoffs_url = ''
-        self.arena_pages = ''
+        self.arena_pages = []
         self.cutoffs = dataIO.load_json('data/mcocTools/cutoffs.json')
         # self.date = ''
         # self.calendar = {}
@@ -910,15 +910,15 @@ class MCOCTools:
             max = self.cutoffs["1"]['max']
             for k in range(1, int(max)):
                 k = str(k)
-                if '5feature' in self.cutoffs[k]:
+                if self.cutoffs[k]['feature'] != '' and self.cutoffs[k]['5feature'] != '':
                     description.append(
                         '{} [F5★ {}] {}\n'.format(self.cutoffs[k]['arena_date'], self.cutoffs[k]['5feature'],
                                                   self.cutoffs[k]['feature']))
-                if '4feature' in self.cutoffs[k]:
+                if self.cutoffs[k]['feature'] != '' and self.cutoffs[k]['4feature'] != '':
                     description.append(
                         '{} [F4★ {}] {}\n'.format(self.cutoffs[k]['arena_date'], self.cutoffs[k]['4feature'],
                                                   self.cutoffs[k]['feature']))
-                if '4basic' in self.cutoffs[k]:
+                if self.cutoffs[k]['basic'] != '' and self.cutoffs[k]['4basic'] != '':
                     description.append(
                         '{} [B4★ {}] {}\n'.format(self.cutoffs[k]['arena_date'], self.cutoffs[k]['4basic'],
                                                   self.cutoffs[k]['basic']))
@@ -937,15 +937,15 @@ class MCOCTools:
                 max = int(self.cutoffs["1"]['max'])
                 for k in range(1, max):
                     k = str(k)
-                    if '5feature' in self.cutoffs[k] and self.cutoffs[k]['feature'] == champ.full_name:
+                    if self.cutoffs[k]['5feature'] != '' and self.cutoffs[k]['feature'] == champ.full_name:
                         description.append(
                             '{} [F5★ {}] {}\n'.format(self.cutoffs[k]['arena_date'], self.cutoffs[k]['5feature'],
                                                          self.cutoffs[k]['feature']))
-                    if '4feature' in self.cutoffs[k] and self.cutoffs[k]['feature'] == champ.full_name:
+                    if self.cutoffs[k]['4feature'] != '' and self.cutoffs[k]['feature'] == champ.full_name:
                         description.append(
                             '{} [F4★ {}] {}\n'.format(self.cutoffs[k]['arena_date'], self.cutoffs[k]['4feature'],
                                                          self.cutoffs[k]['feature']))
-                    if '4basic' in self.cutoffs[k] and self.cutoffs[k]['basic'] == champ.full_name:
+                    if self.cutoffs[k]['4basic'] != '' and self.cutoffs[k]['basic'] == champ.full_name:
                         description.append('{} [B4★ {}] {}\n'.format(self.cutoffs[k]['arena_date'], self.cutoffs[k]['4basic'],
                                                                         self.cutoffs[k]['basic']))
                 description = ''.join(description)
@@ -973,8 +973,9 @@ class MCOCTools:
             data.set_image(url=self.mcoctools['cutoffs'])
             data.set_thumbnail(url=thumbnail)
             pages.append(data)
-        menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
-        await menu.menu_start(pages=pages)
+        if len(pages) > 0:
+            menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
+            await menu.menu_start(pages=pages)
         if self.mcoctools['cutoffs_date'] != now:
             self.mcoctools['cutoffs'] = await SCREENSHOT.get_screenshot(self, url=PUBLISHED, w=1440, h=900)
             self.mcoctools['cutoffs'] = self.mcoctools['cutoffs']
