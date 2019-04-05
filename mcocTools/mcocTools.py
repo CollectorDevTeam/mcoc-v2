@@ -884,7 +884,7 @@ class MCOCTools:
 
     @commands.command(pass_context=True, name='cutoffs')
     async def _cutoffs(self, ctx, force=False):
-        PUBLISHED = 'https://docs.google.com/spreadsheets/d/15F7_kKpiudp3FJu_poQohkWlCRi1CSylQOdGoyuVqSE/view#gid=1281713249'
+        PUBLISHED = 'https://docs.google.com/spreadsheets/d/15F7_kKpiudp3FJu_poQohkWlCRi1CSylQOdGoyuVqSE/pubhtml'
         author = ctx.message.author
         now = datetime.datetime.now().date()
         gsh = GSHandler(self.bot)
