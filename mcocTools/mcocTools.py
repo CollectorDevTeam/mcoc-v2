@@ -907,7 +907,8 @@ class MCOCTools:
             self.mcoctools['cutoffs_date'] = now
             self.cutoffs = dataIO.load_json('data/mcocTools/cutoffs.json')
             description = []
-            for k in range(1, 23):
+            max = int(self.cutoffs["1"]['max'])
+            for k in range(1, max):
                 k = str(k)
                 if '5feature' in self.cutoffs[k]:
                     description.append(
@@ -933,7 +934,8 @@ class MCOCTools:
                 # if champ is not None:
                     # cutoffs = dataIO.load_json('data/mcocTools/cutoffs.json')
                 description = []
-                for k in range(1, 23):
+                max = int(self.cutoffs["1"]['max'])
+                for k in range(1, max):
                     k = str(k)
                     if '5feature' in self.cutoffs[k] and self.cutoffs[k]['feature'] == champ.full_name:
                         description.append(
