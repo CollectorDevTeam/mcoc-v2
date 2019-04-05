@@ -892,7 +892,7 @@ class MCOCTools:
             name='cutoffs',
             gkey='15F7_kKpiudp3FJu_poQohkWlCRi1CSylQOdGoyuVqSE',
             local='data/mcocTools/cutoffs.json',
-            sheet_name='data',
+            sheet_name='export',
             range_name='export'
         )
         if force:
@@ -929,7 +929,7 @@ class MCOCTools:
             data = discord.Embed(color=ucolor, title='Arena Cutoffs', url=PATREON) #, description=d)
             data.set_author(name='CollectorDevTeam | Powered by ArenaResultsKnight', icon_url=COLLECTOR_ICON)
             data.set_footer(text='Requested by {}'.format(author.display_name), icon_url=author.avatar_url)
-            data.set_image(url=self.cutoffs_url)
+            # data.set_image(url=self.cutoffs_url)
         # await self.bot.send(embed=data)
             pages.append(data)
         menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
