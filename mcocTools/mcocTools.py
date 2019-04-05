@@ -969,7 +969,7 @@ class MCOCTools:
             self.mcoctools['cutoffs'] = await SCREENSHOT.get_screenshot(self, url=PUBLISHED, w=1440, h=900)
             self.mcoctools['cutoffs'] = self.mcoctools['cutoffs']
             self.mcoctools['cutoffs_date'] = now
-        dataIO.save_json('data/mcocTools/mcoctools.json', self.mcoctools)
+        # dataIO.save_json('data/mcocTools/mcoctools.json', self.mcoctools)
 
 
 
