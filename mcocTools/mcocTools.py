@@ -35,6 +35,7 @@ logger.setLevel(logging.INFO)
 
 COLLECTOR_ICON = 'https://raw.githubusercontent.com/CollectorDevTeam/assets/master/data/cdt_icon.png'
 COLLECTOR_FEATURED = 'https://raw.githubusercontent.com/CollectorDevTeam/assets/master/data/images/featured/collector.png'
+PATREON = 'https://patreon.com/collectorbot'
 
 KABAM_ICON = 'https://imgur.com/UniRf5f.png'
 GSX2JSON = 'http://gsx2json.com/api?id={}&sheet={}&columns=false&integers=false'
@@ -723,29 +724,22 @@ class MCOCTools:
     def __init__(self, bot):
         self.bot = bot
         self.search_parser = SearchExpr.parser()
-        self.calendar = dataIO.load_json('data/mcocTools/calendar_settings.json')
-        self.ssurl = ''
-        self.ssurldate = ''
+        self.mcoctools = dataIO.load_json('data/mcocTools/mcoctools.json')
+        self.calendar_url = self.mcoctools['calendar']
+        self.cutoffs_url = self.mcoctools['cutoffs']
+        # self.date = ''
         # self.calendar = {}
         # self.calendar['time'] = dateParse(0)
         # self.calendar['screenshot'] = ''
-        # dataIO.save_json('data/mcocTools/calendar_settings.json', self.calendar)
+        # dataIO.save_json('data/mcocTools/mcoctools.json', self.calendar)
 
 
     # lookup_links = {
-    #     'rttl': (
-    #         '<https://drive.google.com/file/d/0B4ozoShtX2kFcDV4R3lQb1hnVnc/view>',
-    #         '[Road to the Labyrinth Opponent List](https://drive.google.com/file/d/0B4ozoShtX2kFcDV4R3lQb1hnVnc/view)',
-    #         'by Regal Empire {OG Wolvz}',
-    #         'http://svgur.com/s/48'),
     #     'hook': (
     #         '<http://hook.github.io/champions>',
     #         '[hook/Champions by gabriel](http://hook.github.io/champions)',
     #         'hook/champions for Collector',
     #         'https://assets-cdn.github.com/favicon.ico'),
-    #     'spotlight': (
-    #         '<http://simians.tk/MCoCspotlight>',
-    #         '[MCOC Spotlight Dataset](http://simians.tk/MCoCspotlight)\nIf you would like to donate prestige, signatures or stats, join us at \n[CollectorDevTeam](https://discord.gg/BwhgZxk)'),
     #     'alsciende': (
     #         '<https://alsciende.github.io/masteries/v10.0.1/#>',
     #         '[Alsciende Mastery Tool](https://alsciende.github.io/masteries/v17.0.2/#)',
@@ -771,6 +765,7 @@ class MCOCTools:
     async def _calendar(self, ctx, force=False):
         PUBLISHED = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vT5A1MOwm3CvOGjn7fMvYaiTKDuIdvKMnH5XHRcgzi3eqLikm9SdwfkrSuilnZ1VQt8aSfAFJzZ02zM/pubhtml?gid=390226786'
         author = ctx.message.author
+        now = datetime.datetime.now().date()
         gsh = GSHandler(self.bot)
         gsh.register_gsheet(
             name='calendar',
@@ -781,13 +776,16 @@ class MCOCTools:
         )
         if force:
             await gsh.cache_gsheets('calendar')
-        if self.ssurl == '':
-            self.ssurl = await SCREENSHOT.get_screenshot(self, url=PUBLISHED, w=1700, h=800)
-        ssurl = self.ssurl
+        if self.calendar_url == '' or self.mcoctools['calendar_date'] != now or force:
+            self.calendar_url = await SCREENSHOT.get_screenshot(self, url=PUBLISHED, w=1700, h=800)
+            self.mcoctools.update({'calendar': self.calendar_url})
+            self.mcoctools.update({'calendar_date': now})
+            dataIO.save_json('data/mcocTools/mcoctools.json', self.mcoctools)
+        ssurl = self.calendar_url
         mcoc = self.bot.get_cog('MCOC')
         filetime = datetime.datetime.fromtimestamp(os.path.getctime('data/mcocTools/calendar.json'))
         if os.path.exists('data/mcocTools/calendar.json'):
-            if filetime.date() != datetime.datetime.now().date():
+            if filetime.date() != now:
                 await gsh.cache_gsheets('calendar')
         else:
             await gsh.cache_gsheets('calendar')
@@ -835,9 +833,11 @@ class MCOCTools:
         menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
         await menu.menu_start(pages=pages, page_number=2)
         # take a new ssurl after the fact
-        if self.ssurldate != datetime.datetime.now().date():
-            self.ssurl = await SCREENSHOT.get_screenshot(self, url=PUBLISHED, w=1700, h=400)
-            self.ssurldate = datetime.datetime.now().date()
+        if self.mcoctools['calendar_date'] != now:
+            self.calendar_url = await SCREENSHOT.get_screenshot(self, url=PUBLISHED, w=1700, h=400)
+            self.mcoctools.update({'calendar': self.calendar_url})
+            self.mcoctools.update({'calendar_date': now})
+            dataIO.save_json('data/mcocTools/mcoctools.json', self.mcoctools)
 
 
         # pages = []
@@ -882,6 +882,65 @@ class MCOCTools:
         #     pages.append(data)
         # menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
         # await menu.menu_start(pages=pages)
+
+    @commands.command(pass_context=True, name='cutoffs')
+    async def _cutoffs(self, ctx, force=False):
+        PUBLISHED = 'https://docs.google.com/spreadsheets/d/15F7_kKpiudp3FJu_poQohkWlCRi1CSylQOdGoyuVqSE/view#gid=1281713249'
+        author = ctx.message.author
+        now = datetime.datetime.now().date()
+        gsh = GSHandler(self.bot)
+        gsh.register_gsheet(
+            name='cutoffs',
+            gkey='15F7_kKpiudp3FJu_poQohkWlCRi1CSylQOdGoyuVqSE',
+            local='data/mcocTools/cutoffs.json',
+            sheet_name='data',
+            range_name='export'
+        )
+        if force:
+            await gsh.cache_gsheets('cutoffs')
+        if self.cutoffs_url == '' or self.mcoctools['cutoffs_date'] != now or force:
+            self.cutoffs_url = await SCREENSHOT.get_screenshot(self, url=PUBLISHED, w=1700, h=800)
+            self.mcoctools.update({'cutoffs': self.cutoffs_url})
+            self.mcoctools.update({'cutoffs_date': now})
+            dataIO.save_json('data/mcocTools/mcoctools.json', self.mcoctools)
+        # mcoc = self.bot.get_cog('MCOC')
+        filetime = datetime.datetime.fromtimestamp(os.path.getctime('data/mcocTools/cutoffs.json'))
+        if os.path.exists('data/mcocTools/cutoffs.json'):
+            if filetime.date() != datetime.datetime.now().date():
+                await gsh.cache_gsheets('cutoffs')
+        else:
+            await gsh.cache_gsheets('cutoffs')
+        cutoffs = dataIO.load_json('data/mcocTools/cutoffs.json')
+        ucolor = discord.Color.gold()
+        if ctx.message.channel.is_private is False:
+            ucolor = author.color
+        description = []
+        pages = []
+        for k in cutoffs.keys():
+            description.append('__{}__\n'.format(k))
+            if '5★ Featured' in cutoffs[k]:
+                description.append('Featured\n5★ {} : {}\n'.format(cutoffs[k]['feature'], cutoffs[k]['5★ Featured']))
+            if '4★ Featured' in cutoffs[k]:
+                description.append('Featured\n4★ {} : {}\n'.format(cutoffs[k]['feature'], cutoffs[k]['4★ Featured']))
+            if '4★ Basic' in cutoffs[k]:
+                description.append('Basic\n5★ {} : {}\n'.format(cutoffs[k]['basic'], cutoffs[k]['4★ Basic']))
+        description = ''.join(description)
+        description = chat.pagify(description)
+        for d in description:
+            data = discord.Embed(color=ucolor, title='Arena Cutoffs', url=PATREON, description=d)
+            data.set_author(name='CollectorDevTeam | Powered by ArenaResultsKnight', icon_url=COLLECTOR_ICON)
+            data.set_footer(text='Requested by {}'.format(author.displayname), icon_url=author.avatar_url)
+            data.set_image(url=self.cutoffs_url)
+            # await self.bot.send(embed=data)
+            pages.append(data)
+        # pages = []
+        menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
+        await menu.menu_start(pages=pages)
+        if self.mcoctools['cutoffs_date'] != now:
+            self.cutoffs_url = await SCREENSHOT.get_screenshot(self, url=PUBLISHED, w=1700, h=800)
+            self.mcoctools.update({'cutoffs': self.cutoffs_url})
+            self.mcoctools.update({'cutoffs_date': now})
+            dataIO.save_json('data/mcocTools/mcoctools.json', self.mcoctools)
 
 
 
@@ -1875,7 +1934,7 @@ def check_files():
 
     files = {
         'settings.json': {},
-        'calendar_settings.json': {}
+        'mcoctools.json': {'calendar': '', 'cutoffs': '', 'calendar_date': '', 'cutoffs_date': ''}
     }
 
     for filename, value in files.items():
