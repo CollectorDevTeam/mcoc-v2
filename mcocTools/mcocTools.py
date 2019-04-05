@@ -915,7 +915,7 @@ class MCOCTools:
         cutoffs = dataIO.load_json('data/mcocTools/cutoffs.json')
         description = []
         pages = []
-        for k in cutoffs.keys():
+        for k in range(1, 23):
             description.append('__{}__\n'.format(k))
             if '5featured' in cutoffs[k]:
                 description.append('Featured\n5★ {} : {}\n'.format(cutoffs[k]['feature'], cutoffs[k]['5featured']))
@@ -929,7 +929,7 @@ class MCOCTools:
             data = discord.Embed(color=ucolor, title='Arena Cutoffs', url=PATREON) #, description=d)
             data.set_author(name='CollectorDevTeam | Powered by ArenaResultsKnight', icon_url=COLLECTOR_ICON)
             data.set_footer(text='Requested by {}'.format(author.display_name), icon_url=author.avatar_url)
-            # data.set_image(url=self.cutoffs_url)
+            data.set_image(url=self.cutoffs_url)
         # await self.bot.send(embed=data)
             pages.append(data)
         menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
@@ -938,7 +938,7 @@ class MCOCTools:
             self.cutoffs_url = await SCREENSHOT.get_screenshot(self, url=PUBLISHED, w=1440, h=900)
             self.mcoctools['cuttoffs'] = self.cutoffs_url
             self.mcoctools['cuttoffs_date'] = now
-            # dataIO.save_json('data/mcocTools/mcoctools.json', self.mcoctools)
+        dataIO.save_json('data/mcocTools/mcoctools.json', self.mcoctools)
 
 
 
