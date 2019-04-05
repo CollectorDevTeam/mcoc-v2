@@ -926,7 +926,7 @@ class MCOCTools:
         description = ''.join(description)
         description = chat.pagify(description)
         for d in description:
-            data = discord.Embed(color=ucolor, title='Arena Cutoffs', url=PATREON, description=d)
+            data = discord.Embed(color=ucolor, title='Arena Cutoffs', url=PATREON, description=chat.box(d))
             data.set_author(name='CollectorDevTeam | Powered by ArenaResultsKnight', icon_url=COLLECTOR_ICON)
             data.set_footer(text='Requested by {}'.format(author.display_name), icon_url=author.avatar_url)
             data.set_image(url=self.cutoffs_url)
