@@ -6,7 +6,6 @@ import json
 import logging
 import os
 import re
-import sys
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.keys import Keys
@@ -30,7 +29,6 @@ from .utils.dataIO import dataIO
 # for Calculator/
 
 # from . import hook as hook
-sys.setrecursionlimit(1500)
 logger = logging.getLogger('red.mcoc.tools')
 logger.setLevel(logging.INFO)
 
@@ -900,7 +898,7 @@ class MCOCTools:
         if force:
             await gsh.cache_gsheets('cutoffs')
         if self.cutoffs_url == '' or self.mcoctools['cutoffs_date'] != now or force:
-            self.cutoffs_url = await SCREENSHOT.get_screenshot(self, url=PUBLISHED, w=1700, h=800)
+            self.cutoffs_url = await SCREENSHOT.get_screenshot(self, url=PUBLISHED, w=1440, h=900)
             self.mcoctools['cuttoffs'] = self.cutoffs_url
             self.mcoctools['cuttoffs_date'] = now
             # dataIO.save_json('data/mcocTools/mcoctools.json', self.mcoctools)
@@ -937,7 +935,7 @@ class MCOCTools:
         menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
         await menu.menu_start(pages=pages)
         if self.mcoctools['cutoffs_date'] != now:
-            self.cutoffs_url = await SCREENSHOT.get_screenshot(self, url=PUBLISHED, w=1700, h=800)
+            self.cutoffs_url = await SCREENSHOT.get_screenshot(self, url=PUBLISHED, w=1440, h=900)
             self.mcoctools['cuttoffs'] = self.cutoffs_url
             self.mcoctools['cuttoffs_date'] = now
             # dataIO.save_json('data/mcocTools/mcoctools.json', self.mcoctools)
