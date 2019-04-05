@@ -917,12 +917,12 @@ class MCOCTools:
         pages = []
         for k in cutoffs.keys():
             description.append('__{}__\n'.format(k))
-            if '5★ Featured' in cutoffs[k]:
-                description.append('Featured\n5★ {} : {}\n'.format(cutoffs[k]['feature'], cutoffs[k]['5★ Featured']))
-            if '4★ Featured' in cutoffs[k]:
-                description.append('Featured\n4★ {} : {}\n'.format(cutoffs[k]['feature'], cutoffs[k]['4★ Featured']))
-            if '4★ Basic' in cutoffs[k]:
-                description.append('Basic\n5★ {} : {}\n'.format(cutoffs[k]['basic'], cutoffs[k]['4★ Basic']))
+            if '5featured' in cutoffs[k]:
+                description.append('Featured\n5★ {} : {}\n'.format(cutoffs[k]['feature'], cutoffs[k]['5featured']))
+            if '4featured' in cutoffs[k]:
+                description.append('Featured\n4★ {} : {}\n'.format(cutoffs[k]['feature'], cutoffs[k]['4featured']))
+            if '4basic' in cutoffs[k]:
+                description.append('Basic\n5★ {} : {}\n'.format(cutoffs[k]['basic'], cutoffs[k]['4basic']))
         description = ''.join(description)
         description = chat.pagify(description)
         for d in description:
