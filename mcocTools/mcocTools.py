@@ -917,12 +917,12 @@ class MCOCTools:
         pages = []
         for k in range(1, 23):
             k = str(k)
-            if '5featured' in cutoffs[k]:
-                description.append('{} [F] 5★ {} : {}\n'.format(cutoffs[k]['arena_date'],cutoffs[k]['feature'], cutoffs[k]['5featured']))
-            if '4featured' in cutoffs[k]:
-                description.append('{} [F] 4★ {} : {}\n'.format(cutoffs[k]['arena_date'],cutoffs[k]['feature'], cutoffs[k]['4featured']))
+            if '5feature' in cutoffs[k]:
+                description.append('{} [F] {} | 5★ {}\n'.format(cutoffs[k]['arena_date'], cutoffs[k]['5featured'], cutoffs[k]['feature']))
+            if '4feature' in cutoffs[k]:
+                description.append('{} [F] {} | 4★ {}\n'.format(cutoffs[k]['arena_date'], cutoffs[k]['4featured'], cutoffs[k]['feature']))
             if '4basic' in cutoffs[k]:
-                description.append('{} [B] 4★ {} : {}\n'.format(cutoffs[k]['arena_date'],cutoffs[k]['basic'], cutoffs[k]['4basic']))
+                description.append('{} [B] {} | 4★ {}\n'.format(cutoffs[k]['arena_date'], cutoffs[k]['4basic'], cutoffs[k]['basic']))
         description = ''.join(description)
         description = chat.pagify(description)
         for d in description:
