@@ -901,10 +901,10 @@ class MCOCTools:
         arena_pages = self.arena_pages
         if self.mcoctools['cutoffs'] == '' or self.mcoctools['cutoffs_date'] != now:
             print('debug cutoffs url '+self.mcoctools['cutoffs'])
-            print('debug cutoffs date '+self.mcoctools['cuttoffs_date'])
+            print('debug cutoffs date '+self.mcoctools['cutoffs_date'])
             await gsh.cache_gsheets('cutoffs')
             self.mcoctools['cutoffs'] = await SCREENSHOT.get_screenshot(self, url=PUBLISHED, w=1440, h=900)
-            self.mcoctools['cuttoffs_date'] = now
+            self.mcoctools['cutoffs_date'] = now
             self.cutoffs = dataIO.load_json('data/mcocTools/cutoffs.json')
             description = []
             for k in range(1, 23):
@@ -967,9 +967,9 @@ class MCOCTools:
         await menu.menu_start(pages=pages)
         if self.mcoctools['cutoffs_date'] != now:
             self.mcoctools['cutoffs'] = await SCREENSHOT.get_screenshot(self, url=PUBLISHED, w=1440, h=900)
-            self.mcoctools['cuttoffs'] = self.mcoctools['cutoffs']
-            self.mcoctools['cuttoffs_date'] = now
-        # dataIO.save_json('data/mcocTools/mcoctools.json', self.mcoctools)
+            self.mcoctools['cutoffs'] = self.mcoctools['cutoffs']
+            self.mcoctools['cutoffs_date'] = now
+        dataIO.save_json('data/mcocTools/mcoctools.json', self.mcoctools)
 
 
 
