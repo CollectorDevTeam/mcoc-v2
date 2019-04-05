@@ -144,7 +144,7 @@ class STORYQUEST:
         else:
             ucolor = author.color
         if boost is not None and boost.lower() in keys:
-            data = discord.Embed(color=ucolor, title='Boost: {}'.format(self.glossary[boost.lower()]['title']), description='', url=PATREON)
+            data = discord.Embed(color=ucolor, title='{}'.format(self.glossary[boost.lower()]['title']), description='', url=PATREON)
             data.set_thumbnail(url=COLLECTOR_ICON)
             data.set_author(name='Support CollectorDevTeam')
             data.set_thumbnail(url=REBIRTH)
