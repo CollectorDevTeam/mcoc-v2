@@ -778,8 +778,8 @@ class MCOCTools:
             await gsh.cache_gsheets('calendar')
         if self.calendar_url == '' or self.mcoctools['calendar_date'] != now or force:
             self.calendar_url = await SCREENSHOT.get_screenshot(self, url=PUBLISHED, w=1700, h=800)
-            self.mcoctools.update({'calendar': self.calendar_url})
-            self.mcoctools.update({'calendar_date': now})
+            self.mcoctools['calendar'] = self.calendar_url
+            self.mcoctools['calendar_date'] = now
             dataIO.save_json('data/mcocTools/mcoctools.json', self.mcoctools)
         ssurl = self.calendar_url
         mcoc = self.bot.get_cog('MCOC')
@@ -835,8 +835,8 @@ class MCOCTools:
         # take a new ssurl after the fact
         if self.mcoctools['calendar_date'] != now:
             self.calendar_url = await SCREENSHOT.get_screenshot(self, url=PUBLISHED, w=1700, h=400)
-            self.mcoctools.update({'calendar': self.calendar_url})
-            self.mcoctools.update({'calendar_date': now})
+            self.mcoctools['calendar'] = self.calendar_url
+            self.mcoctools['calendar_date'] = now
             dataIO.save_json('data/mcocTools/mcoctools.json', self.mcoctools)
 
 
@@ -900,8 +900,8 @@ class MCOCTools:
             await gsh.cache_gsheets('cutoffs')
         if self.cutoffs_url == '' or self.mcoctools['cutoffs_date'] != now or force:
             self.cutoffs_url = await SCREENSHOT.get_screenshot(self, url=PUBLISHED, w=1700, h=800)
-            self.mcoctools.update({'cutoffs': self.cutoffs_url})
-            self.mcoctools.update({'cutoffs_date': now})
+            self.mcoctools['cuttoffs'] = self.cutoffs_url
+            self.mcoctools['cuttoffs_date'] = now
             dataIO.save_json('data/mcocTools/mcoctools.json', self.mcoctools)
         # mcoc = self.bot.get_cog('MCOC')
         filetime = datetime.datetime.fromtimestamp(os.path.getctime('data/mcocTools/cutoffs.json'))
@@ -938,8 +938,8 @@ class MCOCTools:
         await menu.menu_start(pages=pages)
         if self.mcoctools['cutoffs_date'] != now:
             self.cutoffs_url = await SCREENSHOT.get_screenshot(self, url=PUBLISHED, w=1700, h=800)
-            self.mcoctools.update({'cutoffs': self.cutoffs_url})
-            self.mcoctools.update({'cutoffs_date': now})
+            self.mcoctools['cuttoffs'] = self.cutoffs_url
+            self.mcoctools['cuttoffs_date'] = now
             dataIO.save_json('data/mcocTools/mcoctools.json', self.mcoctools)
 
 
