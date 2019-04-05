@@ -907,8 +907,8 @@ class MCOCTools:
             self.mcoctools['cutoffs_date'] = now
             self.cutoffs = dataIO.load_json('data/mcocTools/cutoffs.json')
             description = []
-            max = int(self.cutoffs["1"]['max'])
-            for k in range(1, max):
+            max = self.cutoffs["1"]['max']
+            for k in range(1, int(max)):
                 k = str(k)
                 if '5feature' in self.cutoffs[k]:
                     description.append(
@@ -949,7 +949,6 @@ class MCOCTools:
                         description.append('{} [B4★ {}] {}\n'.format(self.cutoffs[k]['arena_date'], self.cutoffs[k]['4basic'],
                                                                         self.cutoffs[k]['basic']))
                 description = ''.join(description)
-                self.arena_pages = arena_pages
                 arena_pages = chat.pagify(description, page_length=500)
         except:
             await self.bot.say('Not a valid champion.')
@@ -973,7 +972,6 @@ class MCOCTools:
             data.set_footer(text='Requested by {}'.format(author.display_name), icon_url=author.avatar_url)
             data.set_image(url=self.mcoctools['cutoffs'])
             data.set_thumbnail(url=thumbnail)
-        # await self.bot.send(embed=data)
             pages.append(data)
         menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
         await menu.menu_start(pages=pages)
