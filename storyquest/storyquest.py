@@ -57,13 +57,13 @@ class STORYQUEST:
         )
         try:
             self.glossary = dataIO.load_json('data/storyquest/act6_glossary.json')
+            self.glossary_desc = dataIO.load_json('data/storyquest/act6_glossary_desc.json')
             self.glossary_tips = dataIO.load_json('data/storyquest/act6_glossary_tips.json')
             self.glossary_keys = dataIO.load_json('data/storyquest/act6_glossary_keys.json')
             self.export = dataIO.load_json('data/storyquest/act6_export.json')
             self.paths = dataIO.load_json('data/storyquest/act6_paths.json')
             self.globals = dataIO.load_json('data/storyquest/act6_globals.json')
         except:
-
             self.glossary = {}
             self.glossary_tips = {}
             self.glossary_keys = {}
@@ -107,6 +107,7 @@ class STORYQUEST:
         self.glossary_tips = glossary_tips
         self.glossary = temp
         dataIO.save_json('data/storyquest/act6_glossary.json', self.glossary)
+        dataIO.save_json('data/storyquest/act6_glossary_desc.json', self.glossary_desc)
         dataIO.save_json('data/storyquest/act6_glossary_keys.json', self.glossary_keys)
         dataIO.save_json('data/storyquest/act6_glossary_tips.json', self.glossary_tips)
         # self.glossary_keys = dataIO.load_json('data/storyquest/act6_glossary_keys.json')
@@ -275,7 +276,7 @@ class STORYQUEST:
             for g in gboosts:
                 if g != '-' and g != '':
                     data.add_field(name='Global Boost: {}'.format(g.title()),
-                                   value='{}'.format(self.glossary[g]))
+                                   value='{}'.format(self.glossary_desc[g]))
                     if self.glossary_tips[g] != "":
                         data.add_field(name='CollectorVerse Tips', value=self.glossary_tips[g])
 
@@ -343,14 +344,14 @@ class STORYQUEST:
                 for g in gboosts:
                     if g != '-' and g != '':
                         data.add_field(name='Global Boost: {}'.format(g.title()),
-                                       value='{}'.format(self.glossary[g]))
+                                       value='{}'.format(self.glossary_desc[g]))
                         if self.glossary_tips[g] != "":
                             data.add_field(name='CollectorVerse Tips', value=self.glossary_tips[g])
 
                 for b in boosts:
                     if b != '-' and b !='':
                         data.add_field(name='{}'.format(b.title()),
-                                       value='{}'.format(self.glossary[b]))
+                                       value='{}'.format(self.glossary_desc[b]))
                         if self.glossary_tips[b] != "":
                             data.add_field(name='CollectorVerse Tips', value=self.glossary_tips[b])
                 if notes != '':
@@ -461,7 +462,7 @@ class STORYQUEST:
             for g in gboosts:
                 if g != '-' and g != '':
                     data.add_field(name='Global Boost: {}'.format(g.title()),
-                                   value='{}'.format(self.glossary[g]))
+                                   value='{}'.format(self.glossary_desc[g]))
                     if self.glossary_tips[g] != "":
                         data.add_field(name='CollectorVerse Tips', value=self.glossary_tips[g])
 
@@ -533,14 +534,14 @@ class STORYQUEST:
                 for g in gboosts:
                     if g != '-' and g != '':
                         data.add_field(name='Global Boost: {}'.format(g.title()),
-                                       value='{}'.format(self.glossary[g]))
+                                       value='{}'.format(self.glossary_desc[g]))
                         if self.glossary_tips[g] != "":
                             data.add_field(name='CollectorVerse Tips', value=self.glossary_tips[g])
 
                 for b in boosts:
                     if b != '-' and b !='':
                         data.add_field(name='{}'.format(b.title()),
-                                       value='{}'.format(self.glossary[b]))
+                                       value='{}'.format(self.glossary_desc[b]))
                         if self.glossary_tips[b] != "":
                             data.add_field(name='CollectorVerse Tips', value=self.glossary_tips[b])
                 if notes != '':
