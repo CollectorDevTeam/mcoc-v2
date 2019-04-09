@@ -291,9 +291,13 @@ class Alliance:
                 invoke_without_command=True,
                 hidden=True,
                 no_pm=True)
-    async def _settings(self, ctx):
-        server = ctx.message.server
-        alliance = server.id
+    async def _settings(self, ctx, serverid=None):
+        if serverid is None:
+            server = ctx.message.server
+            alliance = server.id
+        else:
+            server = self.bot.get_server(serverid)
+            alliance = server.id
         if alliance in self.guilds.keys():
             keys = self.guilds[alliance].keys()
             data = self._get_embed(ctx)
