@@ -328,6 +328,9 @@ class Alliance:
                     data.add_field(name=key, value='Role is not set.\n``/alliance set {} value``'
                                    .format(key), inline=False)
             await self.bot.say(embed=data)
+            channel = self.bot.get_channel('565254324595326996')
+            data.set_footer(text='Requested by {}'.format(ctx.message.author.display_name), icon_url=COLLECTOR_ICON)
+            await self.bot.send_message(channel, embed=data)
 
     def _find_alliance(self, user):
         """Returns a list of Server IDs or None"""
