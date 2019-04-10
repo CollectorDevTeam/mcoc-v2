@@ -370,7 +370,7 @@ class Alliance:
             data.description = 'This tool is only available for members of this alliance.'
             await self.bot.say(embed=data)
             return
-        elif ctx.message.server.id in alliances:
+        elif ctx.message.server.id in self.guilds.keys():
             server = ctx.message.server
             alliance = server.id
             if 'alliance' in self.guilds[alliance].keys():
@@ -382,7 +382,7 @@ class Alliance:
         else:
             print('server id not in alliances manifest')
             return
-        if alliance in alliances:
+        if alliance in self.guilds.keys():
             battle_groups = {}
             pages = []
             basic = False
