@@ -488,7 +488,7 @@ class StaticGameData:
         if query != '':
             url = url + '&q' + query
         async with aiohttp.ClientSession() as session:
-            json_data = await self.fetch_json(url, session)
+            json_data = await fetch_json(url, session)
             return json_data
 
 
@@ -1782,7 +1782,7 @@ class SCREENSHOT:
         driver.quit()
         # await asyncio.sleep(3)
         message = await self.bot.send_file(channel, 'data/mcocTools/temp.png')
-        await asyncio.sleep(1)
+        await asyncio.sleep(5)
         if len(message.attachments) > 0:
             return message.attachments[0]['url']
         else:
