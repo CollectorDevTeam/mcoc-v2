@@ -1753,7 +1753,20 @@ class MCOC(ChampionFactory):
         data = discord.Embed(color=author.color, title='Submit Stats')
         data.set_footer(text='Submitted by {} on {} [{}]'.format(author.display_name, server.name, server.id),
                         icon_url=author.avatar_url)
-        if champ is not None:
+        if champ is None:
+            data.description = 'Include a champion.  Star and Rank required' \
+                               '    i.e.' \
+                               '    4*blackboltr5 == 4★ Black Bolt r5 ' \
+                               '    6*blackboltr2 == 6★ Black Bolt r2' \
+                               'Minimum stats submissions include Health & Attack.\n' \
+                               'However, we strongly encourage you to submit **all** champion base stats.\n' \
+                               '1. Select Champion\n' \
+                               '2. Select Info\n' \
+                               '3. Tap the ``attributes`` information panel' \
+                               '\n' \
+                               'Image attachments will be uploaded to CDT Server.'
+            return
+        elif champ is not None:
             data.set_thumbnail(url=champ.get_featured())
         if stats is None and len(ctx.message.attachments) > 0:
             if len(attachments) > 2:
