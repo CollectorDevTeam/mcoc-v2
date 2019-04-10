@@ -329,7 +329,7 @@ class Alliance:
                                    .format(key), inline=False)
             await self.bot.say(embed=data)
             channel = self.bot.get_channel('565254324595326996')
-            data.set_footer(text='Requested by {}'.format(ctx.message.author.display_name), icon_url=COLLECTOR_ICON)
+            data.set_footer(text='Requested by {} | {} on server {}'.format(ctx.message.author.display_name, ctx.message.author.id, ctx.message.server.id), icon_url=COLLECTOR_ICON)
             await self.bot.send_message(channel, embed=data)
 
     def _find_alliance(self, user):
