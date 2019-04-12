@@ -416,9 +416,12 @@ class Alliance:
                         data.description = 'Battlegroup {} has no members assigned'.format(bg)
                 needsbg = []
                 for member in members:
-                    if member in battle_groups['bg1']['members'] or member in battle_groups['bg2']['members'] or member in battle_groups['bg3']['members']:
-                        continue
-                    else:
+                    assigned = False
+                    for bg in battle_groups.keys():
+                        if member in battle_groups[bg]['members']:
+                            assigned = True
+                            continue
+                    if assigned is False:
                         needsbg.append(member)
                 if len(needsbg) > 0:
                     package = '\n'.join(m.display_name for m in needsbg)
