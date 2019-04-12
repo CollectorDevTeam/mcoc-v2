@@ -10,7 +10,7 @@ from dateutil.parser import parse as date_parse
 from __main__ import send_cmd_help
 from .utils.dataIO import dataIO
 from .utils import checks
-# from .utils import chat_formatting as chat
+from .utils import chat_formatting as chat
 from cogs.mcocTools import (KABAM_ICON, COLLECTOR_ICON, PagesMenu, CDT_COLORS)
 from cogs.hook import RosterUserConverter, ChampionRoster
 # import cogs.mcocTools
@@ -357,7 +357,7 @@ class Alliance:
                 return role
         return None
 
-    @alliance.command(name='bg', aliases=('battlegroups', 'bgs', 'BG', 'BGs'),pass_context=True, no_pm=True)
+    @alliance.command(name='bg', aliases=('battlegroups', 'bgs', 'BG', 'BGs'), pass_context=True, no_pm=True)
     async def _battle_groups(self, ctx):
         """Report Alliance Battlegroups"""
         alliances, message = self._find_alliance(ctx.message.author)
@@ -414,6 +414,16 @@ class Alliance:
                                                         data=data, role_members=battle_groups[bg]['members'])
                     elif bg in battle_groups.keys() and len(battle_groups[bg]['members']) == 0:
                         data.description = 'Battlegroup {} has no members assigned'.format(bg)
+                needsbg = []
+                for member in members:
+                    if member in battle_groups['bg1']['members'] or member in battle_groups['bg2']['members'] or member in battle_groups['bg3']['members']:
+                        continue
+                    else:
+                        needsbg.append(member)
+                if len(needsbg) > 0:
+                    package = '\n'.join(m.display_name for m in needsbg)
+                    package = chat.box(package)
+                    data.add_field(name='Needs BG assignment', value=package)
                 pages.append(data)
             else:
                 data = self._get_embed(ctx, alliance=alliance, color=dcolor)
