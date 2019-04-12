@@ -415,19 +415,21 @@ class Alliance:
                     elif bg in battle_groups.keys() and len(battle_groups[bg]['members']) == 0:
                         data.description = 'Battlegroup {} has no members assigned'.format(bg)
                 needsbg = []
-                for member in members:
-                    assigned = False
-                    for bg in battle_groups.keys():
-                        if member in battle_groups[bg]['members']:
-                            assigned = True
-                            continue
-                    if assigned is False:
-                        needsbg.append(member)
-                if len(needsbg) > 0:
-                    package = '\n'.join(m.display_name for m in needsbg)
-                    package = chat.box(package)
-                    # data.add_field(name='Needs BG assignment', value=package)
-                    await self.bot.say("Needs BG assignment\n"+package)
+                if self.guilds[alliance]['id'] is not None:
+                    amembers = self._get_members(server, self.guilds[alliance]['id'])
+                    for member in amembers:
+                        assigned = False
+                        for bg in battle_groups.keys():
+                            if member in battle_groups[bg]['members']:
+                                assigned = True
+                                continue
+                        if assigned is False:
+                            needsbg.append(member)
+                    if len(needsbg) > 0:
+                        package = '\n'.join(m.display_name for m in needsbg)
+                        package = chat.box(package)
+                        # data.add_field(name='Needs BG assignment', value=package)
+                        await self.bot.say("Needs BG assignment\n"+package)
                 pages.append(data)
             else:
                 data = self._get_embed(ctx, alliance=alliance, color=dcolor)
