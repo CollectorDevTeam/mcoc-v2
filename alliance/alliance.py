@@ -431,7 +431,7 @@ class Alliance:
                             if assigned is False:
                                 needsbg.append(member)
                         if len(needsbg) > 0:
-                            data.add_field(name='Pending Battlegroup assignment:', value='  ')
+                            # data.add_field(name='Pending Battlegroup assignment:', value='  ')
                             data = await self._get_prestige(server=server, role=alliance_role, verbose=True,
                                                             data=data, role_members=needsbg)
                             # data.add_field(name='Needs Battlegroup assignment', value=package)
