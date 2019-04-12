@@ -416,20 +416,21 @@ class Alliance:
                         data.description = 'Battlegroup {} has no members assigned'.format(bg)
                 needsbg = []
                 if self.guilds[alliance]['alliance']['id'] is not None:
-                    amembers = _get_members(server, self.guilds[alliance]['alliance']['id'])
-                    for member in amembers:
-                        assigned = False
-                        for bg in battle_groups.keys():
-                            if member in battle_groups[bg]['members']:
-                                assigned = True
-                                continue
-                        if assigned is False:
-                            needsbg.append(member)
-                    if len(needsbg) > 0:
-                        package = '\n'.join(m.display_name for m in needsbg)
-                        package = chat.box(package)
-                        # data.add_field(name='Needs BG assignment', value=package)
-                        await self.bot.say("Needs BG assignment\n"+package)
+                    amembers = _get_members(server, 'alliance')
+                    if amembers is not None:
+                        for member in amembers:
+                            assigned = False
+                            for bg in battle_groups.keys():
+                                if member in battle_groups[bg]['members']:
+                                    assigned = True
+                                    continue
+                            if assigned is False:
+                                needsbg.append(member)
+                        if len(needsbg) > 0:
+                            package = '\n'.join(m.display_name for m in needsbg)
+                            package = chat.box(package)
+                            # data.add_field(name='Needs BG assignment', value=package)
+                            await self.bot.say("Needs BG assignment\n"+package)
                 pages.append(data)
             else:
                 data = self._get_embed(ctx, alliance=alliance, color=dcolor)
