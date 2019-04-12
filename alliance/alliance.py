@@ -81,7 +81,7 @@ class Alliance:
 
     @commands.group(aliases=('clan', 'guild'), pass_context=True, invoke_without_command=True, hidden=False, no_pm=True)
     async def alliance(self, ctx, user: discord.Member = None):
-        """[ALPHA] CollectorVerse Alliance tools
+        """CollectorVerse Alliance tools
 
         """
         # server = ctx.message.server
@@ -151,7 +151,10 @@ class Alliance:
                                                         data=data, role_members=role_members)
                         # data.add_field(name='Alliance Prestige', value=clan_prestige)
                 else:
-                    data.add_field(name='Alliance Role', value='Alliance role is not set.')
+                    data.add_field(name='⚠ Alliance Role ⚠',
+                                   value='Alliance role is not set. '
+                                         'A role to designate all 30 alliance members is essential. '
+                                         'Use the command ``/alliance set alliance <role>`` to correct.')
                 if 'started' in keys:
                     since = date_parse(self.guilds[alliance]['started'])
                     days_since = (datetime.datetime.utcnow() - since).days
@@ -430,8 +433,8 @@ class Alliance:
                         if len(needsbg) > 0:
                             package = '\n'.join(m.display_name for m in needsbg)
                             package = chat.box(package)
-                            # data.add_field(name='Needs BG assignment', value=package)
-                            await self.bot.say("Needs BG assignment\n"+package)
+                            data.add_field(name='Needs Battlegroup assignment', value=package)
+                            # await self.bot.say("Needs BG assignment\n"+package)
                 pages.append(data)
             else:
                 data = self._get_embed(ctx, alliance=alliance, color=dcolor)
