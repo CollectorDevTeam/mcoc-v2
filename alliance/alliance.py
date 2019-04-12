@@ -426,7 +426,8 @@ class Alliance:
                 if len(needsbg) > 0:
                     package = '\n'.join(m.display_name for m in needsbg)
                     package = chat.box(package)
-                    data.add_field(name='Needs BG assignment', value=package)
+                    # data.add_field(name='Needs BG assignment', value=package)
+                    await self.bot.say("Needs BG assignment\n"+package)
                 pages.append(data)
             else:
                 data = self._get_embed(ctx, alliance=alliance, color=dcolor)
