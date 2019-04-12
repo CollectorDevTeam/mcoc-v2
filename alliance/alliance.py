@@ -416,7 +416,8 @@ class Alliance:
                         data.description = 'Battlegroup {} has no members assigned'.format(bg)
                 needsbg = []
                 if self.guilds[alliance]['alliance']['id'] is not None:
-                    amembers = _get_members(server, 'alliance')
+                    alliance_role = self._get_role(server, 'alliance')
+                    amembers = _get_members(server, alliance_role)
                     if amembers is not None:
                         for member in amembers:
                             assigned = False
