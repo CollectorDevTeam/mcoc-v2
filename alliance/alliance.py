@@ -433,7 +433,8 @@ class Alliance:
                         if len(needsbg) > 0:
                             package = '\n'.join(m.display_name for m in needsbg)
                             package = chat.box(package)
-                            data = await self._get_prestige(server=server, role=alliance_role, role_members=amembers)
+                            data = await self._get_prestige(server=server, role=alliance_role,
+                                                            data=data, role_members=amembers)
                             # data.add_field(name='Needs Battlegroup assignment', value=package)
                             # await self.bot.say("Needs BG assignment\n"+package)
                 pages.append(data)
