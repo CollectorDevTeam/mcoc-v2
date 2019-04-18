@@ -53,7 +53,7 @@ class MCOCMaps:
         '6': {'map': 's7aq6v4', 'maptitle': '6'},
         '6.1': {'map': 's7aq61v2', 'maptitle': '6 Tier 1'},
         '6.2': {'map':  's7aq62v2', 'maptitle': '6 Tier 2'},
-        '6.3': {'map': 's7aq63v3', 'maptitle': '6 Tier 3'},
+        '6.3': {'map': 's7aq63v2', 'maptitle': '6 Tier 3'},
         '7': {'map': 's7aq7', 'maptitle': '7'},
         '7.1': {'map': 's7aq71', 'maptitle': '7 Tier 1'},
         '7.2': {'map':  's7aq72', 'maptitle': '7 Tier 2'},
