@@ -256,7 +256,11 @@ class ChampionRoster:
         if self._cache.get(key, None) is None:
             champs = sorted(self.roster.values(), key=attrgetter(key),
                         reverse=True)
-            prestige = sum([getattr(champ, key) for champ in champs[:5]])/5
+            if len(champs) > 0 and len(champs) <= 5:
+                denom = len(champs)
+            else:
+                denom = 5
+            prestige = sum([getattr(champ, key) for champ in champs[:5]])/denom
             champs_str = [champ.verbose_prestige_str for champ in champs[:5]]
             self._cache[key] = (prestige, champs_str)
         return self._cache[key]
