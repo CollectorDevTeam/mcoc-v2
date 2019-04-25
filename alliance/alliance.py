@@ -490,10 +490,8 @@ class Alliance:
         user = ctx.message.author
         server = ctx.message.server
         question = '{}, do you want to register this Discord Server as your Alliance Server?' \
-                   'If you have any of the following roles, they will be automatically bound' \
-                   '@alliance\n' \
-                   '@officers\n' \
-                   '@bg1, @bg2, @bg3\n' \
+                   'If you have any of the following roles, they will be automatically bound.\n' \
+                   '```alliance, officers, bg1, @bg2, @bg3```\n' \
                    ':warning:\n' \
                    'The Alliance tool will not function unless an **alliance** role is designated.\n' \
                    'If you do not have an **alliance** role, create one and assign it to the members of your alliance.\n' \
@@ -816,7 +814,7 @@ class Alliance:
         data = discord.Embed(colour=get_color(ctx), url=PATREON)
         data.add_field(name="Congrats!:sparkles:",
                        value='{}, you have officially registered {} as a CollectorVerse Alliance.\n' \
-                             ':warning: The Alliance tool will not function unless an **alliance** role is designated.\n' \
+                             ':warning: The Alliance tool will not function unless an **alliance** role is designated.\n'
                              'If you do not have an **alliance** role, create one and assign it to the members of your alliance.\n' \
                              'Designate that role using the command ``/alliance set alliance <role>``\n' \
                              'If you have other issues, use the command ``/alliance settings`` to view and verify your settings.\n'
