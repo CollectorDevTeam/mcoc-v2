@@ -994,7 +994,7 @@ class MCOCTools:
         topic = channel.topic
         if topic is not None and topic != '':
             data = discord.Embed(color=ctx.message.author.color,
-                                 title='#{} Topic :sparkles:'.format(ctx.message.channel.name),
+                                 title='#{} Topic :sparkles:'.format(channel.name),
                                  description=topic)
             data.set_thumbnail(url=ctx.message.server.icon_url)
             data.set_footer(text='CollectorDevTeam', icon_url=COLLECTOR_ICON)
