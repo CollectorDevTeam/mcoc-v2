@@ -493,12 +493,12 @@ class Alliance:
                    'If you have any of the following roles, they will be automatically bound' \
                    '@alliance\n' \
                    '@officers\n' \
-                   '@bg1, @bg2, @bg3' \
-                   ':warning:' \
-                   'The Alliance tool will not function unless an **alliance** role is designated.' \
-                   'If you do not have an **alliance** role, create one and assign it to the members of your alliance.' \
-                   'Designate that role using the command ``/alliance set alliance <role>``' \
-                   'If you have other issues, use the command ``/alliance settings`` to view and verify your settings.'\
+                   '@bg1, @bg2, @bg3\n' \
+                   ':warning:\n' \
+                   'The Alliance tool will not function unless an **alliance** role is designated.\n' \
+                   'If you do not have an **alliance** role, create one and assign it to the members of your alliance.\n' \
+                   'Designate that role using the command ``/alliance set alliance <role>``\n' \
+                   'If you have other issues, use the command ``/alliance settings`` to view and verify your settings.\n'\
             .format(ctx.message.author.mention)
         answer, confirmation = await PagesMenu.confirm(self, ctx, question)
         data_pages = []
@@ -815,13 +815,13 @@ class Alliance:
         dataIO.save_json(self.alliances, self.guilds)
         data = discord.Embed(colour=get_color(ctx), url=PATREON)
         data.add_field(name="Congrats!:sparkles:",
-                       value='{}, you have officially registered {} as a CollectorVerse Alliance.' \
-                             ':warning: The Alliance tool will not function unless an **alliance** role is designated.' \
-                             'If you do not have an **alliance** role, create one and assign it to the members of your alliance.' \
-                             'Designate that role using the command ``/alliance set alliance <role>``' \
-                             'If you have other issues, use the command ``/alliance settings`` to view and verify your settings.'
-                             'For additional support visit the CollectorDevTeam ``/joincdt``.'
-                             'Reminder: Patrons receive priority support.'\
+                       value='{}, you have officially registered {} as a CollectorVerse Alliance.\n' \
+                             ':warning: The Alliance tool will not function unless an **alliance** role is designated.\n' \
+                             'If you do not have an **alliance** role, create one and assign it to the members of your alliance.\n' \
+                             'Designate that role using the command ``/alliance set alliance <role>``\n' \
+                             'If you have other issues, use the command ``/alliance settings`` to view and verify your settings.\n'
+                             'For additional support visit the CollectorDevTeam ``/joincdt``.\n'
+                             'Reminder: Patrons receive priority support.\n'\
                        .format(ctx.message.author.mention, server.name))
         data.set_footer(text='CollectorDevTeam', icon_url=COLLECTOR_ICON)
         return data
