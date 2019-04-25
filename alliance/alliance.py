@@ -11,7 +11,7 @@ from __main__ import send_cmd_help
 from .utils.dataIO import dataIO
 from .utils import checks
 from .utils import chat_formatting as chat
-from cogs.mcocTools import (KABAM_ICON, COLLECTOR_ICON, PagesMenu, CDT_COLORS)
+from cogs.mcocTools import (KABAM_ICON, COLLECTOR_ICON, PagesMenu, CDT_COLORS, PATREON)
 from cogs.hook import RosterUserConverter, ChampionRoster
 # import cogs.mcocTools
 
@@ -489,7 +489,16 @@ class Alliance:
         """Sign up to register your Alliance server!"""
         user = ctx.message.author
         server = ctx.message.server
-        question = '{}, do you want to register this Discord Server as your Alliance Server?'\
+        question = '{}, do you want to register this Discord Server as your Alliance Server?' \
+                   'If you have any of the following roles, they will be automatically bound' \
+                   '@alliance\n' \
+                   '@officers\n' \
+                   '@bg1, @bg2, @bg3' \
+                   ':warning:' \
+                   'The Alliance tool will not function unless an **alliance** role is designated.' \
+                   'If you do not have an **alliance** role, create one and assign it to the members of your alliance.' \
+                   'Designate that role using the command ``/alliance set alliance <role>``' \
+                   'If you have other issues, use the command ``/alliance settings`` to view and verify your settings.'\
             .format(ctx.message.author.mention)
         answer, confirmation = await PagesMenu.confirm(self, ctx, question)
         data_pages = []
@@ -804,9 +813,15 @@ class Alliance:
         Set basic information"""
         self.guilds[server.id] = {'type': 'basic', 'name': server.name, 'assign': 'officers'}
         dataIO.save_json(self.alliances, self.guilds)
-        data = discord.Embed(colour=get_color(ctx))
+        data = discord.Embed(colour=get_color(ctx), url=PATREON)
         data.add_field(name="Congrats!:sparkles:",
-                       value="{}, you have officially registered {} as a CollectorVerse Alliance."
+                       value='{}, you have officially registered {} as a CollectorVerse Alliance.' \
+                             ':warning: The Alliance tool will not function unless an **alliance** role is designated.' \
+                             'If you do not have an **alliance** role, create one and assign it to the members of your alliance.' \
+                             'Designate that role using the command ``/alliance set alliance <role>``' \
+                             'If you have other issues, use the command ``/alliance settings`` to view and verify your settings.'
+                             'For additional support visit the CollectorDevTeam ``/joincdt``.'
+                             'Reminder: Patrons receive priority support.'\
                        .format(ctx.message.author.mention, server.name))
         data.set_footer(text='CollectorDevTeam', icon_url=COLLECTOR_ICON)
         return data
