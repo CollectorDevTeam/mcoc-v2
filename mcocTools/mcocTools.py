@@ -1412,6 +1412,12 @@ class MCOCEvents:
         event = 'eq_22.1'
         await self.format_eventquest(event, tier.lower())
 
+    @eventquest.command(name='23', aliases=('ronin','ebonymay','cullobsidian','avengersforever',))
+    async def eq_23(self, tier='Uncollected'):
+        """AVENGERS FOREVER"""
+        event = 'eq_23'
+        await self.format_eventquest(event, tier.lower())
+
     # @eventquest.command(name='', aliases=(,))
     # async def eq_(self, tier='Uncollected'):
     #     """TITLE"""
