@@ -898,7 +898,7 @@ class MCOCTools:
         # menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
         # await menu.menu_start(pages=pages)
 
-    async def _get_tldr(force=False):
+    async def _get_tldr(self, force=False):
         if force:
             await StaticGameData.cache_gsheets('tldr')
         now = datetime.datetime.now().date()
@@ -908,8 +908,8 @@ class MCOCTools:
                 await StaticGameData.cache_gsheets('tldr')
         else:
             await StaticGameData.cache_gsheets('tldr')
-        tldr = dataIO.load_json('data/mcocTools/tldr.json')
-        return tldr
+        self.tldr = dataIO.load_json('data/mcocTools/tldr.json')
+        return
 
     @commands.command(pass_context=True, name='cutoffs')
     async def _cutoffs(self, ctx, champ=None):

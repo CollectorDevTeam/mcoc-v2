@@ -1010,7 +1010,8 @@ class MCOC(ChampionFactory):
         '''UMCOC crowdsourced TLDR how-to use'''
         if champ.debug:
             force = True
-        tldr = await cogs.mcocTools._get_tldr(force)
+        await cogs.mcocTools._get_tldr(self, force)
+        tldr = cogs.mcocTools.tldr
         if ctx.message.channel.is_private:
             ucolor = discord.Color.gold()
         else:
