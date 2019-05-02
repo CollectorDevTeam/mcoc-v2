@@ -68,6 +68,7 @@ data_files = {
                 #'local': 'data/mcoc/masteries.csv', 'update_delta': 1},
     }
 
+PATREON = 'https://patreon.com/collectorbot'
 GS_BASE='https://sheets.googleapis.com/v4/spreadsheets/{}/values/{}?key=AIzaSyBugcjKbOABZEn-tBOxkj0O7j5WGyz80uA&majorDimension=ROWS'
 GSHEET_ICON='https://d2jixqqjqj5d23.cloudfront.net/assets/developer/imgs/icons/google-spreadsheet-icon.png'
 SPOTLIGHT_DATASET='https://docs.google.com/spreadsheets/d/e/2PACX-1vRFLWYdFMyffeOzKiaeQeqoUgaESknK-QpXTYV2GdJgbxQkeCjoSajuLjafKdJ5imE1ADPYeoh8QkAr/pubhtml?gid=1483787822&single=true'
@@ -1001,6 +1002,31 @@ class MCOC(ChampionFactory):
             em.set_footer(text='CollectorDevTeam Dataset', icon_url=COLLECTOR_ICON)
             em.set_thumbnail(url=champ.get_avatar())
             await self.bot.say(embed=em)
+
+
+    @champ.command(pass_context=True, name='tldr')
+    async def champ_tldr(self, ctx, champ: ChampConverterDebug):
+        '''UMCOC crowdsourced TLDR how-to use'''
+        sgd = cogs.mcocTools.StaticGameData()
+        tldr = sgd.tldr
+        if ctx.message.channel.is_private:
+            ucolor=discord.Color.gold()
+        else:
+            ucolor = ctx.message.author.color
+        data = discord.Embed(color=ucolor, title='Abilities are Too Long; Didn\'t Read', url=PATREON)
+        k = champ.full_name
+        if k in tldr.keys():
+            for i in 4:
+                uid = 'user{}'.format(i)
+                tid = 'tldr{}'.format(i)
+                if uid in tldr[k]:
+                    data.add_field(name='{} says:'.format(tldr[k][uid]), value=tid)
+        else:
+            data.description = 'No information.  Add a TLDR here: [TLDR Form](https://forms.gle/EuhWXyE5kxydzFGK8)'
+        data.add_field(name='Shortcode', value=champ.short)
+        data.set_footer(text='CollectorDevTeam Dataset', icon_url=COLLECTOR_ICON)
+        data.set_thumbnail(url=champ.get_avatar())
+        await self.bot.say(embed=data)
 
     @commands.has_any_role('CollectorDevTeam','CollectorSupportTeam','CollectorPartners')
     @champ.command(pass_context=True, name='export', hidden=True)
