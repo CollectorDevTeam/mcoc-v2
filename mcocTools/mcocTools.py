@@ -913,7 +913,7 @@ class MCOCTools:
         description = self.arena
         if self.mcoctools['cutoffs'] == '' or self.mcoctools['cutoffs_date'] != now:
             print('debug cutoffs url '+self.mcoctools['cutoffs'])
-            print('debug cutoffs date '+self.mcoctools['cutoffs_date'])
+            print('debug cutoffs date '+str(self.mcoctools['cutoffs_date']))
             await gsh.cache_gsheets('cutoffs')
             self.mcoctools['cutoffs'] = await SCREENSHOT.get_screenshot(self, url=PUBLISHED, w=1440, h=900)
             self.mcoctools['cutoffs_date'] = now
