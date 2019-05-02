@@ -319,6 +319,7 @@ class GSHandler:
             pulled = False
             if not force and os.path.exists(self.gsheets[k]['local']):
                 pulled = True
+                package[k] = json.load(self.gsheets[k]['local'])
             if not pulled:
                 for try_num in range(3):
                     gsdata = GSExport(self.bot, gc, name=k, **self.gsheets[k])
