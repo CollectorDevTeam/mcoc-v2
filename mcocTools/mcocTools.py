@@ -898,8 +898,8 @@ class MCOCTools:
         # menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
         # await menu.menu_start(pages=pages)
 
-    async def _get_tldr(self, ctx, champ=None, force=False):
-        if force or champ.debug:
+    async def _get_tldr(force=False):
+        if force:
             await StaticGameData.cache_gsheets('tldr')
         now = datetime.datetime.now().date()
         filetime = datetime.datetime.fromtimestamp(os.path.getctime('data/mcocTools/tldr.json'))
@@ -909,26 +909,7 @@ class MCOCTools:
         else:
             await StaticGameData.cache_gsheets('tldr')
         tldr = dataIO.load_json('data/mcocTools/tldr.json')
-        if ctx.message.channel.is_private:
-            ucolor=discord.Color.gold()
-        else:
-            ucolor = ctx.message.author.color
-        data = discord.Embed(color=ucolor, title='Abilities are Too Long; Didn\'t Read', url=PATREON)
-        k = champ.full_name
-        if k in tldr.keys():
-            for i in 4:
-                uid = 'user{}'.format(i)
-                tid = 'tldr{}'.format(i)
-                if uid in tldr[k]:
-                    data.add_field(name='{} says:'.format(tldr[k][uid]), value=tid)
-        else:
-            data.description = 'No information.  Add a TLDR here: [TLDR Form](https://forms.gle/EuhWXyE5kxydzFGK8)'
-        data.add_field(name='Shortcode', value=champ.short)
-        data.set_footer(text='CollectorDevTeam Dataset', icon_url=COLLECTOR_ICON)
-        data.set_thumbnail(url=champ.get_avatar())
-        await self.bot.say(embed=data)
-        return
-
+        return tldr
 
     @commands.command(pass_context=True, name='cutoffs')
     async def _cutoffs(self, ctx, champ=None):
