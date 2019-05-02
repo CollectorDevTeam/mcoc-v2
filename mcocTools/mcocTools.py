@@ -306,7 +306,7 @@ class GSHandler:
             raise KeyError("Key '{}' has already been registered".format(name))
         self.gsheets[name] = dict(gkey=gkey, local=local, **kwargs)
 
-    async def cache_gsheets(self, key=None):
+    async def cache_gsheets(self, key=None, force=True):
         gc = await self.authorize()
         if key and key not in self.gsheets:
             raise KeyError("Key '{}' is not registered".format(key))
@@ -317,18 +317,21 @@ class GSHandler:
         package = {}
         for i, k in enumerate(gfiles):
             pulled = False
-            for try_num in range(3):
-                gsdata = GSExport(self.bot, gc, name=k, **self.gsheets[k])
-                try:
-                    package[k] = await gsdata.retrieve_data()
-                    pulled = True
-                    break
-                except:
-                    logger.info("Error while pulling '{}' try: {}".format(k, try_num))
-                    if try_num < 3:
-                        # time.sleep(.3 * try_num)
-                        asyncio.sleep(.3*try_num)
-                        await self.bot.say("Error while pulling '{}', try: {}".format(k, try_num))
+            if not force and os.path.exists(self.gsheets[k]['local']):
+                pulled = True
+            if not pulled:
+                for try_num in range(3):
+                    gsdata = GSExport(self.bot, gc, name=k, **self.gsheets[k])
+                    try:
+                        package[k] = await gsdata.retrieve_data()
+                        pulled = True
+                        break
+                    except:
+                        logger.info("Error while pulling '{}' try: {}".format(k, try_num))
+                        if try_num < 3:
+                            # time.sleep(.3 * try_num)
+                            asyncio.sleep(.3*try_num)
+                            await self.bot.say("Error while pulling '{}', try: {}".format(k, try_num))
             msg = await self.bot.edit_message(msg,
                                               'Pulled Google Sheet data {}/{}'.format(i + 1, num_files))
             logger.info('Pulled Google Sheet data {}/{}, {}'.format(i + 1, num_files, "" if pulled else "Failed"))
@@ -394,6 +397,15 @@ class StaticGameData:
             local='data/mcoc/collection',
             sheet_name='collection',
             range_name='available_collection'
+        )
+
+        self.gsheet_handler.register_gsheet(
+            name='tldr',
+            gkey='1ZnoP_Kz_dC1DuTYmRX0spQLcHjiUZtT-oVTF52MHO3g',
+            local='data/mcoc/tldr.json',
+            sheet_name='output',
+            range_name='tldr_output',
+            # settings=dict(column_handler='champs: to_list')
         )
 
         self.gsheet_handler.register_gsheet(
