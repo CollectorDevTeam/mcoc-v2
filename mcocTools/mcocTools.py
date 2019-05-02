@@ -461,9 +461,9 @@ class StaticGameData:
                 self.remote_data_basepath + 'json/masteries.json',
                 session)
 
-    async def cache_gsheets(self):
+    async def cache_gsheets(self, force=False):
         print("Attempt gsheet pull")
-        self.gsheets_data = await self.gsheet_handler.cache_gsheets()
+        self.gsheets_data = await self.gsheet_handler.cache_gsheets(force=force)
 
     async def load_cdt_trials(self):
         raw_data = await self.fetch_gsx2json('1TSmQOTXz0-jIVgyuFRoaPCUZA73t02INTYoXNgrI5y4')
