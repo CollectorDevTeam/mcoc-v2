@@ -402,7 +402,7 @@ class StaticGameData:
 
         self.gsheet_handler.register_gsheet(
             name='tldr',
-            gkey='1ZnoP_Kz_dC1DuTYmRX0spQLcHjiUZtT-oVTF52MHO3g',
+            gkey='1tQdQNjzr8dlSz2A8-G33YoNIU1NF8xqAmIgZtR7DPjM',
             local='data/mcoc/tldr.json',
             sheet_name='output',
             range_name='tldr_output',
