@@ -609,6 +609,7 @@ class MCOC(ChampionFactory):
                 gkey='1Apun0aUcr8HcrGmIODGJYhr-ZXBCE_lAR7EaFg_ZJDY',
                 local=local_files['synergy'],
             )
+
     #'spotlight': {'gkey': '1I3T2G2tRV05vQKpBfmI04VpvP5LjCBPfVICDmuJsjks',
             #'local': 'data/mcoc/spotlight_test.json',
             #},
@@ -1005,28 +1006,9 @@ class MCOC(ChampionFactory):
 
 
     @champ.command(pass_context=True, name='tldr')
-    async def champ_tldr(self, ctx, champ: ChampConverterDebug):
+    async def champ_tldr(self, ctx, champ: ChampConverterDebug, force=False):
         '''UMCOC crowdsourced TLDR how-to use'''
-        sgd = cogs.mcocTools.StaticGameData()
-        tldr = sgd.tldr
-        if ctx.message.channel.is_private:
-            ucolor=discord.Color.gold()
-        else:
-            ucolor = ctx.message.author.color
-        data = discord.Embed(color=ucolor, title='Abilities are Too Long; Didn\'t Read', url=PATREON)
-        k = champ.full_name
-        if k in tldr.keys():
-            for i in 4:
-                uid = 'user{}'.format(i)
-                tid = 'tldr{}'.format(i)
-                if uid in tldr[k]:
-                    data.add_field(name='{} says:'.format(tldr[k][uid]), value=tid)
-        else:
-            data.description = 'No information.  Add a TLDR here: [TLDR Form](https://forms.gle/EuhWXyE5kxydzFGK8)'
-        data.add_field(name='Shortcode', value=champ.short)
-        data.set_footer(text='CollectorDevTeam Dataset', icon_url=COLLECTOR_ICON)
-        data.set_thumbnail(url=champ.get_avatar())
-        await self.bot.say(embed=data)
+        await cogs.mcocTools._get_tldr(self, ctx, champ, force)
 
     @commands.has_any_role('CollectorDevTeam','CollectorSupportTeam','CollectorPartners')
     @champ.command(pass_context=True, name='export', hidden=True)

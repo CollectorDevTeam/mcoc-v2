@@ -741,6 +741,7 @@ class MCOCTools:
         # self.cutoffs_url = ''
         self.arena = ''
         self.cutoffs = dataIO.load_json('data/mcocTools/cutoffs.json')
+        self.tldr = dataIO.load_json('data/mcocTools/tldr.json')
         # self.date = ''
         # self.calendar = {}
         # self.calendar['time'] = dateParse(0)
@@ -896,6 +897,38 @@ class MCOCTools:
         #     pages.append(data)
         # menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
         # await menu.menu_start(pages=pages)
+
+    async def _get_tldr(self, ctx, champ=None, force=False):
+        if force or champ.debug:
+            await StaticGameData.cache_gsheets('tldr')
+        now = datetime.datetime.now().date()
+        filetime = datetime.datetime.fromtimestamp(os.path.getctime('data/mcocTools/tldr.json'))
+        if os.path.exists('data/mcocTools/tldr.json'):
+            if filetime.date() != now:
+                await StaticGameData.cache_gsheets('tldr')
+        else:
+            await StaticGameData.cache_gsheets('tldr')
+        tldr = dataIO.load_json('data/mcocTools/tldr.json')
+        if ctx.message.channel.is_private:
+            ucolor=discord.Color.gold()
+        else:
+            ucolor = ctx.message.author.color
+        data = discord.Embed(color=ucolor, title='Abilities are Too Long; Didn\'t Read', url=PATREON)
+        k = champ.full_name
+        if k in tldr.keys():
+            for i in 4:
+                uid = 'user{}'.format(i)
+                tid = 'tldr{}'.format(i)
+                if uid in tldr[k]:
+                    data.add_field(name='{} says:'.format(tldr[k][uid]), value=tid)
+        else:
+            data.description = 'No information.  Add a TLDR here: [TLDR Form](https://forms.gle/EuhWXyE5kxydzFGK8)'
+        data.add_field(name='Shortcode', value=champ.short)
+        data.set_footer(text='CollectorDevTeam Dataset', icon_url=COLLECTOR_ICON)
+        data.set_thumbnail(url=champ.get_avatar())
+        await self.bot.say(embed=data)
+        return
+
 
     @commands.command(pass_context=True, name='cutoffs')
     async def _cutoffs(self, ctx, champ=None):
