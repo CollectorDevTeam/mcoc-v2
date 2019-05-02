@@ -713,7 +713,7 @@ class MCOC(ChampionFactory):
             self.settings[setting] = int(value)
 
     @commands.command(hidden=True, aliases=['cg',])
-    async def cache_gsheets(self, key=None):
+    async def cache_gsheets(self, key=None, force=True):
          await self.update_local()
          await self.gsheet_handler.cache_gsheets(key)
 
