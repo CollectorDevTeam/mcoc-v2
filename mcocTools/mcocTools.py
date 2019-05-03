@@ -354,6 +354,7 @@ class StaticGameData:
 
     remote_data_basepath = "https://raw.githubusercontent.com/CollectorDevTeam/assets/master/data/"
     cdt_data, cdt_versions, cdt_masteries = None, None, None
+    tldr = None
     cdt_trials = None
     gsheets_data = None
     test = 3
@@ -487,6 +488,17 @@ class StaticGameData:
                 ))
         else:
             return self.gsheets_data
+
+    async def _get_tldr(self, force=False):
+        if force:
+            await StaticGameData.cache_gsheets('tldr')
+        now = datetime.datetime.now().date()
+        filetime = datetime.datetime.fromtimestamp(os.path.getctime('data/mcocTools/tldr.json'))
+        if os.path.exists('data/mcocTools/tldr.json'):
+            if filetime.date() != now:
+                await StaticGameData.cache_gsheets('tldr')
+        self.tldr = dataIO.load_json('data/mcocTools/tldr.json')
+        return self.tldr
 
     @staticmethod
     async def fetch_json(url, session):
@@ -854,17 +866,7 @@ class MCOCTools:
             self.mcoctools['calendar_date'] = now
             # dataIO.save_json('data/mcocTools/mcoctools.json', self.mcoctools)
 
-    async def _get_tldr(self, force=False):
-        if force:
-            await StaticGameData.cache_gsheets('tldr')
-            self.tldr = dataIO.load_json('data/mcocTools/tldr.json')
-        now = datetime.datetime.now().date()
-        filetime = datetime.datetime.fromtimestamp(os.path.getctime('data/mcocTools/tldr.json'))
-        if os.path.exists('data/mcocTools/tldr.json'):
-            if filetime.date() != now:
-                await StaticGameData.cache_gsheets('tldr')
-                self.tldr = dataIO.load_json('data/mcocTools/tldr.json')
-        return self.tldr
+
 
     @commands.command(pass_context=True, name='cutoffs')
     async def _cutoffs(self, ctx, champ=None):
