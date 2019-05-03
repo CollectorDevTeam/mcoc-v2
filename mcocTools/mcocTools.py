@@ -354,7 +354,6 @@ class StaticGameData:
 
     remote_data_basepath = "https://raw.githubusercontent.com/CollectorDevTeam/assets/master/data/"
     cdt_data, cdt_versions, cdt_masteries = None, None, None
-    tldr = None
     cdt_trials = None
     gsheets_data = None
     test = 3
