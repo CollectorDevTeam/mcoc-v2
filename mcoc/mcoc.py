@@ -1047,11 +1047,11 @@ class MCOC(ChampionFactory):
                 if uid in tldr[k]:
                     data.add_field(name='{} says:'.format(tldr[k][uid]), value=tldr[k][tid], inline=False)
             if 4 not in tldr[k]:
-                data.description = 'Don\'t like that advice?  \nAdd a TLDR here: [TLDR Form](https://forms.gle/EuhWXyE5kxydzFGK8)'
+                data.description = 'Don\'t like that advice? \n\n[Click here to add a TLDR!](https://forms.gle/EuhWXyE5kxydzFGK8)'
         else:
             data.description = 'No information.  \nAdd a TLDR here: [TLDR Form](https://forms.gle/EuhWXyE5kxydzFGK8)'
         data.add_field(name='Shortcode', value=champ.short, inline=False)
-        data.set_footer(text='CollectorDevTeam Dataset', icon_url=COLLECTOR_ICON)
+        data.set_footer(text='Requested by {}'.format(ctx.message.author.display_name), icon_url=COLLECTOR_ICON)
         data.set_thumbnail(url=champ.get_avatar())
         await self.bot.say(embed=data)
 
