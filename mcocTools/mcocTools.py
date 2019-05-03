@@ -306,7 +306,7 @@ class GSHandler:
             raise KeyError("Key '{}' has already been registered".format(name))
         self.gsheets[name] = dict(gkey=gkey, local=local, **kwargs)
 
-    async def cache_gsheets(self, key=None, force=True):
+    async def cache_gsheets(self, key=None):
         gc = await self.authorize()
         if key and key not in self.gsheets:
             raise KeyError("Key '{}' is not registered".format(key))
@@ -463,9 +463,9 @@ class StaticGameData:
                 self.remote_data_basepath + 'json/masteries.json',
                 session)
 
-    async def cache_gsheets(self, force=False):
+    async def cache_gsheets(self):
         print("Attempt gsheet pull")
-        self.gsheets_data = await self.gsheet_handler.cache_gsheets(force=force)
+        self.gsheets_data = await self.gsheet_handler.cache_gsheets()
 
     async def load_cdt_trials(self):
         raw_data = await self.fetch_gsx2json('1TSmQOTXz0-jIVgyuFRoaPCUZA73t02INTYoXNgrI5y4')
@@ -491,14 +491,14 @@ class StaticGameData:
 
     async def _get_tldr(self, force=False):
         if force:
-            await StaticGameData.cache_gsheets('tldr')
+            await self.cache_gsheets('tldr')
         now = datetime.datetime.now().date()
         filetime = datetime.datetime.fromtimestamp(os.path.getctime('data/mcocTools/tldr.json'))
         if os.path.exists('data/mcocTools/tldr.json'):
             if filetime.date() != now:
-                await StaticGameData.cache_gsheets('tldr')
-        self.tldr = dataIO.load_json('data/mcocTools/tldr.json')
-        return self.tldr
+                await self.cache_gsheets('tldr')
+        tldr = dataIO.load_json('data/mcocTools/tldr.json')
+        return tldr
 
     @staticmethod
     async def fetch_json(url, session):
