@@ -404,7 +404,7 @@ class StaticGameData:
         self.gsheet_handler.register_gsheet(
             name='tldr',
             gkey='1tQdQNjzr8dlSz2A8-G33YoNIU1NF8xqAmIgZtR7DPjM',
-            local='data/mcoc/tldr.json',
+            local='data/mcocTools/tldr.json',
             sheet_name='output',
             range_name='tldr_output',
             # settings=dict(column_handler='champs: to_list')
