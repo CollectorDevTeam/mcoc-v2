@@ -1011,7 +1011,7 @@ class MCOC(ChampionFactory):
         if champ.debug:
             force = True
         # sgd = cogs.mcocTools.StaticGameData()
-        tldr = await StaticGameData.tldr(force=force)
+        tldr = await StaticGameData._get_tldr(force=force)
 
         if ctx.message.channel.is_private:
             ucolor = discord.Color.gold()
