@@ -1008,10 +1008,20 @@ class MCOC(ChampionFactory):
     @champ.command(pass_context=True, name='tldr')
     async def champ_tldr(self, ctx, champ: ChampConverterDebug, force=False):
         '''UMCOC crowdsourced TLDR how-to use'''
+        key='tldr'
         if champ.debug:
             force = True
         # sgd = cogs.mcocTools.StaticGameData()
-        tldr = await StaticGameData._get_tldr(self, force=force)
+        if force is True:
+            await self.gsheet_handler.cache_gsheets(key)
+        now = datetime.datetime.now().date()
+        if os.path.exists('data/mcocTools/tldr.json'):
+            filetime = datetime.datetime.fromtimestamp(os.path.getctime('data/mcocTools/tldr.json'))
+            if filetime.date() != now:
+                await self.gsheet_handler.cache_gsheets(key)
+        else:
+            await self.gsheet_handler.cache_gsheets(key)
+        tldr = dataIO.load_json('data/mcocTools/tldr.json')
 
         if ctx.message.channel.is_private:
             ucolor = discord.Color.gold()
