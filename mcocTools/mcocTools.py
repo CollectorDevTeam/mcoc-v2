@@ -489,10 +489,9 @@ class StaticGameData:
         else:
             return self.gsheets_data
 
-    @staticmethod
     async def _get_tldr(self, force=False):
         gsheet_handler = GSHandler(self.bot, gapi_service_creds)
-        if force:
+        if force is True:
             await gsheet_handler.cache_gsheets(key='tldr')
         now = datetime.datetime.now().date()
         if os.path.exists('data/mcocTools/tldr.json'):
