@@ -1023,9 +1023,11 @@ class MCOC(ChampionFactory):
         # sgd = cogs.mcocTools.StaticGameData()
         if force is True:
             await self.gsheet_handler.cache_gsheets(key)
-        now = datetime.datetime.now().date()
+        # now = datetime.datetime.now().date()
+        now = datetime.now().date()
         if os.path.exists('data/mcoc/tldr.json'):
-            filetime = datetime.datetime.fromtimestamp(os.path.getctime('data/mcoc/tldr.json'))
+            # filetime = datetime.datetime.fromtimestamp(os.path.getctime('data/mcoc/tldr.json'))
+            filetime = datetime.fromtimestamp(os.path.getctime('data/mcoc/tldr.json'))
             if filetime.date() != now:
                 await self.gsheet_handler.cache_gsheets(key)
         else:
