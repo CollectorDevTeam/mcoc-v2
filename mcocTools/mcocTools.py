@@ -853,18 +853,18 @@ class MCOCTools:
             self.mcoctools['calendar'] = self.calendar_url
             self.mcoctools['calendar_date'] = now
             # dataIO.save_json('data/mcocTools/mcoctools.json', self.mcoctools)
-    
+
     async def _get_tldr(self, force=False):
         if force:
             await StaticGameData.cache_gsheets('tldr')
+            self.tldr = dataIO.load_json('data/mcocTools/tldr.json')
         now = datetime.datetime.now().date()
         filetime = datetime.datetime.fromtimestamp(os.path.getctime('data/mcocTools/tldr.json'))
         if os.path.exists('data/mcocTools/tldr.json'):
             if filetime.date() != now:
                 await StaticGameData.cache_gsheets('tldr')
-        else:
-            await StaticGameData.cache_gsheets('tldr')
-        self.tldr = dataIO.load_json('data/mcocTools/tldr.json')
+                self.tldr = dataIO.load_json('data/mcocTools/tldr.json')
+        return self.tldr
 
     @commands.command(pass_context=True, name='cutoffs')
     async def _cutoffs(self, ctx, champ=None):
