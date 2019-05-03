@@ -1010,8 +1010,8 @@ class MCOC(ChampionFactory):
         '''UMCOC crowdsourced TLDR how-to use'''
         if champ.debug:
             force = True
-        sgd = cogs.mcocTools.StaticGameData()
-        tldr = await sgd.tldr(force=force)
+        # sgd = cogs.mcocTools.StaticGameData()
+        tldr = await StaticGameData.tldr(force=force)
 
         if ctx.message.channel.is_private:
             ucolor = discord.Color.gold()
@@ -2984,7 +2984,7 @@ def override_error_handler(bot):
 from . import hook as hook
 import cogs.mcocTools
 from .mcocTools import (KABAM_ICON, COLLECTOR_ICON, PagesMenu,
-    GSHandler, gapi_service_creds, GSExport, CDT_COLORS)
+    GSHandler, gapi_service_creds, GSExport, CDT_COLORS, StaticGameData)
 
 def setup(bot):
     override_error_handler(bot)
