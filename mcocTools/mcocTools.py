@@ -489,6 +489,7 @@ class StaticGameData:
         else:
             return self.gsheets_data
 
+    @staticmethod
     async def _get_tldr(self, force=False):
         if force:
             await self.cache_gsheets('tldr')
@@ -497,6 +498,8 @@ class StaticGameData:
         if os.path.exists('data/mcocTools/tldr.json'):
             if filetime.date() != now:
                 await self.cache_gsheets('tldr')
+        else:
+            await self.cache_gsheets('tldr')
         tldr = dataIO.load_json('data/mcocTools/tldr.json')
         return tldr
 
@@ -753,7 +756,7 @@ class MCOCTools:
         # self.cutoffs_url = ''
         self.arena = ''
         self.cutoffs = dataIO.load_json('data/mcocTools/cutoffs.json')
-        self.tldr = dataIO.load_json('data/mcocTools/tldr.json')
+        # self.tldr = dataIO.load_json('data/mcocTools/tldr.json')
         # self.date = ''
         # self.calendar = {}
         # self.calendar['time'] = dateParse(0)
