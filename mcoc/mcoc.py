@@ -1024,7 +1024,7 @@ class MCOC(ChampionFactory):
                 uid = 'user{}'.format(i)
                 tid = 'tldr{}'.format(i)
                 if uid in tldr[k]:
-                    data.add_field(name='{} says:'.format(tldr[k][uid]), value=tid)
+                    data.add_field(name='{} says:'.format(tldr[k][uid]), value=tldr[k][tid])
         else:
             data.description = 'No information.  Add a TLDR here: [TLDR Form](https://forms.gle/EuhWXyE5kxydzFGK8)'
         data.add_field(name='Shortcode', value=champ.short)
