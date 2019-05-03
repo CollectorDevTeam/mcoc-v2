@@ -1020,7 +1020,7 @@ class MCOC(ChampionFactory):
         data = discord.Embed(color=ucolor, title='Abilities are Too Long; Didn\'t Read', url=PATREON)
         k = champ.full_name
         if k in tldr.keys():
-            for i in 4:
+            for i in range(1, 4):
                 uid = 'user{}'.format(i)
                 tid = 'tldr{}'.format(i)
                 if uid in tldr[k]:

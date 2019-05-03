@@ -494,8 +494,8 @@ class StaticGameData:
         if force:
             await self.cache_gsheets('tldr')
         now = datetime.datetime.now().date()
-        filetime = datetime.datetime.fromtimestamp(os.path.getctime('data/mcocTools/tldr.json'))
         if os.path.exists('data/mcocTools/tldr.json'):
+            filetime = datetime.datetime.fromtimestamp(os.path.getctime('data/mcocTools/tldr.json'))
             if filetime.date() != now:
                 await self.cache_gsheets('tldr')
         else:
