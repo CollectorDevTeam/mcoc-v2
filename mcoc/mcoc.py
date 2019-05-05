@@ -1050,8 +1050,8 @@ class MCOC(ChampionFactory):
                 uid = 'user{}'.format(i)
                 tid = 'tldr{}'.format(i)
                 if uid in tldr[k] and tldr[k][uid] != "":
-                    package += '__{}__ says:\n'.format(tldr[k][uid])
-                    package += '{}\n\n'.format(tldr[k][tid])
+                    package += '**{}** says:\n'.format(tldr[k][uid])
+                    package += '{}\n------------------------------\n'.format(tldr[k][tid])
                     # data.add_field(name='{} says:'.format(tldr[k][uid]), value=tldr[k][tid], inline=False)
             if 'user4' not in tldr[k].items():
                 package += 'Don\'t like that advice? \n\n[Click here to add a TLDR!](https://forms.gle/EuhWXyE5kxydzFGK8)'
