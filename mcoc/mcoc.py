@@ -1061,7 +1061,7 @@ class MCOC(ChampionFactory):
             # data.description = 'No information.  \nAdd a TLDR here: [TLDR Form](https://forms.gle/EuhWXyE5kxydzFGK8)'
         data.add_field(name='Shortcode', value=champ.short, inline=False)
         data.set_footer(text='Requested by {}'.format(ctx.message.author.display_name), icon_url=COLLECTOR_ICON)
-        data.set_thumbnail(url=champ.get_avatar()
+        data.set_thumbnail(url=champ.get_avatar())
         data.description = package
         await self.bot.say(embed=data)
 
