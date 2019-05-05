@@ -1049,7 +1049,7 @@ class MCOC(ChampionFactory):
             for i in range(1, 4):
                 uid = 'user{}'.format(i)
                 tid = 'tldr{}'.format(i)
-                if uid in tldr[k]:
+                if uid in tldr[k] and tldr[k][uid] != "":
                     package += '__{}__ says:\n'.format(tldr[k][uid])
                     package += '{}\n\n'.format(tldr[k][tid])
                     # data.add_field(name='{} says:'.format(tldr[k][uid]), value=tldr[k][tid], inline=False)
