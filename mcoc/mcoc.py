@@ -1041,13 +1041,14 @@ class MCOC(ChampionFactory):
         data = discord.Embed(color=ucolor, title='Abilities are Too Long; Didn\'t Read', url=PATREON)
         k = champ.full_name
         if k in tldr.keys():
-            data.add_field(name="Signature Ability needed?", value=tldr[k]['sig'], inline=False)
+            if 'sig' in tldr[k].keys():
+                data.add_field(name="Signature Ability needed?", value=tldr[k]['sig'], inline=False)
             for i in range(1, 4):
                 uid = 'user{}'.format(i)
                 tid = 'tldr{}'.format(i)
                 if uid in tldr[k]:
                     data.add_field(name='{} says:'.format(tldr[k][uid]), value=tldr[k][tid], inline=False)
-            if 4 not in tldr[k]:
+            if 'user4' not in tldr[k].items():
                 data.description = 'Don\'t like that advice? \n\n[Click here to add a TLDR!](https://forms.gle/EuhWXyE5kxydzFGK8)'
         else:
             data.description = 'No information.  \nAdd a TLDR here: [TLDR Form](https://forms.gle/EuhWXyE5kxydzFGK8)'
