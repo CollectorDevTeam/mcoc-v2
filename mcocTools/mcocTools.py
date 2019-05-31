@@ -832,7 +832,8 @@ class MCOCTools:
                     package += '__Arena__\n' \
                                'Feature: 4★ / 5★ {0.full_name}\n' \
                                'Basic:   4☆ {1.full_name}\n'.format(feature, basic)
-                package += 'Event Quest vn: {0}\n``/eq {0}``\n'.format(calendar[i]['eq'])
+                if calendar[i]['eq'] != '':
+                    package += 'Event Quest vn: {0}\n``/eq {0}``\n'.format(calendar[i]['eq'])
                 if calendar[i]['notes'] != '':
                     package += 'Notes: {}\n'.format(calendar[i]['notes'])
                 package += '__Alliance Events__\n1 Day : {}\n3 Day : {}\n'.format(calendar[i]['1day'], calendar[i]['3day'])
@@ -853,6 +854,26 @@ class MCOCTools:
             self.mcoctools['calendar'] = self.calendar_url
             self.mcoctools['calendar_date'] = now
             # dataIO.save_json('data/mcocTools/mcoctools.json', self.mcoctools)
+
+    @commands.command(pass_context=True, name='commands', aliases=('dummies','dummy',))
+    async def _command_images(self, ctx, name: str = None):
+        ucolor = discord.Color.gold()
+        author = ctx.message.author
+        if ctx.message.channel.is_private is False:
+            ucolor = author.color
+        IMGBASE = 'https://raw.githubusercontent.com/CollectorDevTeam/assets/master/data/images/commands/'
+        commands = ('admin','moderator','alliance','roster','champ')
+        pages = []
+        for i in commands:
+            data = discord.Embed(color=ucolor, title='Commands for Dummies', url=PATREON)
+            data.set_image('{}{}.png'.format(IMGBASE, commands[i]))
+            data.set_footer(text='Requested by {}'.format(author.display_name), icon_url=author.avatar_url)
+            data.set_author(name='CollectorDevTeam | Commands for Dummies', icon_url=COLLECTOR_ICON)
+            pages.append(data)
+        menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
+        await menu.menu_start(pages=pages, page_number=0)
+
+
 
 
 
