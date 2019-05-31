@@ -866,7 +866,7 @@ class MCOCTools:
         pages = []
         for i in commands:
             data = discord.Embed(color=ucolor, title='Commands for Dummies', url=PATREON)
-            data.set_image('{}{}.png'.format(IMGBASE, i))
+            data.set_image(url='{}{}.png'.format(IMGBASE, i))
             data.set_footer(text='Requested by {}'.format(author.display_name), icon_url=author.avatar_url)
             data.set_author(name='CollectorDevTeam | Commands for Dummies', icon_url=COLLECTOR_ICON)
             pages.append(data)
