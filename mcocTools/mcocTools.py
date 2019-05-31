@@ -865,7 +865,7 @@ class MCOCTools:
         commands = ('admin','moderator','alliance','roster','champ')
         if name is not None and name.lower() in commands:
             data = discord.Embed(color=ucolor, title='Commands for Dummies', url=PATREON)
-            data.set_image(url='{}{}.png'.format(IMGBASE, name.lower()))
+            data.set_image(url='{}{}1.png'.format(IMGBASE, name.lower()))
             data.set_footer(text='Requested by {}'.format(author.display_name), icon_url=author.avatar_url)
             data.set_author(name='CollectorDevTeam', icon_url=COLLECTOR_ICON)
             await self.bot.say(embed=data)
