@@ -863,12 +863,20 @@ class MCOCTools:
             ucolor = author.color
         IMGBASE = 'https://raw.githubusercontent.com/CollectorDevTeam/assets/master/data/images/commands/'
         commands = ('admin','moderator','alliance','roster','champ')
+        if name.lower() in commands:
+            data = discord.Embed(color=ucolor, title='Commands for Dummies', url=PATREON)
+            data.set_image(url='{}{}.png'.format(IMGBASE, name.lower()))
+            data.set_footer(text='Requested by {}'.format(author.display_name), icon_url=author.avatar_url)
+            data.set_author(name='CollectorDevTeam', icon_url=COLLECTOR_ICON)
+            await self.bot.say(embed=data)
+            return
+        else:
         pages = []
         for i in commands:
             data = discord.Embed(color=ucolor, title='Commands for Dummies', url=PATREON)
             data.set_image(url='{}{}.png'.format(IMGBASE, i))
             data.set_footer(text='Requested by {}'.format(author.display_name), icon_url=author.avatar_url)
-            data.set_author(name='CollectorDevTeam | Commands for Dummies', icon_url=COLLECTOR_ICON)
+            data.set_author(name='CollectorDevTeam', icon_url=COLLECTOR_ICON)
             pages.append(data)
         menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
         await menu.menu_start(pages=pages, page_number=0)
