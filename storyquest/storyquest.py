@@ -28,41 +28,41 @@ class STORYQUEST:
         self.search_parser = SearchExpr.parser()
         self.gsheet_handler = GSHandler(bot)
         self.gsheet_handler.register_gsheet(
-                name='act6_glossary',
+                name='cdt_glossary',
                 gkey='1Up5SpQDhp_SUOb5UFuD6BwkVKsJ4ZKN13DHHNJrNrEc',
-                local='data/storyquest/act6_glossary.json',
+                local='data/storyquest/cdt_glossary.json',
                 sheet_name='glossary',
                 range_name='glossary_export'
             )
         self.gsheet_handler.register_gsheet(
-                name='act6_export',
+                name='cdt_export',
                 gkey='1Up5SpQDhp_SUOb5UFuD6BwkVKsJ4ZKN13DHHNJrNrEc',
-                local='data/storyquest/act6_export.json',
+                local='data/storyquest/cdt_export.json',
                 sheet_name='export',
                 range_name='export'
             )
         self.gsheet_handler.register_gsheet(
-            name='act6_paths',
+            name='cdt_paths',
             gkey='1Up5SpQDhp_SUOb5UFuD6BwkVKsJ4ZKN13DHHNJrNrEc',
-            local='data/storyquest/act6_paths.json',
+            local='data/storyquest/cdt_paths.json',
             sheet_name='paths',
             range_name='paths'
         )
         self.gsheet_handler.register_gsheet(
-            name='act6_globals',
+            name='cdt_globals',
             gkey='1Up5SpQDhp_SUOb5UFuD6BwkVKsJ4ZKN13DHHNJrNrEc',
-            local='data/storyquest/act6_globals.json',
+            local='data/storyquest/cdt_globals.json',
             sheet_name='globals',
             range_name='globals'
         )
         try:
-            self.glossary = dataIO.load_json('data/storyquest/act6_glossary.json')
-            self.glossary_desc = dataIO.load_json('data/storyquest/act6_glossary_desc.json')
-            self.glossary_tips = dataIO.load_json('data/storyquest/act6_glossary_tips.json')
-            self.glossary_keys = dataIO.load_json('data/storyquest/act6_glossary_keys.json')
-            self.export = dataIO.load_json('data/storyquest/act6_export.json')
-            self.paths = dataIO.load_json('data/storyquest/act6_paths.json')
-            self.globals = dataIO.load_json('data/storyquest/act6_globals.json')
+            self.glossary = dataIO.load_json('data/storyquest/cdt_glossary.json')
+            self.glossary_desc = dataIO.load_json('data/storyquest/cdt_glossary_desc.json')
+            self.glossary_tips = dataIO.load_json('data/storyquest/cdt_glossary_tips.json')
+            self.glossary_keys = dataIO.load_json('data/storyquest/cdt_glossary_keys.json')
+            self.export = dataIO.load_json('data/storyquest/cdt_export.json')
+            self.paths = dataIO.load_json('data/storyquest/cdt_paths.json')
+            self.globals = dataIO.load_json('data/storyquest/cdt_globals.json')
         except:
             self.glossary = {}
             self.glossary_tips = {}
@@ -87,11 +87,11 @@ class STORYQUEST:
 
     async def _load_sq(self, force=False):
         if self.glossary == {} or self.export == {} or force is True:
-            await self.gsheet_handler.cache_gsheets('act6_glossary')
-            await self.gsheet_handler.cache_gsheets('act6_export')
-            await self.gsheet_handler.cache_gsheets('act6_paths')
-            await self.gsheet_handler.cache_gsheets('act6_globals')
-        temp = dataIO.load_json('data/storyquest/act6_glossary.json')
+            await self.gsheet_handler.cache_gsheets('cdt_glossary')
+            await self.gsheet_handler.cache_gsheets('cdt_export')
+            await self.gsheet_handler.cache_gsheets('cdt_paths')
+            await self.gsheet_handler.cache_gsheets('cdt_globals')
+        temp = dataIO.load_json('data/storyquest/cdt_glossary.json')
         glossary_keys = {}
         glossary_tips = {}
         glossary_desc = {}
@@ -106,14 +106,14 @@ class STORYQUEST:
         self.glossary_keys = glossary_keys
         self.glossary_tips = glossary_tips
         self.glossary = temp
-        dataIO.save_json('data/storyquest/act6_glossary.json', self.glossary)
-        dataIO.save_json('data/storyquest/act6_glossary_desc.json', self.glossary_desc)
-        dataIO.save_json('data/storyquest/act6_glossary_keys.json', self.glossary_keys)
-        dataIO.save_json('data/storyquest/act6_glossary_tips.json', self.glossary_tips)
-        # self.glossary_keys = dataIO.load_json('data/storyquest/act6_glossary_keys.json')
-        self.export = dataIO.load_json('data/storyquest/act6_export.json')
-        self.paths = dataIO.load_json('data/storyquest/act6_paths.json')
-        self.globals = dataIO.load_json('data/storyquest/act6_globals.json')
+        dataIO.save_json('data/storyquest/cdt_glossary.json', self.glossary)
+        dataIO.save_json('data/storyquest/cdt_glossary_desc.json', self.glossary_desc)
+        dataIO.save_json('data/storyquest/cdt_glossary_keys.json', self.glossary_keys)
+        dataIO.save_json('data/storyquest/cdt_glossary_tips.json', self.glossary_tips)
+        # self.glossary_keys = dataIO.load_json('data/storyquest/cdt_glossary_keys.json')
+        self.export = dataIO.load_json('data/storyquest/cdt_export.json')
+        self.paths = dataIO.load_json('data/storyquest/cdt_paths.json')
+        self.globals = dataIO.load_json('data/storyquest/cdt_globals.json')
 
         return
 
@@ -228,8 +228,17 @@ class STORYQUEST:
                 valid_maps.append(k)
                 valid_maps.sort()
         if map not in valid_maps or map is None:
-            message = 'Select a valid map\n'
-            message += ', '.join(valid_maps)
+            message = 'Select a valid map:\n'
+            message += '5.3: 5.3.1, 5.3.2, 5.3.3\n'
+            message += '5.4: 5.4.1, 5.4.2, 5.4.3, 5.4.4, 5.4.5, 5.4.6\n'
+            message += '5.5: N/A\n'
+            message += '5.6: N/A\n'
+            # message += '5.5.1, 5.5.2, 5.5.3, 5.5.4, 5.5.5, 5.5.6\n'
+            # message += '5.6.1, 5.6.2, 5.6.3, 5.6.4, 5.6.5, 5.6.6\n'
+            message += '6.1: 6.1.1, 6.1.2, 6.1.3, 6.1.4, 6.1.5, 6.1.6\n'
+            message += '6.2: N/A\n'
+            # message += '6.2.1, 6.2.2, 6.2.3, 6.2.4, 6.2.5, 6.2.6\n'
+            # message += ', '.join(valid_maps)
             data.description = message
             await self.bot.say(embed=data)
             return
@@ -576,9 +585,9 @@ def check_files():
 
     files = {
         'settings.json': {},
-        'act6_glossary.json': {},
-        'act6_paths.json': {},
-        'act6_path_keys.json': {}
+        'cdt_glossary.json': {},
+        'cdt_paths.json': {},
+        'cdt_path_keys.json': {}
     }
 
     for filename, value in files.items():
