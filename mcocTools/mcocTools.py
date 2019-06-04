@@ -1414,9 +1414,15 @@ class MCOCEvents:
         await self.format_eventquest(event, tier.lower())
 
     @eventquest.command(name='23', aliases=('ronin','ebonymay','cullobsidian','avengersforever',))
-    async def eq_23(self, tier='Uncollected'):
+    async def eq_avengersforever(self, tier='Uncollected'):
         """AVENGERS FOREVER"""
         event = 'eq_23'
+        await self.format_eventquest(event, tier.lower())
+
+    @eventquest.command(name='23.1', aliases=('namor','invisiblewoman',))
+    async def eq_imperiusrex(self, tier='Uncollected'):
+        """IMPERIUS REX"""
+        event = 'eq_23.1'
         await self.format_eventquest(event, tier.lower())
 
     # @eventquest.command(name='', aliases=(,))
