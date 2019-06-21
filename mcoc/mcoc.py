@@ -1436,7 +1436,7 @@ class MCOC(ChampionFactory):
         embeds = []
         description = ''
         found = []
-        for c in syn_data['SynExport'].keys:
+        for c in syn_data['SynExport'].keys():
             champ_synergies = syn_data['SynExport'][c]
             for key, data in champ_synergies.items():
                 # if champ.star != data['stars']:
