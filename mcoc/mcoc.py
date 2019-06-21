@@ -1439,8 +1439,8 @@ class MCOC(ChampionFactory):
         for c in syn_data['SynExport'].keys:
             champ_synergies = syn_data['SynExport'][c]
             for key, data in champ_synergies.items():
-                if champ.star != data['stars']:
-                    continue
+                # if champ.star != data['stars']:
+                #     continue
                 if champ.full_name in data['triggers'] and redundant not in found:
                     syneffect = syn_data['SynergyEffects'][data['synergycode']]
                     # triggers = data['triggers']
