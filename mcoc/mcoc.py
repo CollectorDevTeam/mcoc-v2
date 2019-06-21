@@ -1343,10 +1343,13 @@ class MCOC(ChampionFactory):
         prefixes = tuple(self.bot.settings.get_prefixes(ctx.message.server))
         await self.bot.say(msg.format(prefixes[0]))
 
-    def set_collectordev_footer(self, pack):
+    def set_collectordev_footer(self, pack, author=None):
         try:
             for embed in pack:
-                embed.set_footer(text='CollectorDevTeam', icon_url=COLLECTOR_ICON)
+                if author is None:
+                    embed.set_footer(text='CollectorDevTeam', icon_url=COLLECTOR_ICON)
+                else:
+                    embed.set_footer(text='Requested by {}'.format(author.display_name), icon_url=author.avatar_url)
         except TypeError:
             pack.set_footer(text='CollectorDevTeam', icon_url=COLLECTOR_ICON)
 
@@ -1388,13 +1391,17 @@ class MCOC(ChampionFactory):
         if len(champs) > 1:
             return await self.get_multiple_synergies(champs, syn_data, embed)
         elif len(champs) == 1:
-            return await self.get_single_synergies(champs[0], syn_data, embed)
+            pack = await self.get_single_synergies(champs[0], syn_data, embed)
+            reverse = await self.get_reverse_synergies(champs[0], syn_data, embed)
+            if reverse is not None:
+                pack.append(i for i in reverse)
+            return pack
         else:
             return
 
     async def get_single_synergies(self, champ, syn_data, embed=None):
         if embed is None:
-            embed = discord.Embed(color=champ.class_color, title='')
+            embed = discord.Embed(color=champ.class_color, title='Champion Synergies | Outgoing')
             embed.set_author(name=champ.star_name_str, icon_url=champ.get_avatar())
             embed.set_thumbnail(url=champ.get_featured())
             return_single = False
@@ -1419,6 +1426,62 @@ class MCOC(ChampionFactory):
             return embed
         else:
             return [embed]
+
+
+    async def get_reverse_synergies(self, champ, syn_data, embed=None):
+        embeds = []
+        description = ''
+        found = []
+        champ_synergies = syn_data['SynExport']
+        for key, data in champ_synergies.items():
+            redundant = '{}{}{}'.format(key, data['synergycode'], data['ranks'])
+            if champ.full_name in data['triggers'] and redundant not in found:
+                syneffect = syn_data['SynergyEffects'][data['synergycode']]
+                effect = syneffect['rank{}'.format(data['rank'])]
+                try:
+                    txt = syneffect['text'].format(*effect)
+                except:
+                    print(syneffect['text'], effect)
+                    raise
+                found.append(redundant)
+                description += '__{}__ | {} {}\n'.format(syneffect['synergyname'], key, data['ranks'])
+                description += '{}\n\n'.format(txt)
+
+        pages = chat.pagify(description)
+
+        for page in pages:
+            embed = discord.Embed(color=champ.class_color, title='Champion Synergy | Activations', description=page)
+            embed.set_author(name=champ.star_name_str, icon_url=champ.get_avatar())
+            embed.set_thumbnail(url=champ.get_featured())
+            embeds.append(embed)
+
+        if len(embeds) > 0:
+            return embeds
+        else:
+            return None
+
+
+
+        #     I am looking for champ.full_name in value[triggers]
+        #  If I find champ.full_name in value[triggers], add value[unique] to foundlist
+        #      and add value[synergycode] + value[rank] to redundants
+
+
+        # champ_synergies = syn_data['SynExport'][champ.full_name]
+        # for lookup, data in champ_synergies.items():
+        #     if champ.star != data['stars']:
+        #         continue
+        #     syneffect = syn_data['SynergyEffects'][data['synergycode']]
+        #     triggers = data['triggers']
+        #     effect = syneffect['rank{}'.format(data['rank'])]
+        #     try:
+        #         txt = syneffect['text'].format(*effect)
+        #     except:
+        #         print(syneffect['text'], effect)
+        #         raise
+        #     embed.add_field(name='{}'.format(syneffect['synergyname']),
+        #             value='+ **{}**\n{}\n'.format(', '.join(triggers), txt),
+        #             inline=False)
 
     async def get_multiple_synergies(self, champs, syn_data, embed=None):
         if embed is None:
