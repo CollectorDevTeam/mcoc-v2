@@ -1393,10 +1393,13 @@ class MCOC(ChampionFactory):
         elif len(champs) == 1:
             pack = []
             pack.append(await self.get_single_synergies(champs[0], syn_data, embed))
-            reverse = await self.get_reverse_synergies(champs[0], syn_data)
-            if reverse is not None:
-                pack.append(i for i in reverse)
-            return pack
+            try:
+                reverse = await self.get_reverse_synergies(champs[0], syn_data)
+                if reverse is not None:
+                    pack.append(i for i in reverse)
+                return pack
+            except:
+                raise
         else:
             return
 
