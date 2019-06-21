@@ -1391,8 +1391,9 @@ class MCOC(ChampionFactory):
         if len(champs) > 1:
             return await self.get_multiple_synergies(champs, syn_data, embed)
         elif len(champs) == 1:
-            pack = await self.get_single_synergies(champs[0], syn_data, embed)
-            reverse = await self.get_reverse_synergies(champs[0], syn_data, embed)
+            pack = []
+            pack.append(await self.get_single_synergies(champs[0], syn_data, embed))
+            reverse = await self.get_reverse_synergies(champs[0], syn_data)
             if reverse is not None:
                 pack.append(i for i in reverse)
             return pack
@@ -1428,7 +1429,7 @@ class MCOC(ChampionFactory):
             return [embed]
 
 
-    async def get_reverse_synergies(self, champ, syn_data, embed=None):
+    async def get_reverse_synergies(self, champ, syn_data):
         embeds = []
         description = ''
         found = []
@@ -1437,6 +1438,7 @@ class MCOC(ChampionFactory):
             redundant = '{}{}{}'.format(key, data['synergycode'], data['ranks'])
             if champ.full_name in data['triggers'] and redundant not in found:
                 syneffect = syn_data['SynergyEffects'][data['synergycode']]
+                # triggers = data['triggers']
                 effect = syneffect['rank{}'.format(data['rank'])]
                 try:
                     txt = syneffect['text'].format(*effect)
