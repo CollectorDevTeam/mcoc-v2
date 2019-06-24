@@ -1376,7 +1376,8 @@ class MCOC(ChampionFactory):
                 syn_champs.append(champ)
         if len(syn_champs) > 0:
             pack = await self.get_synergies(syn_champs)
-            self.set_collectordev_footer(pack)
+            ## should return a list of embeds
+            self.set_collectordev_footer(pack, ctx.message.author)
             menu = PagesMenu(self.bot, timeout=120)
             await menu.menu_start(pack)
         else:
@@ -1388,20 +1389,25 @@ class MCOC(ChampionFactory):
         if champs[0].debug:
             await self.gsheet_handler.cache_gsheets('synergy')
         syn_data = dataIO.load_json(local_files['synergy'])
+        pack = []
         if len(champs) > 1:
-            return await self.get_multiple_synergies(champs, syn_data, embed)
+            tmp = await self.get_multiple_synergies(champs, syn_data, embed)
+            if isinstance(list, tmp):
+                pack.append(i for i in tmp)
+            else:
+                pack.append(tmp)
         elif len(champs) == 1:
-            pack = []
-            pack.append(await self.get_single_synergies(champs[0], syn_data, embed))
-            try:
-                reverse = await self.get_reverse_synergies(champs[0], syn_data)
-                if reverse is not None:
-                    pack.append(i for i in reverse)
-                return pack
-            except:
-                raise
-        else:
-            return
+            tmp = await self.get_single_synergies(champs[0], syn_data, embed)
+            if isinstance(list, tmp):
+                pack.append(i for i in tmp)
+            else:
+                pack.append(tmp)
+            tmp = await self.get_reverse_synergies(champs, syn_data, embed)
+            if isinstance(list, tmp):
+                pack.append(i for i in tmp)
+            else:
+                pack.append(tmp)
+        return pack
 
     async def get_single_synergies(self, champ, syn_data, embed=None):
         if embed is None:
