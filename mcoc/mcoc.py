@@ -1392,18 +1392,18 @@ class MCOC(ChampionFactory):
         pack = []
         if len(champs) > 1:
             tmp = await self.get_multiple_synergies(champs, syn_data, embed)
-            if isinstance(list, tmp):
+            if isinstance(tmp, list):
                 pack.append(i for i in tmp)
             else:
                 pack.append(tmp)
         elif len(champs) == 1:
             tmp = await self.get_single_synergies(champs[0], syn_data, embed)
-            if isinstance(list, tmp):
+            if isinstance(tmp, list):
                 pack.append(i for i in tmp)
             else:
                 pack.append(tmp)
             tmp = await self.get_reverse_synergies(champs, syn_data, embed)
-            if isinstance(list, tmp):
+            if isinstance(tmp, list):
                 pack.append(i for i in tmp)
             else:
                 pack.append(tmp)
