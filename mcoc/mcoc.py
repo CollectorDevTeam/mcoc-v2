@@ -1402,7 +1402,7 @@ class MCOC(ChampionFactory):
                 pack.append(i for i in tmp)
             else:
                 pack.append(tmp)
-            tmp = await self.get_reverse_synergies(champs, syn_data, embed)
+            tmp = await self.get_reverse_synergies(champs, syn_data)
             if isinstance(tmp, list):
                 pack.append(i for i in tmp)
             else:
