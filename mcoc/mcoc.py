@@ -1344,8 +1344,6 @@ class MCOC(ChampionFactory):
         await self.bot.say(msg.format(prefixes[0]))
 
     def set_collectordev_footer(self, pack, author=None):
-        if
-
         try:
             for embed in pack:
                 if author is None:
