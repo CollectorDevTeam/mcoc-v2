@@ -1561,7 +1561,8 @@ class MCOC(ChampionFactory):
             arrow = arrows[min(v['champ'].debug, len(arrows)-1)]
             sum_field[v['synergyname']].append(sum_txt.format(v, arrow))
         if return_single:
-            return embed
+            pack.append(embed)
+            return pack
         else:
             pages = [embed]
             embed = discord.Embed(color=discord.Color.red(),
