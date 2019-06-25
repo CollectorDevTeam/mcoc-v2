@@ -1487,7 +1487,7 @@ class MCOC(ChampionFactory):
         #             value='+ **{}**\n{}\n'.format(', '.join(triggers), txt),
         #             inline=False)
 
-    async def get_multiple_synergies(self, champs, syn_data, pack=None, embed=None):
+    async def get_multiple_synergies(self, champs, syn_data, pack=None, embed=None, author=None):
         if embed is None:
             embed = discord.Embed(color=discord.Color.red(),
                             title='Champion Synergies')
@@ -1541,6 +1541,11 @@ class MCOC(ChampionFactory):
             if embed is not None:
                 embed.add_field(name=syn_effect['synergyname'],
                         value=txt, inline=False)
+                if author is None:
+                    embed.set_footer(text='CollectorDevTeam', icon_url=COLLECTOR_ICON)
+                else:
+                    embed.set_footer(text='Requested by {}'.format(author.display_name), icon_url=author.avatar_url)
+
             else:
                 desc.append('{}\n{}\n'.format(syn_effect['synergyname'], txt))
         arrows = '\u2192 \u21d2 \u21a6 <:collectarrow:422077803937267713>'.split()
@@ -1562,8 +1567,14 @@ class MCOC(ChampionFactory):
             embed = discord.Embed(color=discord.Color.red(),
                     title='Champion Synergies',
                     description='**Synergy Breakdown**')
+            if author is None:
+                embed.set_footer(text='CollectorDevTeam', icon_url=COLLECTOR_ICON)
+            else:
+                embed.set_footer(text='Requested by {}'.format(author.display_name), icon_url=author.avatar_url)
+
             for syn, lines in sum_field.items():
                 embed.add_field(name=syn, value='\n'.join(lines), inline=False)
+
             #embed.add_field(name='Synergy Breakdown', value='\n'.join(sum_field))
             pack.append(embed)
             return pack
