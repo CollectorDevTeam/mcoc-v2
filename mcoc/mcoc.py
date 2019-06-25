@@ -1392,22 +1392,13 @@ class MCOC(ChampionFactory):
         syn_data = dataIO.load_json(local_files['synergy'])
         pack = []
         if len(champs) > 1:
-            tmp = await self.get_multiple_synergies(champs, syn_data, embed)
-            if isinstance(tmp, list):
-                pack.append(i for i in tmp)
-            else:
-                pack.append(tmp)
+            pack = await self.get_multiple_synergies(champs, syn_data, pack=pack, author=author)
         elif len(champs) == 1:
-            tmp = await self.get_single_synergies(champs[0], syn_data, embed)
-            pack.append(tmp)
-            tmp = await self.get_reverse_synergies(champs[0], syn_data, author=author)
-            if isinstance(tmp, list):
-                pack.append(i for i in tmp)
-            else:
-                pack.append(tmp)
+            pack = await self.get_single_synergies(champs[0], syn_data, pack=pack, author=author)
+            pack = await self.get_reverse_synergies(champs[0], syn_data, pack=pack, author=author)
         return pack
 
-    async def get_single_synergies(self, champ, syn_data, embed=None, author=None):
+    async def get_single_synergies(self, champ, syn_data, embed=None, pack=None, author=None):
         if embed is None:
             embed = discord.Embed(color=champ.class_color, title='Champion Synergies | Outgoing')
             embed.set_author(name=champ.star_name_str, icon_url=champ.get_avatar())
@@ -1432,11 +1423,14 @@ class MCOC(ChampionFactory):
             embed.add_field(name='{}'.format(syneffect['synergyname']),
                     value='+ **{}**\n{}\n'.format(', '.join(triggers), txt),
                     inline=False)
-        return embed
+        if pack is None:
+            return embed
+        else:
+            pack.append(embed)
+            return pack
 
 
-    async def get_reverse_synergies(self, champ, syn_data, author=None):
-        embeds = []
+    async def get_reverse_synergies(self, champ, syn_data, pack=None, author=None):
         description = ''
         found = []
         for c in syn_data['SynExport'].keys():
@@ -1459,7 +1453,6 @@ class MCOC(ChampionFactory):
                     description += '{}\n\n'.format(txt)
 
         pages = chat.pagify(description)
-
         for page in pages:
             embed = discord.Embed(color=champ.class_color, title='Champion Synergy | Activations', description=page)
             embed.set_author(name=champ.star_name_str, icon_url=champ.get_avatar())
@@ -1468,12 +1461,8 @@ class MCOC(ChampionFactory):
                 embed.set_footer(text='CollectorDevTeam', icon_url=COLLECTOR_ICON)
             else:
                 embed.set_footer(text='Requested by {}'.format(author.display_name), icon_url=author.avatar_url)
-            embeds.append(embed)
-
-        if len(embeds) > 0:
-            return embeds
-        else:
-            return None
+            pack.append(embed)
+        return pack
 
 
 
@@ -1498,7 +1487,7 @@ class MCOC(ChampionFactory):
         #             value='+ **{}**\n{}\n'.format(', '.join(triggers), txt),
         #             inline=False)
 
-    async def get_multiple_synergies(self, champs, syn_data, embed=None):
+    async def get_multiple_synergies(self, champs, syn_data, pack=None, embed=None):
         if embed is None:
             embed = discord.Embed(color=discord.Color.red(),
                             title='Champion Synergies')
@@ -1576,8 +1565,8 @@ class MCOC(ChampionFactory):
             for syn, lines in sum_field.items():
                 embed.add_field(name=syn, value='\n'.join(lines), inline=False)
             #embed.add_field(name='Synergy Breakdown', value='\n'.join(sum_field))
-            pages.append(embed)
-            return pages
+            pack.append(embed)
+            return pack
 
     async def gs_to_json(self, head_url=None, body_url=None, foldername=None, filename=None, groupby_value=None):
         if head_url is not None:
