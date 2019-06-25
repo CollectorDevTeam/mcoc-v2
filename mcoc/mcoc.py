@@ -1449,7 +1449,7 @@ class MCOC(ChampionFactory):
                         print(syneffect['text'], effect)
                         raise
                     found.append(redundant)
-                    description += '__{}__ | {} {}\n'.format(syneffect['synergyname'], key, data['ranks'])
+                    description += '{} | {} {}\n'.format(syneffect['synergyname'], c, data['ranks'])
                     description += '{}\n\n'.format(txt)
 
         pages = chat.pagify(description)
