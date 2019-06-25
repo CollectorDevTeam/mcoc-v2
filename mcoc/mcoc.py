@@ -1545,9 +1545,9 @@ class MCOC(ChampionFactory):
                     embed.set_footer(text='CollectorDevTeam', icon_url=COLLECTOR_ICON)
                 else:
                     embed.set_footer(text='Requested by {}'.format(author.display_name), icon_url=author.avatar_url)
-
             else:
                 desc.append('{}\n{}\n'.format(syn_effect['synergyname'], txt))
+        pack.append(embed)
         arrows = '\u2192 \u21d2 \u21a6 <:collectarrow:422077803937267713>'.split()
         sum_txt = '{0[champ].terse_star_str}{0[champ].collectoremoji} ' \
                 + '{1} ' \
@@ -1564,7 +1564,7 @@ class MCOC(ChampionFactory):
             pack.append(embed)
             return pack
         else:
-            pages = [embed]
+            # pages = [embed]
             embed = discord.Embed(color=discord.Color.red(),
                     title='Champion Synergies',
                     description='**Synergy Breakdown**')
