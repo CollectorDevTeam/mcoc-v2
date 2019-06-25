@@ -1398,10 +1398,7 @@ class MCOC(ChampionFactory):
                 pack.append(tmp)
         elif len(champs) == 1:
             tmp = await self.get_single_synergies(champs[0], syn_data, embed)
-            if isinstance(tmp, list):
-                pack.append(i for i in tmp)
-            else:
-                pack.append(tmp)
+            pack.append(tmp)
             tmp = await self.get_reverse_synergies(champs[0], syn_data)
             if isinstance(tmp, list):
                 pack.append(i for i in tmp)
@@ -1414,9 +1411,6 @@ class MCOC(ChampionFactory):
             embed = discord.Embed(color=champ.class_color, title='Champion Synergies | Outgoing')
             embed.set_author(name=champ.star_name_str, icon_url=champ.get_avatar())
             embed.set_thumbnail(url=champ.get_featured())
-            return_single = False
-        else:
-            return_single = True
         champ_synergies = syn_data['SynExport'][champ.full_name]
         for lookup, data in champ_synergies.items():
             if champ.star != data['stars']:
@@ -1432,10 +1426,7 @@ class MCOC(ChampionFactory):
             embed.add_field(name='{}'.format(syneffect['synergyname']),
                     value='+ **{}**\n{}\n'.format(', '.join(triggers), txt),
                     inline=False)
-        if return_single:
-            return embed
-        else:
-            return [embed]
+        return embed
 
 
     async def get_reverse_synergies(self, champ, syn_data):
