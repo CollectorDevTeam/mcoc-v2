@@ -1438,7 +1438,7 @@ class MCOC(ChampionFactory):
             for key, data in champ_synergies.items():
                 # if champ.star != data['stars']:
                 #     continue
-                redundant = '{}{}{}'.format(key, data['synergycode'], data['ranks'])
+                redundant = '{}{}{}'.format(data['synergycode'], data['ranks'], data['triggers'])
                 if champ.full_name in data['triggers'] and redundant not in found:
                     syneffect = syn_data['SynergyEffects'][data['synergycode']]
                     # triggers = data['triggers']
