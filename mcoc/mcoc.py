@@ -1344,6 +1344,8 @@ class MCOC(ChampionFactory):
         await self.bot.say(msg.format(prefixes[0]))
 
     def set_collectordev_footer(self, pack, author=None):
+        if
+
         try:
             for embed in pack:
                 if author is None:
@@ -1375,16 +1377,17 @@ class MCOC(ChampionFactory):
             if released:
                 syn_champs.append(champ)
         if len(syn_champs) > 0:
-            pack = await self.get_synergies(syn_champs)
+            pack = await self.get_synergies(syn_champs, embed=None, author=ctx.message.author)
             ## should return a list of embeds
-            self.set_collectordev_footer(pack, ctx.message.author)
+
+            # self.set_collectordev_footer(pack, ctx.message.author)
             menu = PagesMenu(self.bot, timeout=120)
             await menu.menu_start(pack)
         else:
             return
         #await self.bot.say(embed=em)
 
-    async def get_synergies(self, champs, embed=None):
+    async def get_synergies(self, champs, embed=None, author=None):
         '''If Debug is sent, data will refresh'''
         if champs[0].debug:
             await self.gsheet_handler.cache_gsheets('synergy')
@@ -1399,18 +1402,23 @@ class MCOC(ChampionFactory):
         elif len(champs) == 1:
             tmp = await self.get_single_synergies(champs[0], syn_data, embed)
             pack.append(tmp)
-            tmp = await self.get_reverse_synergies(champs[0], syn_data)
+            tmp = await self.get_reverse_synergies(champs[0], syn_data, author=author)
             if isinstance(tmp, list):
                 pack.append(i for i in tmp)
             else:
                 pack.append(tmp)
         return pack
 
-    async def get_single_synergies(self, champ, syn_data, embed=None):
+    async def get_single_synergies(self, champ, syn_data, embed=None, author=None):
         if embed is None:
             embed = discord.Embed(color=champ.class_color, title='Champion Synergies | Outgoing')
             embed.set_author(name=champ.star_name_str, icon_url=champ.get_avatar())
             embed.set_thumbnail(url=champ.get_featured())
+            if author is None:
+                embed.set_footer(text='CollectorDevTeam', icon_url=COLLECTOR_ICON)
+            else:
+                embed.set_footer(text='Requested by {}'.format(author.display_name), icon_url=author.avatar_url)
+
         champ_synergies = syn_data['SynExport'][champ.full_name]
         for lookup, data in champ_synergies.items():
             if champ.star != data['stars']:
@@ -1429,7 +1437,7 @@ class MCOC(ChampionFactory):
         return embed
 
 
-    async def get_reverse_synergies(self, champ, syn_data):
+    async def get_reverse_synergies(self, champ, syn_data, author=None):
         embeds = []
         description = ''
         found = []
@@ -1458,6 +1466,10 @@ class MCOC(ChampionFactory):
             embed = discord.Embed(color=champ.class_color, title='Champion Synergy | Activations', description=page)
             embed.set_author(name=champ.star_name_str, icon_url=champ.get_avatar())
             embed.set_thumbnail(url=champ.get_featured())
+            if author is None:
+                embed.set_footer(text='CollectorDevTeam', icon_url=COLLECTOR_ICON)
+            else:
+                embed.set_footer(text='Requested by {}'.format(author.display_name), icon_url=author.avatar_url)
             embeds.append(embed)
 
         if len(embeds) > 0:
