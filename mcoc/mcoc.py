@@ -1400,7 +1400,7 @@ class MCOC(ChampionFactory):
 
     async def get_single_synergies(self, champ, syn_data, embed=None, pack=None, author=None):
         if embed is None:
-            embed = discord.Embed(color=champ.class_color, title='Champion Synergies | Outgoing')
+            embed = discord.Embed(color=champ.class_color, title='These champions activate {} Synergies'.format(champ.full_name))
             embed.set_author(name=champ.star_name_str, icon_url=champ.get_avatar())
             embed.set_thumbnail(url=champ.get_featured())
             if author is None:
@@ -1454,7 +1454,7 @@ class MCOC(ChampionFactory):
 
         pages = chat.pagify(description)
         for page in pages:
-            embed = discord.Embed(color=champ.class_color, title='Champion Synergy | Activations', description=page)
+            embed = discord.Embed(color=champ.class_color, title='{} Activates these Synergies:'.format(champ.full_name), description=page)
             embed.set_author(name=champ.star_name_str, icon_url=champ.get_avatar())
             embed.set_thumbnail(url=champ.get_featured())
             if author is None:
