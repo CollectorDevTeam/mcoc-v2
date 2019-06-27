@@ -1012,13 +1012,13 @@ class MCOCTools:
             ucolor = author.color
         #user lists from CDT
         cdt = self.bot.get_server("215271081517383682")
-        cdtdevteam = self.get_role(cdt, "390253643330355200")
-        cdtpatrons = self.get_role(cdt, "428627905233420288")
-        cdtsupport = self.get_role(cdt, "390253719125622807")
-        devteam = ', '.join(self.get_members(cdt, cdtdevteam))
-        support = ', '.join(self.get_members(cdt, cdtsupport))
-        if len(self.get_members(cdt, cdtpatrons)) > 0:
-            patrons = ', '.join(self.get_members(cdt, cdtpatrons))
+        cdtdevteam = _get_role(self, cdt, "390253643330355200")
+        cdtpatrons = _get_role(self, cdt, "428627905233420288")
+        cdtsupport = _get_role(self, cdt, "390253719125622807")
+        devteam = ', '.join(_get_members(cdt, cdtdevteam))
+        support = ', '.join(_get_members(cdt, cdtsupport))
+        if len(_get_members(cdt, cdtpatrons)) > 0:
+            patrons = ', '.join(_get_members(cdt, cdtpatrons))
         else:
             patrons = "[Become a CollectorBot patron today!](https://patreon.com/collectorbot)"
 
@@ -1056,12 +1056,12 @@ class MCOCTools:
             "★ If you would like to support the Collector, please visit {3}.\n"
             "★ Patrons and Collaborators receive priority support and secrety stuff.\n\n~ JJW"
             "".format(red_repo, author_repo, server_url, collectorpatreon))
-        devteam = ("DeltaSigma#8530\n"
-                   "JJW#8071\n"
-                   "JM#7725"
-                   )
-
-        supportteam = ('phil_wo#3733\nSpiderSebas#9910\nsuprmatt#2753\ntaoness#5565')
+        # devteam = ("DeltaSigma#8530\n"
+        #            "JJW#8071\n"
+        #            "JM#7725"
+        #            )
+        supportteam = support
+        # supportteam = ('phil_wo#3733\nSpiderSebas#9910\nsuprmatt#2753\ntaoness#5565')
         embed = discord.Embed(colour=ucolor, title="Collector", url=collectorpatreon)
         embed.add_field(name="Instance owned by", value=str(owner))
         embed.add_field(name="Python", value=py_version)
