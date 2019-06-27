@@ -1904,15 +1904,18 @@ class MCOC(ChampionFactory):
             data.set_author(name='``/submit stats <champ> <stats>```')
             data.description = 'Include a champion.  Star and Rank required\n' \
                                '    i.e:\n' \
-                               '    4*blackboltr5 == 4★ Black Bolt r5 \n' \
-                               '    6*blackboltr2 == 6★ Black Bolt r2 \n'\
+                               '    4\*blackboltr5 == 4★ Black Bolt r5 \n' \
+                               '    6\*blackboltr2 == 6★ Black Bolt r2 \n'\
                                'Minimum stats submissions include Health & Attack.\n' \
                                'However, we strongly encourage you to submit **all** champion base stats.\n' \
                                '1. Select Champion\n' \
                                '2. Select Info\n' \
                                '3. Tap the ``attributes`` information panel' \
                                '\n' \
-                               'Image attachments will be uploaded to CDT Server.'
+                               'Image attachments will be uploaded to CDT Server.' \
+                               '\n' \
+                               'Alternative:' \
+                               '[Submit Stats via Google Form](https://goo.gl/forms/ZgJG97KOpeSsQ2092)'
             await self.bot.say(embed=data)
             return
         elif champ is not None:
