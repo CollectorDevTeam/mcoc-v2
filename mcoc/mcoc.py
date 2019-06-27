@@ -1900,10 +1900,12 @@ class MCOC(ChampionFactory):
         data.set_footer(text='Submitted by {} on {} [{}]'.format(author.display_name, server.name, server.id),
                         icon_url=author.avatar_url)
         if champ is None:
-            data.description = 'Include a champion.  Star and Rank required' \
-                               '    i.e.' \
-                               '    4*blackboltr5 == 4★ Black Bolt r5 ' \
-                               '    6*blackboltr2 == 6★ Black Bolt r2' \
+            data.title='Submit Stats Help'
+            data.set_author(name='``/submit stats <champ> <stats>```')
+            data.description = 'Include a champion.  Star and Rank required\n' \
+                               '    i.e:\n' \
+                               '    4*blackboltr5 == 4★ Black Bolt r5 \n' \
+                               '    6*blackboltr2 == 6★ Black Bolt r2' \n\
                                'Minimum stats submissions include Health & Attack.\n' \
                                'However, we strongly encourage you to submit **all** champion base stats.\n' \
                                '1. Select Champion\n' \
