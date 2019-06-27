@@ -1015,10 +1015,10 @@ class MCOCTools:
         cdtdevteam = self._get_role(cdt, "390253643330355200")
         cdtpatrons = self._get_role(cdt, "428627905233420288")
         cdtsupport = self._get_role(cdt, "390253719125622807")
-        devteam = ', '.join(_get_members(cdt, cdtdevteam))
-        support = ', '.join(_get_members(cdt, cdtsupport))
-        if len(_get_members(cdt, cdtpatrons)) > 0:
-            patrons = ', '.join(_get_members(cdt, cdtpatrons))
+        devteam = ', '.join(self._get_members(cdt, cdtdevteam))
+        support = ', '.join(self._get_members(cdt, cdtsupport))
+        if len(self._get_members(cdt, cdtpatrons)) > 0:
+            patrons = ', '.join(self._get_members(cdt, cdtpatrons))
         else:
             patrons = "[Become a CollectorBot patron today!](https://patreon.com/collectorbot)"
 
@@ -1089,7 +1089,7 @@ class MCOCTools:
                 return role
         return None
 
-    def _get_members(server, role):
+    def _get_members(self, server, role):
         """Returns list of discord.server.members"""
         members = []
         for m in server.members:
