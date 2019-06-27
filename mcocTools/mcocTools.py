@@ -1085,7 +1085,7 @@ class MCOCTools:
     def _get_role(self, server, role_key: str):
         """Returns discord.Role"""
         for role in server.roles:
-            if role.id == self.guilds[server.id][role_key]['id']:
+            if role.id == role_key:
                 return role
         return None
 
