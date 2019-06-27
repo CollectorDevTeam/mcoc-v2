@@ -1911,6 +1911,7 @@ class MCOC(ChampionFactory):
                                '3. Tap the ``attributes`` information panel' \
                                '\n' \
                                'Image attachments will be uploaded to CDT Server.'
+            await self.bot.say(embed=data)
             return
         elif champ is not None:
             data.set_thumbnail(url=champ.get_featured())
