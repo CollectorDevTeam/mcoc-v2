@@ -1094,7 +1094,7 @@ class MCOCTools:
         members = []
         for m in server.members:
             if role in m.roles:
-                members.append('{}{}'.format(m.display_name)
+                members.append('{}{}'.format(m.display_name))
         if len(members) > 0:
             return members
         else:
