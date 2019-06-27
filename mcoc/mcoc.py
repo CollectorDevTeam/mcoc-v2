@@ -1001,7 +1001,7 @@ class MCOC(ChampionFactory):
                 stats = [[titles[i], data[keys[i]]] for i in range(len(titles))]
                 em.add_field(name='Base Stats',
                     value=tabulate(stats, width=11, rotate=False, header_sep=False))
-            em = await self.get_synergies([champ], em)
+            # em = await self.get_synergies([champ], embed=em)
             if champ.infopage != 'none':
                 em.add_field(name='Infopage',value='<{}>'.format(champ.infopage),inline=False)
             else:
@@ -1409,25 +1409,27 @@ class MCOC(ChampionFactory):
                 embed.set_footer(text='Requested by {}'.format(author.display_name), icon_url=author.avatar_url)
 
         champ_synergies = syn_data['SynExport'][champ.full_name]
-        for lookup, data in champ_synergies.items():
-            if champ.star != data['stars']:
-                continue
-            syneffect = syn_data['SynergyEffects'][data['synergycode']]
-            triggers = data['triggers']
-            effect = syneffect['rank{}'.format(data['rank'])]
-            try:
-                txt = syneffect['text'].format(*effect)
-            except:
-                print(syneffect['text'], effect)
-                raise
-            embed.add_field(name='{}'.format(syneffect['synergyname']),
-                    value='+ **{}**\n{}\n'.format(', '.join(triggers), txt),
-                    inline=False)
-        if pack is None:
-            return embed
-        else:
-            pack.append(embed)
-            return pack
+        if champ_synergies is not None:
+            for lookup, data in champ_synergies.items():
+                if champ.star != data['stars']:
+                    continue
+                syneffect = syn_data['SynergyEffects'][data['synergycode']]
+                triggers = data['triggers']
+                effect = syneffect['rank{}'.format(data['rank'])]
+                try:
+                    txt = syneffect['text'].format(*effect)
+                except:
+                    print(syneffect['text'], effect)
+                    raise
+                embed.add_field(name='{}'.format(syneffect['synergyname']),
+                        value='+ **{}**\n{}\n'.format(', '.join(triggers), txt),
+                        inline=False)
+            if pack is None:
+                return embed
+            else:
+                pack.append(embed)
+                return pack
+        return None
 
 
     async def get_reverse_synergies(self, champ, syn_data, pack=None, author=None):
