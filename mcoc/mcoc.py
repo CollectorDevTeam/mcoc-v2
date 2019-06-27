@@ -1905,7 +1905,7 @@ class MCOC(ChampionFactory):
             data.description = 'Include a champion.  Star and Rank required\n' \
                                '    i.e:\n' \
                                '    4*blackboltr5 == 4★ Black Bolt r5 \n' \
-                               '    6*blackboltr2 == 6★ Black Bolt r2' \n\
+                               '    6*blackboltr2 == 6★ Black Bolt r2 \n'\
                                'Minimum stats submissions include Health & Attack.\n' \
                                'However, we strongly encourage you to submit **all** champion base stats.\n' \
                                '1. Select Champion\n' \
