@@ -1017,7 +1017,7 @@ class MCOCTools:
         cdtsupport = self._get_role(cdt, "390253719125622807")
         devteam = ', '.join(self._get_members(cdt, cdtdevteam))
         support = ', '.join(self._get_members(cdt, cdtsupport))
-        if len(self._get_members(cdt, cdtpatrons)) > 0:
+        if self._get_members(cdt, cdtpatrons) is not None:
             patrons = ', '.join(self._get_members(cdt, cdtpatrons))
         else:
             patrons = "[Become a CollectorBot patron today!](https://patreon.com/collectorbot)"
