@@ -1910,11 +1910,11 @@ class MCOC(ChampionFactory):
                                'However, we strongly encourage you to submit **all** champion base stats.\n' \
                                '1. Select Champion\n' \
                                '2. Select Info\n' \
-                               '3. Tap the ``attributes`` information panel' \
+                               '3. Tap the ``attributes`` information panel\n' \
                                '\n' \
-                               'Image attachments will be uploaded to CDT Server.' \
+                               'Image attachments will be uploaded to CDT Server.\n' \
                                '\n' \
-                               'Alternative:' \
+                               'Alternative:\n' \
                                '[Submit Stats via Google Form](https://goo.gl/forms/ZgJG97KOpeSsQ2092)'
             await self.bot.say(embed=data)
             return
@@ -1929,13 +1929,19 @@ class MCOC(ChampionFactory):
             await self.bot.send_message(cdt_stats, embed=data)
             return
         elif stats is None:
+            data.title='Submit Stats Help'
+            data.set_author(name='``/submit stats <champ> <stats>```')
             data.description = 'Minimum stats submissions include Health & Attack.\n' \
                                'However, we strongly encourage you to submit **all** champion base stats.\n' \
                                '1. Select Champion\n' \
                                '2. Select Info\n' \
                                '3. Tap the ``attributes`` information panel' \
                                '\n' \
-                               'Image attachments will be uploaded to CDT Server.'
+                               'Image attachments will be uploaded to CDT Server.' \
+                               '\n' \
+                               'Alternative:\n' \
+                               '[Submit Stats via Google Form](https://goo.gl/forms/ZgJG97KOpeSsQ2092)'
+
             data.set_image(
                 url='https://cdn.discordapp.com/attachments/278246904620646410/550010804880277554/unknown.png')
             data.add_field(name='Example format',
