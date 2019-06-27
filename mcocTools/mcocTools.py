@@ -1012,9 +1012,9 @@ class MCOCTools:
             ucolor = author.color
         #user lists from CDT
         cdt = self.bot.get_server("215271081517383682")
-        cdtdevteam = _get_role(self, cdt, "390253643330355200")
-        cdtpatrons = _get_role(self, cdt, "428627905233420288")
-        cdtsupport = _get_role(self, cdt, "390253719125622807")
+        cdtdevteam = self._get_role(cdt, "390253643330355200")
+        cdtpatrons = self._get_role(cdt, "428627905233420288")
+        cdtsupport = self._get_role(cdt, "390253719125622807")
         devteam = ', '.join(_get_members(cdt, cdtdevteam))
         support = ', '.join(_get_members(cdt, cdtsupport))
         if len(_get_members(cdt, cdtpatrons)) > 0:
