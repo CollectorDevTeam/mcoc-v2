@@ -1889,7 +1889,8 @@ class MCOC(ChampionFactory):
     async def submit_stats(self, ctx, champ: ChampConverter = None, *, stats: str = None):
         '''Submit Champion Stats and or Images
         valid keys: hp, atk, cr, cd, blockpen, critresist, armorpen, armor, bp'''
-        stats = stats.lower()
+        if stats is not None:
+            stats = stats.lower()
         attachments = ctx.message.attachments
         author = ctx.message.author
         server = ctx.message.server
