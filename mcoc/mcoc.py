@@ -1901,7 +1901,7 @@ class MCOC(ChampionFactory):
                         icon_url=author.avatar_url)
         if champ is None:
             data.title='Submit Stats Help'
-            data.set_author(name='``/submit stats <champ> <stats>```')
+            data.set_author(name='``/submit stats <champ> <stats>``')
             data.description = 'Include a champion.  Star and Rank required\n' \
                                '    i.e:\n' \
                                '    4\*blackboltr5 == 4★ Black Bolt r5 \n' \
@@ -1916,6 +1916,8 @@ class MCOC(ChampionFactory):
                                '\n' \
                                'Alternative:\n' \
                                '[Submit Stats via Google Form](https://goo.gl/forms/ZgJG97KOpeSsQ2092)'
+            data.set_image(
+                url='https://cdn.discordapp.com/attachments/278246904620646410/550010804880277554/unknown.png')
             await self.bot.say(embed=data)
             return
         elif champ is not None:
@@ -1930,7 +1932,7 @@ class MCOC(ChampionFactory):
             return
         elif stats is None:
             data.title='Submit Stats Help'
-            data.set_author(name='``/submit stats <champ> <stats>```')
+            data.set_author(name='``/submit stats <champ> <stats>``')
             data.description = 'Minimum stats submissions include Health & Attack.\n' \
                                'However, we strongly encourage you to submit **all** champion base stats.\n' \
                                '1. Select Champion\n' \
