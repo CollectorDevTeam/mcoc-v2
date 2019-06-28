@@ -2371,8 +2371,8 @@ class MCOC(ChampionFactory):
     async def check_collectordevteam(self, ctx):
         author = ctx.message.author.id
         cdt = self.bot.get_server("")
-        cdtdevteam = self._get_role(cdt, '390253643330355200')
-        kabam = self._get_role(cdt, '542109943910629387')
+        cdtdevteam = _get_role(cdt, '390253643330355200')
+        kabam = _get_role(cdt, '542109943910629387')
         if author.id in cdtdevteam:
             print('{} is CollectorDevTeam').format(author)
             return True
@@ -3007,6 +3007,13 @@ def bound_lvl(siglvl, max_lvl=99):
             ret = 0
     return ret
 
+def _get_role(server, role_key: str):
+    """Returns discord.Role"""
+    for role in server.roles:
+        if role.id == role_key:
+            return role
+    return None
+
 def tabulate(table_data, width, rotate=True, header_sep=True, align_out=True):
     rows = []
     cells_in_row = None
@@ -3125,7 +3132,7 @@ def override_error_handler(bot):
 from . import hook as hook
 import cogs.mcocTools
 from .mcocTools import (KABAM_ICON, COLLECTOR_ICON, PagesMenu,
-    GSHandler, gapi_service_creds, GSExport, CDT_COLORS, StaticGameData, _get_role)
+    GSHandler, gapi_service_creds, GSExport, CDT_COLORS, StaticGameData)
 
 def setup(bot):
     override_error_handler(bot)
