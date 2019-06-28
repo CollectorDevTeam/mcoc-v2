@@ -2377,10 +2377,10 @@ class MCOC(ChampionFactory):
         if member is None:
             return False
         elif cdtdevteam in member.roles:
-            print('{} {} is CollectorDevTeam').format(member.display_name, member.id)
+            print('{} {} is CollectorDevTeam'.format(member.display_name, member.id))
             return True
         elif kabam in member.roles:
-            print('{} {} is KABAM').format(member.display_name, member.id)
+            print('{} {} is KABAM'.format(member.display_name, member.id))
             return True
         print('{} is not authorised for embargoed content.'.format(author.display_name))
         return False
