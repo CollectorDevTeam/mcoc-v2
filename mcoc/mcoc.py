@@ -2373,19 +2373,17 @@ class MCOC(ChampionFactory):
         cdt = self.bot.get_server("215271081517383682")
         cdtdevteam = _get_role(cdt, '390253643330355200')
         kabam = _get_role(cdt, '542109943910629387')
-        if author.id in cdtdevteam:
-            print('{} {} is CollectorDevTeam').format(author.display_name, author.id)
-            return True
-        elif author.id in kabam:
-            print('{} {} is KABAM').format(author.display_name, author.id)
-            return True
-        else:
-            print('{} is not authorised for embargoed content.'.format(author.display_name))
-        # if author in ('148622879817334784', '124984294035816448', '209339409655398400'):
-        #     print('{} is CollectorDevTeam'.format(author))
-        #     return True
-        # else:
-        #     print('{} is not CollectorDevTeam'.format(author))
+        for m in cdt.members:
+            if m.id == author.id:
+                if cdtdevteam in m.roles:
+                    print('{} {} is CollectorDevTeam').format(author.display_name, author.id)
+                    return True
+                elif kabam in m.roles:
+                    print('{} {} is KABAM').format(author.display_name, author.id)
+                    return True
+                else:
+                    print('{} is not authorised for embargoed content.'.format(author.display_name))
+                    return False
             return False
 
     async def check_release(self, ctx, champ):
