@@ -1467,6 +1467,12 @@ class MCOCEvents:
         event = 'eq_classtrip'
         await self.format_eventquest(event, tier.lower())
 
+    @eventquest.command(name='24', aliases=('phantasmagoria','mysterio','spidermanstealth','smss',))
+    async def eq_phantasmagoria(self, tier='Uncollected'):
+        """Phantasmagoria"""
+        event = 'eq_24'
+        await self.format_eventquest(event, tier.lower())
+
     # @eventquest.command(name='', aliases=(,))
     # async def eq_(self, tier='Uncollected'):
     #     """TITLE"""
