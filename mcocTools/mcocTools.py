@@ -420,8 +420,8 @@ class StaticGameData:
 
         # Update this list to add Events
         events = ['13', '13.1', '14', '14.1', '15', '15.1', '16', '16.1', '17', '17.1', '17.2', '18', '18.1', '19',
-                  '19.1', '20', '20.1', '21', '21.1', '21.2', '21.3', '22', '22.1','23','23.1',
-                  'love3', 'cmcc', 'recon', 'nzbounties']
+                  '19.1', '20', '20.1', '21', '21.1', '21.2', '21.3', '22', '22.1','23','23.1', '24',
+                  'love3', 'cmcc', 'recon', 'nzbounties', 'classtrip']
 
         for event in events:
             self.gsheet_handler.register_gsheet(
@@ -1459,6 +1459,12 @@ class MCOCEvents:
     async def eq_imperiusrex(self, tier='Uncollected'):
         """IMPERIUS REX"""
         event = 'eq_23.1'
+        await self.format_eventquest(event, tier.lower())
+
+    @eventquest.command(name='classtrip', aliases=())
+    async def eq_classtrip(self, tier='Epic'):
+        """Time to Take A Class Trip"""
+        event = 'eq_classtrip'
         await self.format_eventquest(event, tier.lower())
 
     # @eventquest.command(name='', aliases=(,))
