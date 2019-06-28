@@ -2369,18 +2369,18 @@ class MCOC(ChampionFactory):
         return serverid in authorized
 
     async def check_collectordevteam(self, ctx):
-        author = ctx.message.author.id
+        author = ctx.message.author
         cdt = self.bot.get_server("215271081517383682")
         cdtdevteam = _get_role(cdt, '390253643330355200')
         kabam = _get_role(cdt, '542109943910629387')
         if author.id in cdtdevteam:
-            print('{} is CollectorDevTeam').format(author)
+            print('{} {} is CollectorDevTeam').format(author.display_name, author.id)
             return True
         elif author.id in kabam:
-            print('{} is KABAM').format(author)
+            print('{} {} is KABAM').format(author.display_name, author.id)
             return True
         else:
-            print('{} is not authorised for embargoed content.')
+            print('{} is not authorised for embargoed content.'.format(author.display_name))
         # if author in ('148622879817334784', '124984294035816448', '209339409655398400'):
         #     print('{} is CollectorDevTeam'.format(author))
         #     return True
