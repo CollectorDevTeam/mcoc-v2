@@ -2370,11 +2370,22 @@ class MCOC(ChampionFactory):
 
     async def check_collectordevteam(self, ctx):
         author = ctx.message.author.id
-        if author in ('148622879817334784', '124984294035816448', '209339409655398400'):
-            print('{} is CollectorDevTeam'.format(author))
+        cdt = self.bot.get_server("")
+        cdtdevteam = self._get_role(cdt, '390253643330355200')
+        kabam = self._get_role(cdt, '542109943910629387')
+        if author.id in cdtdevteam:
+            print('{} is CollectorDevTeam').format(author)
+            return True
+        elif author.id in kabam:
+            print('{} is KABAM').format(author)
             return True
         else:
-            print('{} is not CollectorDevTeam'.format(author))
+            print('{} is not authorised for embargoed content.')
+        # if author in ('148622879817334784', '124984294035816448', '209339409655398400'):
+        #     print('{} is CollectorDevTeam'.format(author))
+        #     return True
+        # else:
+        #     print('{} is not CollectorDevTeam'.format(author))
             return False
 
     async def check_release(self, ctx, champ):
@@ -3114,7 +3125,7 @@ def override_error_handler(bot):
 from . import hook as hook
 import cogs.mcocTools
 from .mcocTools import (KABAM_ICON, COLLECTOR_ICON, PagesMenu,
-    GSHandler, gapi_service_creds, GSExport, CDT_COLORS, StaticGameData)
+    GSHandler, gapi_service_creds, GSExport, CDT_COLORS, StaticGameData, _get_role)
 
 def setup(bot):
     override_error_handler(bot)
