@@ -2371,12 +2371,12 @@ class MCOC(ChampionFactory):
     async def check_collectordevteam(self, ctx):
         author = ctx.message.author
         cdt = self.bot.get_server("215271081517383682")
-        member = cdt.get_member(author.id)
         cdtdevteam = _get_role(cdt, '390253643330355200')
         kabam = _get_role(cdt, '542109943910629387')
+        member = cdt.get_member(author.id)
         if member is None:
             return False
-        if cdtdevteam in member.roles:
+        elif cdtdevteam in member.roles:
             print('{} {} is CollectorDevTeam').format(member.display_name, member.id)
             return True
         elif kabam in member.roles:
