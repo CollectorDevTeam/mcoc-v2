@@ -2370,7 +2370,7 @@ class MCOC(ChampionFactory):
 
     async def check_collectordevteam(self, ctx):
         author = ctx.message.author.id
-        cdt = self.bot.get_server("")
+        cdt = self.bot.get_server("215271081517383682")
         cdtdevteam = _get_role(cdt, '390253643330355200')
         kabam = _get_role(cdt, '542109943910629387')
         if author.id in cdtdevteam:
