@@ -2381,9 +2381,7 @@ class MCOC(ChampionFactory):
                 elif kabam in m.roles:
                     print('{} {} is KABAM').format(author.display_name, author.id)
                     return True
-                else:
-                    print('{} is not authorised for embargoed content.'.format(author.display_name))
-                    return False
+            print('{} is not authorised for embargoed content.'.format(author.display_name))
             return False
 
     async def check_release(self, ctx, champ):
