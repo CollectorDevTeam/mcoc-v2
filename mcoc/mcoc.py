@@ -2371,18 +2371,19 @@ class MCOC(ChampionFactory):
     async def check_collectordevteam(self, ctx):
         author = ctx.message.author
         cdt = self.bot.get_server("215271081517383682")
+        member = cdt.get_member(author.id)
         cdtdevteam = _get_role(cdt, '390253643330355200')
         kabam = _get_role(cdt, '542109943910629387')
-        for m in cdt.members:
-            if m.id == author.id:
-                if cdtdevteam in m.roles:
-                    print('{} {} is CollectorDevTeam').format(author.display_name, author.id)
-                    return True
-                elif kabam in m.roles:
-                    print('{} {} is KABAM').format(author.display_name, author.id)
-                    return True
-            print('{} is not authorised for embargoed content.'.format(author.display_name))
+        if member is None:
             return False
+        if cdtdevteam in member.roles:
+            print('{} {} is CollectorDevTeam').format(member.display_name, member.id)
+            return True
+        elif kabam in member.roles:
+            print('{} {} is KABAM').format(member.display_name, member.id)
+            return True
+        print('{} is not authorised for embargoed content.'.format(author.display_name))
+        return False
 
     async def check_release(self, ctx, champ):
         '''Champion Data is under embargo until the Champion Release date'''
