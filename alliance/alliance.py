@@ -234,8 +234,8 @@ class Alliance:
             clan_prestige = 0
             summary = 0
             if cnt > 0:
-                summary = '{0:{width}}   = {1} from {2} members'.format(
-                    role.name, round(prestige / cnt, 0), cnt, width=width)
+                summary = '{0:{width}}   = {1} from {2}/{3} members'.format(
+                    role.name, round(prestige / cnt, 0), cnt, len(role_members), width=width)
                 clan_prestige = int(round(prestige / cnt, 0))
                 # print("Prestige:  ", clan_prestige)
             if data is None:
@@ -247,8 +247,8 @@ class Alliance:
                     return clan_prestige
             else:
                 if verbose and len(role_members) <= 30:
-                    data.add_field(name='{} [{}] prestige: {}'
-                                   .format(role.name, len(role_members), clan_prestige),
+                    data.add_field(name='{} [{}/{}] prestige: {}'
+                                   .format(role.name, cnt, len(role_members), clan_prestige),
                                    value=verbose_prestige, inline=False)
                 elif verbose:
                     data.add_field(
