@@ -204,7 +204,7 @@ class Alliance:
         """Return Clan Prestige and Verbose Prestige for Role members"""
         logger.info("Retrieving prestige for role '{}' on guild '{}'".format(
                 role.name, server.name, ))
-        members = []
+        # members = []
         line_out = {}
         # line_out = []
         width = 20
@@ -216,7 +216,7 @@ class Alliance:
                     role_members.append(member)
         if len(role_members) > 0:
             for member in role_members:
-                members.append(member)
+                # members.append(member)
                 roster = ChampionRoster(self.bot, member)
                 await roster.load_champions()
                 if roster.prestige > 0:
@@ -239,7 +239,7 @@ class Alliance:
                 clan_prestige = int(round(prestige / cnt, 0))
                 # print("Prestige:  ", clan_prestige)
             if data is None:
-                if len(members) == 0 or len(members) > 30:
+                if len(role_members) == 0 or len(role_members) > 30:
                     return None
                 elif verbose:
                     return verbose_prestige
