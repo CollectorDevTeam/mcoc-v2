@@ -224,11 +224,15 @@ class ChampionRoster:
         if residual_tags:
             em = discord.Embed(title='Unused tags', description=' '.join(residual_tags))
             await self.bot.say(embed=em)
+        filtered = self.raw_filtered_ids(tags)
+        return [self.roster[iid] for iid in filtered]
+
+    def raw_filtered_ids(self, tags):
         filtered = set()
         for c in self.roster.values():
             if tags.issubset(c.all_tags):
                 filtered.add(c.immutable_id)
-        return [self.roster[iid] for iid in filtered]
+        return filtered
 
     @property
     def all_tags(self):

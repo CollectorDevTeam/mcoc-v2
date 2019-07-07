@@ -596,6 +596,20 @@ class SearchExpr(md.Grammar):
 
 
 ##################################################
+#  Hashtag grammar
+
+class HashtagToken(md.Grammar):
+    grammar = md.WORD('#', '_a-zA-Z!0-9')
+
+    def match(self, data, ver_data):
+        matches = set()
+        ver = self.string
+        for key, val in ver_data.items():
+            if ver == val:
+                matches.add(key)
+        return matches
+
+##################################################
 #  End Grammar definitions
 ##################################################
 
@@ -1608,7 +1622,7 @@ class Calculator:
 class CDTGAPS:
     def __init__(self, bot):
         self.bot = bot
-        
+
     @checks.admin_or_permissions(manage_server=True, manage_roles=True)
     @commands.command(name='gaps', pass_context=True, hidden=False, allow_pm=False)
     async def _alliance_popup(self, ctx, *args):
