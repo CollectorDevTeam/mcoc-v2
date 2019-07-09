@@ -151,6 +151,9 @@ class ChampionRoster:
             return item.immutable_id in self.roster
         return item in self.roster
 
+    def ids_set(self):
+        return set(self.roster.keys())
+
 
     # handles user creation, adding new server, blocking
     def _create_user(self):
@@ -225,7 +228,7 @@ class ChampionRoster:
             em = discord.Embed(title='Unused tags', description=' '.join(residual_tags))
             await self.bot.say(embed=em)
         filtered = self.raw_filtered_ids(tags)
-        return [self.roster[iid] for iid in filtered]
+        return self.filtered_roster_from_ids(filtered)
 
     def raw_filtered_ids(self, tags):
         filtered = set()
@@ -233,6 +236,9 @@ class ChampionRoster:
             if tags.issubset(c.all_tags):
                 filtered.add(c.immutable_id)
         return filtered
+
+    def filtered_roster_from_ids(self, filtered):
+        return [self.roster[iid] for iid in filtered]
 
     @property
     def all_tags(self):

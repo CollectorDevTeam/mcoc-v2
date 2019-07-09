@@ -601,13 +601,71 @@ class SearchExpr(md.Grammar):
 class HashtagToken(md.Grammar):
     grammar = md.WORD('#', '_a-zA-Z!0-9')
 
+    def match_set(self, roster):
+        return roster.raw_filtered_ids(self.string)
+
+
+class HashParenExpr(md.Grammar):
+    grammar = (md.L('('), md.REF("HashSearchExpr"), md.L(")"))
+
+    def match_set(self, roster):
+        return self[1].match_set(roster)
+
+
+class HashUnaryOperator(md.Grammar):
+    grammar = md.L('~')
+
+    def op(self, roster):
+        return roster.ids_set().difference
+
+
+class HashBinaryOperator(md.Grammar):
+    grammar = md.L('&') | md.L('|')
+
+    def op(self):
+        if self.string == '&':
+            return set.intersection
+        elif self.string == '|':
+            return set.union
+
+
+class HashP0Term(md.Grammar):
+    grammar = (HashParenExpr | HashtagToken)
+
+    def match_set(self, roster):
+        return self[0].match_set(roster)
+
+
+class HashP0Expr(md.Grammar):
+    grammar = (HashUnaryOperator, HashP0Term)
+
+    def match(self, roster):
+        return self[0].op(roster)(self[1].match_set(roster))
+
+
+class HashP1Term(md.Grammar):
+    grammar = (HashParenExpr | SearchNumber | SearchPhrase | ExplicitKeyword)
+
     def match(self, data, ver_data):
-        matches = set()
-        ver = self.string
-        for key, val in ver_data.items():
-            if ver == val:
-                matches.add(key)
+        return self[0].match(data, ver_data)
+
+
+class HashP1Expr(md.Grammar):
+    grammar = (P0Term, md.ONE_OR_MORE(Operator, P0Term))
+
+    def match(self, data, ver_data):
+        matches = self[0].match(data, ver_data)
+        for e in self[1]:
+            matches = e[0].op()(matches, e[1].match(data, ver_data))
         return matches
+
+
+class HashSearchExpr(md.Grammar):
+    grammar = (P0Expr | ParenExpr | SearchNumber | SearchPhrase | ExplicitKeyword)
+
+    # @sync_to_async
+    def match(self, data, ver_data):
+        return self[0].match(data, ver_data)
 
 ##################################################
 #  End Grammar definitions
