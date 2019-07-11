@@ -622,7 +622,7 @@ class HashUnaryOperator(md.Grammar):
 class HashBinaryOperator(md.Grammar):
     grammar = md.L('&') | md.L('|')
 
-    def op(self):
+    def op(self, roster):
         if self.string == '&':
             return set.intersection
         elif self.string == '|':
@@ -639,32 +639,32 @@ class HashP0Term(md.Grammar):
 class HashP0Expr(md.Grammar):
     grammar = (HashUnaryOperator, HashP0Term)
 
-    def match(self, roster):
+    def match_set(self, roster):
         return self[0].op(roster)(self[1].match_set(roster))
 
 
 class HashP1Term(md.Grammar):
-    grammar = (HashParenExpr | SearchNumber | SearchPhrase | ExplicitKeyword)
+    grammar = (HashP0Expr | HashParenExpr | HashtagToken)
 
-    def match(self, data, ver_data):
-        return self[0].match(data, ver_data)
+    def match_set(self, roster):
+        return self[0].match_set(roster)
 
 
 class HashP1Expr(md.Grammar):
-    grammar = (P0Term, md.ONE_OR_MORE(Operator, P0Term))
+    grammar = (HashP1Term, md.ONE_OR_MORE(HashBinaryOperator, HashP1Term))
 
-    def match(self, data, ver_data):
-        matches = self[0].match(data, ver_data)
+    def match_set(self, roster):
+        matches = self[0].match_set(roster)
         for e in self[1]:
-            matches = e[0].op()(matches, e[1].match(data, ver_data))
+            matches = e[0].op(roster)(matches, e[1].match_set(roster))
         return matches
 
 
 class HashSearchExpr(md.Grammar):
-    grammar = (P0Expr | ParenExpr | SearchNumber | SearchPhrase | ExplicitKeyword)
+    grammar = (HashP1Expr | HashP0Expr | HashParenExpr | HashtagToken)
 
     # @sync_to_async
-    def match(self, data, ver_data):
+    def match_set(self, roster):
         return self[0].match(data, ver_data)
 
 ##################################################
