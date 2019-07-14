@@ -22,7 +22,9 @@ import re
 import asyncio
 ### Monkey Patch of JSONEncoder
 from json import JSONEncoder, dump, dumps
-from cogs.mcocTools import (StaticGameData, PagesMenu, KABAM_ICON, COLLECTOR_ICON, COLLECTOR_FEATURED, CDTHelperFunctions, GSHandler, GSExport, CDT_COLORS)
+from cogs.mcocTools import (StaticGameData, PagesMenu,
+            KABAM_ICON, COLLECTOR_ICON, COLLECTOR_FEATURED, CDTHelperFunctions,
+            GSHandler, GSExport, CDT_COLORS, HashSearchExpr)
 
 
 logger = logging.getLogger('red.roster')
@@ -135,13 +137,15 @@ class ChampionRoster:
                     'alliance-quest': 'aq'}
     update_str = '{0.star_name_str} {1} -> {0.rank_sig_str} [ {0.prestige} ]'
 
-    def __init__(self, bot, user):
+    def __init__(self, bot, user, attrs=None):
         self.bot = bot
         self.user = user
         self.roster = {}
         self._create_user()
         self._cache = {}
         #self.load_champions()
+        if self.user == self.bot.user:
+            self.autofill_bot_user(attrs)
 
     def __len__(self):
         return len(self.roster)
@@ -153,6 +157,17 @@ class ChampionRoster:
 
     def ids_set(self):
         return set(self.roster.keys())
+
+    def autofill_bot_user(self, attrs):
+        attrs = attrs if attrs is not None else {}
+        mcoc = self.bot.get_cog('MCOC')
+        rlist = []
+        for champ_class in mcoc.champions.values():
+            champ = champ_class(attrs.copy())
+            if champ.has_prestige:
+                rlist.append(champ)
+        self.from_list(rlist)
+        self.display_override = 'Prestige Listing: {0.attrs_str}'.format(rlist[0])
 
 
     # handles user creation, adding new server, blocking
@@ -223,6 +238,8 @@ class ChampionRoster:
         return await mcoc.get_champion(cdict['Id'], champ_attr)
 
     async def filter_champs(self, tags):
+        if tags is None:
+            return self
         residual_tags = tags - self.all_tags
         if residual_tags:
             em = discord.Embed(title='Unused tags', description=' '.join(residual_tags))
@@ -238,7 +255,9 @@ class ChampionRoster:
         return filtered
 
     def filtered_roster_from_ids(self, filtered):
-        return [self.roster[iid] for iid in filtered]
+        filt_roster = ChampionRoster(self.bot, self.user)
+        filt_roster.roster = {iid: self.roster[iid] for iid in filtered}
+        return filt_roster
 
     @property
     def all_tags(self):
@@ -380,11 +399,13 @@ class ChampionRoster:
         self.save_champ_data()
         return track
 
-    async def display(self, tags):
-        filtered = await self.filter_champs(tags)
+    async def display(self, tags=None):
+        filt_roster = await self.filter_champs(tags)
+        filtered = list(filt_roster.roster.values())
         user = self.user
         embeds = []
         if not filtered:
+            tags = set() if tags is None else tags
             em = discord.Embed(title='User', description=user.name,
                     color=discord.Color.gold(), url=PRESTIGE_SURVEY)
             em.add_field(name='Tags used filtered to an empty roster',
@@ -455,6 +476,23 @@ class Hook:
         embeds.append(em3)
         return embeds
 
+    @commands.command(pass_context=True, aliases=('th',))
+    async def test_hash(self, ctx, *, hargs=''):
+        #hargs = await hook.HashtagRankConverter(ctx, hargs).convert() #imported from hook
+        roster = ChampionRoster(self.bot, self.bot.user)
+        hash_parser = HashSearchExpr.parser()
+        if hargs:
+            result = hash_parser.parse_string(hargs)
+            print(result)
+            if result:
+                print(result.elements)
+            filtered = result.match_set(roster)
+            print('1 ', filtered)
+            print('2 ', result[0].match_set(roster))
+        else:
+            filtered = roster
+        await filtered.display() #imported from hook
+        #await self.bot.say(roster)
 
 
     @commands.command(pass_context=True, aliases=('list_members','role_roster','list_users'))
@@ -785,15 +823,7 @@ class Hook:
     @commands.command(pass_context=True, name='rank_prestige', aliases=('prestige_list',))
     async def _rank_prestige(self, ctx, *, hargs=''):
         hargs = await HashtagRankConverter(ctx, hargs).convert()
-        roster = ChampionRoster(self.bot, self.bot.user)
-        mcoc = self.bot.get_cog('MCOC')
-        rlist = []
-        for champ_class in mcoc.champions.values():
-            champ = champ_class(hargs.attrs.copy())
-            if champ.has_prestige:
-                rlist.append(champ)
-        roster.from_list(rlist)
-        roster.display_override = 'Prestige Listing: {0.attrs_str}'.format(rlist[0])
+        roster = ChampionRoster(self.bot, self.bot.user, attrs=hargs.attrs)
         await roster.display(hargs.tags)
 
 

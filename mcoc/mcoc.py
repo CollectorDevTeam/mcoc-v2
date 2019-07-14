@@ -1116,17 +1116,14 @@ class MCOC(ChampionFactory):
             /champ list 5*r3s20 #bleed   (all 5* bleed champs at rank3, sig20)
         '''
         hargs = await hook.HashtagRankConverter(ctx, hargs).convert() #imported from hook
-        #await self.update_local()
-        roster = hook.ChampionRoster(self.bot, self.bot.user) #imported from hook
-        rlist = []
-        for champ_class in self.champions.values():
-            champ = champ_class(hargs.attrs.copy())
-            # released = await self.check_release(ctx, champ)
-            # if released:
-            if champ.has_prestige:
-                rlist.append(champ)
-        roster.from_list(rlist)
-        roster.display_override = 'Prestige Listing: {0.attrs_str}'.format(rlist[0])
+        roster = hook.ChampionRoster(self.bot, self.bot.user, attrs=hargs.attrs)
+        #rlist = []
+        #for champ_class in self.champions.values():
+            #champ = champ_class(hargs.attrs.copy())
+            #if champ.has_prestige:
+                #rlist.append(champ)
+        #roster.from_list(rlist)
+        #roster.display_override = 'Prestige Listing: {0.attrs_str}'.format(rlist[0])
         await roster.display(hargs.tags) #imported from hook
 
     @champ.command(pass_context=True, name='released', aliases=('odds','chances',))

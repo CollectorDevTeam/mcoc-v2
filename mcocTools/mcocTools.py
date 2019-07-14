@@ -602,7 +602,7 @@ class HashtagToken(md.Grammar):
     grammar = md.WORD('#', '_a-zA-Z!0-9')
 
     def match_set(self, roster):
-        return roster.raw_filtered_ids(self.string)
+        return roster.raw_filtered_ids(set([self.string]))
 
 
 class HashParenExpr(md.Grammar):
@@ -665,7 +665,9 @@ class HashSearchExpr(md.Grammar):
 
     # @sync_to_async
     def match_set(self, roster):
-        return self[0].match(data, ver_data)
+        filt_ids = self[0].match_set(roster)
+        filt_roster = roster.filtered_roster_from_ids(filt_ids)
+        return filt_roster
 
 ##################################################
 #  End Grammar definitions
@@ -819,6 +821,7 @@ class MCOCTools:
         # self.calendar['time'] = dateParse(0)
         # self.calendar['screenshot'] = ''
         # dataIO.save_json('data/mcocTools/mcoctools.json', self.calendar)
+
 
 
     # lookup_links = {
