@@ -486,7 +486,7 @@ class Hook:
             print(result)
             if result:
                 print(result.elements)
-            filtered = result.match_set(roster)
+            filtered = result.filter_roster(roster)
             print('1 ', filtered)
             print('2 ', result[0].match_set(roster))
         else:

@@ -665,7 +665,10 @@ class HashSearchExpr(md.Grammar):
 
     # @sync_to_async
     def match_set(self, roster):
-        filt_ids = self[0].match_set(roster)
+        return self[0].match_set(roster)
+
+    def filter_roster(self, roster):
+        filt_ids = self.match_set(roster)
         filt_roster = roster.filtered_roster_from_ids(filt_ids)
         return filt_roster
 
