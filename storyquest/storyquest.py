@@ -229,7 +229,7 @@ class STORYQUEST:
                 valid_maps.sort()
         if map not in valid_maps or map is None:
             message = 'Select a valid map:\n'
-            message += '5.3: 5.3.1, 5.3.2, 5.3.3\n'
+            message += '5.3: 5.3.1, 5.3.2, 5.3.3, 5.3.4, 5.3.5, 5.3.6\n'
             message += '5.4: 5.4.1, 5.4.2, 5.4.3, 5.4.4, 5.4.5, 5.4.6\n'
             message += '5.5: N/A\n'
             message += '5.6: N/A\n'
