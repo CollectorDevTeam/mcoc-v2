@@ -1013,7 +1013,7 @@ class MCOCTools:
         #user lists from CDT
         cdt = self.bot.get_server("215271081517383682")
         cdtdevteam = self._get_role(cdt, "390253643330355200")
-        cdtpatrons = self._get_role(cdt, "408414956497666050")
+        cdtpatrons = self._get_role(cdt, "428627905233420288")
         cdtsupport = self._get_role(cdt, "390253719125622807")
         cdtpartners = self._get_role(cdt, "390253856182894593")
         devteam = ', '.join(self._get_members(cdt, cdtdevteam))
