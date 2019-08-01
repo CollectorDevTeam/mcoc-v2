@@ -1021,6 +1021,9 @@ class MCOCTools:
         partners = ', '.join(self._get_members(cdt, cdtpartners))
         if self._get_members(cdt, cdtpatrons) is not None:
             patrons = ', '.join(self._get_members(cdt, cdtpatrons))
+            patrons.append('Caitibee')
+            patrons.append('Fabio F.')
+            patrons.append('Vajda R.')
         else:
             patrons = "[Become a CollectorBot patron today!](https://patreon.com/collectorbot)"
 
