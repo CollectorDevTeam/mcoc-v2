@@ -353,7 +353,7 @@ class STORYQUEST:
 
                 for g in gboosts:
                     if g != '-' and g != '':
-                        data.description+='\n__Global__: __{}__\n{}\n\n'.format(self.glossary_keys[g], self.glossary_desc[g])
+                        data.description+='\n__Global__: __{}__\n{}\n'.format(self.glossary_keys[g], self.glossary_desc[g])
                         # data.add_field(name='Global Boost: {}'.format(g.title()),
                         #                value='{}'.format(self.glossary_desc[g]))
                         # if self.glossary_tips[g] != "":
