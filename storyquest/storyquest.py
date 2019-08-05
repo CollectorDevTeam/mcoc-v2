@@ -95,21 +95,23 @@ class STORYQUEST:
         glossary_keys = {}
         glossary_tips = {}
         glossary_desc = {}
-        # glossary_titles = {}
+        glossary_titles = {}
         for t in temp.keys():
             if t not in ('', '-', '_headers'):
                 glossary_desc.update({t: temp[t]['description']})
                 glossary_tips.update({t: temp[t]['tips']})
                 glossary_keys.update({t: temp[t]['title']})
-                # glossary_titles.update({t: temp[t]['title']})
+                glossary_titles.update({t: temp[t]['title']})
         self.glossary_desc = glossary_desc
         self.glossary_keys = glossary_keys
         self.glossary_tips = glossary_tips
+        self.glossary_titles = glossary_titles
         self.glossary = temp
         dataIO.save_json('data/storyquest/cdt_glossary.json', self.glossary)
         dataIO.save_json('data/storyquest/cdt_glossary_desc.json', self.glossary_desc)
         dataIO.save_json('data/storyquest/cdt_glossary_keys.json', self.glossary_keys)
         dataIO.save_json('data/storyquest/cdt_glossary_tips.json', self.glossary_tips)
+        dataIO.save_json('data/storyquest/cdt_glossary_titles.json', self.glossary_titles)
         # self.glossary_keys = dataIO.load_json('data/storyquest/cdt_glossary_keys.json')
         self.export = dataIO.load_json('data/storyquest/cdt_export.json')
         self.paths = dataIO.load_json('data/storyquest/cdt_paths.json')
@@ -231,10 +233,6 @@ class STORYQUEST:
             message = 'Select a valid map:\n'
             message += '5.3: 5.3.1, 5.3.2, 5.3.3, 5.3.4, 5.3.5, 5.3.6\n'
             message += '5.4: 5.4.1, 5.4.2, 5.4.3, 5.4.4, 5.4.5, 5.4.6\n'
-            message += '5.5: N/A\n'
-            message += '5.6: N/A\n'
-            # message += '5.5.1, 5.5.2, 5.5.3, 5.5.4, 5.5.5, 5.5.6\n'
-            # message += '5.6.1, 5.6.2, 5.6.3, 5.6.4, 5.6.5, 5.6.6\n'
             message += '6.1: 6.1.1, 6.1.2, 6.1.3, 6.1.4, 6.1.5, 6.1.6\n'
             message += '6.2: N/A\n'
             # message += '6.2.1, 6.2.2, 6.2.3, 6.2.4, 6.2.5, 6.2.6\n'
@@ -281,14 +279,17 @@ class STORYQUEST:
                                                    self.export[key]['tiles']*3,
                                                    self.export[key]['notes']))
                             continue
+            description = ''
             gboosts = self.export[key]['global'].split(', ')
             for g in gboosts:
                 if g != '-' and g != '':
+                    # description += 'Global: {}\n{}\n\n'.format(self.glossary_titles[g], self.glossary_desc[g])
                     data.add_field(name='Global Boost: {}'.format(self.glossary_keys[g].title()),
                                    value='{}'.format(self.glossary_desc[g]))
                     if self.glossary_tips[g] != "":
                         data.add_field(name='CollectorVerse Tips', value=self.glossary_tips[g])
 
+            # data.description=description
             message = await self.bot.say(embed=data)
             self.included_emojis = set()
             for emoji in self.all_emojis.values():
@@ -352,17 +353,19 @@ class STORYQUEST:
                 #     data.description += '\n<:xassassins:487357359241297950>     ???'
                 for g in gboosts:
                     if g != '-' and g != '':
-                        data.add_field(name='Global Boost: {}'.format(g.title()),
-                                       value='{}'.format(self.glossary_desc[g]))
-                        if self.glossary_tips[g] != "":
-                            data.add_field(name='CollectorVerse Tips', value=self.glossary_tips[g])
+                        data.description+='__Global__: __{}__\n{}\n'.format(self.glossary_titles[g], self.glossary_desc[g])
+                        # data.add_field(name='Global Boost: {}'.format(g.title()),
+                        #                value='{}'.format(self.glossary_desc[g]))
+                        # if self.glossary_tips[g] != "":
+                        #     data.add_field(name='CollectorVerse Tips', value=self.glossary_tips[g])
 
                 for b in boosts:
                     if b != '-' and b !='':
-                        data.add_field(name='{}'.format(b.title()),
-                                       value='{}'.format(self.glossary_desc[b]))
-                        if self.glossary_tips[b] != "":
-                            data.add_field(name='CollectorVerse Tips', value=self.glossary_tips[b])
+                        data.description+='__{}__\n{}\n'.format(self.glossarytitles[b], self.glossary_desc[b])
+                        # data.add_field(name='{}'.format(b.title()),
+                        #                value='{}'.format(self.glossary_desc[b]))
+                        # if self.glossary_tips[b] != "":
+                        #     data.add_field(name='CollectorVerse Tips', value=self.glossary_tips[b])
                 if notes != '':
                     data.add_field(name='Notes', value=notes)
                 if map in starfire_maps:
