@@ -361,7 +361,7 @@ class STORYQUEST:
 
                 for b in boosts:
                     if b != '-' and b !='':
-                        data.description+='__{}__\n{}\n'.format(self.glossarytitles[b], self.glossary_desc[b])
+                        data.description+='__{}__\n{}\n'.format(self.glossary_titles[b], self.glossary_desc[b])
                         # data.add_field(name='{}'.format(b.title()),
                         #                value='{}'.format(self.glossary_desc[b]))
                         # if self.glossary_tips[b] != "":
