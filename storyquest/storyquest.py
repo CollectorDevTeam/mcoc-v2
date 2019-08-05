@@ -284,7 +284,7 @@ class STORYQUEST:
             gboosts = self.export[key]['global'].split(', ')
             for g in gboosts:
                 if g != '-' and g != '':
-                    data.add_field(name='Global Boost: {}'.format(g.title()),
+                    data.add_field(name='Global Boost: {}'.format(self.glossary_keys[g].title()),
                                    value='{}'.format(self.glossary_desc[g]))
                     if self.glossary_tips[g] != "":
                         data.add_field(name='CollectorVerse Tips', value=self.glossary_tips[g])
