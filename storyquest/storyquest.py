@@ -398,7 +398,7 @@ class STORYQUEST:
                     await self.bot.say(embed=page)
                     i+=1
             else:
-                menu = PagesMenu(self.bot, timeout=360, delete_onX=True, add_pageof=True)
+                menu = PagesMenu(self.bot, timeout=720, delete_onX=True, add_pageof=True)
                 await menu.menu_start(pages)
             return
 
