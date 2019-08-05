@@ -95,23 +95,23 @@ class STORYQUEST:
         glossary_keys = {}
         glossary_tips = {}
         glossary_desc = {}
-        glossary_titles = {}
+        # glossary_titles = {}
         for t in temp.keys():
             if t not in ('', '-', '_headers'):
                 glossary_desc.update({t: temp[t]['description']})
                 glossary_tips.update({t: temp[t]['tips']})
                 glossary_keys.update({t: temp[t]['title']})
-                glossary_titles.update({t: temp[t]['title']})
+                # glossary_titles.update({t: temp[t]['title']})
         self.glossary_desc = glossary_desc
         self.glossary_keys = glossary_keys
         self.glossary_tips = glossary_tips
-        self.glossary_titles = glossary_titles
+        # self.glossary_titles = glossary_titles
         self.glossary = temp
         dataIO.save_json('data/storyquest/cdt_glossary.json', self.glossary)
         dataIO.save_json('data/storyquest/cdt_glossary_desc.json', self.glossary_desc)
         dataIO.save_json('data/storyquest/cdt_glossary_keys.json', self.glossary_keys)
         dataIO.save_json('data/storyquest/cdt_glossary_tips.json', self.glossary_tips)
-        dataIO.save_json('data/storyquest/cdt_glossary_titles.json', self.glossary_titles)
+        # dataIO.save_json('data/storyquest/cdt_glossary_titles.json', self.glossary_titles)
         # self.glossary_keys = dataIO.load_json('data/storyquest/cdt_glossary_keys.json')
         self.export = dataIO.load_json('data/storyquest/cdt_export.json')
         self.paths = dataIO.load_json('data/storyquest/cdt_paths.json')
@@ -353,7 +353,7 @@ class STORYQUEST:
                 #     data.description += '\n<:xassassins:487357359241297950>     ???'
                 for g in gboosts:
                     if g != '-' and g != '':
-                        data.description+='__Global__: __{}__\n{}\n'.format(self.glossary_titles[g], self.glossary_desc[g])
+                        data.description+='__Global__: __{}__\n{}\n'.format(self.glossary_keys[g], self.glossary_desc[g])
                         # data.add_field(name='Global Boost: {}'.format(g.title()),
                         #                value='{}'.format(self.glossary_desc[g]))
                         # if self.glossary_tips[g] != "":
@@ -361,7 +361,7 @@ class STORYQUEST:
 
                 for b in boosts:
                     if b != '-' and b !='':
-                        data.description+='__{}__\n{}\n'.format(self.glossary_titles[b], self.glossary_desc[b])
+                        data.description+='__{}__\n{}\n'.format(self.glossary_keys[b], self.glossary_desc[b])
                         # data.add_field(name='{}'.format(b.title()),
                         #                value='{}'.format(self.glossary_desc[b]))
                         # if self.glossary_tips[b] != "":
