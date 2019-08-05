@@ -337,23 +337,23 @@ class STORYQUEST:
                 data = discord.Embed(color=CDT_COLORS[champion.klass], title='Act {} Path {} | Fight {}'.format(map, path[-1:], i),
                                      description='', url=ACT6_SHEET)
                 tiles = self.export[key]['tiles']
-                data.set_author(name='{} : {:,}'.format(champion.full_name, power))
-                data.set_thumbnail(url=champion.get_avatar())
+                if champion.full_name is not None:
+                    if power is not None:
+                        data.set_author(name='{} : {:,}'.format(champion.full_name, power))
+                    else:
+                        data.set_author(name='{}'.format(champion.full_name))
+                if champion.get_avatar() is not None:
+                    data.set_thumbnail(url=champion.get_avatar())
                 if tiles != '':
                     data.description += '\nTiles: {}\n<:energy:557675957515845634>     {:,}'.format(tiles, tiles*3)
-                # if power != '':
-                #     data.description += '\nPower  {:,}'.format(power)
                 if hp != '':
                     data.description += '\n<:friendshp:344221218708389888>     {:,}'.format(hp)
                 else:
                     data.description += '\n<:friendshp:344221218708389888>     ???'
-                # if attack != '':
-                #     data.description += '\n<:xassassins:487357359241297950>     {}'.format(attack)
-                # else:
-                #     data.description += '\n<:xassassins:487357359241297950>     ???'
+
                 for g in gboosts:
                     if g != '-' and g != '':
-                        data.description+='__Global__: __{}__\n{}\n'.format(self.glossary_keys[g], self.glossary_desc[g])
+                        data.description+='\n\n__Global__: __{}__\n{}\n\n'.format(self.glossary_keys[g], self.glossary_desc[g])
                         # data.add_field(name='Global Boost: {}'.format(g.title()),
                         #                value='{}'.format(self.glossary_desc[g]))
                         # if self.glossary_tips[g] != "":
@@ -361,7 +361,7 @@ class STORYQUEST:
 
                 for b in boosts:
                     if b != '-' and b !='':
-                        data.description+='__{}__\n{}\n'.format(self.glossary_keys[b], self.glossary_desc[b])
+                        data.description+='__{}__\n{}\n\n'.format(self.glossary_keys[b], self.glossary_desc[b])
                         # data.add_field(name='{}'.format(b.title()),
                         #                value='{}'.format(self.glossary_desc[b]))
                         # if self.glossary_tips[b] != "":
