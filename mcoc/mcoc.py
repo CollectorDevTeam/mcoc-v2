@@ -2572,7 +2572,15 @@ class Champion:
 
     async def get_bio(self):
         sgd = cogs.mcocTools.StaticGameData()
-        key = "ID_CHARACTER_BIOS_{}".format(self.mcocjson)
+        if "MS_ID_CHARACTER_BIOS_{}".format(self.mcocjson) in sgd.cdt_data.keys():
+            key = "MS_ID_CHARACTER_BIOS_{}".format(self.mcocjson)
+        elif "MS_ID_CHARACTER_BIOS_{}".format(self.mattkraftid).keys() in sgd.cdt_data.keys():
+            key = "MS_ID_CHARACTER_BIOS_{}".format(self.mattkraftid)
+        if "ID_CHARACTER_BIOS_{}".format(self.mcocjson) in sgd.cdt_data.keys():
+            key = "ID_CHARACTER_BIOS_{}".format(self.mcocjson)
+        elif "ID_CHARACTER_BIOS_{}".format(self.mattkraftid).keys() in sgd.cdt_data.keys():
+            key = "ID_CHARACTER_BIOS_{}".format(self.mattkraftid)
+
         if self.debug:
             dbg_str = "BIO:  " + key
             await self.bot.say('```{}```'.format(dbg_str))
