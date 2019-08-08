@@ -2574,11 +2574,11 @@ class Champion:
         sgd = cogs.mcocTools.StaticGameData()
         if "MS_ID_CHARACTER_BIOS_{}".format(self.mcocjson) in sgd.cdt_data.keys():
             key = "MS_ID_CHARACTER_BIOS_{}".format(self.mcocjson)
-        elif "MS_ID_CHARACTER_BIOS_{}".format(self.mattkraftid).keys() in sgd.cdt_data.keys():
+        elif "MS_ID_CHARACTER_BIOS_{}".format(self.mattkraftid) in sgd.cdt_data.keys():
             key = "MS_ID_CHARACTER_BIOS_{}".format(self.mattkraftid)
-        if "ID_CHARACTER_BIOS_{}".format(self.mcocjson) in sgd.cdt_data.keys():
+        elif "ID_CHARACTER_BIOS_{}".format(self.mcocjson) in sgd.cdt_data.keys():
             key = "ID_CHARACTER_BIOS_{}".format(self.mcocjson)
-        elif "ID_CHARACTER_BIOS_{}".format(self.mattkraftid).keys() in sgd.cdt_data.keys():
+        elif "ID_CHARACTER_BIOS_{}".format(self.mattkraftid) in sgd.cdt_data.keys():
             key = "ID_CHARACTER_BIOS_{}".format(self.mattkraftid)
 
         if self.debug:
