@@ -6,6 +6,7 @@ from .utils.dataIO import dataIO
 from .utils.dataIO import fileIO
 from .utils import checks
 from .utils import chat_formatting as chat
+from functools import partial
 from operator import itemgetter, attrgetter
 from collections import OrderedDict, namedtuple
 from random import randint
@@ -24,7 +25,7 @@ import asyncio
 from json import JSONEncoder, dump, dumps
 from cogs.mcocTools import (StaticGameData, PagesMenu,
             KABAM_ICON, COLLECTOR_ICON, COLLECTOR_FEATURED, CDTHelperFunctions,
-            GSHandler, GSExport, CDT_COLORS, HashSearchExpr)
+            GSHandler, GSExport, CDT_COLORS)
 
 
 logger = logging.getLogger('red.roster')
@@ -137,10 +138,13 @@ class ChampionRoster:
                     'alliance-quest': 'aq'}
     update_str = '{0.star_name_str} {1} -> {0.rank_sig_str} [ {0.prestige} ]'
 
-    def __init__(self, bot, user, attrs=None):
+    def __init__(self, bot, user, attrs=None, is_filtered=False, hargs=None):
         self.bot = bot
         self.user = user
         self.roster = {}
+        self.is_filtered = is_filtered
+        self.hargs = hargs
+        self.previous_hargs = None
         self._create_user()
         self._cache = {}
         #self.load_champions()
@@ -252,10 +256,13 @@ class ChampionRoster:
         for c in self.roster.values():
             if tags.issubset(c.all_tags):
                 filtered.add(c.immutable_id)
+        self.previous_hargs = tags
         return filtered
 
-    def filtered_roster_from_ids(self, filtered):
-        filt_roster = ChampionRoster(self.bot, self.user)
+    def filtered_roster_from_ids(self, filtered, hargs=None):
+        hargs = hargs if hargs else self.previous_hargs
+        filt_roster = ChampionRoster(self.bot, self.user, is_filtered=True,
+                            hargs=hargs)
         filt_roster.roster = {iid: self.roster[iid] for iid in filtered}
         return filt_roster
 
@@ -399,18 +406,29 @@ class ChampionRoster:
         self.save_champ_data()
         return track
 
+    async def warn_empty_roster(self, tags=None):
+        tags = tags if tags else self.hargs
+        if tags is None:
+            tags = ''
+        elif not isinstance(tags, str):
+            tags = ' '.join(tags)
+        em = discord.Embed(title='User', description=self.user.name,
+                color=discord.Color.gold(), url=PRESTIGE_SURVEY)
+        em.add_field(name='Tags used filtered to an empty roster',
+                value=tags)
+        await self.bot.say(embed=em)
+
     async def display(self, tags=None):
-        filt_roster = await self.filter_champs(tags)
-        filtered = list(filt_roster.roster.values())
+        if self.is_filtered and tags is None:
+            filtered = list(self.roster.values())
+            tags = self.hargs
+        else:
+            filt_roster = await self.filter_champs(tags)
+            filtered = list(filt_roster.roster.values())
         user = self.user
         embeds = []
         if not filtered:
-            tags = set() if tags is None else tags
-            em = discord.Embed(title='User', description=user.name,
-                    color=discord.Color.gold(), url=PRESTIGE_SURVEY)
-            em.add_field(name='Tags used filtered to an empty roster',
-                    value=' '.join(tags))
-            await self.bot.say(embed=em)
+            self.warn_empty_roster(tags)
             return
 
         strs = [champ.verbose_prestige_str for champ in sorted(filtered, reverse=True,
@@ -482,25 +500,10 @@ class Hook:
     @commands.command(pass_context=True, aliases=('th',))
     async def test_hash(self, ctx, *, hargs=''):
         #hargs = await hook.HashtagRankConverter(ctx, hargs).convert() #imported from hook
-        roster = ChampionRoster(self.bot, self.bot.user)
+        roster = partial(ChampionRoster, self.bot, self.bot.user)
         sgd = StaticGameData()
         aliases = {'#var2': '(#5star | #6star) & #size:xl', '#poisoni': '#poisonimmunity'}
-        #hash_parser = HashSearchExpr.parser()
-        if hargs:
-            filtered = await sgd.hash_parser.parse_string(hargs, roster, aliases)
-            #print(result)
-            #if result:
-                #print(result.elements)
-            #filtered = result.filter_roster(roster)
-            #print('1 ', filtered)
-            #print('2 ', result[0].match_set(roster))
-        else:
-            filtered = roster
-        if filtered:
-            await filtered.display() #imported from hook
-        else:
-            await self.bot.say('Filtered results to 0 elements')
-        #await self.bot.say(roster)
+        await sgd.filter_and_display(hargs, roster, aliases=aliases)
 
 
     @commands.command(pass_context=True, aliases=('list_members','role_roster','list_users'))

@@ -387,6 +387,9 @@ class StaticGameData:
         self.hash_parser = HashParser(bot)
         self.register_gsheets(bot)
 
+    async def filter_and_display(self, *args, **kwargs):
+        await self.hash_parser.filter_and_display(*args, **kwargs)
+
     def register_gsheets(self, bot):
         self.gsheet_handler = GSHandler(bot, gapi_service_creds)
         self.gsheet_handler.register_gsheet(
@@ -606,10 +609,49 @@ class SearchExpr(md.Grammar):
 
 
 ##################################################
+#  Champ Attr grammar
+
+class AttrSigToken(md.Grammar):
+    grammar = md.WORD('s', '0-9', min=2, max=4)
+
+    def get_attrs(self, attrs):
+        attrs['sig'] = int(self.string[1:])
+
+class AttrRankToken(md.Grammar):
+    grammar = md.WORD('r', '0-9', count=2)
+
+    def get_attrs(self, attrs):
+        attrs['rank'] = int(self.string[1])
+
+class AttrDebugToken(md.Grammar):
+    grammar = md.WORD('d', '0-9', count=2)
+
+    def get_attrs(self, attrs):
+        attrs['debug'] = int(self.string[1])
+
+class AttrStarToken(md.Grammar):
+    grammar = md.WORD('0-9', '*★☆', count=2)
+
+    def get_attrs(self, attrs):
+        attrs['star'] = int(self.string[0])
+
+class AttrExpr(md.Grammar):
+    grammar = md.ONE_OR_MORE(AttrSigToken | AttrRankToken |
+                        AttrDebugToken | AttrStarToken, collapse=True)
+
+    def get_attrs(self, attrs=None):
+        attrs = attrs if attrs is not None else {}
+        {e.get_attrs(attrs) for e in self}
+        return attrs
+
+#class UserExpr(md.Grammar):
+    #grammar = pass
+
+##################################################
 #  Hashtag grammar
 
 class HashtagToken(md.Grammar):
-    grammar = md.WORD('#', '_a-zA-Z:0-9')
+    grammar = md.WORD('#', '_a-zA-Z:*0-9')
 
     def match_set(self, roster):
         return roster.raw_filtered_ids(set([self.string]))
@@ -723,35 +765,80 @@ class HashImplicitSearchExpr(md.Grammar):
         return ' & '.join(ret)
 
 
-class HashSearchExpr(md.Grammar):
-    grammar = (HashImplicitSearchExpr | HashExplicitSearchExpr)
+class HashAttrSearchExpr(md.Grammar):
+    grammar = (md.OPTIONAL(AttrExpr),
+                (HashImplicitSearchExpr | HashExplicitSearchExpr),
+               md.OPTIONAL(AttrExpr))
 
     def filter_roster(self, roster):
         filt_ids = self[0].match_set(roster)
-        filt_roster = roster.filtered_roster_from_ids(filt_ids)
+        filt_roster = roster.filtered_roster_from_ids(filt_ids, hargs=self.string)
         return filt_roster
 
     def sub_aliases(self, aliases):
-        return self[0].sub_aliases(aliases)
+        attrs = self[0].get_attrs() if self[0] else {}
+        attrs = self[2].get_attrs(attrs) if self[2] else attrs
+        return attrs, self[1].sub_aliases(aliases)
 
+    def attr_string(self):
+        return '{}{}'.format(self[0], self[2])
 
+#class HashUserSearchExpr(md.Grammar):
+    #grammar = (md.OPTIONAL(UserExpr),
+                #(HashImplicitSearchExpr | HashExplicitSearchExpr))
+#
+    #def filter_roster(self, roster):
+        #filt_ids = self[0].match_set(roster)
+        #filt_roster = roster.filtered_roster_from_ids(filt_ids, hargs=self.string)
+        #return filt_roster
+#
+    #def sub_aliases(self, aliases):
+        #user = self[0].get_user() if self[0] else None
+        #return user, self[1].sub_aliases(aliases)
+#
+    #def attr_string(self):
+        #return '{}{}'.format(self[0], self[2])
+#
 class HashParser:
 
     def __init__(self, bot):
         self.bot = bot
-        self.full_parser = HashSearchExpr.parser()
+        self.attr_parser = HashAttrSearchExpr.parser()
+        #self.user_parser = HashUserSearchExpr.parser()
         self.explicit_parser = HashExplicitSearchExpr.parser()
 
-    async def parse_string(self, hargs, roster, aliases=None):
-        aliases = aliases if aliases else {}
+    async def parse_1st_pass(self, parser, hargs, aliases=None):
         try:
-            result1 = self.full_parser.parse_string(hargs)
-        except md.ParseError:
-            await self.bot.say("Syntax Error.  Don't mix implicit and explicit operators")
+            result1 = parser.parse_string(hargs)
+        except md.ParseError as e:
+            print(e)
+            em = discord.Embed(title='Input Error', description='Syntax problem',
+                    color=discord.Color.red())
+            em.add_field(name="Don't mix implicit and explicit operators",
+                    value=hargs)
+            await self.bot.say(embed=em)
             return
-        expl_hargs = result1.sub_aliases(aliases)
+        return result1.sub_aliases(aliases)
+
+    async def parse_with_attr(self, parser, hargs, roster, aliases=None):
+        '''Parser implies no user roster so use bot.  Parse attrs to pass to roster creation.'''
+        aliases = aliases if aliases else {}
+        attrs, expl_hargs = await self.parse_1st_pass(self.attr_parser, hargs, aliases)
+        if callable(roster):
+            roster = roster(attrs=attrs)
+        elif attrs:
+            await self.bot.say('Ignoring attribute specs "{}"'.format(
+                            result1.attr_string()))
         result2 = self.explicit_parser.parse_string(expl_hargs)
         return result2.filter_roster(roster)
+
+    async def filter_and_display(self, hargs, roster, aliases=None):
+        filtered = await self.parse_string(hargs, roster, aliases)
+        if filtered:
+            await filtered.display() #imported from hook
+        elif filtered is not None:
+            await filtered.warn_empty_roster(hargs)
+
 
 ##################################################
 #  End Grammar definitions
