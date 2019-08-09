@@ -2575,10 +2575,10 @@ class Champion:
 
         if "MS_ID_CHARACTER_BIOS_{}".format(self.mcocjson) in sgd.cdt_data:
             key = "MS_ID_CHARACTER_BIOS_{}".format(self.mcocjson)
-        elif "MS_ID_CHARACTER_BIOS_{}".format(self.mattkraftid) in sgd.cdt_data:
-            key = "MS_ID_CHARACTER_BIOS_{}".format(self.mattkraftid)
         elif "ID_CHARACTER_BIOS_{}".format(self.mcocjson) in sgd.cdt_data:
             key = "ID_CHARACTER_BIOS_{}".format(self.mcocjson)
+        elif "ID_CHARACTER_BIO_{}".format(self.mcocjson) in sgd.cdt_data:
+            key = "ID_CHARACTER_BIO_{}".format(self.mcocjson)
         elif "ID_CHARACTER_BIOS_{}".format(self.mattkraftid) in sgd.cdt_data:
             key = "ID_CHARACTER_BIOS_{}".format(self.mattkraftid)
 
