@@ -2581,6 +2581,9 @@ class Champion:
             key = "ID_CHARACTER_BIO_{}".format(self.mcocjson)
         elif "ID_CHARACTER_BIOS_{}".format(self.mattkraftid) in sgd.cdt_data:
             key = "ID_CHARACTER_BIOS_{}".format(self.mattkraftid)
+        else:
+            await self.bot.say('Key not identified.')
+            return
 
         if self.debug:
             dbg_str = "BIO:  " + key
