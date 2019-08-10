@@ -1115,16 +1115,14 @@ class MCOC(ChampionFactory):
             /champ list    (all 4* champs rank5, sig99)
             /champ list 5*r3s20 #bleed   (all 5* bleed champs at rank3, sig20)
         '''
-        hargs = await hook.HashtagRankConverter(ctx, hargs).convert() #imported from hook
-        roster = hook.ChampionRoster(self.bot, self.bot.user, attrs=hargs.attrs)
-        #rlist = []
-        #for champ_class in self.champions.values():
-            #champ = champ_class(hargs.attrs.copy())
-            #if champ.has_prestige:
-                #rlist.append(champ)
-        #roster.from_list(rlist)
-        #roster.display_override = 'Prestige Listing: {0.attrs_str}'.format(rlist[0])
-        await roster.display(hargs.tags) #imported from hook
+        #hargs = await hook.HashtagRankConverter(ctx, hargs).convert() #imported from hook
+        #roster = hook.ChampionRoster(self.bot, self.bot.user, attrs=hargs.attrs)
+        #await roster.display(hargs.tags)
+        sgd = StaticGameData()
+        aliases = {'#var2': '(#5star | #6star) & #size:xl', '#poisoni': '#poisonimmunity'}
+        roster = await sgd.parse_with_attr(ctx, hargs, hook.ChampionRoster, aliases=aliases)
+        if roster is not None:
+            await roster.display()
 
     @champ.command(pass_context=True, name='released', aliases=('odds','chances',))
     async def champ_released(self, ctx, champ: ChampConverter):
@@ -2518,6 +2516,9 @@ class Champion:
                 setattr(self, k, v)
         self.tags = set()
         self.update_attrs(attrs)
+
+    def __repr__(self):
+        return '{}({})'.format(type(self).__name__.capitalize(), self.attrs_str)
 
     def __eq__(self, other):
         return self.immutable_id == other.immutable_id \

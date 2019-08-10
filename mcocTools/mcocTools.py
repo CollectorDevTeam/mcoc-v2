@@ -387,8 +387,11 @@ class StaticGameData:
         self.hash_parser = HashParser(bot)
         self.register_gsheets(bot)
 
-    async def filter_and_display(self, *args, **kwargs):
-        await self.hash_parser.filter_and_display(*args, **kwargs)
+    async def parse_with_attr(self, *args, **kwargs):
+        return await self.hash_parser.parse_with_attr(*args, **kwargs)
+
+    async def parse_with_user(self, *args, **kwargs):
+        return await self.hash_parser.parse_with_user(*args, **kwargs)
 
     def register_gsheets(self, bot):
         self.gsheet_handler = GSHandler(bot, gapi_service_creds)
@@ -644,8 +647,11 @@ class AttrExpr(md.Grammar):
         {e.get_attrs(attrs) for e in self}
         return attrs
 
-#class UserExpr(md.Grammar):
-    #grammar = pass
+class UserExpr(md.Grammar):
+    grammar = md.OPTIONAL(md.L('@')), md.WORD('^#@!()&|')
+
+    def get_user(self, ctx):
+        return commands.UserConverter(ctx, self.string).convert()
 
 ##################################################
 #  Hashtag grammar
@@ -767,7 +773,7 @@ class HashImplicitSearchExpr(md.Grammar):
 
 class HashAttrSearchExpr(md.Grammar):
     grammar = (md.OPTIONAL(AttrExpr),
-                (HashImplicitSearchExpr | HashExplicitSearchExpr),
+               md.OPTIONAL(HashImplicitSearchExpr | HashExplicitSearchExpr),
                md.OPTIONAL(AttrExpr))
 
     def filter_roster(self, roster):
@@ -775,39 +781,41 @@ class HashAttrSearchExpr(md.Grammar):
         filt_roster = roster.filtered_roster_from_ids(filt_ids, hargs=self.string)
         return filt_roster
 
-    def sub_aliases(self, aliases):
+    def sub_aliases(self, ctx, aliases):
         attrs = self[0].get_attrs() if self[0] else {}
         attrs = self[2].get_attrs(attrs) if self[2] else attrs
-        return attrs, self[1].sub_aliases(aliases)
+        return (attrs, self[1].sub_aliases(aliases)) if self[1] else (attrs, '')
 
     def attr_string(self):
         return '{}{}'.format(self[0], self[2])
 
-#class HashUserSearchExpr(md.Grammar):
-    #grammar = (md.OPTIONAL(UserExpr),
-                #(HashImplicitSearchExpr | HashExplicitSearchExpr))
-#
-    #def filter_roster(self, roster):
-        #filt_ids = self[0].match_set(roster)
-        #filt_roster = roster.filtered_roster_from_ids(filt_ids, hargs=self.string)
-        #return filt_roster
-#
-    #def sub_aliases(self, aliases):
-        #user = self[0].get_user() if self[0] else None
-        #return user, self[1].sub_aliases(aliases)
-#
-    #def attr_string(self):
-        #return '{}{}'.format(self[0], self[2])
-#
+class HashUserSearchExpr(md.Grammar):
+    grammar = (md.OPTIONAL(UserExpr),
+               md.OPTIONAL(HashImplicitSearchExpr | HashExplicitSearchExpr))
+
+    def filter_roster(self, roster):
+        filt_ids = self[0].match_set(roster)
+        filt_roster = roster.filtered_roster_from_ids(filt_ids, hargs=self.string)
+        return filt_roster
+
+    def sub_aliases(self, ctx, aliases):
+        #print('UserExpr {} {}'.format(self[0], ctx.message.author))
+        user = self[0].get_user(ctx) if self[0] else ctx.message.author
+        return (user, self[1].sub_aliases(aliases)) if self[1] else (user, '')
+
+    def attr_string(self):
+        return '{}{}'.format(self[0], self[2])
+
+
 class HashParser:
 
     def __init__(self, bot):
         self.bot = bot
         self.attr_parser = HashAttrSearchExpr.parser()
-        #self.user_parser = HashUserSearchExpr.parser()
+        self.user_parser = HashUserSearchExpr.parser()
         self.explicit_parser = HashExplicitSearchExpr.parser()
 
-    async def parse_1st_pass(self, parser, hargs, aliases=None):
+    async def parse_1st_pass(self, ctx, parser, hargs, aliases=None):
         try:
             result1 = parser.parse_string(hargs)
         except md.ParseError as e:
@@ -818,24 +826,35 @@ class HashParser:
                     value=hargs)
             await self.bot.say(embed=em)
             return
-        return result1.sub_aliases(aliases)
+        return result1.sub_aliases(ctx, aliases)
 
-    async def parse_with_attr(self, parser, hargs, roster, aliases=None):
+    async def parse_with_attr(self, ctx, hargs, roster_cls, aliases=None):
         '''Parser implies no user roster so use bot.  Parse attrs to pass to roster creation.'''
         aliases = aliases if aliases else {}
-        attrs, expl_hargs = await self.parse_1st_pass(self.attr_parser, hargs, aliases)
-        if callable(roster):
-            roster = roster(attrs=attrs)
-        elif attrs:
-            await self.bot.say('Ignoring attribute specs "{}"'.format(
-                            result1.attr_string()))
-        result2 = self.explicit_parser.parse_string(expl_hargs)
-        return result2.filter_roster(roster)
+        attrs, expl_hargs = await self.parse_1st_pass(ctx, self.attr_parser, hargs, aliases)
+        roster = roster_cls(self.bot, self.bot.user, attrs=attrs)
+        if expl_hargs:
+            result2 = self.explicit_parser.parse_string(expl_hargs)
+            return result2.filter_roster(roster)
+        else:
+            return roster
 
-    async def filter_and_display(self, hargs, roster, aliases=None):
-        filtered = await self.parse_string(hargs, roster, aliases)
+    async def parse_with_user(self, ctx, hargs, roster_cls, aliases=None):
+        '''Parser implies user roster.'''
+        aliases = aliases if aliases else {}
+        user, expl_hargs = await self.parse_1st_pass(ctx, self.user_parser, hargs, aliases)
+        roster = roster_cls(self.bot, user)
+        await roster.load_champions()
+        if expl_hargs:
+            result2 = self.explicit_parser.parse_string(expl_hargs)
+            return result2.filter_roster(roster)
+        else:
+            return roster
+
+    async def filter_and_display(self, ctx, hargs, roster_cls, aliases=None):
+        filtered = await self.parse_with_attr(ctx, hargs, roster_cls, aliases)
         if filtered:
-            await filtered.display() #imported from hook
+            await filtered.display()
         elif filtered is not None:
             await filtered.warn_empty_roster(hargs)
 

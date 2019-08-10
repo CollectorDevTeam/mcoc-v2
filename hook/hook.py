@@ -74,12 +74,12 @@ class HashtagRosterConverter(commands.Converter):
         await chmp_rstr.load_champions()
         if not chmp_rstr:
             menu = PagesMenu(self.ctx.bot, timeout=120, delete_onX=True, add_pageof=True)
-            hook = Hook(self.ctx.bot)
+            #hook = Hook(self.ctx.bot)
             try:
                 color=user.color
             except:
                 color = discord.Color.gold()
-            embeds = await hook.roster_kickback(color)
+            embeds = await Hook.roster_kickback(color)
             await menu.menu_start(pages=embeds)
 
             raise MissingRosterError('No Roster found for {}'.format(user.name))
@@ -148,7 +148,7 @@ class ChampionRoster:
         self._create_user()
         self._cache = {}
         #self.load_champions()
-        if self.user == self.bot.user:
+        if self.user == self.bot.user and not is_filtered:
             self.autofill_bot_user(attrs)
 
     def __len__(self):
@@ -171,7 +171,7 @@ class ChampionRoster:
             if champ.has_prestige:
                 rlist.append(champ)
         self.from_list(rlist)
-        self.display_override = 'Prestige Listing: {0.attrs_str}'.format(rlist[0])
+        #self.display_override = 'Prestige Listing: {0.attrs_str}'.format(rlist[0])
 
 
     # handles user creation, adding new server, blocking
@@ -201,6 +201,8 @@ class ChampionRoster:
         for k in data[name]:
             champ = await self.get_champion(k)
             self.roster[champ.immutable_id] = champ
+        if len(self.roster) == 0:
+            await self.warn_missing_roster()
 
     def from_list(self, champ_list):
         self.roster = {champ.immutable_id: champ for champ in champ_list}
@@ -234,7 +236,12 @@ class ChampionRoster:
 
     @property
     def embed_display(self):
-        return getattr(self, 'display_override', self.prestige)
+        if self.user is self.bot.user:
+            #should be safe to just grab the first one since bot rosters are uniform
+            champ = list(self.roster.values())[0]
+            return 'Prestige Listing: {0.attrs_str}'.format(champ)
+        else:
+            return self.prestige
 
     async def get_champion(self, cdict):
         mcoc = self.bot.get_cog('MCOC')
@@ -406,6 +413,16 @@ class ChampionRoster:
         self.save_champ_data()
         return track
 
+    async def warn_missing_roster(self):
+        menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
+        try:
+            color = self.user.color
+        except:
+            color = discord.Color.gold()
+        embeds = await Hook.roster_kickback(color)
+        await menu.menu_start(pages=embeds)
+        raise MissingRosterError('No Roster found for {}'.format(self.user.name))
+
     async def warn_empty_roster(self, tags=None):
         tags = tags if tags else self.hargs
         if tags is None:
@@ -428,7 +445,7 @@ class ChampionRoster:
         user = self.user
         embeds = []
         if not filtered:
-            self.warn_empty_roster(tags)
+            await self.warn_empty_roster(tags)
             return
 
         strs = [champ.verbose_prestige_str for champ in sorted(filtered, reverse=True,
@@ -470,7 +487,8 @@ class Hook:
         #self.champ_re = re.compile(r'champions(?:_\d+)?.csv')
         #self.champ_str = '{0[Stars]}★ R{0[Rank]} S{0[Awakened]:<2} {0[Id]}'
 
-    async def roster_kickback(self, ucolor = discord.Color.gold()):
+    @staticmethod
+    async def roster_kickback(ucolor = discord.Color.gold()):
         embeds=[]
         em0=discord.Embed(color=ucolor, title='No Roster detected!',
                 description='There are several methods available to you to create your roster.'
@@ -500,10 +518,13 @@ class Hook:
     @commands.command(pass_context=True, aliases=('th',))
     async def test_hash(self, ctx, *, hargs=''):
         #hargs = await hook.HashtagRankConverter(ctx, hargs).convert() #imported from hook
-        roster = partial(ChampionRoster, self.bot, self.bot.user)
+        #roster = partial(ChampionRoster, self.bot, self.bot.user)
         sgd = StaticGameData()
         aliases = {'#var2': '(#5star | #6star) & #size:xl', '#poisoni': '#poisonimmunity'}
-        await sgd.filter_and_display(hargs, roster, aliases=aliases)
+        #await sgd.filter_and_display(hargs, roster, aliases=aliases)
+        roster = await sgd.parse_with_attr(ctx, hargs, ChampionRoster, aliases=aliases)
+        if roster is not None:
+            await roster.display()
 
 
     @commands.command(pass_context=True, aliases=('list_members','role_roster','list_users'))
@@ -547,8 +568,14 @@ class Hook:
 
         example:
         /roster [user] [#mutant #bleed]"""
-        hargs = await HashtagRosterConverter(ctx, hargs).convert()
-        await hargs.roster.display(hargs.tags)
+        sgd = StaticGameData()
+        aliases = {'#var2': '(#5star | #6star) & #size:xl', '#poisoni': '#poisonimmunity'}
+        #await sgd.filter_and_display(hargs, roster, aliases=aliases)
+        roster = await sgd.parse_with_user(ctx, hargs, ChampionRoster, aliases=aliases)
+        if roster is not None:
+            await roster.display()
+        #hargs = await HashtagRosterConverter(ctx, hargs).convert()
+        #await hargs.roster.display(hargs.tags)
 
     @roster.command(pass_context=True, name='add', aliases=('update',))
     async def _roster_update(self, ctx, *, champs: ChampConverterMult):
