@@ -647,8 +647,14 @@ class AttrExpr(md.Grammar):
         {e.get_attrs(attrs) for e in self}
         return attrs
 
+class UserDiscriminator(md.Grammar):
+    grammar = md.L('#'), md.WORD('0-9', count=4)
+    grammar_whitespace_mode = 'explicit'
+
 class UserExpr(md.Grammar):
-    grammar = md.OPTIONAL(md.L('@')), md.WORD('^#@!()&|')
+    grammar = (md.OPTIONAL(md.L('@')), md.WORD('^@!#()&|'),
+                md.OPTIONAL(UserDiscriminator))
+    grammar_whitespace_mode = 'explicit'
 
     def get_user(self, ctx):
         return commands.UserConverter(ctx, self.string).convert()
@@ -775,36 +781,33 @@ class HashAttrSearchExpr(md.Grammar):
     grammar = (md.OPTIONAL(AttrExpr),
                md.OPTIONAL(HashImplicitSearchExpr | HashExplicitSearchExpr),
                md.OPTIONAL(AttrExpr))
+    #grammar_whitespace_mode = 'explicit'
 
-    def filter_roster(self, roster):
-        filt_ids = self[0].match_set(roster)
-        filt_roster = roster.filtered_roster_from_ids(filt_ids, hargs=self.string)
-        return filt_roster
+    #def filter_roster(self, roster):
+        #filt_ids = self[0].match_set(roster)
+        #filt_roster = roster.filtered_roster_from_ids(filt_ids, hargs=self.string)
+        #return filt_roster
 
     def sub_aliases(self, ctx, aliases):
         attrs = self[0].get_attrs() if self[0] else {}
         attrs = self[2].get_attrs(attrs) if self[2] else attrs
         return (attrs, self[1].sub_aliases(aliases)) if self[1] else (attrs, '')
 
-    def attr_string(self):
-        return '{}{}'.format(self[0], self[2])
-
 class HashUserSearchExpr(md.Grammar):
     grammar = (md.OPTIONAL(UserExpr),
                md.OPTIONAL(HashImplicitSearchExpr | HashExplicitSearchExpr))
+    #grammar_whitespace_mode = 'explicit'
 
-    def filter_roster(self, roster):
-        filt_ids = self[0].match_set(roster)
-        filt_roster = roster.filtered_roster_from_ids(filt_ids, hargs=self.string)
-        return filt_roster
+    #def filter_roster(self, roster):
+        #filt_ids = self[0].match_set(roster)
+        #filt_roster = roster.filtered_roster_from_ids(filt_ids, hargs=self.string)
+        #return filt_roster
 
     def sub_aliases(self, ctx, aliases):
         #print('UserExpr {} {}'.format(self[0], ctx.message.author))
+        #print(self, self[0])
         user = self[0].get_user(ctx) if self[0] else ctx.message.author
         return (user, self[1].sub_aliases(aliases)) if self[1] else (user, '')
-
-    def attr_string(self):
-        return '{}{}'.format(self[0], self[2])
 
 
 class HashParser:
