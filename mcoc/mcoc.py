@@ -1141,11 +1141,11 @@ class MCOC(ChampionFactory):
             daily4 = 0.10
             daily3 = 0.30
             daily2 = 0.60
-            p2 = float(0.77)
-            p3 = float(0.20)
-            p4 = float(0.03)
-            gmc = {3: float(0.03), 4: float(0.15), 5: float(0.82)}
-            fgmc = {3: float(0.03), 4: float(0.15), 5: float(0.82)}
+            p2 = float(0.70)
+            p3 = float(0.25)
+            p4 = float(0.05)
+            gmc = {3: float(0.80), 4: float(0.15), 5: float(0.05)}
+            fgmc = {3: float(0.80), 4: float(0.15), 5: float(0.05)}
             em.add_field(name='PHC Drop Rates', value='2★ {} %\n3★ {} %\n4★ {} %\n'
                          .format(round(p2*100, 0), round(p3*100, 0), round(p4*100), 0))
             em.add_field(name='Grandmaster Drop Rates', value='3★ {} %\n4★ {} %\n5★ {} %\n'
