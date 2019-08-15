@@ -1152,7 +1152,7 @@ class MCOC(ChampionFactory):
                          .format(round(gmc[3]*100, 0), round(gmc[4]*100, 0), round(gmc[5]*100), 0))
             em.add_field(name='Cavalier Drop Rates', value='3★ {} %\n4★ {} %\n5★ {} %\n6★ {} %\n'
                          .format(round(cav[3] * 100, 0), round(cav[4] * 100, 0),
-                                 round(cav[5] * 100, 0), round(cav[6] * 100, 0))
+                                 round(cav[5] * 100, 0), round(cav[6] * 100, 0)))
             # em.add_field(name='Featured Grandmaster Drop Rates', value='3★ {} %\n4★ {} %\n5★ {} %\n'
             #              .format(round(fgmc[3]*100, 0), round(fgmc[4]*100, 0), round(fgmc[5]*100), 0))
             # em.add_field(name='Release Date', value='{0.released}'.format(champ), inline=False)
