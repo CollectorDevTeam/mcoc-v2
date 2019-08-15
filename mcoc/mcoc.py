@@ -1171,27 +1171,28 @@ class MCOC(ChampionFactory):
                 em.add_field(name='4★ Basic Odds', value='{0} %'.format(chance4), inline=True)
             elif champ.basic4 is not None:
                 em.add_field(name='Expected 4★ Basic & PHC Release', value=champ.basic4)
+            if champ.chance5f is not None and float(champ.chance5f) > 0:
+                chance5 = round(float(champ.chance5f), 4)
+                em.add_field(name='5★ Featured Odds', value='{0} %'.format(chance5), inline=True)
             if champ.chance5b is not None and float(champ.chance5b) > 0:
                 chance5 = round(float(champ.chance5b), 4)
                 em.add_field(name='5★ Basic Odds', value='{0} %'.format(chance5), inline=True)
             elif champ.basic5 is not None:
                 em.add_field(name='Expected 5★ Basic Release', value=champ.basic5)
-            if champ.chance5f is not None and float(champ.chance5f) > 0:
-                chance5 = round(float(champ.chance5f), 4)
-                em.add_field(name='5★ Featured Odds', value='{0} %'.format(chance5), inline=True)
+            if champ.chance6f is not None and float(champ.chance6f) > 0:
+                chance6=round(float(champ.chance6f),4)
+                em.add_field(name='6★ Featured Odds', value='{0} %'.format(chance6), inline=True)
             if champ.chance6b is not None and float(champ.chance6b) > 0:
                 chance6 = round(float(champ.chance6b),4)
-                em.add_field(name='6★ Basic Odds', value='{0} %'.format(chance6), inline=True)
                 cav6 = round(float(champ.chance5b) * cav[6], 4)
                 cav5 = round(float(champ.chance5b) * cav[5], 4)
                 cav4 = round(float(champ.chance4) * cav[4], 4)
                 cav3 = round(float(champ.chance4) * cav[3], 4)
-                em.add_field(name='Grandmaster Crystal Odds', value='3★ {} %\n4★ {} %\n5★ {} %\n6★ {} %'.format(cav3, cav4, cav5, cav6), inline=False)
+                em.add_field(name='Cavalier Crystal Odds', value='3★ {} %\n4★ {} %\n5★ {} %\n6★ {} %'.format(cav3, cav4, cav5, cav6), inline=False)
+                em.add_field(name='6★ Basic Odds', value='{0} %'.format(chance6), inline=True)
             elif champ.basic6 is not None:
                 em.add_field(name='Expected 6★ Basic Release', value=champ.basic6)
-            if champ.chance6f is not None and float(champ.chance6f) > 0:
-                chance6=round(float(champ.chance6f),4)
-                em.add_field(name='6★ Featured Odds', value='{0} %'.format(chance6), inline=True)
+
 
             em.add_field(name='Shortcode', value=champ.short, inline=True)
             em.set_thumbnail(url=champ.get_featured())
