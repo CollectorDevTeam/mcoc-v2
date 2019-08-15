@@ -1130,7 +1130,7 @@ class MCOC(ChampionFactory):
         await roster.display(hargs.tags) #imported from hook
 
     @champ.command(pass_context=True, name='released', aliases=('odds','chances',))
-    async def champ_released(self, ctx, champ: ChampConverter):
+    async def champ_released(self, ctx, champ: ChampConverter=None):
         '''Champion Release Date & Crystal Odds'''
         print('check_release')
         # released = await self.check_release(ctx, champ)
@@ -1143,6 +1143,7 @@ class MCOC(ChampionFactory):
 
             await self.bot.say(embed=data)
             await self.bot.say('https://youtu.be/ewZiaL0Mcts')
+            return
 
         released = True
         if released:
