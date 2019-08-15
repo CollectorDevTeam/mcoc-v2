@@ -1131,9 +1131,19 @@ class MCOC(ChampionFactory):
 
     @champ.command(pass_context=True, name='released', aliases=('odds','chances',))
     async def champ_released(self, ctx, champ: ChampConverter):
-        '''Champion Release Date'''
+        '''Champion Release Date & Crystal Odds'''
         print('check_release')
         # released = await self.check_release(ctx, champ)
+        if champ is None:
+            data = discord.Embed(color=discord.Color.gold(),
+                                 title='CollectorVerse Help', description='Syntax:'
+                                                                          ''
+                                                                          '/champ odds <champion>'
+                                                                           'Check out this video for help')
+
+            await self.bot.say(embed=data)
+            await self.bot.say('https://youtu.be/ewZiaL0Mcts')
+
         released = True
         if released:
             em = discord.Embed(color=champ.class_color, title='{} | Released {}'.format(champ.full_name, champ.released),
