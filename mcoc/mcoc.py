@@ -1750,46 +1750,58 @@ class MCOC(ChampionFactory):
         await self.bot.say(embed=em)
 
     @champ.command(pass_context=True, name='abilities')
-    async def champ_abilities(self, ctx,  *, champ : ChampConverterDebug):
+    async def champ_abilities(self, ctx,  *, champ: ChampConverterDebug):
         '''Champion Abilities'''
-        xref=get_csv_row(data_files['crossreference']['local'],'champ',champ.full_name)
-        abilities=xref['abilities'].split(', ')
-        extended_abilities=xref['extended_abilities']
-        counters=xref['counters'].split(', ')
-        hashtags=xref['hashtags'].split(' #')
-        embeds = []
-        if os.path.exists(ability_desc.format(champ.mattkraftid)):
-            ability_file = open(ability_desc.format(champ.mattkraftid),"r", encoding='utf-8')
-            pages = chat.pagify(text=ability_file.read(), delims=["\n\n"], escape=False, page_length=1500)
-            for page in pages:
-                # print(page)
-                em = discord.Embed(color=champ.class_color, title='Abilities', descritpion='')
-                em.add_field(name='Ability Keywords', value=champ.abilities)
-                em.set_author(name='Champion #{0.champNumber} : {0.full_name}'.format(champ), icon_url=champ.get_avatar())
-                if len(extended_abilities) > 1:
-                    em.add_field(name='Extended Keywords', value=extended_abilities, inline=False)
-                if len(counters) > 1:
-                    em.add_field(name='Counters (#!)', value=', '.join(c.title() for c in counters), inline=False)
-                em.add_field(name='Hashtags (#)', value=champ.hashtags, inline=False)
-                em.set_thumbnail(url=champ.get_avatar())
-                em.set_footer(text='MCOC Game Files', icon_url=KABAM_ICON)
-                em.description = page
-                embeds.append(em)
-        appinfo = await self.bot.application_info()
-        sigtitle, sigdesc, sig_calcs = await champ.process_sig_description(isbotowner=appinfo.owner)
-        if sigtitle is not None:
-            em = discord.Embed(color=champ.class_color, title='Signature Ability s{0.sig}: {1}'.format(champ, sigtitle), descritpion='')
-            em.description='```'+sigdesc.format(d=sig_calcs)+'```'
-            em.add_field(name='Ability Keywords', value=champ.abilities)
-            em.set_author(name='#{0.champNumber}: {0.full_name}'.format(champ), icon_url=champ.get_avatar())
-            if len(extended_abilities) > 1:
-                em.add_field(name='Extended Keywords', value=extended_abilities, inline=False)
-            if len(counters) > 1:
-                em.add_field(name='Counters (#!)', value=', '.join(c.title() for c in counters), inline=False)
-            em.add_field(name='Hashtags (#)', value=champ.hashtags, inline=False)
-            em.set_thumbnail(url=champ.get_avatar())
-            em.set_footer(text='MCOC Game Files', icon_url=KABAM_ICON)
-            embeds.append(em)
+        # imageid='4-{}-5'.format(champ.mattkraftid)
+        imageurl='{}/images/abilities/4-{}-5.png'.format(remote_data_basepath, champ.mattkraftid)
+        em = discord.Embed(color=champ.class_color, title='Champ Info', url=SPOTLIGHT_SURVEY)
+        em.set_image(url=imageurl)
+        if champ.abilities is not None:
+            em.add_field(name='Named Abilities', value=champ.abilities)
+        if champ.extended_abilities is not None:
+            em.add_field(name='Extended Abilities', value=champ.extended_abilities)
+        em.add_field(name='Shortcode', value=champ.short)
+        em.set_footer(text='MCOC Website', icon_url=KABAM_ICON)
+        em.set_thumbnail(url=champ.get_avatar())
+        await self.bot.say(embed=em)
+        # xref=get_csv_row(data_files['crossreference']['local'],'champ',champ.full_name)
+        # abilities=xref['abilities'].split(', ')
+        # extended_abilities=xref['extended_abilities']
+        # counters=xref['counters'].split(', ')
+        # hashtags=xref['hashtags'].split(' #')
+        # embeds = []
+        # if os.path.exists(ability_desc.format(champ.mattkraftid)):
+        #     ability_file = open(ability_desc.format(champ.mattkraftid),"r", encoding='utf-8')
+        #     pages = chat.pagify(text=ability_file.read(), delims=["\n\n"], escape=False, page_length=1500)
+        #     for page in pages:
+        #         # print(page)
+        #         em = discord.Embed(color=champ.class_color, title='Abilities', descritpion='')
+        #         em.add_field(name='Ability Keywords', value=champ.abilities)
+        #         em.set_author(name='Champion #{0.champNumber} : {0.full_name}'.format(champ), icon_url=champ.get_avatar())
+        #         if len(extended_abilities) > 1:
+        #             em.add_field(name='Extended Keywords', value=extended_abilities, inline=False)
+        #         if len(counters) > 1:
+        #             em.add_field(name='Counters (#!)', value=', '.join(c.title() for c in counters), inline=False)
+        #         em.add_field(name='Hashtags (#)', value=champ.hashtags, inline=False)
+        #         em.set_thumbnail(url=champ.get_avatar())
+        #         em.set_footer(text='MCOC Game Files', icon_url=KABAM_ICON)
+        #         em.description = page
+        #         embeds.append(em)
+        # appinfo = await self.bot.application_info()
+        # sigtitle, sigdesc, sig_calcs = await champ.process_sig_description(isbotowner=appinfo.owner)
+        # if sigtitle is not None:
+        #     em = discord.Embed(color=champ.class_color, title='Signature Ability s{0.sig}: {1}'.format(champ, sigtitle), descritpion='')
+        #     em.description='```'+sigdesc.format(d=sig_calcs)+'```'
+        #     em.add_field(name='Ability Keywords', value=champ.abilities)
+        #     em.set_author(name='#{0.champNumber}: {0.full_name}'.format(champ), icon_url=champ.get_avatar())
+        #     if len(extended_abilities) > 1:
+        #         em.add_field(name='Extended Keywords', value=extended_abilities, inline=False)
+        #     if len(counters) > 1:
+        #         em.add_field(name='Counters (#!)', value=', '.join(c.title() for c in counters), inline=False)
+        #     em.add_field(name='Hashtags (#)', value=champ.hashtags, inline=False)
+        #     em.set_thumbnail(url=champ.get_avatar())
+        #     em.set_footer(text='MCOC Game Files', icon_url=KABAM_ICON)
+        #     embeds.append(em)
         # else:
         #     embeds.append(em)
         if len(embeds) > 0:
