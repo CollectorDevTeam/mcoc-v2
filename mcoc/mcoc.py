@@ -1758,11 +1758,11 @@ class MCOC(ChampionFactory):
         em.set_author(name='{0.full_name}'.format(champ), icon_url=champ.get_avatar())
         em.set_image(url=imageurl)
         if champ.abilities is not None:
-            em.add_field(name='Named Abilities', value=champ.abilities)
+            em.add_field(name='Named Abilities', value=champ.abilities.title())
         if champ.extended_abilities is not None:
-            em.add_field(name='Extended Abilities', value=champ.extended_abilities)
+            em.add_field(name='Extended Abilities', value=champ.extended_abilities.title())
         if champ.counters is not None:
-            em.add_field(name='{} can counter these abilities'.format(champ.full_name), value=champ.counters)
+            em.add_field(name='{} can counter these abilities'.format(champ.full_name), value=champ.counters.title())
         if champ.hashtags is not None:
             em.add_field(name='Hashtags', value=champ.hashtags)
         em.add_field(name='Shortcode', value=champ.short)
