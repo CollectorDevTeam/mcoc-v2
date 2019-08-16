@@ -1754,15 +1754,20 @@ class MCOC(ChampionFactory):
         '''Champion Abilities'''
         # imageid='4-{}-5'.format(champ.mattkraftid)
         imageurl='{}/images/abilities/4-{}-5.png'.format(remote_data_basepath, champ.mattkraftid)
-        em = discord.Embed(color=champ.class_color, title='Champ Info', url=SPOTLIGHT_SURVEY)
+        em = discord.Embed(color=champ.class_color, title='Champ Abilities', url=SPOTLIGHT_SURVEY)
+        em.set_author(name='{0.full_name}'.format(champ), icon_url=champ.get_avatar())
         em.set_image(url=imageurl)
         if champ.abilities is not None:
             em.add_field(name='Named Abilities', value=champ.abilities)
         if champ.extended_abilities is not None:
             em.add_field(name='Extended Abilities', value=champ.extended_abilities)
+        if champ.counters is not None:
+            em.add_field(name='{} can counter these abilities'.format(champ.full_name), value=champ.counters)
+        if champ.hashtags is not None:
+            em.add_field(name='Hashtags', value=champ.hashtags)
         em.add_field(name='Shortcode', value=champ.short)
-        em.set_footer(text='MCOC Website', icon_url=KABAM_ICON)
-        em.set_thumbnail(url=champ.get_avatar())
+        em.set_footer(text='CollectorDevTeam | Requested by {}'.format(ctx.message.author.display_name), icon_url=COLLECTOR_ICON)
+        em.set_thumbnail(url=champ.get_featured())
         await self.bot.say(embed=em)
         # xref=get_csv_row(data_files['crossreference']['local'],'champ',champ.full_name)
         # abilities=xref['abilities'].split(', ')
