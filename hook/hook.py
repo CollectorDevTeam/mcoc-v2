@@ -410,13 +410,13 @@ class Hook:
         self.bot = bot
         self.champ_re = re.compile(r'.*hamp.*\.csv')
         self.gsheet_handler = GSHandler(bot)
-        # self.gsheet_handler.register_gsheet(
-        #     name='collection',
-        #     gkey='1JSiGo-oGbPdmlegmGTH7hcurd_HYtkpTnZGY1mN_XCE',
-        #     local='data/mcoc/collection',
-        #     sheet_name='collection',
-        #     range_name='available_collection'
-        # )
+        self.gsheet_handler.register_gsheet(
+            name='collection',
+            gkey='1JSiGo-oGbPdmlegmGTH7hcurd_HYtkpTnZGY1mN_XCE',
+            local='data/mcoc/collection',
+            sheet_name='collection',
+            range_name='available_collection'
+        )
         # self.champ_re = re.compile(r'champ.*\.csv')
         #self.champ_re = re.compile(r'champions(?:_\d+)?.csv')
         #self.champ_str = '{0[Stars]}★ R{0[Rank]} S{0[Awakened]:<2} {0[Id]}'
@@ -755,7 +755,7 @@ class Hook:
         tmp_file = '{}-{}.tmp'.format(path, rand)
         # with open(tmp_file, 'w') as fp:
         with open(tmp_file, 'w', encoding='utf-8') as fp:
-            writer = csv.DictWriter(fp, fieldnames=['member_mention','member_name', *(roster.fieldnames)], extrasaction='ignore', lineterminator='\n')
+            writer = csv.DictWriter(fp, fieldnames=['member_mention', 'member_name', *(roster.fieldnames)], extrasaction='ignore', lineterminator='\n')
             writer.writeheader()
             for member in server.members:
                 if role in member.roles:
