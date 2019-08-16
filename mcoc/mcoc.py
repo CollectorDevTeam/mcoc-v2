@@ -1804,11 +1804,11 @@ class MCOC(ChampionFactory):
         #     embeds.append(em)
         # else:
         #     embeds.append(em)
-        if len(embeds) > 0:
-            menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
-            await menu.menu_start(embeds)
-        else:
-            await self.bot.say(embed=em)
+        # if len(embeds) > 0:
+        #     menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
+        #     await menu.menu_start(embeds)
+        # else:
+        #     await self.bot.say(embed=em)
 
     @champ.command(pass_context=True, name='specials', aliases=['special',])
     async def champ_specials(self, ctx, champ : ChampConverter):
