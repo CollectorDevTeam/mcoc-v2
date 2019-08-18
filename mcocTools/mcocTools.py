@@ -647,14 +647,21 @@ class AttrExpr(md.Grammar):
         {e.get_attrs(attrs) for e in self}
         return attrs
 
+class UserSnowflake(md.Grammar):
+    grammar = md.L('<@'), md.OPTIONAL(md.L('!')), md.WORD('0-9'), md.L('>')
+    grammar_whitespace_mode = 'explicit'
+
 class UserDiscriminator(md.Grammar):
     grammar = md.L('#'), md.WORD('0-9', count=4)
     grammar_whitespace_mode = 'explicit'
 
-class UserExpr(md.Grammar):
-    grammar = (md.OPTIONAL(md.L('@')), md.WORD('^@!#()&|'),
+class UserString(md.Grammar):
+    grammar = (md.OPTIONAL(md.L('@')), md.ANY_EXCEPT('@!#()&|'),
                 md.OPTIONAL(UserDiscriminator))
     grammar_whitespace_mode = 'explicit'
+
+class UserExpr(md.Grammar):
+    grammar = UserString | UserSnowflake
 
     def get_user(self, ctx):
         return commands.UserConverter(ctx, self.string).convert()
@@ -693,13 +700,15 @@ class HashUnaryOperator(md.Grammar):
 
 
 class HashBinaryOperator(md.Grammar):
-    grammar = md.L('&') | md.L('|')
+    grammar = md.L('&') | md.L('|') | md.L('-')
 
     def op(self, roster):
         if self.string == '&':
             return set.intersection
         elif self.string == '|':
             return set.union
+        elif self.string == '-':
+            return set.difference
 
 
 class HashP0Term(md.Grammar):

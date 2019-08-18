@@ -194,14 +194,14 @@ class ChampionRoster:
             dataIO.save_json(self.champs_file, champ_data)
             #self.save_champ_data(champ_data)
 
-    async def load_champions(self):
+    async def load_champions(self, silent=False):
         data = self.load_champ_data()
         self.roster = {}
         name = 'roster' if 'roster' in data else 'champs'
         for k in data[name]:
             champ = await self.get_champion(k)
             self.roster[champ.immutable_id] = champ
-        if len(self.roster) == 0:
+        if len(self.roster) == 0 and not silent:
             await self.warn_missing_roster()
 
     def from_list(self, champ_list):
@@ -877,7 +877,7 @@ class Hook:
         for member in server.members:
             if role in member.roles:
                 roster = ChampionRoster(self.bot, member)
-                await roster.load_champions()
+                await roster.load_champions(silent=True)
                 if roster.prestige > 0:
                     prestige += roster.prestige
                     cnt += 1
@@ -950,7 +950,7 @@ def setup(bot):
     check_folders()
     override_error_handler(bot)
     n = Hook(bot)
-    sgd = StaticGameData()
-    sgd.register_gsheets(bot)
+    sgd = StaticGameData(bot)
+    #sgd.register_gsheets(bot)
     bot.add_cog(n)
     bot.add_listener(n._on_attachment, name='on_message')

@@ -149,6 +149,7 @@ class_emoji = {
         'Skill':'<:skill2:339511716549230592>',
         'Science':'<:science2:339511716029267969>',
         'Mystic':'<:mystic2:339511716150771712>',
+        'default': '',
         }
 
 def from_flat(flat, ch_rating):
@@ -384,6 +385,8 @@ class ChampionFactory():
         kwargs['bot'] = bot
         kwargs['alias_set'] = alias_set
         kwargs['klass'] = kwargs.pop('class', 'default')
+        if kwargs['klass'] == '':
+            kwargs['klass'] = 'default'  # protect against malformed 'class' attr
 
         if not kwargs['champ'].strip():  #empty line
             return
@@ -403,7 +406,7 @@ class ChampionFactory():
         for a in kwargs['counters'].split(','):
             kwargs['class_tags'].add('#!' + ''.join(a.lower().split(' ')))
         if kwargs['class_tags']:
-            kwargs['class_tags'].difference_update({'#'})
+            kwargs['class_tags'].difference_update({'#', '#!'})
 
         for key, value in kwargs.items():
             if not value or value == 'n/a':
