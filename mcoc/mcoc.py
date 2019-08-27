@@ -1307,7 +1307,7 @@ class MCOC(ChampionFactory):
         for champ in champs:
             released = await self.check_release(ctx, champ)
             if released:
-                data = sgd.cdt_stats[champ.unique]
+                data = sgd.cdt_stats
                 # data = champ.get_spotlight(default='x')
                 embeds =[]
                 em = discord.Embed(color=champ.class_color, title='Champion Stats',url=SPOTLIGHT_SURVEY)
@@ -1321,7 +1321,8 @@ class MCOC(ChampionFactory):
                 #     em.add_field(name='Values', value='\n'.join([data[k] for k in keys]), inline=True)
                 #     em.add_field(name='Added to PHC', value=xref['4basic'])
                 # else:
-                stats = [[titles[i], data[keys[i]]] for i in range(len(titles))]
+                stats = [[titles[i], data[champ.unique][keys[i]]] for i in range(len(titles))]
+                # stats = [[titles[i], data[keys[i]]] for i in range(len(titles))]
                 em.add_field(name='Base Stats', value=tabulate(stats, width=18, rotate=False, header_sep=False), inline=False)
                 em.add_field(name='Shortcode',value=champ.short)
                 # em.set_thumbnail(url=champ.get_featured())
