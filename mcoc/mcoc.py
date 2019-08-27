@@ -611,10 +611,10 @@ class MCOC(ChampionFactory):
             )
         self.gsheet_handler.register_gsheet(
             name='cdt_stats',
-            gkey='1VOqej9o4yLAdMoZwnWbPY-fTFynbDb_Lk8bXDNeonuE',
+            gkey='1I3T2G2tRV05vQKpBfmI04VpvP5LjCBPfVICDmuJsjks',
             local='data/mcoc/cdt_stats.json',
-            sheet_name='stats_export',
-            range_name='collector_export',
+            sheet_name='spotlightJSON',
+            range_name='stats_export',
         )
         self.gsheet_handler.register_gsheet(
             name='tldr',
