@@ -1316,9 +1316,9 @@ class MCOC(ChampionFactory):
             # filetime = datetime.datetime.fromtimestamp(os.path.getctime('data/mcoc/tldr.json'))
             filetime = datetime.fromtimestamp(os.path.getctime('data/mcoc/cdt_stats.json'))
             if filetime.date() != now:
-                await self.gsheet_handler.cache_gsheets(key)
+                await self.gsheet_handler.cache_gsheets('cdt_stats')
         else:
-            await self.gsheet_handler.cache_gsheets(key)
+            await self.gsheet_handler.cache_gsheets('cdt_stats')
         cdt_stats = dataIO.load_json('data/mcoc/cdt_stats.json')
         for champ in champs:
             released = await self.check_release(ctx, champ)
