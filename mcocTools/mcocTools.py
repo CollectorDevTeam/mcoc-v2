@@ -443,6 +443,7 @@ class StaticGameData:
 
     async def load_cdt_data(self):
         cdt_data, cdt_versions = ChainMap(), ChainMap()
+        cdt_stats = None
         files = (
             'https://raw.githubusercontent.com/CollectorDevTeam/assets/master/data/json/snapshots/en/bcg_en.json',
             'https://raw.githubusercontent.com/CollectorDevTeam/assets/master/data/json/snapshots/en/bcg_stat_en.json',
@@ -469,6 +470,9 @@ class StaticGameData:
             self.cdt_masteries = await self.fetch_json(
                 self.remote_data_basepath + 'json/masteries.json',
                 session)
+            self.cdt_stats = StaticGameData.get_gsheets_data('cdt_stats')
+
+
 
     async def cache_gsheets(self):
         print("Attempt gsheet pull")
