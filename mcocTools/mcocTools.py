@@ -355,6 +355,7 @@ class StaticGameData:
     remote_data_basepath = "https://raw.githubusercontent.com/CollectorDevTeam/assets/master/data/"
     cdt_data, cdt_versions, cdt_masteries = None, None, None
     cdt_trials = None
+    cdt_stats = None
     gsheets_data = None
     test = 3
     tiercolors = {
@@ -418,6 +419,14 @@ class StaticGameData:
             # settings=dict(column_handler='champs: to_list')
         )
 
+        self.gsheet_handler.register_gsheet(
+            name='cdt_stats',
+            gkey='1VOqej9o4yLAdMoZwnWbPY-fTFynbDb_Lk8bXDNeonuE',
+            local='data/mcoc/cdt_stats.json',
+            sheet_name='stats_export',
+            range_name='collector_export',
+        )
+
         # Update this list to add Events
         events = ['13', '13.1', '14', '14.1', '15', '15.1', '16', '16.1', '17', '17.1', '17.2', '18', '18.1', '19',
                   '19.1', '20', '20.1', '21', '21.1', '21.2', '21.3', '22', '22.1','23','23.1', '24',
@@ -457,7 +466,6 @@ class StaticGameData:
                 cdt_versions.maps.append(ver)
             self.cdt_data = cdt_data
             self.cdt_versions = cdt_versions
-
             self.cdt_masteries = await self.fetch_json(
                 self.remote_data_basepath + 'json/masteries.json',
                 session)
