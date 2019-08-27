@@ -1359,12 +1359,12 @@ class MCOC(ChampionFactory):
                 if data[champ.unique]['critical'] == 'x':
                     flats.append('x')
                 else:
-                    flats.append('% {}'.format(from_flat(int(data[keys[2]].replace(',','')), int(champ.chlgr_rating))))
+                    flats.append('% {}'.format(from_flat(int(data[champ.unique][keys[2]].replace(',','')), int(champ.chlgr_rating))))
                 if data[champ.unique]['critdamage'] == 'x':
                 # if data[keys[3]] == 'x':
                     flats.append('x')
                 else:
-                    critdmg=round(0.5+5*from_flat(int(data[keys[3]].replace(',','')), int(champ.chlgr_rating)),2)
+                    critdmg=round(0.5+5*from_flat(int(data[champ.unique][keys[3]].replace(',','')), int(champ.chlgr_rating)),2)
                     flats.append('% {}'.format(critdmg))
                 # for k in range(4, len(keys)):
                 for k in ('armor_pen', 'block_pen', 'crit_resist', 'armor', 'blockprof'):
