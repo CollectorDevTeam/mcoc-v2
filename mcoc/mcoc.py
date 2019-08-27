@@ -1303,10 +1303,12 @@ class MCOC(ChampionFactory):
     @champ.command(pass_context=True, name='stats', aliases=('stat',))
     async def champ_stats(self, ctx, *, champs : ChampConverterMult):
         '''Champion(s) Base Stats'''
+        sgd = cogs.mcocTools.StaticGameData()
         for champ in champs:
             released = await self.check_release(ctx, champ)
             if released:
-                data = champ.get_spotlight(default='x')
+                data = sgd.cdt_stat[champ.unique]
+                # data = champ.get_spotlight(default='x')
                 embeds =[]
                 em = discord.Embed(color=champ.class_color, title='Champion Stats',url=SPOTLIGHT_SURVEY)
                 em.set_author(name=champ.verbose_str, icon_url=champ.get_avatar())
