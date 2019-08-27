@@ -1376,7 +1376,7 @@ class MCOC(ChampionFactory):
                     if data[champ.unique][k] == 'x':
                         flats.append('x')
                     else:
-                        flats.append('% {}'.format(from_flat(int(data[champ.unique][keys[k]]), int(champ.chlgr_rating))))
+                        flats.append('% {}'.format(from_flat(int(data[champ.unique][k]), int(champ.chlgr_rating))))
                         # flats.append('% {}'.format(from_flat(int(data[champ.unique][keys[k]].replace(',','')), int(champ.chlgr_rating))))
                 pcts = [[titles[i], flats[i]] for i in range(len(titles))]
                 em2.add_field(name='Base Stats %', value=tabulate(pcts, width=19, rotate=False, header_sep=False), inline=False)
