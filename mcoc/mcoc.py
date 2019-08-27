@@ -1359,19 +1359,25 @@ class MCOC(ChampionFactory):
                 if data[champ.unique]['critical'] == 'x':
                     flats.append('x')
                 else:
-                    flats.append('% {}'.format(from_flat(int(data[champ.unique][keys[2]].replace(',','')), int(champ.chlgr_rating))))
+                    # flats.append('% {}'.format(from_flat(int(data[champ.unique][keys[2]].replace(',','')), int(champ.chlgr_rating))))
+                    flats.append('% {}'.format(
+                        from_flat(int(data[champ.unique][keys[2]]), int(champ.chlgr_rating))))
                 if data[champ.unique]['critdamage'] == 'x':
                 # if data[keys[3]] == 'x':
                     flats.append('x')
                 else:
-                    critdmg=round(0.5+5*from_flat(int(data[champ.unique][keys[3]].replace(',','')), int(champ.chlgr_rating)),2)
+                    critdmg = round(
+                        0.5 + 5 * from_flat(int(data[champ.unique][keys[3]]), int(champ.chlgr_rating)),
+                        2)
+                    # critdmg=round(0.5+5*from_flat(int(data[champ.unique][keys[3]].replace(',','')), int(champ.chlgr_rating)),2)
                     flats.append('% {}'.format(critdmg))
                 # for k in range(4, len(keys)):
                 for k in ('armor_pen', 'block_pen', 'crit_resist', 'armor', 'blockprof'):
                     if data[champ.unique][k] == 'x':
                         flats.append('x')
                     else:
-                        flats.append('% {}'.format(from_flat(int(data[champ.unqique][keys[k]].replace(',','')), int(champ.chlgr_rating))))
+                        flats.append('% {}'.format(from_flat(int(data[champ.unqique][keys[k]]), int(champ.chlgr_rating))))
+                        # flats.append('% {}'.format(from_flat(int(data[champ.unqique][keys[k]].replace(',','')), int(champ.chlgr_rating))))
                 pcts = [[titles[i], flats[i]] for i in range(len(titles))]
                 em2.add_field(name='Base Stats %', value=tabulate(pcts, width=19, rotate=False, header_sep=False), inline=False)
                 em2.add_field(name='Shortcode', value=champ.short)
