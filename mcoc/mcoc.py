@@ -610,6 +610,13 @@ class MCOC(ChampionFactory):
                 local=local_files['synergy'],
             )
         self.gsheet_handler.register_gsheet(
+            name='cdt_stats',
+            gkey='1VOqej9o4yLAdMoZwnWbPY-fTFynbDb_Lk8bXDNeonuE',
+            local='data/mcoc/cdt_stats.json',
+            sheet_name='stats_export',
+            range_name='collector_export',
+        )
+        self.gsheet_handler.register_gsheet(
             name='tldr',
             gkey='1tQdQNjzr8dlSz2A8-G33YoNIU1NF8xqAmIgZtR7DPjM',
             local='data/mcoc/tldr.json',
@@ -1303,11 +1310,20 @@ class MCOC(ChampionFactory):
     @champ.command(pass_context=True, name='stats', aliases=('stat',))
     async def champ_stats(self, ctx, *, champs : ChampConverterMult):
         '''Champion(s) Base Stats'''
-        sgd = cogs.mcocTools.StaticGameData()
+        # sgd = cogs.mcocTools.StaticGameData()
+        now = datetime.now().date()
+        if os.path.exists('data/mcoc/cdt_stats.json'):
+            # filetime = datetime.datetime.fromtimestamp(os.path.getctime('data/mcoc/tldr.json'))
+            filetime = datetime.fromtimestamp(os.path.getctime('data/mcoc/cdt_stats.json'))
+            if filetime.date() != now:
+                await self.gsheet_handler.cache_gsheets(key)
+        else:
+            await self.gsheet_handler.cache_gsheets(key)
+        cdt_stats = dataIO.load_json('data/mcoc/cdt_stats.json')
         for champ in champs:
             released = await self.check_release(ctx, champ)
             if released:
-                data = sgd.cdt_stats
+                data = cdt_stats
                 # data = champ.get_spotlight(default='x')
                 embeds =[]
                 em = discord.Embed(color=champ.class_color, title='Champion Stats',url=SPOTLIGHT_SURVEY)
@@ -1321,7 +1337,9 @@ class MCOC(ChampionFactory):
                 #     em.add_field(name='Values', value='\n'.join([data[k] for k in keys]), inline=True)
                 #     em.add_field(name='Added to PHC', value=xref['4basic'])
                 # else:
-                stats = [[titles[i], data[champ.unique][keys[i]]] for i in range(len(titles))]
+                # stats = [[titles[i], data[champ.unique, keys[i]]] for i in range(len(titles))]
+                for i in range(len(titles)):
+                    stats = [[titles[i], data[champ.unique[keys[i]]]]]
                 # stats = [[titles[i], data[keys[i]]] for i in range(len(titles))]
                 em.add_field(name='Base Stats', value=tabulate(stats, width=18, rotate=False, header_sep=False), inline=False)
                 em.add_field(name='Shortcode',value=champ.short)

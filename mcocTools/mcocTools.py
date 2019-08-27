@@ -419,13 +419,7 @@ class StaticGameData:
             # settings=dict(column_handler='champs: to_list')
         )
 
-        self.gsheet_handler.register_gsheet(
-            name='cdt_stats',
-            gkey='1VOqej9o4yLAdMoZwnWbPY-fTFynbDb_Lk8bXDNeonuE',
-            local='data/mcoc/cdt_stats.json',
-            sheet_name='stats_export',
-            range_name='collector_export',
-        )
+
 
         # Update this list to add Events
         events = ['13', '13.1', '14', '14.1', '15', '15.1', '16', '16.1', '17', '17.1', '17.2', '18', '18.1', '19',
@@ -471,7 +465,6 @@ class StaticGameData:
                 self.remote_data_basepath + 'json/masteries.json',
                 session)
             self.cdt_stats = StaticGameData.get_gsheets_data('cdt_stats')
-
 
 
     async def cache_gsheets(self):
