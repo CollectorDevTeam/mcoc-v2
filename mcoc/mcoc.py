@@ -1307,7 +1307,7 @@ class MCOC(ChampionFactory):
         for champ in champs:
             released = await self.check_release(ctx, champ)
             if released:
-                data = sgd.cdt_stat[champ.unique]
+                data = sgd.cdt_stats[champ.unique]
                 # data = champ.get_spotlight(default='x')
                 embeds =[]
                 em = discord.Embed(color=champ.class_color, title='Champion Stats',url=SPOTLIGHT_SURVEY)
