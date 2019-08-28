@@ -1339,11 +1339,11 @@ class MCOC(ChampionFactory):
                 # else:
                 # stats = [[titles[i], data[champ.unique, keys[i]]] for i in range(len(titles))]
                 # for i, k in titles, keys:
-                for i in range(len(titles)):
-                    k = keys[i]
+                # for i in range(len(titles)):
+                    # k = keys[i]
                     # stats = [i, data[champ.unique][k]]
-                    stats = [[titles[i], data[champ.unique][k]]]
-                # stats = [[titles[i], data[keys[i]]] for i in range(len(titles))]
+                    # stats = [[titles[i], data[champ.unique][k]]]
+                stats = [[titles[i], data[champ.unique][keys[i]]] for i in range(len(titles))]
                 em.add_field(name='Base Stats', value=tabulate(stats, width=18, rotate=False, header_sep=False), inline=False)
                 em.add_field(name='Shortcode',value=champ.short)
                 # em.set_thumbnail(url=champ.get_featured())
