@@ -393,13 +393,13 @@ class StaticGameData:
             sheet_name='season7',
             # settings=dict(column_handler='champs: to_list')
         )
-        self.gsheet_handler.register_gsheet(
-            name='collection',
-            gkey='1JSiGo-oGbPdmlegmGTH7hcurd_HYtkpTnZGY1mN_XCE',
-            local='data/mcoc/collection',
-            sheet_name='collection',
-            range_name='available_collection'
-        )
+        # self.gsheet_handler.register_gsheet(
+        #     name='collection',
+        #     gkey='1JSiGo-oGbPdmlegmGTH7hcurd_HYtkpTnZGY1mN_XCE',
+        #     local='data/mcoc/collection',
+        #     sheet_name='collection',
+        #     range_name='available_collection'
+        # )
 
         self.gsheet_handler.register_gsheet(
             name='tldr',

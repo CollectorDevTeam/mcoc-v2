@@ -274,7 +274,7 @@ class STORYQUEST:
                     key = '{}-{}-1'.format(map, p)
                     for emoji in self.all_emojis.values():
                         if emoji.path == p:
-                            data.add_field(name=emoji.text, value='Quest: {}\nTiles: {}\nEnergy: {}\nNotes: {}'
+                            data.add_field(name=emoji.text, value='Quest: {}\nTiles: {}\nEnergy: {}\nNotes: {}\n'
                                            .format(p[-1:],self.export[key]['tiles'],
                                                    self.export[key]['tiles']*3,
                                                    self.export[key]['notes']))
@@ -353,7 +353,7 @@ class STORYQUEST:
 
                 for g in gboosts:
                     if g != '-' and g != '':
-                        data.description+='\n\n__Global__: __{}__\n{}\n\n'.format(self.glossary_keys[g], self.glossary_desc[g])
+                        data.description+='\n\n__Global__: __{}__\n{}'.format(self.glossary_keys[g], self.glossary_desc[g])
                         # data.add_field(name='Global Boost: {}'.format(g.title()),
                         #                value='{}'.format(self.glossary_desc[g]))
                         # if self.glossary_tips[g] != "":
@@ -361,13 +361,13 @@ class STORYQUEST:
 
                 for b in boosts:
                     if b != '-' and b !='':
-                        data.description += '__{}__\n{}\n\n'.format(self.glossary_keys[b], self.glossary_desc[b])
+                        data.description += '\n\n__{}__\n{}'.format(self.glossary_keys[b], self.glossary_desc[b])
                         # data.add_field(name='{}'.format(b.title()),
                         #                value='{}'.format(self.glossary_desc[b]))
                         # if self.glossary_tips[b] != "":
                         #     data.add_field(name='CollectorVerse Tips', value=self.glossary_tips[b])
                 if notes != '':
-                    data.description+='__Notes__\n{}'.format(notes)
+                    data.description+='\n\n__Notes__\n{}'.format(notes)
                     # data.add_field(name='Notes', value=notes)
                 if map in starfire_maps:
                     data.set_footer(

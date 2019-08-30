@@ -1,4 +1,5 @@
 import discord
+from datetime import datetime, timedelta
 from discord.ext import commands
 from .mcoc import (ChampConverter, ChampConverterMult,
                   QuietUserError, override_error_handler)
@@ -410,6 +411,7 @@ class Hook:
         self.bot = bot
         self.champ_re = re.compile(r'.*hamp.*\.csv')
         self.gsheet_handler = GSHandler(bot)
+        self.collection = None
         self.gsheet_handler.register_gsheet(
             name='collection',
             gkey='1JSiGo-oGbPdmlegmGTH7hcurd_HYtkpTnZGY1mN_XCE',
@@ -512,12 +514,25 @@ class Hook:
 
     @roster.command(pass_context=True, name='stats', hidden=True)
     async def _roster_stats(self, ctx, user: discord.User = None):
-        sgd = StaticGameData()
-        collection = await sgd.get_gsheets_data('collection')
+        # sgd = StaticGameData()
+
+        now = datetime.now().date()
+        if os.path.exists('data/mcoc/collection.json'):
+            # filetime = datetime.datetime.fromtimestamp(os.path.getctime('data/mcoc/tldr.json'))
+            filetime = datetime.fromtimestamp(os.path.getctime('data/mcoc/collection.json'))
+            if filetime.date() != now:
+                await self.gsheet_handler.cache_gsheets('collection')
+                self.collection = dataIO.load_json('data/mcoc/collection.json')
+        else:
+            await self.gsheet_handler.cache_gsheets('collection')
+            self.collection = dataIO.load_json('data/mcoc/collection.json')
+        if self.collection is None:
+            self.collection = dataIO.load_json('data/mcoc/collection.json')
+        collection = self.collection
         if user is None:
             user = ctx.message.author
         if ctx.message.channel.is_private:
-            ucolor=discord.Color.gold()
+            ucolor = discord.Color.gold()
         else:
             ucolor = user.color
         roster = ChampionRoster(self.bot, user)
