@@ -149,6 +149,7 @@ class_emoji = {
         'Skill':'<:skill2:339511716549230592>',
         'Science':'<:science2:339511716029267969>',
         'Mystic':'<:mystic2:339511716150771712>',
+        'default': '',
         }
 
 def from_flat(flat, ch_rating):
@@ -384,6 +385,8 @@ class ChampionFactory():
         kwargs['bot'] = bot
         kwargs['alias_set'] = alias_set
         kwargs['klass'] = kwargs.pop('class', 'default')
+        if kwargs['klass'] == '':
+            kwargs['klass'] = 'default'  # protect against malformed 'class' attr
 
         if not kwargs['champ'].strip():  #empty line
             return
@@ -397,13 +400,16 @@ class ChampionFactory():
         for a in kwargs['abilities'].split(','):
             kwargs['class_tags'].add('#' + ''.join(a.lower().split(' ')))
         for a in kwargs['hashtags'].split('#'):
-            kwargs['class_tags'].add('#' + ''.join(a.lower().split(' ')))
+            newtag = '#' + ''.join(a.lower().split(' '))
+            kwargs['class_tags'].add(newtag)
+            if ':' in newtag and not newtag.startswith('#size'):
+                kwargs['class_tags'].add(newtag.split(':')[0])
         for a in kwargs['extended_abilities'].split(','):
             kwargs['class_tags'].add('#' + ''.join(a.lower().split(' ')))
         for a in kwargs['counters'].split(','):
             kwargs['class_tags'].add('#!' + ''.join(a.lower().split(' ')))
         if kwargs['class_tags']:
-            kwargs['class_tags'].difference_update({'#'})
+            kwargs['class_tags'].difference_update({'#', '#!'})
 
         for key, value in kwargs.items():
             if not value or value == 'n/a':
@@ -1122,19 +1128,14 @@ class MCOC(ChampionFactory):
             /champ list    (all 4* champs rank5, sig99)
             /champ list 5*r3s20 #bleed   (all 5* bleed champs at rank3, sig20)
         '''
-        hargs = await hook.HashtagRankConverter(ctx, hargs).convert() #imported from hook
-        #await self.update_local()
-        roster = hook.ChampionRoster(self.bot, self.bot.user) #imported from hook
-        rlist = []
-        for champ_class in self.champions.values():
-            champ = champ_class(hargs.attrs.copy())
-            # released = await self.check_release(ctx, champ)
-            # if released:
-            if champ.has_prestige:
-                rlist.append(champ)
-        roster.from_list(rlist)
-        roster.display_override = 'Prestige Listing: {0.attrs_str}'.format(rlist[0])
-        await roster.display(hargs.tags) #imported from hook
+        #hargs = await hook.HashtagRankConverter(ctx, hargs).convert() #imported from hook
+        #roster = hook.ChampionRoster(self.bot, self.bot.user, attrs=hargs.attrs)
+        #await roster.display(hargs.tags)
+        sgd = StaticGameData()
+        aliases = {'#var2': '(#5star | #6star) & #size:xl', '#poisoni': '#poisonimmunity'}
+        roster = await sgd.parse_with_attr(ctx, hargs, hook.ChampionRoster, aliases=aliases)
+        if roster is not None:
+            await roster.display()
 
     @champ.command(pass_context=True, name='released', aliases=('odds','chances',))
     async def champ_released(self, ctx, champ: ChampConverter=None):
@@ -2595,6 +2596,9 @@ class Champion:
                 setattr(self, k, v)
         self.tags = set()
         self.update_attrs(attrs)
+
+    def __repr__(self):
+        return '{}({})'.format(type(self).__name__.capitalize(), self.attrs_str)
 
     def __eq__(self, other):
         return self.immutable_id == other.immutable_id \

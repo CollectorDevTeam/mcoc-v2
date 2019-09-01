@@ -350,7 +350,7 @@ class GSHandler:
 
 
 class StaticGameData:
-    instance = None
+    __instance = None
 
     remote_data_basepath = "https://raw.githubusercontent.com/CollectorDevTeam/assets/master/data/"
     cdt_data, cdt_versions, cdt_masteries = None, None, None
@@ -372,10 +372,27 @@ class StaticGameData:
         'symbiote': discord.Color.darker_grey(),
     }
 
-    def __new__(cls):
-        if cls.instance is None:
-            cls.instance = super().__new__(cls)
-        return cls.instance
+    def __new__(cls, *args, **kwargs):
+        if cls.__instance is None:
+            cls.__instance = super().__new__(cls)
+            cls.__instance.__initialized = False
+        return cls.__instance
+
+    def __init__(self, bot=None):
+        if self.__initialized:
+            return
+        if bot is None:
+            raise ValueError('Missing argument "bot" during SGD init')
+        self.__initialized = True
+        self.bot = bot
+        self.hash_parser = HashParser(bot)
+        self.register_gsheets(bot)
+
+    async def parse_with_attr(self, *args, **kwargs):
+        return await self.hash_parser.parse_with_attr(*args, **kwargs)
+
+    async def parse_with_user(self, *args, **kwargs):
+        return await self.hash_parser.parse_with_user(*args, **kwargs)
 
     def register_gsheets(self, bot):
         self.gsheet_handler = GSHandler(bot, gapi_service_creds)
@@ -595,9 +612,270 @@ class P0Expr(md.Grammar):
 class SearchExpr(md.Grammar):
     grammar = (P0Expr | ParenExpr | SearchNumber | SearchPhrase | ExplicitKeyword)
 
-    # @sync_to_async
     def match(self, data, ver_data):
         return self[0].match(data, ver_data)
+
+
+##################################################
+#  Champ Attr grammar
+
+class AttrSigToken(md.Grammar):
+    grammar = md.WORD('s', '0-9', min=2, max=4)
+
+    def get_attrs(self, attrs):
+        attrs['sig'] = int(self.string[1:])
+
+class AttrRankToken(md.Grammar):
+    grammar = md.WORD('r', '0-9', count=2)
+
+    def get_attrs(self, attrs):
+        attrs['rank'] = int(self.string[1])
+
+class AttrDebugToken(md.Grammar):
+    grammar = md.WORD('d', '0-9', count=2)
+
+    def get_attrs(self, attrs):
+        attrs['debug'] = int(self.string[1])
+
+class AttrStarToken(md.Grammar):
+    grammar = (md.WORD('0-9', count=1),
+               md.OPTIONAL(md.L('\\')),
+               md.WORD('*★☆', count=1))
+
+    def get_attrs(self, attrs):
+        attrs['star'] = int(self.string[0])
+
+class AttrExpr(md.Grammar):
+    grammar = md.ONE_OR_MORE(AttrSigToken | AttrRankToken |
+                        AttrDebugToken | AttrStarToken, collapse=True)
+
+    def get_attrs(self, attrs=None):
+        attrs = attrs if attrs is not None else {}
+        {e.get_attrs(attrs) for e in self}
+        return attrs
+
+class UserSnowflake(md.Grammar):
+    grammar = md.L('<@'), md.OPTIONAL(md.L('!')), md.WORD('0-9'), md.L('>')
+    grammar_whitespace_mode = 'explicit'
+
+class UserDiscriminator(md.Grammar):
+    grammar = md.L('#'), md.WORD('0-9', count=4)
+    grammar_whitespace_mode = 'explicit'
+
+class UserString(md.Grammar):
+    grammar = (md.OPTIONAL(md.L('@')), md.ANY_EXCEPT('@!#()&|'),
+                md.OPTIONAL(UserDiscriminator))
+    grammar_whitespace_mode = 'explicit'
+
+class UserExpr(md.Grammar):
+    grammar = UserString | UserSnowflake
+
+    def get_user(self, ctx):
+        return commands.UserConverter(ctx, self.string).convert()
+
+##################################################
+#  Hashtag grammar
+
+class HashtagToken(md.Grammar):
+    grammar = md.WORD('#', '_a-zA-Z:*0-9')
+
+    def match_set(self, roster):
+        return roster.raw_filtered_ids(set([self.string]))
+
+    def sub_aliases(self, aliases):
+        if self.string in aliases:
+            return '({})'.format(aliases[self.string])
+        else:
+            return self.string
+
+
+class HashParenExpr(md.Grammar):
+    grammar = (md.L('('), md.REF("HashExplicitSearchExpr"), md.L(")"))
+
+    def match_set(self, roster):
+        return self[1].match_set(roster)
+
+    def sub_aliases(self, aliases):
+        return '({})'.format(self[1].sub_aliases(aliases))
+
+
+class HashUnaryOperator(md.Grammar):
+    grammar = md.L('!')
+
+    def op(self, roster):
+        return roster.ids_set().difference
+
+
+class HashBinaryOperator(md.Grammar):
+    grammar = md.L('&') | md.L('|') | md.L('-')
+
+    def op(self, roster):
+        if self.string == '&':
+            return set.intersection
+        elif self.string == '|':
+            return set.union
+        elif self.string == '-':
+            return set.difference
+
+
+class HashP0Term(md.Grammar):
+    grammar = (HashParenExpr | HashtagToken)
+
+    def match_set(self, roster):
+        return self[0].match_set(roster)
+
+    def sub_aliases(self, aliases):
+        return self[0].sub_aliases(aliases)
+
+
+class HashP0Expr(md.Grammar):
+    grammar = (HashUnaryOperator, HashP0Term)
+
+    def match_set(self, roster):
+        return self[0].op(roster)(self[1].match_set(roster))
+
+    def sub_aliases(self, aliases):
+        return self[0].string + self[1].sub_aliases(aliases)
+
+
+class HashP1Term(md.Grammar):
+    grammar = (HashP0Expr | HashParenExpr | HashtagToken)
+
+    def match_set(self, roster):
+        return self[0].match_set(roster)
+
+    def sub_aliases(self, aliases):
+        return self[0].sub_aliases(aliases)
+
+
+class HashP1Expr(md.Grammar):
+    grammar = (HashP1Term, md.ONE_OR_MORE(HashBinaryOperator, HashP1Term))
+
+    def match_set(self, roster):
+        matches = self[0].match_set(roster)
+        for e in self[1]:
+            matches = e[0].op(roster)(matches, e[1].match_set(roster))
+        return matches
+
+    def sub_aliases(self, aliases):
+        ret = self[0].sub_aliases(aliases)
+        for e in self[1]:
+            ret += e[0].string + e[1].sub_aliases(aliases)
+        return ret
+
+
+class HashExplicitSearchExpr(md.Grammar):
+    grammar = (HashP1Expr | HashP0Expr | HashParenExpr | HashtagToken)
+
+    def match_set(self, roster):
+        return self[0].match_set(roster)
+
+    def sub_aliases(self, aliases):
+        return self[0].sub_aliases(aliases)
+
+    def filter_roster(self, roster):
+        filt_ids = self.match_set(roster)
+        filt_roster = roster.filtered_roster_from_ids(filt_ids)
+        return filt_roster
+
+
+class HashImplicitSearchExpr(md.Grammar):
+    grammar = md.ONE_OR_MORE(HashtagToken, collapse=True)
+
+    def match_set(self, roster):
+        filt_ids = roster.ids_set()
+        for token in self:
+            filt_ids = filt_ids.intersection(token.match_set(roster))
+        return filt_ids
+
+    def sub_aliases(self, aliases):
+        ret = [token.sub_aliases(aliases) for token in self]
+        return ' & '.join(ret)
+
+
+class HashAttrSearchExpr(md.Grammar):
+    grammar = (md.OPTIONAL(AttrExpr),
+               md.OPTIONAL(HashImplicitSearchExpr | HashExplicitSearchExpr),
+               md.OPTIONAL(AttrExpr))
+    #grammar_whitespace_mode = 'explicit'
+
+    #def filter_roster(self, roster):
+        #filt_ids = self[0].match_set(roster)
+        #filt_roster = roster.filtered_roster_from_ids(filt_ids, hargs=self.string)
+        #return filt_roster
+
+    def sub_aliases(self, ctx, aliases):
+        attrs = self[0].get_attrs() if self[0] else {}
+        attrs = self[2].get_attrs(attrs) if self[2] else attrs
+        return (attrs, self[1].sub_aliases(aliases)) if self[1] else (attrs, '')
+
+class HashUserSearchExpr(md.Grammar):
+    grammar = (md.OPTIONAL(UserExpr),
+               md.OPTIONAL(HashImplicitSearchExpr | HashExplicitSearchExpr))
+    #grammar_whitespace_mode = 'explicit'
+
+    #def filter_roster(self, roster):
+        #filt_ids = self[0].match_set(roster)
+        #filt_roster = roster.filtered_roster_from_ids(filt_ids, hargs=self.string)
+        #return filt_roster
+
+    def sub_aliases(self, ctx, aliases):
+        #print('UserExpr {} {}'.format(self[0], ctx.message.author))
+        #print(self, self[0])
+        user = self[0].get_user(ctx) if self[0] else ctx.message.author
+        return (user, self[1].sub_aliases(aliases)) if self[1] else (user, '')
+
+
+class HashParser:
+
+    def __init__(self, bot):
+        self.bot = bot
+        self.attr_parser = HashAttrSearchExpr.parser()
+        self.user_parser = HashUserSearchExpr.parser()
+        self.explicit_parser = HashExplicitSearchExpr.parser()
+
+    async def parse_1st_pass(self, ctx, parser, hargs, aliases=None):
+        try:
+            result1 = parser.parse_string(hargs)
+        except md.ParseError as e:
+            print(e)
+            em = discord.Embed(title='Input Error', description='Syntax problem',
+                    color=discord.Color.red())
+            em.add_field(name="Don't mix implicit and explicit operators",
+                    value=hargs)
+            await self.bot.say(embed=em)
+            return
+        return result1.sub_aliases(ctx, aliases)
+
+    async def parse_with_attr(self, ctx, hargs, roster_cls, aliases=None):
+        '''Parser implies no user roster so use bot.  Parse attrs to pass to roster creation.'''
+        aliases = aliases if aliases else {}
+        attrs, expl_hargs = await self.parse_1st_pass(ctx, self.attr_parser, hargs, aliases)
+        roster = roster_cls(self.bot, self.bot.user, attrs=attrs)
+        if expl_hargs:
+            result2 = self.explicit_parser.parse_string(expl_hargs)
+            return result2.filter_roster(roster)
+        else:
+            return roster
+
+    async def parse_with_user(self, ctx, hargs, roster_cls, aliases=None):
+        '''Parser implies user roster.'''
+        aliases = aliases if aliases else {}
+        user, expl_hargs = await self.parse_1st_pass(ctx, self.user_parser, hargs, aliases)
+        roster = roster_cls(self.bot, user)
+        await roster.load_champions()
+        if expl_hargs:
+            result2 = self.explicit_parser.parse_string(expl_hargs)
+            return result2.filter_roster(roster)
+        else:
+            return roster
+
+    async def filter_and_display(self, ctx, hargs, roster_cls, aliases=None):
+        filtered = await self.parse_with_attr(ctx, hargs, roster_cls, aliases)
+        if filtered:
+            await filtered.display()
+        elif filtered is not None:
+            await filtered.warn_empty_roster(hargs)
 
 
 ##################################################
@@ -752,6 +1030,7 @@ class MCOCTools:
         # self.calendar['time'] = dateParse(0)
         # self.calendar['screenshot'] = ''
         # dataIO.save_json('data/mcocTools/mcoctools.json', self.calendar)
+
 
 
     # lookup_links = {
@@ -1614,7 +1893,7 @@ class Calculator:
 class CDTGAPS:
     def __init__(self, bot):
         self.bot = bot
-        
+
     @checks.admin_or_permissions(manage_server=True, manage_roles=True)
     @commands.command(name='gaps', pass_context=True, hidden=False, allow_pm=False)
     async def _alliance_popup(self, ctx, *args):
@@ -2120,8 +2399,8 @@ def tabulate(table_data, width, rotate=True, header_sep=True):
 def setup(bot):
     check_folders()
     check_files()
-    sgd = StaticGameData()
-    sgd.register_gsheets(bot)
+    sgd = StaticGameData(bot)
+    #sgd.register_gsheets(bot)
     bot.loop.create_task(sgd.load_cdt_data())
     bot.add_cog(CDTReport(bot))
     bot.add_cog(Calculator(bot))

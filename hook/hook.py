@@ -7,6 +7,7 @@ from .utils.dataIO import dataIO
 from .utils.dataIO import fileIO
 from .utils import checks
 from .utils import chat_formatting as chat
+from functools import partial
 from operator import itemgetter, attrgetter
 from collections import OrderedDict, namedtuple
 from random import randint
@@ -23,7 +24,9 @@ import re
 import asyncio
 ### Monkey Patch of JSONEncoder
 from json import JSONEncoder, dump, dumps
-from cogs.mcocTools import (StaticGameData, PagesMenu, KABAM_ICON, COLLECTOR_ICON, COLLECTOR_FEATURED, CDTHelperFunctions, GSHandler, GSExport, CDT_COLORS)
+from cogs.mcocTools import (StaticGameData, PagesMenu,
+            KABAM_ICON, COLLECTOR_ICON, COLLECTOR_FEATURED, CDTHelperFunctions,
+            GSHandler, GSExport, CDT_COLORS)
 
 
 logger = logging.getLogger('red.roster')
@@ -72,12 +75,12 @@ class HashtagRosterConverter(commands.Converter):
         await chmp_rstr.load_champions()
         if not chmp_rstr:
             menu = PagesMenu(self.ctx.bot, timeout=120, delete_onX=True, add_pageof=True)
-            hook = Hook(self.ctx.bot)
+            #hook = Hook(self.ctx.bot)
             try:
                 color=user.color
             except:
                 color = discord.Color.gold()
-            embeds = await hook.roster_kickback(color)
+            embeds = await Hook.roster_kickback(color)
             await menu.menu_start(pages=embeds)
 
             raise MissingRosterError('No Roster found for {}'.format(user.name))
@@ -136,13 +139,18 @@ class ChampionRoster:
                     'alliance-quest': 'aq'}
     update_str = '{0.star_name_str} {1} -> {0.rank_sig_str} [ {0.prestige} ]'
 
-    def __init__(self, bot, user):
+    def __init__(self, bot, user, attrs=None, is_filtered=False, hargs=None):
         self.bot = bot
         self.user = user
         self.roster = {}
+        self.is_filtered = is_filtered
+        self.hargs = hargs
+        self.previous_hargs = None
         self._create_user()
         self._cache = {}
         #self.load_champions()
+        if self.user == self.bot.user and not is_filtered:
+            self.autofill_bot_user(attrs)
 
     def __len__(self):
         return len(self.roster)
@@ -151,6 +159,20 @@ class ChampionRoster:
         if hasattr(item, 'immutable_id'):
             return item.immutable_id in self.roster
         return item in self.roster
+
+    def ids_set(self):
+        return set(self.roster.keys())
+
+    def autofill_bot_user(self, attrs):
+        attrs = attrs if attrs is not None else {}
+        mcoc = self.bot.get_cog('MCOC')
+        rlist = []
+        for champ_class in mcoc.champions.values():
+            champ = champ_class(attrs.copy())
+            if champ.has_prestige:
+                rlist.append(champ)
+        self.from_list(rlist)
+        #self.display_override = 'Prestige Listing: {0.attrs_str}'.format(rlist[0])
 
 
     # handles user creation, adding new server, blocking
@@ -173,13 +195,15 @@ class ChampionRoster:
             dataIO.save_json(self.champs_file, champ_data)
             #self.save_champ_data(champ_data)
 
-    async def load_champions(self):
+    async def load_champions(self, silent=False):
         data = self.load_champ_data()
         self.roster = {}
         name = 'roster' if 'roster' in data else 'champs'
         for k in data[name]:
             champ = await self.get_champion(k)
             self.roster[champ.immutable_id] = champ
+        if len(self.roster) == 0 and not silent:
+            await self.warn_missing_roster()
 
     def from_list(self, champ_list):
         self.roster = {champ.immutable_id: champ for champ in champ_list}
@@ -213,7 +237,12 @@ class ChampionRoster:
 
     @property
     def embed_display(self):
-        return getattr(self, 'display_override', self.prestige)
+        if self.user is self.bot.user:
+            #should be safe to just grab the first one since bot rosters are uniform
+            champ = list(self.roster.values())[0]
+            return 'Listing ({} champs): {}'.format(len(self), champ.attrs_str)
+        else:
+            return 'Filtered Prestige ({} champs):  {}'.format(len(self), self.prestige)
 
     async def get_champion(self, cdict):
         mcoc = self.bot.get_cog('MCOC')
@@ -221,15 +250,29 @@ class ChampionRoster:
         return await mcoc.get_champion(cdict['Id'], champ_attr)
 
     async def filter_champs(self, tags):
+        if tags is None:
+            return self
         residual_tags = tags - self.all_tags
         if residual_tags:
             em = discord.Embed(title='Unused tags', description=' '.join(residual_tags))
             await self.bot.say(embed=em)
+        filtered = self.raw_filtered_ids(tags)
+        return self.filtered_roster_from_ids(filtered)
+
+    def raw_filtered_ids(self, tags):
         filtered = set()
         for c in self.roster.values():
             if tags.issubset(c.all_tags):
                 filtered.add(c.immutable_id)
-        return [self.roster[iid] for iid in filtered]
+        self.previous_hargs = tags
+        return filtered
+
+    def filtered_roster_from_ids(self, filtered, hargs=None):
+        hargs = hargs if hargs else self.previous_hargs
+        filt_roster = ChampionRoster(self.bot, self.user, is_filtered=True,
+                            hargs=hargs)
+        filt_roster.roster = {iid: self.roster[iid] for iid in filtered}
+        return filt_roster
 
     @property
     def all_tags(self):
@@ -371,16 +414,38 @@ class ChampionRoster:
         self.save_champ_data()
         return track
 
-    async def display(self, tags):
-        filtered = await self.filter_champs(tags)
+    async def warn_missing_roster(self):
+        menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
+        try:
+            color = self.user.color
+        except:
+            color = discord.Color.gold()
+        embeds = await Hook.roster_kickback(color)
+        await menu.menu_start(pages=embeds)
+        raise MissingRosterError('No Roster found for {}'.format(self.user.name))
+
+    async def warn_empty_roster(self, tags=None):
+        tags = tags if tags else self.hargs
+        if tags is None:
+            tags = ''
+        elif not isinstance(tags, str):
+            tags = ' '.join(tags)
+        em = discord.Embed(title='User', description=self.user.name,
+                color=discord.Color.gold(), url=PRESTIGE_SURVEY)
+        em.add_field(name='Tags used filtered to an empty roster',
+                value=tags)
+        await self.bot.say(embed=em)
+
+    async def display(self, tags=None):
+        if tags is not None:
+            filt_roster = await self.filter_champs(tags)
+            return await filt_roster.display()
+
+        filtered = list(self.roster.values())
         user = self.user
         embeds = []
         if not filtered:
-            em = discord.Embed(title='User', description=user.name,
-                    color=discord.Color.gold(), url=PRESTIGE_SURVEY)
-            em.add_field(name='Tags used filtered to an empty roster',
-                    value=' '.join(tags))
-            await self.bot.say(embed=em)
+            await self.warn_empty_roster()
             return
 
         strs = [champ.verbose_prestige_str for champ in sorted(filtered, reverse=True,
@@ -423,30 +488,44 @@ class Hook:
         #self.champ_re = re.compile(r'champions(?:_\d+)?.csv')
         #self.champ_str = '{0[Stars]}★ R{0[Rank]} S{0[Awakened]:<2} {0[Id]}'
 
-    async def roster_kickback(self, ucolor = discord.Color.gold()):
+    @staticmethod
+    async def roster_kickback(ucolor = discord.Color.gold()):
         embeds=[]
-        em0=discord.Embed(color=ucolor,title='No Roster detected!', description='There are several methods available to you to create your roster.  \nPlease note the paging buttons below to select your instruction set.')
-        em0.set_footer(text='CollectorVerse Roster',icon_url=COLLECTOR_ICON)
+        em0=discord.Embed(color=ucolor, title='No Roster detected!',
+                description='There are several methods available to you to create your roster.'
+                    '\nPlease note the paging buttons below to select your instruction set.')
+        em0.set_footer(text='CollectorVerse Roster', icon_url=COLLECTOR_ICON)
         embeds.append(em0)
-        em01=discord.Embed(color=ucolor, title='Manual Entry', description='Use the ```/roster add <champs>``` command to submit Champions directly to Collector.\nThis is the most common method to add to your roster, and the method you will use to maintain your roster.\n```/roster del <champs>``` allows you to remove a Champion.\n\nYouTube demo: https://youtu.be/O9Wqn1l2DEg', url='https://youtu.be/O9Wqn1l2DEg')
-        em01.set_footer(text='CollectorVerse Roster',icon_url=COLLECTOR_ICON)
+        em01=discord.Embed(color=ucolor, title='Manual Entry',
+                description='Use the ```/roster add <champs>``` command to submit Champions directly to Collector.\nThis is the most common method to add to your roster, and the method you will use to maintain your roster.\n```/roster del <champs>``` allows you to remove a Champion.\n\nYouTube demo: https://youtu.be/O9Wqn1l2DEg', url='https://youtu.be/O9Wqn1l2DEg')
+        em01.set_footer(text='CollectorVerse Roster', icon_url=COLLECTOR_ICON)
         embeds.append(em01)
         em=discord.Embed(color=ucolor, title='Champion CSV template', url='https://goo.gl/LaFrg7')
         em.add_field(name='Google Sheet Instructions',value='Save a copy of the template (blue text):\n1. Add 5★ champions you do have.\n2. Delete 4★ champion rows you do not have.\n3. Set Rank = champion rank (1 to 5).\n4. Set Awakened = signature ability level.\n``[4★: 0 to 99 | 5★: 0 to 200]``\n5. Export file as \'champions.csv\'.\n6. Upload to Collector.\n7. Select OK to confirm')
         em.add_field(name='Prerequisite', value='Google Sheets\n(there is an app for iOS|Android)',inline=False)
-        em.set_footer(text='CSV import',icon_url=GSHEET_ICON)
+        em.set_footer(text='CSV import', icon_url=GSHEET_ICON)
         embeds.append(em)
-        em2=discord.Embed(color=ucolor,title='Import from Hook',url=HOOK_URL)
+        em2=discord.Embed(color=ucolor, title='Import from Hook',url=HOOK_URL)
         em2.add_field(name='Hook instructions',value='1. Go to Hook/Champions webapp (blue text)\n2. Add Champions.\n3. Set Rank & Signature Ability level\n4. From the Menu > Export CSV as \'champions.csv\'\n5. Upload to Collector.\n6. Select OK to confirm')
-        em2.set_footer(text='hook/champions',icon_url=GITHUB_ICON)
+        em2.set_footer(text='hook/champions', icon_url=GITHUB_ICON)
         embeds.append(em2)
-        em3=discord.Embed(color=ucolor,title='Import from Hook',url=HOOK_URL)
+        em3=discord.Embed(color=ucolor, title='Import from Hook',url=HOOK_URL)
         em3.add_field(name='iOS + Hook instructions',value='1. Go to Hook/Champions webapp (blue text)\n2. Add Champions.\n3. Set Rank & Signature Ability level\n4. From the Menu > Export CSV > Copy Text from Safari\n5. In Google Sheets App > paste\n6. Download as \'champions.csv\'\n5. Upload to Collector.\n6. Select OK to confirm')
         em3.add_field(name='Prerequisite', value='Google Sheets\n(there is an app for iOS|Android)',inline=False)
-        em3.set_footer(text='hook + Google Sheets',icon_url=GSHEET_ICON)
+        em3.set_footer(text='hook + Google Sheets', icon_url=GSHEET_ICON)
         embeds.append(em3)
         return embeds
 
+    @commands.command(pass_context=True, aliases=('th',))
+    async def test_hash(self, ctx, *, hargs=''):
+        #hargs = await hook.HashtagRankConverter(ctx, hargs).convert() #imported from hook
+        #roster = partial(ChampionRoster, self.bot, self.bot.user)
+        sgd = StaticGameData()
+        aliases = {'#var2': '(#5star | #6star) & #size:xl', '#poisoni': '#poisonimmunity'}
+        #await sgd.filter_and_display(hargs, roster, aliases=aliases)
+        roster = await sgd.parse_with_attr(ctx, hargs, ChampionRoster, aliases=aliases)
+        if roster is not None:
+            await roster.display()
 
 
     @commands.command(pass_context=True, aliases=('list_members','role_roster','list_users'))
@@ -490,8 +569,14 @@ class Hook:
 
         example:
         /roster [user] [#mutant #bleed]"""
-        hargs = await HashtagRosterConverter(ctx, hargs).convert()
-        await hargs.roster.display(hargs.tags)
+        sgd = StaticGameData()
+        aliases = {'#var2': '(#5star | #6star) & #size:xl', '#poisoni': '#poisonimmunity'}
+        #await sgd.filter_and_display(hargs, roster, aliases=aliases)
+        roster = await sgd.parse_with_user(ctx, hargs, ChampionRoster, aliases=aliases)
+        if roster is not None:
+            await roster.display()
+        #hargs = await HashtagRosterConverter(ctx, hargs).convert()
+        #await hargs.roster.display(hargs.tags)
 
     @roster.command(pass_context=True, name='add', aliases=('update',))
     async def _roster_update(self, ctx, *, champs: ChampConverterMult):
@@ -790,15 +875,7 @@ class Hook:
     @commands.command(pass_context=True, name='rank_prestige', aliases=('prestige_list',))
     async def _rank_prestige(self, ctx, *, hargs=''):
         hargs = await HashtagRankConverter(ctx, hargs).convert()
-        roster = ChampionRoster(self.bot, self.bot.user)
-        mcoc = self.bot.get_cog('MCOC')
-        rlist = []
-        for champ_class in mcoc.champions.values():
-            champ = champ_class(hargs.attrs.copy())
-            if champ.has_prestige:
-                rlist.append(champ)
-        roster.from_list(rlist)
-        roster.display_override = 'Prestige Listing: {0.attrs_str}'.format(rlist[0])
+        roster = ChampionRoster(self.bot, self.bot.user, attrs=hargs.attrs)
         await roster.display(hargs.tags)
 
 
@@ -814,7 +891,7 @@ class Hook:
         for member in server.members:
             if role in member.roles:
                 roster = ChampionRoster(self.bot, member)
-                await roster.load_champions()
+                await roster.load_champions(silent=True)
                 if roster.prestige > 0:
                     prestige += roster.prestige
                     cnt += 1
@@ -887,7 +964,7 @@ def setup(bot):
     check_folders()
     override_error_handler(bot)
     n = Hook(bot)
-    sgd = StaticGameData()
-    sgd.register_gsheets(bot)
+    sgd = StaticGameData(bot)
+    #sgd.register_gsheets(bot)
     bot.add_cog(n)
     bot.add_listener(n._on_attachment, name='on_message')
