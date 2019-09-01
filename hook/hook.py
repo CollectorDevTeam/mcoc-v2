@@ -239,9 +239,9 @@ class ChampionRoster:
         if self.user is self.bot.user:
             #should be safe to just grab the first one since bot rosters are uniform
             champ = list(self.roster.values())[0]
-            return 'Prestige Listing: {0.attrs_str}'.format(champ)
+            return 'Listing ({} champs): {}'.format(len(self), champ.attrs_str)
         else:
-            return self.prestige
+            return 'Filtered Prestige ({} champs):  {}'.format(len(self), self.prestige)
 
     async def get_champion(self, cdict):
         mcoc = self.bot.get_cog('MCOC')
@@ -436,16 +436,15 @@ class ChampionRoster:
         await self.bot.say(embed=em)
 
     async def display(self, tags=None):
-        if self.is_filtered and tags is None:
-            filtered = list(self.roster.values())
-            tags = self.hargs
-        else:
+        if tags is not None:
             filt_roster = await self.filter_champs(tags)
-            filtered = list(filt_roster.roster.values())
+            return await filt_roster.display()
+
+        filtered = list(self.roster.values())
         user = self.user
         embeds = []
         if not filtered:
-            await self.warn_empty_roster(tags)
+            await self.warn_empty_roster()
             return
 
         strs = [champ.verbose_prestige_str for champ in sorted(filtered, reverse=True,

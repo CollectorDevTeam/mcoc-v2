@@ -400,7 +400,10 @@ class ChampionFactory():
         for a in kwargs['abilities'].split(','):
             kwargs['class_tags'].add('#' + ''.join(a.lower().split(' ')))
         for a in kwargs['hashtags'].split('#'):
-            kwargs['class_tags'].add('#' + ''.join(a.lower().split(' ')))
+            newtag = '#' + ''.join(a.lower().split(' '))
+            kwargs['class_tags'].add(newtag)
+            if ':' in newtag and not newtag.startswith('#size'):
+                kwargs['class_tags'].add(newtag.split(':')[0])
         for a in kwargs['extended_abilities'].split(','):
             kwargs['class_tags'].add('#' + ''.join(a.lower().split(' ')))
         for a in kwargs['counters'].split(','):

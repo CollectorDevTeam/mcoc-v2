@@ -633,7 +633,9 @@ class AttrDebugToken(md.Grammar):
         attrs['debug'] = int(self.string[1])
 
 class AttrStarToken(md.Grammar):
-    grammar = md.WORD('0-9', '*★☆', count=2)
+    grammar = (md.WORD('0-9', count=1),
+               md.OPTIONAL(md.L('\\')),
+               md.WORD('*★☆', count=1))
 
     def get_attrs(self, attrs):
         attrs['star'] = int(self.string[0])
