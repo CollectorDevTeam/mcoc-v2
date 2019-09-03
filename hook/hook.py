@@ -41,7 +41,7 @@ HOOK_URL='http://hook.github.io/champions/#/roster'
 COLLECTOR_ICON='https://raw.githubusercontent.com/CollectorDevTeam/assets/master/data/images/portraits/collector.png'
 GSHEET_ICON='https://d2jixqqjqj5d23.cloudfront.net/assets/developer/imgs/icons/google-spreadsheet-icon.png'
 PATREON = 'https://patreon.com/collectorbot'
-AUNTMAI = 'https://raw.githubusercontent.com/CollectorDevTeam/assets/master/data/images/AuntMai_Tile_Center.png'
+AUNTMAI = 'https://raw.githubusercontent.com/CollectorDevTeam/assets/master/data/images/AuntMai_Tile_Center2.png'
 
 
 _default.default = JSONEncoder().default  # Save unmodified default.
