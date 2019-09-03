@@ -1880,19 +1880,19 @@ class MCOC(ChampionFactory):
         if denom != 0:
             em = discord.Embed(color=discord.Color.magenta(),
                     title='Prestige: {}'.format(numerator/denom),
-                    url=PRESTIGE_SURVEY,
+                    url='https://auntm.ai',
                     description='\n'.join(c.verbose_prestige_str for c in spch)
                 )
-            em.set_footer(text='[auntm.ai](https://auntm.ai) | CollectorVerse',
+            em.set_footer(text='https://auntm.ai | CollectorVerse',
                     icon_url=AUNTMAI)
             await self.bot.say(embed=em)
         else:
             em = discord.Embed(color=discord.Color.magenta(),
                     title='Not Enough Data',
-                    url=PRESTIGE_SURVEY,
+                    url='https://auntm.ai',
                     description='Summoner, your request would result in a division by zero which would cause a black hole and consume the multiverse.'
                 )
-            em.set_footer(text='[auntm.ai](https://auntm.ai) | CollectorVerse',
+            em.set_footer(text='https://auntm.ai | CollectorVerse',
                     icon_url=AUNTMAI)
             await self.bot.say(embed=em)
 
