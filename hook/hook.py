@@ -41,7 +41,7 @@ HOOK_URL='http://hook.github.io/champions/#/roster'
 COLLECTOR_ICON='https://raw.githubusercontent.com/CollectorDevTeam/assets/master/data/images/portraits/collector.png'
 GSHEET_ICON='https://d2jixqqjqj5d23.cloudfront.net/assets/developer/imgs/icons/google-spreadsheet-icon.png'
 PATREON = 'https://patreon.com/collectorbot'
-AUNTMAI = 'https://raw.githubusercontent.com/CollectorDevTeam/assets/master/data/images/AuntMai_Tile_Center2.png'
+AUNTMAI = 'https://raw.githubusercontent.com/CollectorDevTeam/assets/master/data/images/AuntMai_Tile_Center.png'
 
 
 _default.default = JSONEncoder().default  # Save unmodified default.
@@ -456,7 +456,7 @@ class ChampionRoster:
             em = discord.Embed(title=user.display_name+':sparkles:', color=discord.Color.gold(), url=PATREON)
             # em.set_thumbnail(user.avatar_url)
             em.set_author(name='CollectorDevTeam', icon_url=COLLECTOR_ICON)
-            em.set_footer(text='auntm.ai | CollectorVerse',
+            em.set_footer(text='[auntm.ai](https://auntm.ai) | CollectorVerse',
                     icon_url=AUNTMAI)
             page = strs[i:min(i+champs_per_page, len(strs))]
             if not page:
@@ -508,13 +508,13 @@ class Hook:
         embeds.append(em)
         em2=discord.Embed(color=ucolor, title='Import from Hook',url=HOOK_URL)
         em2.add_field(name='Hook instructions',value='1. Go to Hook/Champions webapp (blue text)\n2. Add Champions.\n3. Set Rank & Signature Ability level\n4. From the Menu > Export CSV as \'champions.csv\'\n5. Upload to Collector.\n6. Select OK to confirm')
-        em2.set_footer(text='auntm.ai | CollectorVerse',
+        em2.set_footer(text='[auntm.ai](https://auntm.ai) | CollectorVerse',
                       icon_url=AUNTMAI)
         embeds.append(em2)
         em3=discord.Embed(color=ucolor, title='Import from Hook',url=HOOK_URL)
         em3.add_field(name='iOS + Hook instructions',value='1. Go to Hook/Champions webapp (blue text)\n2. Add Champions.\n3. Set Rank & Signature Ability level\n4. From the Menu > Export CSV > Copy Text from Safari\n5. In Google Sheets App > paste\n6. Download as \'champions.csv\'\n5. Upload to Collector.\n6. Select OK to confirm')
         em3.add_field(name='Prerequisite', value='Google Sheets\n(there is an app for iOS|Android)',inline=False)
-        em3.set_footer(text='auntm.ai | CollectorVerse',
+        em2.set_footer(text='[auntm.ai](https://auntm.ai) | CollectorVerse',
                       icon_url=AUNTMAI)
         embeds.append(em3)
         return embeds
