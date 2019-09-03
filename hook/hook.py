@@ -594,7 +594,7 @@ class Hook:
         /roster add angelar4s20 karnakr5s80 medusar4s20
         '''
         roster = ChampionRoster(ctx.bot, ctx.message.author)
-        await roster.load_champions()
+        await roster.load_champions(silent=True)
         await self._update(roster, champs)
 
     @roster.command(pass_context=True, name='stats', hidden=True)
