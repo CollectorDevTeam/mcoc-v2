@@ -1354,7 +1354,7 @@ class MCOCTools:
         embed.add_field(name="Python", value=py_version)
         embed.add_field(name="discord.py", value=dpy_version)
         embed.add_field(name="About", value=about, inline=False)
-        embed.add_field(name="PrestigePartner", value='mutamatt#4704', inline=True)
+        embed.add_field(name="PrestigePartners", value='Kelldor#3162\nmutamatt#4704', inline=True)
         embed.add_field(name='DuelsPartners', value='ƦƆ51#4587', inline=True)
         embed.add_field(name='MapsPartners', value='jpags#5202\nBlooregarde#5848 ', inline=True)
         embed.add_field(name='LabyrinthTeam', value='Kiryu#5755\nre-1#7595', inline=True)

@@ -71,6 +71,7 @@ data_files = {
 PATREON = 'https://patreon.com/collectorbot'
 GS_BASE='https://sheets.googleapis.com/v4/spreadsheets/{}/values/{}?key=AIzaSyBugcjKbOABZEn-tBOxkj0O7j5WGyz80uA&majorDimension=ROWS'
 GSHEET_ICON='https://d2jixqqjqj5d23.cloudfront.net/assets/developer/imgs/icons/google-spreadsheet-icon.png'
+AUNTMAI = 'https://raw.githubusercontent.com/CollectorDevTeam/assets/master/data/images/AuntMai_Tile_Center.png'
 SPOTLIGHT_DATASET='https://docs.google.com/spreadsheets/d/e/2PACX-1vRFLWYdFMyffeOzKiaeQeqoUgaESknK-QpXTYV2GdJgbxQkeCjoSajuLjafKdJ5imE1ADPYeoh8QkAr/pubhtml?gid=1483787822&single=true'
 SPOTLIGHT_SURVEY='https://docs.google.com/forms/d/e/1FAIpQLSe4JYzU5CsDz2t0gtQ4QKV8IdVjE5vaxJBrp-mdfKxOG8fYiA/viewform?usp=sf_link'
 PRESTIGE_SURVEY='https://docs.google.com/forms/d/e/1FAIpQLSeo3YhZ70PQ4t_I4i14jX292CfBM8DMb5Kn2API7O8NAsVpRw/viewform?usp=sf_link'
@@ -1879,18 +1880,20 @@ class MCOC(ChampionFactory):
         if denom != 0:
             em = discord.Embed(color=discord.Color.magenta(),
                     title='Prestige: {}'.format(numerator/denom),
-                    url=PRESTIGE_SURVEY,
+                    url='https://auntm.ai',
                     description='\n'.join(c.verbose_prestige_str for c in spch)
                 )
-            em.set_footer(icon_url=GSHEET_ICON,text='mutamatt Prestige for Collector')
+            em.set_footer(text='https://auntm.ai | CollectorVerse',
+                    icon_url=AUNTMAI)
             await self.bot.say(embed=em)
         else:
             em = discord.Embed(color=discord.Color.magenta(),
                     title='Not Enough Data',
-                    url=PRESTIGE_SURVEY,
+                    url='https://auntm.ai',
                     description='Summoner, your request would result in a division by zero which would cause a black hole and consume the multiverse.'
                 )
-            em.set_footer(icon_url=GSHEET_ICON,text='mutamatt Prestige for Collector')
+            em.set_footer(text='https://auntm.ai | CollectorVerse',
+                    icon_url=AUNTMAI)
             await self.bot.say(embed=em)
 
     @champ.command(pass_context=True, name='aliases', aliases=('alias',))
