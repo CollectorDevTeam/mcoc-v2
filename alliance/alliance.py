@@ -218,7 +218,7 @@ class Alliance:
             for member in role_members:
                 # members.append(member)
                 roster = ChampionRoster(self.bot, member)
-                await roster.load_champions()
+                await roster.load_champions(silent=True)
                 if roster.prestige > 0:
                     prestige += roster.prestige
                     cnt += 1
