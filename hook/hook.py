@@ -149,7 +149,7 @@ class ChampionRoster:
         self._create_user()
         self._cache = {}
         #self.load_champions()
-        if self.user == self.bot.user and not is_filtered:
+        if self.is_bot and not is_filtered:
             self.autofill_bot_user(attrs)
 
     def __len__(self):
@@ -159,6 +159,10 @@ class ChampionRoster:
         if hasattr(item, 'immutable_id'):
             return item.immutable_id in self.roster
         return item in self.roster
+
+    @property
+    def is_bot(self):
+        return self.user == self.bot.user
 
     def ids_set(self):
         return set(self.roster.keys())
@@ -368,7 +372,7 @@ class ChampionRoster:
                 champ.update_default({'rank': self.roster[iid].rank,
                         'sig': self.roster[iid].sig})
 
-    def update(self, champs):
+    def update(self, champs, skip_save=False):
         self.set_defaults_of(champs)
         track = {'new': set(), 'modified': set(), 'unchanged': set()}
         self._cache = {}
@@ -383,7 +387,8 @@ class ChampionRoster:
                     track['modified'].add(self.update_str.format(champ,
                             self.roster[iid].rank_sig_str))
             self.roster[iid] = champ
-        self.save_champ_data()
+        if not skip_save:
+            self.save_champ_data()
         return track
 
     def inc_dupe(self, champs):
@@ -434,6 +439,12 @@ class ChampionRoster:
                 color=discord.Color.gold(), url=PRESTIGE_SURVEY)
         em.add_field(name='Tags used filtered to an empty roster',
                 value=tags)
+        await self.bot.say(embed=em)
+
+    async def display_prestige(self, tags=None):
+        em = discord.Embed(title=self.user.display_name+':sparkles:',
+                description=self.embed_display,
+                color=discord.Color.gold(), url=PATREON)
         await self.bot.say(embed=em)
 
     async def display(self, tags=None):
@@ -594,8 +605,16 @@ class Hook:
         /roster add angelar4s20 karnakr5s80 medusar4s20
         '''
         roster = ChampionRoster(ctx.bot, ctx.message.author)
-        await roster.load_champions()
+        await roster.load_champions(silent=True)
         await self._update(roster, champs)
+
+    @roster.command(pass_context=True, name='try', aliases=('scratch', 'sandbox'))
+    async def _roster_try(self, ctx, *, champs: ChampConverterMult):
+        '''Try updating a champ without saving the results.  Typically used
+        to experiment with prestige.'''
+        roster = ChampionRoster(ctx.bot, ctx.message.author)
+        await roster.load_champions(silent=True)
+        await self._update(roster, champs, skip_save=True)
 
     @roster.command(pass_context=True, name='stats', hidden=True)
     async def _roster_stats(self, ctx, user: discord.User = None):
@@ -722,10 +741,8 @@ class Hook:
         await menu.menu_start(pages=pages)
 
 
-
-
-    async def _update(self, roster, champs):
-        track = roster.update(champs)
+    async def _update(self, roster, champs, skip_save=False):
+        track = roster.update(champs, skip_save=skip_save)
         tracked = ''
         for k in ('new', 'modified', 'unchanged'):
             tracked += '{} Champions : {}\n'.format(k.capitalize(), len(track[k]))
@@ -735,16 +752,21 @@ class Hook:
         total = len(track['new'])+len(track['modified'])
         pagified = chat.pagify(text=tracked, page_length=1700)
         pages = []
+        emoji = ':sparkles:' if not skip_save else ':no_entry: (NO SAVE)'
+        title = '{} Roster Updates {}'.format(total, emoji)
 
         for page in pagified:
-            data = discord.Embed(title='{} Roster Updates :sparkles:'.format(total), color=discord.Color.gold(),
-                                 description=page, url=PATREON)
+            data = discord.Embed(title=title,
+                            color=discord.Color.gold(),
+                            description=page, url=PATREON)
             data.set_author(name='CollectorDevTeam Roster Update', icon_url=COLLECTOR_ICON)
             data.set_footer(text='``/roster update <champions>``', icon_url=COLLECTOR_ICON)
             data.set_thumbnail(url=COLLECTOR_FEATURED)
             pages.append(data)
         menu = PagesMenu(self.bot, timeout=240, delete_onX=True, add_pageof=True)
         await menu.menu_start(pages=pages)
+        if skip_save:
+            await roster.display_prestige()
 
     @roster.command(pass_context=True, name='dupe')
     async def _roster_dupe(self, ctx, *, champs: ChampConverterMult):
@@ -879,29 +901,51 @@ class Hook:
         await roster.display(hargs.tags)
 
 
-    @commands.command(pass_context=True, no_pm=True)
+    @commands.command(pass_context=True, no_pm=True, aliases=('cp',))
     async def clan_prestige(self, ctx, role: discord.Role, verbose=0):
         '''Report Clan Prestige.
-        Specify clan-role or battlegroup-role.'''
+        Specify clan-role or battlegroup-role.
+
+        If a detailed listing is desired, a verbose mode is included that handles sorting.
+            1:  sort by prestige
+            2:  sort by name
+            3:  sort by display name
+
+        Negative numbers reverse sorting order.
+
+        Examples:
+            /clan_prestige alliance 1        (sorted by prestige)
+            /clan_prestige bg1 -2            (sorted by name, reversed)
+        '''
         server = ctx.message.server
         width = 20
+        str_out = '{{1:{width}}} p = {{0}}'.format(width=width)
         prestige = 0
         cnt = 0
+        bundle = []
         line_out = []
         for member in server.members:
             if role in member.roles:
                 roster = ChampionRoster(self.bot, member)
+                if roster.is_bot:
+                    continue
                 await roster.load_champions(silent=True)
                 if roster.prestige > 0:
                     prestige += roster.prestige
                     cnt += 1
-                if verbose is 1:
-                    line_out.append('{:{width}} p = {}'.format(
-                        member.name, roster.prestige, width=width))
-                elif verbose is 2:
-                    line_out.append('{:{width}} p = {}'.format(
-                        member.display_name, roster.prestige, width=width))
-        if verbose > 0:
+                if verbose != 0:
+                    bundle.append((roster.prestige, member.name, member.display_name))
+        if verbose != 0:
+            index = min(abs(verbose) - 1, 2)
+            if index == 0:
+                getter = lambda e: e[index]
+                rvs = True if verbose > 0 else False
+            else:
+                getter = lambda e: e[index].lower()
+                rvs = False if verbose > 0 else True
+            for member in sorted(bundle, key=getter, reverse=rvs):
+                name = member[1] if index < 2 else member[2]
+                line_out.append(str_out.format(member[0], name))
             line_out.append('_' * (width + 11))
         if cnt > 0:
             line_out.append('{0:{width}} p = {1}  from {2} members'.format(
