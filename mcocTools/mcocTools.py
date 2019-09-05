@@ -1598,7 +1598,8 @@ class MCOCEvents:
                 eqs = []
                 for k in self.event_data.keys():
                     eqs.append(k)
-                for k in eqs.sort():
+                eqs.sort()
+                for k in eqs:
                     if k is not None:
                         try:
                             data.description += '{} : {}\n'.format(k, self.event_data[k]['event_title'])
