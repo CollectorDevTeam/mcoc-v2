@@ -1867,8 +1867,8 @@ class MCOCEvents:
         # print(', '.join(rows))
         # tiers = cdt_eq['tiers']['value'].split(", ")
         # print(tiers)
-        cdt_eq = self.event_data[event].items()
-        tiers = cdt_eq['tiers'].split(", ")
+        # cdt_eq = self.event_data[event].items()
+        tiers = self.event_data[event]['tiers'].split(", ")
         if tier not in tiers:
             await self.bot.say('Invalid tier selection')
             return
@@ -1880,18 +1880,18 @@ class MCOCEvents:
                     color = CDT_COLORS[row]
                 else:
                     color = discord.Color.gold()
-                em = discord.Embed(color=color, title=cdt_eq['event_title'].capitalize(),
-                                   url=cdt_eq['event_url'])
-                em.set_author(name=cdt_eq['date'])
-                em.description = '{}\n\n{}'.format(cdt_eq['story_title'].capitalize(), cdt_eq['story_value'])
+                em = discord.Embed(color=color, title=self.event_data[event]['event_title'].capitalize(),
+                                   url=self.event_data[event]['event_url'])
+                em.set_author(name=self.event_data[event]['date'])
+                em.description = '{}\n\n{}'.format(self.event_data[event]['story_title'].capitalize(), self.event_data[event]['story_value'])
                 # em.add_field(name=cdt_eq['story_title']['value'], value=cdt_eq['story_value']['value'])
                 if rewards:
-                    em.add_field(name='{} Rewards'.format(row.title()), value=cdt_eq[row])
+                    em.add_field(name='{} Rewards'.format(row.title()), value=self.event_data[event][row])
                 else:
-                    em.add_field(name='{}'.format(row.title()), value=cdt_eq[row])
-                if 'champions' in cdt_eq and 'value' in cdt_eq['champions'] != "":
-                    em.add_field(name='Introducing', value=cdt_eq['champions'])
-                em.set_image(url=cdt_eq['story_image'])
+                    em.add_field(name='{}'.format(row.title()), value=self.event_data[event][row])
+                if 'champions' in self.event_data[event] and 'value' in self.event_data[event]['champions'] != "":
+                    em.add_field(name='Introducing', value=self.event_data[event]['champions'])
+                em.set_image(url=self.event_data[event]['story_image'])
                 em.set_footer(text='CollectorDevTeam', icon_url=COLLECTOR_ICON)
                 page_list.append(em)
 
