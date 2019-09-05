@@ -1599,10 +1599,11 @@ class MCOCEvents:
                 for k in self.event_data.keys():
                     eqs.append(k)
                 for k in eqs.sort():
-                    try:
-                        data.description += '{} : {}\n'.format(k, self.event_data[k]['event_title'])
-                    except:
-                        continue
+                    if k is not None:
+                        try:
+                            data.description += '{} : {}\n'.format(k, self.event_data[k]['event_title'])
+                        except:
+                            continue
                 data.set_author(name='CollectorDevTeam',
                               icon_url=COLLECTOR_ICON)
                 data.set_footer(text='Requested by {}'.format(author.display_name), icon_url=author.avatar_url)
