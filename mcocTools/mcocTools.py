@@ -1573,32 +1573,51 @@ class MCOCEvents:
     @commands.group(pass_context=True, aliases=('eq','event'), hidden=False)
     async def eventquest(self, ctx, eq: str, tier=None):
         valid = False
-        if os.path.exists('data/mcoc/event_data.json'):
-            if self.event_data is None:
-                self.event_data = dataIO.load_json('data/mcoc/event_data.json')
-        if self.event_data is not None:
-            unique = self.event_data.keys()
-            if eq in unique:
-                valid = True
-            elif "eq_"+eq in unique:
-                eq = "eq_"+eq
-                valid = True
-        if os.path.exists('data/mcoc/event_data.json'):
-            now = datetime.now().date()
-            # filetime = datetime.datetime.fromtimestamp(os.path.getctime('data/mcoc/tldr.json'))
-            filetime = datetime.fromtimestamp(os.path.getctime('data/mcoc/event_data.json'))
-            if filetime.date() != now or valid is False:
-                await self.gsheet_handler.cache_gsheets('event_data')
-                event_data = dataIO.load_json('data/mcoc/event_data.json')
-                self.event_data = event_data
-                unique = self.event_data.keys()
-        else:
+        if self.event_data is None:
+            if os.path.exists('data/mcoc/event_data.json'):
+                now = datetime.now().date()
+                filetime = datetime.fromtimestamp(os.path.getctime('data/mcoc/event_data.json'))
+                if filetime.date() == now:
+                    self.event_data = dataIO.load_json('data/mcoc/event_data.json')
+                else:
+                    await self.gsheet_handler.cache_gsheets('event_data')
+                    self.event_data = dataIO.load_json('data/mcoc/event_data.json')
+        if eq in self.event_data.keys():
+            valid = True
+        elif eq not in self.event_data.keys():
             await self.gsheet_handler.cache_gsheets('event_data')
-            event_data = dataIO.load_json('data/mcoc/event_data.json')
-            self.event_data = event_data
-            unique = self.event_data.keys()
+            self.event_data = dataIO.load_json('data/mcoc/event_data.json')
+            if eq not in self.event_data.keys():
+                self.bot.say("Invalid eq code: "+eq)
+                return
+        #
+        #
+        # if os.path.exists('data/mcoc/event_data.json'):
+        #     if self.event_data is None:
+        #         self.event_data = dataIO.load_json('data/mcoc/event_data.json')
+        # if self.event_data is not None:
+        #     unique = self.event_data.keys()
+        #     if eq in unique:
+        #         valid = True
+        #     elif "eq_"+eq in unique:
+        #         eq = "eq_"+eq
+        #         valid = True
+        # if os.path.exists('data/mcoc/event_data.json'):
+        #     now = datetime.now().date()
+        #     # filetime = datetime.datetime.fromtimestamp(os.path.getctime('data/mcoc/tldr.json'))
+        #     filetime = datetime.fromtimestamp(os.path.getctime('data/mcoc/event_data.json'))
+        #     if filetime.date() != now or valid is False:
+        #         await self.gsheet_handler.cache_gsheets('event_data')
+        #         event_data = dataIO.load_json('data/mcoc/event_data.json')
+        #         self.event_data = event_data
+        #         unique = self.event_data.keys()
+        # else:
+        #     await self.gsheet_handler.cache_gsheets('event_data')
+        #     event_data = dataIO.load_json('data/mcoc/event_data.json')
+        #     self.event_data = event_data
+        #     unique = self.event_data.keys()
 
-        if eq in unique:
+        if valid is True:
             tiers = self.event_data[eq]['tiers'].split(", ")
             last = tiers[-1]
             if tier is not None and tier.lower() in tiers:
