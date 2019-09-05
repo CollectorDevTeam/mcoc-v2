@@ -1508,6 +1508,14 @@ class MCOCTools:
 class MCOCEvents:
     def __init__(self, bot):
         self.bot = bot
+        self.gsheet_handler = GSHandler(bot, gapi_service_creds)
+        self.gsheet_handler.register_gsheet(
+            name='event_data',
+            gkey='1I3T2G2tRV05vQKpBfmI04VpvP5LjCBPfVICDmuJsjks',
+            local='data/mcoc/event_data.json',
+            sheet_name='event_trans',
+        )
+        self.event_data = None
 
     @commands.command(name='trials', pass_context=True, aliases=('trial',), hidden=False)
     async def _trials(self, ctx, trial, tier='epic'):
@@ -1563,9 +1571,34 @@ class MCOCEvents:
     ### BEGIN EVENTQUEST GROUP ###
 
     @commands.group(pass_context=True, aliases=('eq','event'), hidden=False)
-    async def eventquest(self, ctx):
-        if ctx.invoked_subcommand is None:
-            await send_cmd_help(ctx)
+    async def eventquest(self, ctx, eq, tier=None):
+        valid = False
+        if self.event_data is not None:
+            unique = self.event_data.keys()
+            if eq in unique:
+                valid = True
+        now = datetime.now().date()
+        if os.path.exists('data/mcoc/event_data.json'):
+            # filetime = datetime.datetime.fromtimestamp(os.path.getctime('data/mcoc/tldr.json'))
+            filetime = datetime.fromtimestamp(os.path.getctime('data/mcoc/event_data.json'))
+            if filetime.date() != now or valid = False:
+                await self.gsheet_handler.cache_gsheets('event_data')
+        else:
+            await self.gsheet_handler.cache_gsheets('event_data')
+        event_data = dataIO.load_json('data/mcoc/event_data.json')
+        self.event_data = event_data
+        unique = event_data.keys()
+        print(unique)
+
+        if eq in unique:
+            tiers = event_data[eq].split(',')
+            tier = tiers[-1]
+            if tier.lower() in tiers:
+                last = tier.lower()
+        await self.format_eventquest(event=eq, tier=last)
+
+        # if ctx.invoked_subcommand is None:
+        #     await send_cmd_help(ctx)
 
     # @eventquest.command(name='', aliases=(,))
     # async def eq_(self, tier='Master'):
@@ -1573,190 +1606,190 @@ class MCOCEvents:
     #     event = 'eq_'
     #     await self.format_eventquest(event, tier.lower())
 
-    @eventquest.command(name='13', aliases=('guardians', 'yondu', 'nebula', 'guardiansvolzero',))
-    async def eq_guardiansvolzero(self, tier='Master'):
-        """Guardians of the Galaxy Vol Zero"""
-        event = 'eq_13'
-        await self.format_eventquest(event, tier.lower())
-
-    @eventquest.command(name='13.1', aliases=('secretempireforever', 'punisher2099', 'carnage', 'p99',))
-    async def eq_secretempireforever(self, tier='Master'):
-        """Secret Empire Forever"""
-        event = 'eq_13.1'
-        await self.format_eventquest(event, tier.lower())
-
-    @eventquest.command(name='14.1', aliases=('sinisterfoes', 'sinisterfoesofspiderman', 'vulture', 'sparky', 'smse',))
-    async def eq_sinisterfoes(self, tier='Master'):
-        """Sinister Foes of Spider-Man"""
-        event = 'eq_14.1'
-        await self.format_eventquest(event, tier.lower())
-
-    @eventquest.command(name='15', aliases=('haveyouseenthisdog', 'kingping', 'medusa', 'kp',))
-    async def eq_haveyouseenthisdog(self, tier='Master'):
-        """Have You Seen This Dog?"""
-        event = 'eq_15'
-        await self.format_eventquest(event, tier.lower())
-
-    @eventquest.command(name='15.1', aliases=('blades', 'blade', 'mephisto', 'morningstar',))
-    async def eq_blades(self, tier='Master'):
-        """Blades"""
-        event = 'eq_15.1'
-        await self.format_eventquest(event, tier.lower())
-
-    @eventquest.command(name='16', aliases=('thorragnarok', 'hela', 'tr', 'godsofthearena', 'godsofarena',))
-    async def eq_godsofthearena(self, tier='Master'):
-        """Gods of the Arena"""
-        event = 'eq_16'
-        await self.format_eventquest(event, tier.lower())
-
-    @eventquest.command(name='16.1', aliases=('hotelmodok', 'modok', 'taskmaster', 'tm',))
-    async def eq_hotelmodok(self, tier='Uncollected'):
-        """Hotel M.O.D.O.K."""
-        event = 'eq_16.1'
-        await self.format_eventquest(event, tier.lower())
-
-    @eventquest.command(name='17', aliases=('riseoftheblackpanther', 'hulkragnarok', 'killmonger', 'hr', 'km',))
-    async def eq_riseoftheblackpanther(self, tier='Uncollected'):
-        """Rise of the Black Panther"""
-        event = 'eq_17'
-        await self.format_eventquest(event, tier.lower())
-
-    @eventquest.command(name='17.1', aliases=('bishop', 'sabretooth', 'sentinel', 'savage', 'savagefuture',))
-    async def eq_savagefuture(self, tier='Uncollected'):
-        """X-Men: Savage Future"""
-        event = 'eq_17.1'
-        await self.format_eventquest(event, tier.lower())
-
-    @eventquest.command(name='17.2', aliases=(
-            'chaos', 'infinitychaos', 'corvus', 'proximamidnight', 'pm', 'corvusglaive', 'cg', 'proxima',))
-    async def eq_infinitychaos(self, tier='Uncollected'):
-        """Infinity Chaos"""
-        event = 'eq_17.2'
-        await self.format_eventquest(event, tier.lower())
-
-    @eventquest.command(name='18', aliases=('infinity', 'capiw', 'imiw', 'infinitywar', 'iw',))
-    async def eq_infinitynightmare(self, tier='Uncollected'):
-        """Infinity Nightmare"""
-        event = 'eq_18'
-        await self.format_eventquest(event, tier.lower())
-
-    @eventquest.command(name='18.1',
-                        aliases=('mercs', 'masacre', 'domino', 'goldpool', 'mercsformoney',))
-    async def eq_mercsforthemoney(self, tier='Uncollected'):
-        """Masacre and the Mercs for Money"""
-        event = 'eq_18.1'
-        await self.format_eventquest(event, tier.lower())
-
-    @eventquest.command(name='19', aliases=('wasp', 'ghost'))
-    async def eq_returntomicrorealm(self, tier='Uncollected'):
-        """Return to the Micro-Realm"""
-        event = 'eq_19'
-        await self.format_eventquest(event, tier.lower())
-
-    @eventquest.command(name='19.1', aliases=('cabal', 'enterthecabal', 'korg', 'redskull', 'heimdall',))
-    async def eq_enterthecabal(self, tier='Uncollected'):
-        """Enter The Cabal"""
-        event = 'eq_19.1'
-        await self.format_eventquest(event, tier.lower())
-
-    @eventquest.command(name='20', aliases=('omega', 'classomega', 'omegared', 'emma', 'emmafrost',))
-    async def eq_classomega(self, tier='Uncollected'):
-        """X-Men: Class Omega"""
-        event = 'eq_20'
-        await self.format_eventquest(event, tier)
-
-    @eventquest.command(name='20.1',
-                        aliases=('symbiotes', 'symbiomancer', 'venomtheduck', 'symbiotesupreme'))
-    async def eq_symbiomancer(self, tier='Epic'):
-        """Blood & Venom: Symbiomanncer"""
-        event = 'eq_20.1'
-        await self.format_eventquest(event, tier.lower())
-
-    @eventquest.command(name='21',
-                        aliases=('brawlinthebattlerealm', 'aegon', 'thechampion', 'brawl',))
-    async def eq_brawl(self, tier='Uncollected'):
-        """Brawl in the Battlerealm"""
-        event = 'eq_21'
-        await self.format_eventquest(event, tier.lower())
-
-    @eventquest.command(name='21.1', aliases=('nightriders', 'nightthrasher', 'darkhawk',))
-    async def eq_nightriders(self, tier='Uncollected'):
-        """Night Riders"""
-        event = 'eq_21.1'
-        await self.format_eventquest(event, tier.lower())
-
-    @eventquest.command(name='21.2', aliases=('monster', 'thismanthismonster', 'thing', 'diablo',))
-    async def eq_monster(self, tier='Uncollected'):
-        """This Man... This Monster"""
-        event = 'eq_21.2'
-        await self.format_eventquest(event, tier.lower())
-
-    @eventquest.command(name='21.3', aliases=('xenoclast', 'mrsinister', 'sinister', 'havok',))
-    async def eq_xenoclast(self, tier='Uncollected'):
-        """X-Men Xenoclast"""
-        event = 'eq_21.3'
-        await self.format_eventquest(event, tier.lower())
-
-    @eventquest.command(name='love3', aliases=('loveisabattlefield3',))
-    async def eq_love3(self, tier='Epic'):
-        """Love is a Battlefield 3"""
-        event = 'eq_love3'
-        await self.format_eventquest(event, tier.lower())
-
-    @eventquest.command(name='cmcc', aliases=('cmclash', 'captainmarvelclash',))
-    async def eq_cmcc(self, tier='Act'):
-        """Captain Marvel\'s Combat Clash"""
-        event = 'eq_cmcc'
-        await self.format_eventquest(event, tier.lower())
-
-    @eventquest.command(name='recon', aliases=('nickfuryrecon',))
-    async def eq_recon(self, tier='part1'):
-        """Nick Fury's Recon Initiatives"""
-        event = 'eq_recon'
-        await self.format_eventquest(event, tier.lower(), rewards=False)
-
-    @eventquest.command(name='negativezone', aliases=('nzbounties',))
-    async def eq_nzbounties(self, tier='Epic'):
-        """Negative Zone Bounty Missions"""
-        event = 'eq_nzbounties'
-        await self.format_eventquest(event, tier.lower())
-
-
-    @eventquest.command(name='22', aliases=('secretinvasion','captainmarvel','nickfury','cm','nf',))
-    async def eq_22(self, tier='Uncollected'):
-        """Battlerealm: Under Siege"""
-        event = 'eq_22'
-        await self.format_eventquest(event, tier.lower())
-
-    @eventquest.command(name='22.1', aliases=('annihilus','humantorch',))
-    async def eq_livingdeath(self, tier='Uncollected'):
-        """The Living Death Who Walks"""
-        event = 'eq_22.1'
-        await self.format_eventquest(event, tier.lower())
-
-    @eventquest.command(name='23', aliases=('ronin','ebonymay','cullobsidian','avengersforever',))
-    async def eq_avengersforever(self, tier='Uncollected'):
-        """AVENGERS FOREVER"""
-        event = 'eq_23'
-        await self.format_eventquest(event, tier.lower())
-
-    @eventquest.command(name='23.1', aliases=('namor','invisiblewoman',))
-    async def eq_imperiusrex(self, tier='Uncollected'):
-        """IMPERIUS REX"""
-        event = 'eq_23.1'
-        await self.format_eventquest(event, tier.lower())
-
-    @eventquest.command(name='classtrip', aliases=())
-    async def eq_classtrip(self, tier='Epic'):
-        """Time to Take A Class Trip"""
-        event = 'eq_classtrip'
-        await self.format_eventquest(event, tier.lower())
-
-    @eventquest.command(name='24', aliases=('phantasmagoria','mysterio','spidermanstealth','smss',))
-    async def eq_phantasmagoria(self, tier='Uncollected'):
-        """Phantasmagoria"""
-        event = 'eq_24'
-        await self.format_eventquest(event, tier.lower())
+    # @eventquest.command(name='13', aliases=('guardians', 'yondu', 'nebula', 'guardiansvolzero',))
+    # async def eq_guardiansvolzero(self, tier='Master'):
+    #     """Guardians of the Galaxy Vol Zero"""
+    #     event = 'eq_13'
+    #     await self.format_eventquest(event, tier.lower())
+    #
+    # @eventquest.command(name='13.1', aliases=('secretempireforever', 'punisher2099', 'carnage', 'p99',))
+    # async def eq_secretempireforever(self, tier='Master'):
+    #     """Secret Empire Forever"""
+    #     event = 'eq_13.1'
+    #     await self.format_eventquest(event, tier.lower())
+    #
+    # @eventquest.command(name='14.1', aliases=('sinisterfoes', 'sinisterfoesofspiderman', 'vulture', 'sparky', 'smse',))
+    # async def eq_sinisterfoes(self, tier='Master'):
+    #     """Sinister Foes of Spider-Man"""
+    #     event = 'eq_14.1'
+    #     await self.format_eventquest(event, tier.lower())
+    #
+    # @eventquest.command(name='15', aliases=('haveyouseenthisdog', 'kingping', 'medusa', 'kp',))
+    # async def eq_haveyouseenthisdog(self, tier='Master'):
+    #     """Have You Seen This Dog?"""
+    #     event = 'eq_15'
+    #     await self.format_eventquest(event, tier.lower())
+    #
+    # @eventquest.command(name='15.1', aliases=('blades', 'blade', 'mephisto', 'morningstar',))
+    # async def eq_blades(self, tier='Master'):
+    #     """Blades"""
+    #     event = 'eq_15.1'
+    #     await self.format_eventquest(event, tier.lower())
+    #
+    # @eventquest.command(name='16', aliases=('thorragnarok', 'hela', 'tr', 'godsofthearena', 'godsofarena',))
+    # async def eq_godsofthearena(self, tier='Master'):
+    #     """Gods of the Arena"""
+    #     event = 'eq_16'
+    #     await self.format_eventquest(event, tier.lower())
+    #
+    # @eventquest.command(name='16.1', aliases=('hotelmodok', 'modok', 'taskmaster', 'tm',))
+    # async def eq_hotelmodok(self, tier='Uncollected'):
+    #     """Hotel M.O.D.O.K."""
+    #     event = 'eq_16.1'
+    #     await self.format_eventquest(event, tier.lower())
+    #
+    # @eventquest.command(name='17', aliases=('riseoftheblackpanther', 'hulkragnarok', 'killmonger', 'hr', 'km',))
+    # async def eq_riseoftheblackpanther(self, tier='Uncollected'):
+    #     """Rise of the Black Panther"""
+    #     event = 'eq_17'
+    #     await self.format_eventquest(event, tier.lower())
+    #
+    # @eventquest.command(name='17.1', aliases=('bishop', 'sabretooth', 'sentinel', 'savage', 'savagefuture',))
+    # async def eq_savagefuture(self, tier='Uncollected'):
+    #     """X-Men: Savage Future"""
+    #     event = 'eq_17.1'
+    #     await self.format_eventquest(event, tier.lower())
+    #
+    # @eventquest.command(name='17.2', aliases=(
+    #         'chaos', 'infinitychaos', 'corvus', 'proximamidnight', 'pm', 'corvusglaive', 'cg', 'proxima',))
+    # async def eq_infinitychaos(self, tier='Uncollected'):
+    #     """Infinity Chaos"""
+    #     event = 'eq_17.2'
+    #     await self.format_eventquest(event, tier.lower())
+    #
+    # @eventquest.command(name='18', aliases=('infinity', 'capiw', 'imiw', 'infinitywar', 'iw',))
+    # async def eq_infinitynightmare(self, tier='Uncollected'):
+    #     """Infinity Nightmare"""
+    #     event = 'eq_18'
+    #     await self.format_eventquest(event, tier.lower())
+    #
+    # @eventquest.command(name='18.1',
+    #                     aliases=('mercs', 'masacre', 'domino', 'goldpool', 'mercsformoney',))
+    # async def eq_mercsforthemoney(self, tier='Uncollected'):
+    #     """Masacre and the Mercs for Money"""
+    #     event = 'eq_18.1'
+    #     await self.format_eventquest(event, tier.lower())
+    #
+    # @eventquest.command(name='19', aliases=('wasp', 'ghost'))
+    # async def eq_returntomicrorealm(self, tier='Uncollected'):
+    #     """Return to the Micro-Realm"""
+    #     event = 'eq_19'
+    #     await self.format_eventquest(event, tier.lower())
+    #
+    # @eventquest.command(name='19.1', aliases=('cabal', 'enterthecabal', 'korg', 'redskull', 'heimdall',))
+    # async def eq_enterthecabal(self, tier='Uncollected'):
+    #     """Enter The Cabal"""
+    #     event = 'eq_19.1'
+    #     await self.format_eventquest(event, tier.lower())
+    #
+    # @eventquest.command(name='20', aliases=('omega', 'classomega', 'omegared', 'emma', 'emmafrost',))
+    # async def eq_classomega(self, tier='Uncollected'):
+    #     """X-Men: Class Omega"""
+    #     event = 'eq_20'
+    #     await self.format_eventquest(event, tier)
+    #
+    # @eventquest.command(name='20.1',
+    #                     aliases=('symbiotes', 'symbiomancer', 'venomtheduck', 'symbiotesupreme'))
+    # async def eq_symbiomancer(self, tier='Epic'):
+    #     """Blood & Venom: Symbiomanncer"""
+    #     event = 'eq_20.1'
+    #     await self.format_eventquest(event, tier.lower())
+    #
+    # @eventquest.command(name='21',
+    #                     aliases=('brawlinthebattlerealm', 'aegon', 'thechampion', 'brawl',))
+    # async def eq_brawl(self, tier='Uncollected'):
+    #     """Brawl in the Battlerealm"""
+    #     event = 'eq_21'
+    #     await self.format_eventquest(event, tier.lower())
+    #
+    # @eventquest.command(name='21.1', aliases=('nightriders', 'nightthrasher', 'darkhawk',))
+    # async def eq_nightriders(self, tier='Uncollected'):
+    #     """Night Riders"""
+    #     event = 'eq_21.1'
+    #     await self.format_eventquest(event, tier.lower())
+    #
+    # @eventquest.command(name='21.2', aliases=('monster', 'thismanthismonster', 'thing', 'diablo',))
+    # async def eq_monster(self, tier='Uncollected'):
+    #     """This Man... This Monster"""
+    #     event = 'eq_21.2'
+    #     await self.format_eventquest(event, tier.lower())
+    #
+    # @eventquest.command(name='21.3', aliases=('xenoclast', 'mrsinister', 'sinister', 'havok',))
+    # async def eq_xenoclast(self, tier='Uncollected'):
+    #     """X-Men Xenoclast"""
+    #     event = 'eq_21.3'
+    #     await self.format_eventquest(event, tier.lower())
+    #
+    # @eventquest.command(name='love3', aliases=('loveisabattlefield3',))
+    # async def eq_love3(self, tier='Epic'):
+    #     """Love is a Battlefield 3"""
+    #     event = 'eq_love3'
+    #     await self.format_eventquest(event, tier.lower())
+    #
+    # @eventquest.command(name='cmcc', aliases=('cmclash', 'captainmarvelclash',))
+    # async def eq_cmcc(self, tier='Act'):
+    #     """Captain Marvel\'s Combat Clash"""
+    #     event = 'eq_cmcc'
+    #     await self.format_eventquest(event, tier.lower())
+    #
+    # @eventquest.command(name='recon', aliases=('nickfuryrecon',))
+    # async def eq_recon(self, tier='part1'):
+    #     """Nick Fury's Recon Initiatives"""
+    #     event = 'eq_recon'
+    #     await self.format_eventquest(event, tier.lower(), rewards=False)
+    #
+    # @eventquest.command(name='negativezone', aliases=('nzbounties',))
+    # async def eq_nzbounties(self, tier='Epic'):
+    #     """Negative Zone Bounty Missions"""
+    #     event = 'eq_nzbounties'
+    #     await self.format_eventquest(event, tier.lower())
+    #
+    #
+    # @eventquest.command(name='22', aliases=('secretinvasion','captainmarvel','nickfury','cm','nf',))
+    # async def eq_22(self, tier='Uncollected'):
+    #     """Battlerealm: Under Siege"""
+    #     event = 'eq_22'
+    #     await self.format_eventquest(event, tier.lower())
+    #
+    # @eventquest.command(name='22.1', aliases=('annihilus','humantorch',))
+    # async def eq_livingdeath(self, tier='Uncollected'):
+    #     """The Living Death Who Walks"""
+    #     event = 'eq_22.1'
+    #     await self.format_eventquest(event, tier.lower())
+    #
+    # @eventquest.command(name='23', aliases=('ronin','ebonymay','cullobsidian','avengersforever',))
+    # async def eq_avengersforever(self, tier='Uncollected'):
+    #     """AVENGERS FOREVER"""
+    #     event = 'eq_23'
+    #     await self.format_eventquest(event, tier.lower())
+    #
+    # @eventquest.command(name='23.1', aliases=('namor','invisiblewoman',))
+    # async def eq_imperiusrex(self, tier='Uncollected'):
+    #     """IMPERIUS REX"""
+    #     event = 'eq_23.1'
+    #     await self.format_eventquest(event, tier.lower())
+    #
+    # @eventquest.command(name='classtrip', aliases=())
+    # async def eq_classtrip(self, tier='Epic'):
+    #     """Time to Take A Class Trip"""
+    #     event = 'eq_classtrip'
+    #     await self.format_eventquest(event, tier.lower())
+    #
+    # @eventquest.command(name='24', aliases=('phantasmagoria','mysterio','spidermanstealth','smss',))
+    # async def eq_phantasmagoria(self, tier='Uncollected'):
+    #     """Phantasmagoria"""
+    #     event = 'eq_24'
+    #     await self.format_eventquest(event, tier.lower())
 
     # @eventquest.command(name='', aliases=(,))
     # async def eq_(self, tier='Uncollected'):
@@ -1827,14 +1860,15 @@ class MCOCEvents:
             await menu.menu_start(page_list, page_number)
 
     async def format_eventquest(self, event, tier, rewards=True):  # , tiers=('beginner','normal','heroic','master')):
-        sgd = StaticGameData()
+        # sgd = StaticGameData()
         # sgd = self.sgd
-        cdt_eq = await sgd.get_gsheets_data(event)
+        # cdt_eq = await sgd.get_gsheets_data(event)
         # rows = set(cdt_eq.keys()) - {'_headers'}
         # print(', '.join(rows))
-        tiers = cdt_eq['tiers']['value'].split(", ")
-        print(tiers)
-
+        # tiers = cdt_eq['tiers']['value'].split(", ")
+        # print(tiers)
+        cdt_eq = self.event_data[event].items()
+        tiers = cdt_eq['tiers'].split(", ")
         if tier not in tiers:
             await self.bot.say('Invalid tier selection')
             return
@@ -1846,18 +1880,18 @@ class MCOCEvents:
                     color = CDT_COLORS[row]
                 else:
                     color = discord.Color.gold()
-                em = discord.Embed(color=color, title=cdt_eq['event_title']['value'].capitalize(),
-                                   url=cdt_eq['event_url']['value'])
-                em.set_author(name=cdt_eq['date']['value'])
-                em.description = '{}\n\n{}'.format(cdt_eq['story_title']['value'].capitalize(), cdt_eq['story_value']['value'])
+                em = discord.Embed(color=color, title=cdt_eq['event_title'].capitalize(),
+                                   url=cdt_eq['event_url'])
+                em.set_author(name=cdt_eq['date'])
+                em.description = '{}\n\n{}'.format(cdt_eq['story_title'].capitalize(), cdt_eq['story_value'])
                 # em.add_field(name=cdt_eq['story_title']['value'], value=cdt_eq['story_value']['value'])
                 if rewards:
-                    em.add_field(name='{} Rewards'.format(row.title()), value=cdt_eq[row]['rewardsregex'])
+                    em.add_field(name='{} Rewards'.format(row.title()), value=cdt_eq[row])
                 else:
-                    em.add_field(name='{}'.format(row.title()), value=cdt_eq[row]['rewardsregex'])
+                    em.add_field(name='{}'.format(row.title()), value=cdt_eq[row])
                 if 'champions' in cdt_eq and 'value' in cdt_eq['champions'] != "":
-                    em.add_field(name='Introducing', value=cdt_eq['champions']['value'])
-                em.set_image(url=cdt_eq['story_image']['value'])
+                    em.add_field(name='Introducing', value=cdt_eq['champions'])
+                em.set_image(url=cdt_eq['story_image'])
                 em.set_footer(text='CollectorDevTeam', icon_url=COLLECTOR_ICON)
                 page_list.append(em)
 
