@@ -1593,9 +1593,9 @@ class MCOCEvents:
         if eq in unique:
             tiers = event_data[eq]['tiers'].split(", ")
             last = tiers[-1]
-            if tier.lower() in tiers:
-                tier = last
-            await self.format_eventquest(event=eq, tier=tier.lower())
+            if tier is not None and tier.lower() in tiers:
+                last = tier.lower()
+            await self.format_eventquest(event=eq, tier=last)
 
         # if ctx.invoked_subcommand is None:
         #     await send_cmd_help(ctx)
