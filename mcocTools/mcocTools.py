@@ -1588,7 +1588,9 @@ class MCOCEvents:
             await self.gsheet_handler.cache_gsheets('event_data')
             self.event_data = dataIO.load_json('data/mcoc/event_data.json')
             if eq not in self.event_data.keys():
-                self.bot.say("Invalid eq code: "+eq)
+                data = discord.Embed(color=discord.colour.Gold(),title='Event Quest Help', description='Please choose a valid Event Quest version number:\n')
+                for k in self.event_data.keys():
+                    data.description += '{} : {}'.format(k, self.event_data[k]['event_title'])
                 return
         #
         #
