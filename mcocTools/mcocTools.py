@@ -1586,15 +1586,17 @@ class MCOCEvents:
             filetime = datetime.fromtimestamp(os.path.getctime('data/mcoc/event_data.json'))
             if filetime.date() != now or valid is False:
                 await self.gsheet_handler.cache_gsheets('event_data')
+                event_data = dataIO.load_json('data/mcoc/event_data.json')
+                self.event_data = event_data
+                unique = self.event_data.keys()
         else:
             await self.gsheet_handler.cache_gsheets('event_data')
-        event_data = dataIO.load_json('data/mcoc/event_data.json')
-        self.event_data = event_data
-        unique = event_data.keys()
-        print(unique)
+            event_data = dataIO.load_json('data/mcoc/event_data.json')
+            self.event_data = event_data
+            unique = self.event_data.keys()
 
         if eq in unique:
-            tiers = event_data[eq]['tiers'].split(", ")
+            tiers = self.event_data[eq]['tiers'].split(", ")
             last = tiers[-1]
             if tier is not None and tier.lower() in tiers:
                 last = tier.lower()
