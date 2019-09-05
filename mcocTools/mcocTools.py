@@ -1594,7 +1594,11 @@ class MCOCEvents:
             self.event_data = dataIO.load_json('data/mcoc/event_data.json')
             if eq not in self.event_data.keys():
                 data = discord.Embed(color=ucolor,title='Event Quest Help', description='Please choose a valid Event Quest version number:\n')
+                # eqs = OrderedDict([(i, self.event_data[i]['event_title']) for i in self.event_data.keys()
+                eqs = []
                 for k in self.event_data.keys():
+                    eqs.append(k)
+                for k in eqs.sort()
                     try:
                         data.description += '{} : {}\n'.format(k, self.event_data[k]['event_title'])
                     except:
