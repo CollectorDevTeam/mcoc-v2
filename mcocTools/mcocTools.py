@@ -1581,7 +1581,7 @@ class MCOCEvents:
         if os.path.exists('data/mcoc/event_data.json'):
             # filetime = datetime.datetime.fromtimestamp(os.path.getctime('data/mcoc/tldr.json'))
             filetime = datetime.fromtimestamp(os.path.getctime('data/mcoc/event_data.json'))
-            if filetime.date() != now or valid = False:
+            if filetime.date() != now or valid is False:
                 await self.gsheet_handler.cache_gsheets('event_data')
         else:
             await self.gsheet_handler.cache_gsheets('event_data')
