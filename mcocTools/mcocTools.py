@@ -1596,7 +1596,7 @@ class MCOCEvents:
                 data = discord.Embed(color=ucolor,title='Event Quest Help', description='Please choose a valid Event Quest version number:\n')
                 for k in self.event_data.keys():
                     try:
-                        data.description += '{} : {}'.format(k, self.event_data[k]['event_title'])
+                        data.description += '{} : {}\n'.format(k, self.event_data[k]['event_title'])
                     except:
                         continue
                 data.set_author(name='CollectorDevTeam',
