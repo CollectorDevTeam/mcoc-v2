@@ -1591,11 +1591,11 @@ class MCOCEvents:
         print(unique)
 
         if eq in unique:
-            tiers = event_data[eq].split(',')
-            tier = tiers[-1]
+            tiers = event_data[eq].split(", ")
+            last = tiers[-1]
             if tier.lower() in tiers:
-                last = tier.lower()
-        await self.format_eventquest(event=eq, tier=last)
+                tier = last
+            await self.format_eventquest(event=eq, tier=tier.lower())
 
         # if ctx.invoked_subcommand is None:
         #     await send_cmd_help(ctx)
