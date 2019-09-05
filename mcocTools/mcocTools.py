@@ -1591,7 +1591,7 @@ class MCOCEvents:
         print(unique)
 
         if eq in unique:
-            tiers = event_data[eq].split(", ")
+            tiers = event_data[eq]['tiers'].split(", ")
             last = tiers[-1]
             if tier.lower() in tiers:
                 tier = last
