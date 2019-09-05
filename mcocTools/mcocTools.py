@@ -1571,7 +1571,7 @@ class MCOCEvents:
     ### BEGIN EVENTQUEST GROUP ###
 
     @commands.group(pass_context=True, aliases=('eq','event'), hidden=False)
-    async def eventquest(self, ctx, eq, tier=None):
+    async def eventquest(self, ctx, eq: str, tier=None):
         valid = False
         if self.event_data is not None:
             unique = self.event_data.keys()
