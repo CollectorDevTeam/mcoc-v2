@@ -1572,6 +1572,11 @@ class MCOCEvents:
 
     @commands.group(pass_context=True, aliases=('eq','event'), hidden=False)
     async def eventquest(self, ctx, eq: str, tier=None):
+        author = ctx.message.author
+        if ctx.message.channel.is_private:
+            ucolor = discord.Color.gold()
+        else:
+            ucolor = ctx.message.author.color
         valid = False
         if self.event_data is None:
             if os.path.exists('data/mcoc/event_data.json'):
@@ -1588,9 +1593,13 @@ class MCOCEvents:
             await self.gsheet_handler.cache_gsheets('event_data')
             self.event_data = dataIO.load_json('data/mcoc/event_data.json')
             if eq not in self.event_data.keys():
-                data = discord.Embed(color=discord.colour.Gold(),title='Event Quest Help', description='Please choose a valid Event Quest version number:\n')
+                data = discord.Embed(color=ucolor,title='Event Quest Help', description='Please choose a valid Event Quest version number:\n')
                 for k in self.event_data.keys():
                     data.description += '{} : {}'.format(k, self.event_data[k]['event_title'])
+                data.set_author(name='CollectorDevTeam',
+                              icon_url=COLLECTOR_ICON)
+                data.set_footer(text='Requested by {}'.format(author.display_name), icon_url=author.avatar_url)
+                await self.bot.say(embed=data)
                 return
         #
         #
