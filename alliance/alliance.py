@@ -482,29 +482,29 @@ class Alliance:
             menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
             await menu.menu_start(pages=pages)
 
-    @alliance.command(name="timezone", aliases=('tz','time','times'), pass_context=True, no_pm=True)
-    async def _timezone_by_role(self, ctx, role: discord.Role = None):
-        alliances, message = self._find_alliance(ctx.message.author)
-        dcolor = discord.Color.gold()
-        server = ctx.message.server
-        data = self._get_embed(ctx, color=dcolor)
-        alliance = server.id
-        if alliances is None:
-            data.title = 'Access Denied:sparkles:'
-            data.description = 'This tool is only available for members of this alliance.'
-            await self.bot.say(embed=data)
-            return
-        elif role is None:
-            data.title = 'Invalid Role:sparkles:'
-            data.description = 'Include a valid role from this server.'
-            await self.bot.say(embed=data)
-            return
-        else:
-            role_members = _get_members(server, role)
-            if role_members is None:
-                data.title = 'Unassigned Role:sparkles:'
-                data.description = 'Role {} is not assigned to any server members.'.format(role.name)
-            else:
+    # @alliance.command(name="timezone", aliases=('tz','time','times'), pass_context=True, no_pm=True)
+    # async def _timezone_by_role(self, ctx, role: discord.Role = None):
+    #     alliances, message = self._find_alliance(ctx.message.author)
+    #     dcolor = discord.Color.gold()
+    #     server = ctx.message.server
+    #     data = self._get_embed(ctx, color=dcolor)
+    #     alliance = server.id
+    #     if alliances is None:
+    #         data.title = 'Access Denied:sparkles:'
+    #         data.description = 'This tool is only available for members of this alliance.'
+    #         await self.bot.say(embed=data)
+    #         return
+    #     elif role is None:
+    #         data.title = 'Invalid Role:sparkles:'
+    #         data.description = 'Include a valid role from this server.'
+    #         await self.bot.say(embed=data)
+    #         return
+    #     else:
+    #         role_members = _get_members(server, role)
+    #         if role_members is None:
+    #             data.title = 'Unassigned Role:sparkles:'
+    #             data.description = 'Role {} is not assigned to any server members.'.format(role.name)
+    #         else:
 
 
     @checks.admin_or_permissions(manage_server=True)
