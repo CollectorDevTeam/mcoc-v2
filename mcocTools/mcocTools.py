@@ -1511,7 +1511,7 @@ class MCOCEvents:
         self.gsheet_handler = GSHandler(bot, gapi_service_creds)
         self.gsheet_handler.register_gsheet(
             name='event_data',
-            gkey='1I3T2G2tRV05vQKpBfmI04VpvP5LjCBPfVICDmuJsjks',
+            gkey='1TSmQOTXz0-jIVgyuFRoaPCUZA73t02INTYoXNgrI5y4',
             local='data/mcoc/event_data.json',
             sheet_name='event_trans',
         )
