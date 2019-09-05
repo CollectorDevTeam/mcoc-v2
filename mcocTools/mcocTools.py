@@ -1459,7 +1459,7 @@ class MCOCTools:
         for page in pages:
             em = discord.Embed(title='Data Search', description=page, color=ucolor)
             em.set_author(name='CollectorDevTeam', icon_url=COLLECTOR_ICON)
-            em.set_footer(text='MCOC Game Files', icon_url=KABAM_ICON)
+            em.set_footer(text='MCOC Game Files | requested by {}'.format(author.display_name), icon_url=KABAM_ICON)
             page_list.append(em)
         menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
         await menu.menu_start(page_list)
