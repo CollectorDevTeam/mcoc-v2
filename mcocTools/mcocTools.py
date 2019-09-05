@@ -1577,6 +1577,9 @@ class MCOCEvents:
             unique = self.event_data.keys()
             if eq in unique:
                 valid = True
+            elif "eq_"+eq in unique:
+                eq = "eq_"+eq
+                valid = True
         now = datetime.now().date()
         if os.path.exists('data/mcoc/event_data.json'):
             # filetime = datetime.datetime.fromtimestamp(os.path.getctime('data/mcoc/tldr.json'))
