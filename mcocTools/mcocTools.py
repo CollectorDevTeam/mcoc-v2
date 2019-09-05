@@ -1573,6 +1573,9 @@ class MCOCEvents:
     @commands.group(pass_context=True, aliases=('eq','event'), hidden=False)
     async def eventquest(self, ctx, eq: str, tier=None):
         valid = False
+        if os.path.exists('data/mcoc/event_data.json'):
+            if self.event_data is None:
+                self.event_data = dataIO.load_json('data/mcoc/event_data.json')
         if self.event_data is not None:
             unique = self.event_data.keys()
             if eq in unique:
@@ -1580,8 +1583,8 @@ class MCOCEvents:
             elif "eq_"+eq in unique:
                 eq = "eq_"+eq
                 valid = True
-        now = datetime.now().date()
         if os.path.exists('data/mcoc/event_data.json'):
+            now = datetime.now().date()
             # filetime = datetime.datetime.fromtimestamp(os.path.getctime('data/mcoc/tldr.json'))
             filetime = datetime.fromtimestamp(os.path.getctime('data/mcoc/event_data.json'))
             if filetime.date() != now or valid is False:
