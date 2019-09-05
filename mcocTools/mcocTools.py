@@ -1595,7 +1595,10 @@ class MCOCEvents:
             if eq not in self.event_data.keys():
                 data = discord.Embed(color=ucolor,title='Event Quest Help', description='Please choose a valid Event Quest version number:\n')
                 for k in self.event_data.keys():
-                    data.description += '{} : {}'.format(k, self.event_data[k]['event_title'])
+                    try:
+                        data.description += '{} : {}'.format(k, self.event_data[k]['event_title'])
+                    except:
+                        continue
                 data.set_author(name='CollectorDevTeam',
                               icon_url=COLLECTOR_ICON)
                 data.set_footer(text='Requested by {}'.format(author.display_name), icon_url=author.avatar_url)
