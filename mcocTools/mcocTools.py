@@ -1,6 +1,7 @@
 import asyncio
 import csv
-from datetime import datetime, timedelta
+# from datetime import datetime, timedelta
+import datetime
 from dateutil.parser import parse as dateParse
 import json
 import logging
@@ -1574,7 +1575,7 @@ class MCOCEvents:
         valid = False
         if self.event_data is None:
             if os.path.exists('data/mcoc/event_data.json'):
-                now = datetime.now().date()
+                now = datetime.datetime.now().date()
                 filetime = datetime.fromtimestamp(os.path.getctime('data/mcoc/event_data.json'))
                 if filetime.date() == now:
                     self.event_data = dataIO.load_json('data/mcoc/event_data.json')
