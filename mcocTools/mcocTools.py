@@ -410,13 +410,7 @@ class StaticGameData:
             sheet_name='season7',
             # settings=dict(column_handler='champs: to_list')
         )
-        # self.gsheet_handler.register_gsheet(
-        #     name='collection',
-        #     gkey='1JSiGo-oGbPdmlegmGTH7hcurd_HYtkpTnZGY1mN_XCE',
-        #     local='data/mcoc/collection',
-        #     sheet_name='collection',
-        #     range_name='available_collection'
-        # )
+
 
         self.gsheet_handler.register_gsheet(
             name='tldr',
@@ -439,18 +433,18 @@ class StaticGameData:
 
 
         # Update this list to add Events
-        events = ['13', '13.1', '14', '14.1', '15', '15.1', '16', '16.1', '17', '17.1', '17.2', '18', '18.1', '19',
-                  '19.1', '20', '20.1', '21', '21.1', '21.2', '21.3', '22', '22.1','23','23.1', '24',
-                  'love3', 'cmcc', 'recon', 'nzbounties', 'classtrip']
-
-        for event in events:
-            self.gsheet_handler.register_gsheet(
-                name='eq_' + event,
-                gkey='1TSmQOTXz0-jIVgyuFRoaPCUZA73t02INTYoXNgrI5y4',
-                local='data/mcoc/eq_' + event + '.json',
-                sheet_name='eq_' + event,
-                # settings=dict(column_handler='champs: to_list')
-            )
+        # events = ['13', '13.1', '14', '14.1', '15', '15.1', '16', '16.1', '17', '17.1', '17.2', '18', '18.1', '19',
+        #           '19.1', '20', '20.1', '21', '21.1', '21.2', '21.3', '22', '22.1','23','23.1', '24',
+        #           'love3', 'cmcc', 'recon', 'nzbounties', 'classtrip']
+        #
+        # for event in events:
+        #     self.gsheet_handler.register_gsheet(
+        #         name='eq_' + event,
+        #         gkey='1TSmQOTXz0-jIVgyuFRoaPCUZA73t02INTYoXNgrI5y4',
+        #         local='data/mcoc/eq_' + event + '.json',
+        #         sheet_name='eq_' + event,
+        #         # settings=dict(column_handler='champs: to_list')
+        #     )
 
     async def load_cdt_data(self):
         cdt_data, cdt_versions = ChainMap(), ChainMap()
@@ -1590,6 +1584,7 @@ class MCOCEvents:
         if eq in self.event_data.keys():
             valid = True
         elif eq not in self.event_data.keys():
+            # eqchamp = mcoc.ChampionConverter.convert(eq)
             await self.gsheet_handler.cache_gsheets('event_data')
             self.event_data = dataIO.load_json('data/mcoc/event_data.json')
             if eq not in self.event_data.keys():
