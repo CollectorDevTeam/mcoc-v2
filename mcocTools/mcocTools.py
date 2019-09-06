@@ -1576,7 +1576,7 @@ class MCOCEvents:
         if self.event_data is None:
             if os.path.exists('data/mcoc/event_data.json'):
                 now = datetime.datetime.now().date()
-                filetime = datetime.fromtimestamp(os.path.getctime('data/mcoc/event_data.json'))
+                filetime = datetime.datetime.fromtimestamp(os.path.getctime('data/mcoc/event_data.json'))
                 if filetime.date() == now:
                     self.event_data = dataIO.load_json('data/mcoc/event_data.json')
                 else:
