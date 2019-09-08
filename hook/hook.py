@@ -448,6 +448,14 @@ class ChampionRoster:
                 color=discord.Color.gold(), url=PATREON)
         await self.bot.say(embed=em)
 
+    async def display_prestige_delta(self, orig_prestige, tags=None):
+        outstr = 'Potential Prestige: {:.0f} -> {:.0f} ({:+.0f} delta)'.format(
+                    orig_prestige, self.prestige, self.prestige - orig_prestige)
+        em = discord.Embed(title=self.user.display_name+':no_entry:',
+                description=outstr,
+                color=discord.Color.gold(), url=PATREON)
+        await self.bot.say(embed=em)
+
     async def display(self, tags=None):
         if tags is not None:
             filt_roster = await self.filter_champs(tags)
@@ -745,7 +753,14 @@ class Hook:
 
 
     async def _update(self, roster, champs, skip_save=False):
+        orig_prestige = roster.prestige
         track = roster.update(champs, skip_save=skip_save)
+        if skip_save:
+            await roster.display_prestige_delta(orig_prestige)
+        else:
+            await self._display_tracked_changes(track, skip_save)
+
+    async def _display_tracked_changes(self, track, skip_save):
         tracked = ''
         for k in ('new', 'modified', 'unchanged'):
             tracked += '{} Champions : {}\n'.format(k.capitalize(), len(track[k]))
@@ -768,8 +783,6 @@ class Hook:
             pages.append(data)
         menu = PagesMenu(self.bot, timeout=240, delete_onX=True, add_pageof=True)
         await menu.menu_start(pages=pages)
-        if skip_save:
-            await roster.display_prestige()
 
     @roster.command(pass_context=True, name='dupe')
     async def _roster_dupe(self, ctx, *, champs: ChampConverterMult):

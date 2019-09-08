@@ -671,6 +671,9 @@ class UserExpr(md.Grammar):
 ##################################################
 #  Hashtag grammar
 
+class HashtagPlusError(TypeError):
+    pass
+
 class HashtagToken(md.Grammar):
     grammar = md.WORD('#', '_a-zA-Z:*0-9')
 
@@ -702,7 +705,7 @@ class HashUnaryOperator(md.Grammar):
 
 
 class HashBinaryOperator(md.Grammar):
-    grammar = md.L('&') | md.L('|') | md.L('-')
+    grammar = md.L('&') | md.L('|') | md.L('-') | md.L('+')
 
     def op(self, roster):
         if self.string == '&':
@@ -711,6 +714,14 @@ class HashBinaryOperator(md.Grammar):
             return set.union
         elif self.string == '-':
             return set.difference
+        elif self.string == '+':
+            raise HashtagPlusError("Operator '+' is not defined for Hashtag Syntax")
+
+    def sub_aliases(self, aliases):
+        if self.string == '+':
+            raise HashtagPlusError("Operator '+' is not defined for Hashtag Syntax")
+        else:
+            return self.string
 
 
 class HashP0Term(md.Grammar):
@@ -755,7 +766,7 @@ class HashP1Expr(md.Grammar):
     def sub_aliases(self, aliases):
         ret = self[0].sub_aliases(aliases)
         for e in self[1]:
-            ret += e[0].string + e[1].sub_aliases(aliases)
+            ret += e[0].sub_aliases(aliases) + e[1].sub_aliases(aliases)
         return ret
 
 
@@ -792,12 +803,6 @@ class HashAttrSearchExpr(md.Grammar):
     grammar = (md.OPTIONAL(AttrExpr),
                md.OPTIONAL(HashImplicitSearchExpr | HashExplicitSearchExpr),
                md.OPTIONAL(AttrExpr))
-    #grammar_whitespace_mode = 'explicit'
-
-    #def filter_roster(self, roster):
-        #filt_ids = self[0].match_set(roster)
-        #filt_roster = roster.filtered_roster_from_ids(filt_ids, hargs=self.string)
-        #return filt_roster
 
     def sub_aliases(self, ctx, aliases):
         attrs = self[0].get_attrs() if self[0] else {}
@@ -807,16 +812,8 @@ class HashAttrSearchExpr(md.Grammar):
 class HashUserSearchExpr(md.Grammar):
     grammar = (md.OPTIONAL(UserExpr),
                md.OPTIONAL(HashImplicitSearchExpr | HashExplicitSearchExpr))
-    #grammar_whitespace_mode = 'explicit'
-
-    #def filter_roster(self, roster):
-        #filt_ids = self[0].match_set(roster)
-        #filt_roster = roster.filtered_roster_from_ids(filt_ids, hargs=self.string)
-        #return filt_roster
 
     def sub_aliases(self, ctx, aliases):
-        #print('UserExpr {} {}'.format(self[0], ctx.message.author))
-        #print(self, self[0])
         user = self[0].get_user(ctx) if self[0] else ctx.message.author
         return (user, self[1].sub_aliases(aliases)) if self[1] else (user, '')
 
@@ -833,37 +830,70 @@ class HashParser:
         try:
             result1 = parser.parse_string(hargs)
         except md.ParseError as e:
-            print(e)
-            em = discord.Embed(title='Input Error', description='Syntax problem',
-                    color=discord.Color.red())
-            em.add_field(name="Don't mix implicit and explicit operators",
-                    value=hargs)
-            await self.bot.say(embed=em)
-            return
-        return result1.sub_aliases(ctx, aliases)
+            await self.generic_syntax_error_msg(hargs, e)
+            raise
+        try:
+            return result1.sub_aliases(ctx, aliases)
+        except HashtagPlusError as e:
+            await self.hashtag_plus_error_msg()
+            raise
+
+    async def parse_2nd_pass(self, roster, expl_hargs):
+        if expl_hargs:
+            try:
+                result2 = self.explicit_parser.parse_string(expl_hargs)
+            except md.ParseError as e:
+                await self.generic_syntax_error_msg(hargs, e)
+                return
+            try:
+                return result2.filter_roster(roster)
+            except HashtagPlusError as e:
+                await self.hashtag_plus_error_msg()
+                return
+        else:
+            return roster
 
     async def parse_with_attr(self, ctx, hargs, roster_cls, aliases=None):
         '''Parser implies no user roster so use bot.  Parse attrs to pass to roster creation.'''
         aliases = aliases if aliases else {}
-        attrs, expl_hargs = await self.parse_1st_pass(ctx, self.attr_parser, hargs, aliases)
+        try:
+            attrs, expl_hargs = await self.parse_1st_pass(ctx,
+                                self.attr_parser, hargs, aliases)
+        except (HashtagPlusError, md.ParseError) as e:
+            #logger.info('SyntaxError caught ', str(e))
+            return
         roster = roster_cls(self.bot, self.bot.user, attrs=attrs)
-        if expl_hargs:
-            result2 = self.explicit_parser.parse_string(expl_hargs)
-            return result2.filter_roster(roster)
-        else:
-            return roster
+        return await self.parse_2nd_pass(roster, expl_hargs)
 
     async def parse_with_user(self, ctx, hargs, roster_cls, aliases=None):
         '''Parser implies user roster.'''
         aliases = aliases if aliases else {}
-        user, expl_hargs = await self.parse_1st_pass(ctx, self.user_parser, hargs, aliases)
+        try:
+            user, expl_hargs = await self.parse_1st_pass(ctx, self.user_parser,
+                                hargs, aliases)
+        except (HashtagPlusError, md.ParseError) as e:
+            #logger.info('SyntaxError caught ', str(e))
+            return
         roster = roster_cls(self.bot, user)
         await roster.load_champions()
-        if expl_hargs:
-            result2 = self.explicit_parser.parse_string(expl_hargs)
-            return result2.filter_roster(roster)
-        else:
-            return roster
+        return await self.parse_2nd_pass(roster, expl_hargs)
+
+    async def generic_syntax_error_msg(self, hargs, e=None):
+        em = discord.Embed(title='Input Error', description='Syntax problem',
+                color=discord.Color.red())
+        em.add_field(name="Don't mix implicit and explicit operators",
+                value=hargs)
+        await self.bot.say(embed=em)
+        return
+
+    async def hashtag_plus_error_msg(self):
+        em = discord.Embed(title='Input Error', description='Syntax problem',
+                color=discord.Color.red())
+        em.add_field(name="`+` operator is not defined for hashtags.",
+                value="You probably want the `|` operator.  Call "
+                      "`/help hashtags` for detailed syntax.")
+        await self.bot.say(embed=em)
+        return
 
     async def filter_and_display(self, ctx, hargs, roster_cls, aliases=None):
         filtered = await self.parse_with_attr(ctx, hargs, roster_cls, aliases)
