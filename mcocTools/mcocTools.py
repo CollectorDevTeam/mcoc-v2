@@ -1088,14 +1088,18 @@ class MCOCTools:
     async def _collectormap(self, ctx):
         buildlist = {}
         servers = self.bot.servers
+        print('server inventory')
         for server in servers:
+            print(server.id)
+            print('member inventory')
             members = []
             for member in server.members:
                 if member.bot is False:
                     members.append(member.id)
             buildlist.update({server.id: members})
-        dataIO.save_json('data/mcoc/collectorverse.json', buildlist)
-        await self.bot.upload('data/mcoc/collectorverse.json')
+
+        dataIO.save_json('data/mcoc/collectormap.json', buildlist)
+        await self.bot.upload('data/mcoc/collectormap.json')
 
 
     @commands.command(pass_context=True, name='calendar', aliases=('events',))
@@ -2442,7 +2446,8 @@ def check_files():
 
     files = {
         'settings.json': {},
-        'mcoctools.json': {'calendar': '', 'cutoffs': '', 'calendar_date': '', 'cutoffs_date': ''}
+        'mcoctools.json': {'calendar': '', 'cutoffs': '', 'calendar_date': '', 'cutoffs_date': ''},
+        'collectormap.json': {},
     }
 
     for filename, value in files.items():
