@@ -1084,6 +1084,21 @@ class MCOCTools:
     #         em.set_footer(text='CollectorDevTeam', icon_url=COLLECTOR_ICON)
     #     return em
 
+    @commands.command(pass_context=True, name='collectorverse', hidden=True)
+    async def _collectorverse(self, ctx):
+        buildlist = {}
+        servers = self.bot.servers
+        for server in servers:
+            members = []
+            for member in server.members:
+                if member.bot is False:
+                    members.append(member.id)
+            buildlist.update({server.id: members})
+        dataIO.save_json('data/mcoc/collectorverse.json', buildlist)
+        await self.bot.upload('data/mcoc/collectorverse.json')
+
+
+
 
     @commands.command(pass_context=True, name='calendar', aliases=('events',))
     async def _calendar(self, ctx, force=False):
