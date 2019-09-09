@@ -1098,8 +1098,8 @@ class MCOCTools:
                     members.append(member.id)
             buildlist.update({server.id: members})
 
-        dataIO.save_json('data/mcoc/collectormap.json', buildlist)
-        await self.bot.upload('data/mcoc/collectormap.json')
+        dataIO.save_json('data/mcocTools/collectormap.json', buildlist)
+        await self.bot.upload('data/mcocTools/collectormap.json')
 
 
     @commands.command(pass_context=True, name='calendar', aliases=('events',))
