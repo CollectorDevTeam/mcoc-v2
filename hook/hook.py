@@ -887,7 +887,7 @@ class Hook:
         '''Returns a CSV file with all Roster data for all members of a Role'''
         server = ctx.message.server
         roster = ChampionRoster(ctx.bot, ctx.message.author)
-        await roster.load_champions()
+        await roster.load_champions(silent=True)
         rand = randint(1000, 9999)
         path, ext = os.path.split(roster.champs_file)
         tmp_file = '{}-{}.tmp'.format(path, rand)
@@ -898,7 +898,7 @@ class Hook:
             for member in server.members:
                 if role in member.roles:
                     roster = ChampionRoster(ctx.bot, member)
-                    await roster.load_champions()
+                    await roster.load_champions(silent=True)
                     for champ in roster.roster.values():
                         champ_dict = champ.to_json()
                         champ_dict['member_mention'] = member.mention
