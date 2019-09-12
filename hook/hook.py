@@ -841,7 +841,7 @@ class Hook:
         Exported file can be imported to hook/champions
         '''
         roster = ChampionRoster(ctx.bot, ctx.message.author)
-        await roster.load_champions()
+        await roster.load_champions(silent=True)
         rand = randint(1000, 9999)
         path, ext = os.path.split(roster.champs_file)
         tmp_file = '{}-{}.tmp'.format(path, rand)
