@@ -882,7 +882,7 @@ class Hook:
         await self.bot.send_message(ctx.message.channel, embed=em)
         # await self.bot.send_message(ctx.message.channel,'iOS dumblink: https://goo.gl/LaFrg7')
 
-    @roster.command(pass_context=True, hidden=True, name='role_export',aliases=('rrx',))
+    @roster.command(pass_context=True, hidden=True, name='role_export', aliases=('rrx',))
     async def _role_roster_export(self, ctx, role: discord.Role):
         '''Returns a CSV file with all Roster data for all members of a Role'''
         server = ctx.message.server
@@ -909,7 +909,7 @@ class Hook:
         await self.bot.upload(filename)
         os.remove(filename)
 
-
+    @checks.admin_or_permissions(manage_server=True)
     @commands.command(pass_context=True, name='rank_prestige', aliases=('prestige_list',))
     async def _rank_prestige(self, ctx, *, hargs=''):
         hargs = await HashtagRankConverter(ctx, hargs).convert()
