@@ -1152,12 +1152,23 @@ class MCOCTools:
                 if calendar[i]['feature'] == 'Crystal':
                     package += 'Arena: Crystal Cornucopia\n'
                 elif calendar[i]['feature'] != "?" and calendar[i]['feature'] != "Crystal":
-                    feature = await mcoc.get_champion(calendar[i]['feature'])
-                    basic = await mcoc.get_champion(calendar[i]['basic'])
-                    data.set_thumbnail(url=feature.get_featured())
-                    package += '__Arena__\n' \
-                               'Feature: 4★ / 5★ {0.full_name}\n' \
-                               'Basic:   4☆ {1.full_name}\n'.format(feature, basic)
+                    try:
+                        feature = mcoc.get_champion(calendar[i]['feature'])
+                        package += '__Arena__\n' \
+                                   'Feature: 4★ / 5★ {0}\n'.format(feature.full_name)
+                        data.set_thumbnail(url=feature.get_featured())
+                    except:
+                        package += '__Arena__\n' \
+                                   'Feature: {0}\n'.format(calendar[i]['feature'])
+                    try:
+                        basic = await mcoc.get_champion(calendar[i]['basic'])
+                        package += 'Basic:   4☆ {0.full_name}\n'.format(basic)
+                    except:
+                        'Basic:   4☆ {0.full_name}\n'.format(basic)
+                    # feature = await mcoc.get_champion(calendar[i]['feature'])
+
+
+
                 if calendar[i]['eq'] != '':
                     package += 'Event Quest vn: {0}\n``/eq {0}``\n'.format(calendar[i]['eq'])
                 if calendar[i]['notes'] != '':
