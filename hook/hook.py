@@ -809,7 +809,7 @@ class Hook:
 
         Delete champion(s) from your roster.
         example:
-        /roter delete angela blackbolt medusa'''
+        /roster delete angela blackbolt medusa'''
         roster = ChampionRoster(ctx.bot, ctx.message.author)
         await roster.load_champions()
         track = roster.delete(champs)
