@@ -675,7 +675,7 @@ class HashtagPlusError(TypeError):
     pass
 
 class HashtagToken(md.Grammar):
-    grammar = md.WORD('#', '_a-zA-Z:*0-9-')
+    grammar = md.WORD('#', '_a-zA-Z:*0-9-'), md.WORD('_a-zA-Z:*0-9')
 
     def match_set(self, roster):
         return roster.raw_filtered_ids(set([self.string]))
