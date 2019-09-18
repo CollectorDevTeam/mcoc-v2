@@ -146,6 +146,12 @@ class STORYQUEST:
             ucolor = discord.Color.gold()
         else:
             ucolor = author.color
+        if boost.lower() not in keys:
+            for k in keys:
+                if self.glossary[k]['title']==boost:
+                    boost = k
+                    continue
+
         if boost is not None and boost.lower() in keys:
             data = discord.Embed(color=ucolor, title='{}'.format(self.glossary[boost.lower()]['title']), description='', url=PATREON)
             data.set_thumbnail(url=COLLECTOR_ICON)
