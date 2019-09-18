@@ -148,7 +148,7 @@ class STORYQUEST:
             ucolor = author.color
         if boost.lower() not in keys:
             for k in keys:
-                if self.glossary[k]['title']==boost:
+                if self.glossary[k]['title'].lower() == boost.lower():
                     boost = k
                     continue
 
