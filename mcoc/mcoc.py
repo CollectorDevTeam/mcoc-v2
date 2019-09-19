@@ -633,6 +633,7 @@ class MCOC(ChampionFactory):
         )
 
 
+
     #'spotlight': {'gkey': '1I3T2G2tRV05vQKpBfmI04VpvP5LjCBPfVICDmuJsjks',
             #'local': 'data/mcoc/spotlight_test.json',
             #},
@@ -970,15 +971,18 @@ class MCOC(ChampionFactory):
 
             targets = []
             for duel in data:    # single iteration through the data
-                uniq = duel['unique']
-                star, duel_champ, rank = int(uniq[:1]), uniq[2:-2], int(uniq[-1:])
-                star, duel_champ, rank = int(uniq[:1]), uniq[2:-2], int(uniq[-1:])
-                if duel_champ == champ.mattkraftid:
-                    # targets.append('{}{} {} {} : {}'.format(star, champ.star_char,
-                    #             duel['maxlevel'],
-                    #             champ.full_name,
-                    #             duel['username']))
-                    targets.append('{} : {}'.format(duel['champion'], duel['username']))
+                if duel['unique']=='':
+                    continue
+                else:
+                    uniq = duel['unique']
+                    star, duel_champ, rank = int(uniq[:1]), uniq[2:-2], int(uniq[-1:])
+                    star, duel_champ, rank = int(uniq[:1]), uniq[2:-2], int(uniq[-1:])
+                    if duel_champ == champ.mattkraftid:
+                        # targets.append('{}{} {} {} : {}'.format(star, champ.star_char,
+                        #             duel['maxlevel'],
+                        #             champ.full_name,
+                        #             duel['username']))
+                        targets.append('{} : {}'.format(duel['champion'], duel['username']))
             targets.sort()
             #for star in range(3,7):
                 #for rank in range(1,6):
