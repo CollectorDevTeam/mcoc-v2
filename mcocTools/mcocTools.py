@@ -1002,7 +1002,8 @@ class PagesMenu:
             try:
                 if self.delete_onX:
                     # await self.bot.delete_message(message)
-                    await self.bot.edit_message('Menu deleted by {}'.format(react.user.display_name))
+                    await self.bot.edit_message(message, 'Menu deleted by {}'.format(react.user.display_name))
+
                 else:
                     await self.bot.clear_reactions(message)
             except discord.Forbidden:
