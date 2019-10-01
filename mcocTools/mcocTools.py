@@ -1004,7 +1004,7 @@ class PagesMenu:
                     await self.bot.delete_message(message)
                     report = ('Message deleted by {} {} on {} {}'.format(react.user.display_name, react.user.id, message.server.name, message.server.id))
                     print(report)
-                    await self.bot.send_message(report, channel='391330316662341632')
+                    await self.bot.send_message(391330316662341632, report)
                     # await self.bot.edit_message(message, 'Menu deleted by {}'.format(react.user.display_name))
                 else:
                     await self.bot.clear_reactions(message)
