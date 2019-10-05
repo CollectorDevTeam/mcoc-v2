@@ -247,7 +247,7 @@ class ChampionRoster:
             champ = list(self.roster.values())[0]
             return 'Listing ({} champs): {}'.format(len(self), champ.attrs_str)
         else:
-            return 'Filtered Prestige ({} champs):  {}'.format(len(self), self.prestige)
+            return 'Filtered Prestige ({} champs):  {:.2f}'.format(len(self), self.prestige)
 
     async def get_champion(self, cdict):
         mcoc = self.bot.get_cog('MCOC')

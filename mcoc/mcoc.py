@@ -3011,6 +3011,10 @@ class Champion:
             raise TitleError(self.full_name)
         mcocsig = self.mcocsig
         if not self._TITLE or not self._SIMPLE or not self._DESC_LIST:
+            print("Title Error <{}:{}> title: {}, simple: {}, desc_list: {}".format(
+                    self.full_name, mcocsig,
+                    self._TITLE, self._SIMPLE, self._DESC_LIST
+            ))
             raise TitleError(self.full_name)
         title = self._TITLE
         #print(title)
