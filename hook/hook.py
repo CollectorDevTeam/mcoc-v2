@@ -161,6 +161,18 @@ class ChampionRoster:
             return item.immutable_id in self.roster
         return item in self.roster
 
+    def _normalize_ids(self, other):
+        if isinstance(other, ChampionRoster):
+            return self.ids_set(), other.ids_set()
+        elif isinstance(other, set):
+            return self.ids_set(), other
+        else:
+            raise TypeError("Roster operations can't handle type {}".format(type(other)))
+
+    def __sub__(self, other):
+        s_ids, o_ids = self._normalize_ids(other)
+        return self.filtered_roster_from_ids(s_ids - o_ids)
+
     @property
     def is_bot(self):
         return self.user == self.bot.user
@@ -626,6 +638,27 @@ class Hook:
         roster = ChampionRoster(ctx.bot, ctx.message.author)
         await roster.load_champions(silent=True)
         await self._update(roster, champs, skip_save=True)
+
+    @roster.command(pass_context=True, name='missing')
+    async def _roster_missing(self, ctx, *, hargs=''):
+        '''Show champions missing from user's roster (one star only)
+
+        This uses the same syntax as `/champ list` and shows all of the missing
+        champs from the star level specified <default: 4*>.  Hashtags are
+        also accepted
+
+        example:
+        /roster missing              (missing 4* champs)
+        /roster missing 5* #science  (missing 5* science champs)
+        '''
+        sgd = StaticGameData()
+        aliases = {'#var2': '(#5star | #6star) & #size:xl', '#poisoni': '#poisonimmunity'}
+        bot_roster = await sgd.parse_with_attr(ctx, hargs, ChampionRoster, aliases=aliases)
+        roster = ChampionRoster(ctx.bot, ctx.message.author)
+        await roster.load_champions(silent=True)
+        missing = bot_roster - roster
+        await missing.display()
+
 
     @roster.command(pass_context=True, name='stats', hidden=True)
     async def _roster_stats(self, ctx, user: discord.User = None):
