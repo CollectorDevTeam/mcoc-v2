@@ -2149,8 +2149,8 @@ class CDTGAPS:
         channellist = []
         for c in server.channels:
             channellist.append(c.name)
-        if 'announcements' not in channellist:
-            await self.bot.create_channel(server, 'announcements', everyoneperms, allianceperms, summonerperms)
+        # if 'announcements' not in channellist:
+        #     await self.bot.create_channel(server, 'announcements', everyoneperms, allianceperms, summonerperms)
         # if 'alliance' not in channellist:
         #     await self.bot.create_channel(server, 'alliance', everyoneperms, allianceperms)
         if 'alliance-chatter' not in channellist:
