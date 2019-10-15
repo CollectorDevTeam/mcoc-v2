@@ -2146,35 +2146,39 @@ class CDTGAPS:
         bg2perms = discord.ChannelPermissions(target=bg2, overwrite=readperm)
         bg3perms = discord.ChannelPermissions(target=bg3, overwrite=readperm)
 
-        channellist = []
-        for c in server.channels:
-            channellist.append(c.name)
-        # if 'announcements' not in channellist:
-        #     await self.bot.create_channel(server, 'announcements', everyoneperms, allianceperms, summonerperms)
-        # if 'alliance' not in channellist:
-        #     await self.bot.create_channel(server, 'alliance', everyoneperms, allianceperms)
-        if 'alliance-chatter' not in channellist:
-            await self.bot.create_channel(server, 'alliance-chatter', everyoneperms, allianceperms)
-        if 'officers' not in channellist:
-            await self.bot.create_channel(server, 'officers', everyoneperms, officerperms)
-        if 'bg1aq' not in channellist:
-            await self.bot.create_channel(server, 'bg1aq', everyoneperms, officerperms, bg1perms)
-        if 'bg1aw' not in channellist:
-            await self.bot.create_channel(server, 'bg1aw', everyoneperms, officerperms, bg1perms)
-        if 'bg2aq' not in channellist:
-            await self.bot.create_channel(server, 'bg2aq', everyoneperms, officerperms, bg2perms)
-        if 'bg2aw' not in channellist:
-            await self.bot.create_channel(server, 'bg2aw', everyoneperms, officerperms, bg2perms)
-        if 'bg3aq' not in channellist:
-            await self.bot.create_channel(server, 'bg3aq', everyoneperms, officerperms, bg3perms)
-        if 'bg3aw' not in channellist:
-            await self.bot.create_channel(server, 'bg3aw', everyoneperms, officerperms, bg2perms)
+
+        # channellist = []
+        # for c in server.channels:
+        #     channellist.append(c.name)
+        # # if 'announcements' not in channellist:
+        # #     await self.bot.create_channel(server, 'announcements', everyoneperms, allianceperms, summonerperms)
+        # # if 'alliance' not in channellist:
+        # #     await self.bot.create_channel(server, 'alliance', everyoneperms, allianceperms)
+        # if 'alliance-chatter' not in channellist:
+        #     await self.bot.create_channel(server, 'alliance-chatter', everyoneperms, allianceperms)
+        # if 'officers' not in channellist:
+        #     await self.bot.create_channel(server, 'officers', everyoneperms, officerperms)
+        # if 'bg1aq' not in channellist:
+        #     await self.bot.create_channel(server, 'bg1aq', everyoneperms, officerperms, bg1perms)
+        # if 'bg1aw' not in channellist:
+        #     await self.bot.create_channel(server, 'bg1aw', everyoneperms, officerperms, bg1perms)
+        # if 'bg2aq' not in channellist:
+        #     await self.bot.create_channel(server, 'bg2aq', everyoneperms, officerperms, bg2perms)
+        # if 'bg2aw' not in channellist:
+        #     await self.bot.create_channel(server, 'bg2aw', everyoneperms, officerperms, bg2perms)
+        # if 'bg3aq' not in channellist:
+        #     await self.bot.create_channel(server, 'bg3aq', everyoneperms, officerperms, bg3perms)
+        # if 'bg3aw' not in channellist:
+        #     await self.bot.create_channel(server, 'bg3aw', everyoneperms, officerperms, bg2perms)
+
+
 
         channels = sorted(server.channels, key=lambda channels: channels.position, reverse=False)
         channelnames = []
         for c in channels:
             channelnames.append('{} = {} '.format(c.position, c.mention))
-        em = discord.Embed(color=discord.Color.red(), title='Guild Alliance Popup System', description='')
+        em = discord.Embed(color=discord.Color.red(), title='Guild Alliance Popup System',
+                           description='Automated channel creation is currently disabled')
         em.add_field(name='Stage 2 Create Channels', value='\n'.join(channelnames), inline=False)
         await self.bot.say(embed=em)
 
