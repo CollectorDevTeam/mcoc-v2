@@ -2208,10 +2208,12 @@ class CDTGAPS:
         await self.bot.delete_message(message2)
         try:
             alliance = self.bot.get_cog("Alliance")
-            await alliance._reg(self.bot, ctx)
+            await alliance.reg(self.bot, ctx)
+            return
         except:
             raise
             await self.bot.say("Now register your alliance:\n```/alliance register```")
+            return
     # @checks.is_owner()
     # @commands.group(pass_context=True, hidden=True)
     # async def inspect(self, ctx):

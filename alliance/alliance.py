@@ -105,12 +105,12 @@ class Alliance:
             if ctx.message.server.id in self.guilds.keys():
                 alliance = ctx.message.server.id
                 keys = self.guilds[alliance].keys()
-                role_registered = False
+                roleregistered = False
                 for key in self.advanced_keys:
                     if key in keys:
-                        role_registered = True
+                        roleregistered = True
                         continue
-                if role_registered is False:
+                if roleregistered is False:
                     data.add_field(name='This alliance server is registered.',
                                    value='However, no roles have been registered for '
                                          '``alliance``, ``officers`` or ``bg1 | bg2 | bg3``')
@@ -510,7 +510,7 @@ class Alliance:
     @checks.admin_or_permissions(manage_server=True)
     @alliance.command(name="create", aliases=('register', 'add'),
                       pass_context=True, invoke_without_command=True, no_pm=True)
-    async def _reg(self, ctx):
+    async def reg(self, ctx):
         """Sign up to register your Alliance server!"""
         user = ctx.message.author
         server = ctx.message.server
