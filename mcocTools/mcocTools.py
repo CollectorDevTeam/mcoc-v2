@@ -2208,7 +2208,7 @@ class CDTGAPS:
         await self.bot.delete_message(message2)
         try:
             alliance = self.bot.get_cog("Alliance")
-            await alliance.register_alliance(self.bot, ctx)
+            await alliance.register_alliance(ctx)
             return
         except:
             raise
