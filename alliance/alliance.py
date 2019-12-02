@@ -506,6 +506,9 @@ class Alliance:
     #             data.description = 'Role {} is not assigned to any server members.'.format(role.name)
     #         else:
 
+    async def __call__(self, ctx):
+        await self.reg(ctx)
+        return
 
     @checks.admin_or_permissions(manage_server=True)
     @alliance.command(name="create", aliases=('register', 'add'),
