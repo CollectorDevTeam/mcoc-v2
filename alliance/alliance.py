@@ -506,14 +506,15 @@ class Alliance:
     #             data.description = 'Role {} is not assigned to any server members.'.format(role.name)
     #         else:
 
-    async def __call__(self, ctx):
-        await self.reg(ctx)
-        return
-
     @checks.admin_or_permissions(manage_server=True)
     @alliance.command(name="create", aliases=('register', 'add'),
                       pass_context=True, invoke_without_command=True, no_pm=True)
-    async def reg(self, ctx):
+    async def _reg(self,ctx):
+        await self.register_alliance(ctx)
+        return
+
+
+    async def register_alliance(self, ctx):
         """Sign up to register your Alliance server!"""
         user = ctx.message.author
         server = ctx.message.server
