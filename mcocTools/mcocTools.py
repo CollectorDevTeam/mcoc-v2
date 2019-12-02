@@ -2137,14 +2137,14 @@ class CDTGAPS:
         await self.bot.say(embed=em)
 
         everyone_perms = discord.PermissionOverwrite(read_messages=False)
-        everyoneperms = discord.ChannelPermissions(target=server.default_role, overwrite=everyone_perms)
+        everyoneperms = discord.ChannelPermissions(target=server.default_role, overwrite=discord.PermissionOverwrite(read_messages=True))
         readperm = discord.PermissionOverwrite(read_messages=True)
-        officerperms = discord.ChannelPermissions(target=officers, overwrite=readperm)
-        allianceperms = discord.ChannelPermissions(target=alliance, overwrite=readperm)
-        summonerperms = discord.ChannelPermissions(target=summoners, overwrite=readperm)
-        bg1perms = discord.ChannelPermissions(target=bg1, overwrite=readperm)
-        bg2perms = discord.ChannelPermissions(target=bg2, overwrite=readperm)
-        bg3perms = discord.ChannelPermissions(target=bg3, overwrite=readperm)
+        officerperms = discord.ChannelPermissions(target=officers, overwrite=discord.PermissionOverwrite(read_messages=True))
+        allianceperms = discord.ChannelPermissions(target=alliance, overwrite=discord.PermissionOverwrite(read_messages=True))
+        summonerperms = discord.ChannelPermissions(target=summoners, overwrite=discord.PermissionOverwrite(read_messages=True))
+        bg1perms = discord.ChannelPermissions(target=bg1, overwrite=discord.PermissionOverwrite(read_messages=True))
+        bg2perms = discord.ChannelPermissions(target=bg2, overwrite=discord.PermissionOverwrite(read_messages=True))
+        bg3perms = discord.ChannelPermissions(target=bg3, overwrite=discord.PermissionOverwrite(read_messages=True))
 
 
         channellist = []
