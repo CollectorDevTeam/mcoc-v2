@@ -2136,40 +2136,47 @@ class CDTGAPS:
         em.add_field(name='Stage 1 Role Creation', value='\n'.join(positions), inline=False)
         await self.bot.say(embed=em)
 
-        everyone_perms = discord.PermissionOverwrite(read_messages=False)
-        everyoneperms = discord.ChannelPermissions(target=server.default_role, overwrite=discord.PermissionOverwrite(read_messages=True))
-        readperm = discord.PermissionOverwrite(read_messages=True)
-        officerperms = discord.ChannelPermissions(target=officers, overwrite=discord.PermissionOverwrite(read_messages=True))
-        allianceperms = discord.ChannelPermissions(target=alliance, overwrite=discord.PermissionOverwrite(read_messages=True))
-        summonerperms = discord.ChannelPermissions(target=summoners, overwrite=discord.PermissionOverwrite(read_messages=True))
-        bg1perms = discord.ChannelPermissions(target=bg1, overwrite=discord.PermissionOverwrite(read_messages=True))
-        bg2perms = discord.ChannelPermissions(target=bg2, overwrite=discord.PermissionOverwrite(read_messages=True))
-        bg3perms = discord.ChannelPermissions(target=bg3, overwrite=discord.PermissionOverwrite(read_messages=True))
+        # everyone_perms = discord.PermissionOverwrite(read_messages=False)
+        # everyoneperms = discord.ChannelPermissions(target=server.default_role, overwrite=discord.PermissionOverwrite(read_messages=True))
+        # readperm = discord.PermissionOverwrite(read_messages=True)
+        # officerperms = discord.ChannelPermissions(target=officers, overwrite=discord.PermissionOverwrite(read_messages=True))
+        # allianceperms = discord.ChannelPermissions(target=alliance, overwrite=discord.PermissionOverwrite(read_messages=True))
+        # summonerperms = discord.ChannelPermissions(target=summoners, overwrite=discord.PermissionOverwrite(read_messages=True))
+        # bg1perms = discord.ChannelPermissions(target=bg1, overwrite=discord.PermissionOverwrite(read_messages=True))
+        # bg2perms = discord.ChannelPermissions(target=bg2, overwrite=discord.PermissionOverwrite(read_messages=True))
+        # bg3perms = discord.ChannelPermissions(target=bg3, overwrite=discord.PermissionOverwrite(read_messages=True))
 
 
-        channellist = []
-        for c in server.channels:
-            channellist.append(c.name)
-        # if 'announcements' not in channellist:
-        #     await self.bot.create_channel(server, 'announcements', everyoneperms, allianceperms, summonerperms)
-        # if 'alliance' not in channellist:
-        #     await self.bot.create_channel(server, 'alliance', everyoneperms, allianceperms)
-        if 'alliance-chatter' not in channellist:
-            await self.bot.create_channel(server, 'alliance-chatter', everyoneperms, allianceperms)
-        if 'officers' not in channellist:
-            await self.bot.create_channel(server, 'officers', everyoneperms, officerperms)
-        if 'bg1aq' not in channellist:
-            await self.bot.create_channel(server, 'bg1aq', everyoneperms, officerperms, bg1perms)
-        if 'bg1aw' not in channellist:
-            await self.bot.create_channel(server, 'bg1aw', everyoneperms, officerperms, bg1perms)
-        if 'bg2aq' not in channellist:
-            await self.bot.create_channel(server, 'bg2aq', everyoneperms, officerperms, bg2perms)
-        if 'bg2aw' not in channellist:
-            await self.bot.create_channel(server, 'bg2aw', everyoneperms, officerperms, bg2perms)
-        if 'bg3aq' not in channellist:
-            await self.bot.create_channel(server, 'bg3aq', everyoneperms, officerperms, bg3perms)
-        if 'bg3aw' not in channellist:
-            await self.bot.create_channel(server, 'bg3aw', everyoneperms, officerperms, bg2perms)
+        # channellist = []
+        # for c in server.channels:
+        #     channellist.append(c.name)
+        # # if 'announcements' not in channellist:
+        # #     await self.bot.create_channel(server, 'announcements', everyoneperms, allianceperms, summonerperms)
+        # # if 'alliance' not in channellist:
+        # #     await self.bot.create_channel(server, 'alliance', everyoneperms, allianceperms)
+        # if 'alliance-chatter' not in channellist:
+        #     await self.bot.create_channel(server, 'alliance-chatter', everyoneperms, allianceperms)
+        # if 'officers' not in channellist:
+        #     await self.bot.create_channel(server, 'officers', everyoneperms, officerperms)
+        # if 'bg1aq' not in channellist:
+        #     await self.bot.create_channel(server, 'bg1aq', everyoneperms, officerperms, bg1perms)
+        # if 'bg1aw' not in channellist:
+        #     await self.bot.create_channel(server, 'bg1aw', everyoneperms, officerperms, bg1perms)
+        # if 'bg2aq' not in channellist:
+        #     await self.bot.create_channel(server, 'bg2aq', everyoneperms, officerperms, bg2perms)
+        # if 'bg2aw' not in channellist:
+        #     await self.bot.create_channel(server, 'bg2aw', everyoneperms, officerperms, bg2perms)
+        # if 'bg3aq' not in channellist:
+        #     await self.bot.create_channel(server, 'bg3aq', everyoneperms, officerperms, bg3perms)
+        # if 'bg3aw' not in channellist:
+        #     await self.bot.create_channel(server, 'bg3aw', everyoneperms, officerperms, bg2perms)
+
+        peveryone = discord.ChannelPermissions(target=server.default_role, overwrite=discord.PermissionOverwrite(read_messages=False))
+        pofficers = discord.PermissionOverwrite(read_messages=True)
+        pbg1 = discord.PermissionOverwrite(read_messages=True)
+        pbg2 = discord.PermissionOverwrite(read_messages=True)
+        pbg3 = discord.PermissionOverwrite(read_messages=True)
+        palliance = discord.PermissionOverwrite(read_messages=True)
 
 
 
