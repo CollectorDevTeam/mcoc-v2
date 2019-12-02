@@ -2185,9 +2185,11 @@ class CDTGAPS:
         for c in channels:
             channelnames.append('{} = {} '.format(c.position, c.mention))
         em = discord.Embed(color=discord.Color.red(), title='Guild Alliance Popup System',
-                           description='Automated channel creation is currently disabled')
-        if len(channelnames) > 0:
-            em.description=''
+                           description='Automated channel creation is currently disabled.  '
+                                       'JJ needs to rewrite channel.permissions.')
+
+        # if len(channelnames) > 0:
+        #     em.description=''
         em.add_field(name='Stage 2 Create Channels', value='\n'.join(channelnames), inline=False)
         await self.bot.say(embed=em)
 
