@@ -1229,7 +1229,8 @@ class MCOCTools:
 
     @commands.command(pass_context=True, name='cutoffs')
     async def _cutoffs(self, ctx, champ=None):
-        PUBLISHED = 'https://docs.google.com/spreadsheets/d/15F7_kKpiudp3FJu_poQohkWlCRi1CSylQOdGoyuVqSE/pubhtml'
+        # PUBLISHED = 'https://docs.google.com/spreadsheets/d/15F7_kKpiudp3FJu_poQohkWlCRi1CSylQOdGoyuVqSE/pubhtml'
+        PUBLISHED = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQPCDFUfBDv66g9ngxeQebfiu-rNUK377tYj_VZ5byu6sznShTBF3c7AlFF5IbWV3V4bc5qMu6PPDwl/pubhtml?gid=1281713249&single=true'
         author = ctx.message.author
         if ctx.message.channel.is_private is False:
             ucolor = author.color
