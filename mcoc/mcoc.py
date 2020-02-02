@@ -952,6 +952,7 @@ class MCOC(ChampionFactory):
         '''Duel & Spar Targets'''
         #dataset=data_files['duelist']['local']
         # released = await self.check_release(ctx, champ)
+        released = True
         author = ctx.message.author
         if released:
             gc = pygsheets.authorize(service_file=gapi_service_creds, no_cache=True)
