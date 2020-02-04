@@ -951,7 +951,8 @@ class MCOC(ChampionFactory):
     async def champ_duel(self, ctx, champ : ChampConverter):
         '''Duel & Spar Targets'''
         #dataset=data_files['duelist']['local']
-        released = await self.check_release(ctx, champ)
+        # released = await self.check_release(ctx, champ)
+        released = True
         author = ctx.message.author
         if released:
             gc = pygsheets.authorize(service_file=gapi_service_creds, no_cache=True)
