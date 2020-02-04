@@ -1782,11 +1782,7 @@ class MCOC(ChampionFactory):
         else:
             em.add_field(name='Kabam Spotlight', value=champ.infopage)
         em.add_field(name='Auntm.ai Link', value='https://auntm.ai/champions/{0.mattkraftid}/tier/{0.star}'.format(champ))
-        # if champ.writeup_url != '':
-        # # if xref['writeup_url'] !='':
-        #     em.add_field(name=champ.'writeup', value=champ.'writeup_url')
-        # if xref['royal_writeup'] != '':
-        #     em.add_field(name='Royal Writeup', value=xref['royal_writeup'])
+
         em.add_field(name='Shortcode', value=champ.short)
         em.set_footer(text='MCOC Website', icon_url=KABAM_ICON)
         em.set_thumbnail(url=champ.get_avatar())
