@@ -1255,11 +1255,11 @@ class MCOCTools:
             range_name='export'
         )
         description = self.arena
-        if self.mcoctools['cutoffs'] == '' or self.mcoctools['cutoffs_date'] != now:
-            print('debug cutoffs url '+self.mcoctools['cutoffs'])
-            print('debug cutoffs date '+str(self.mcoctools['cutoffs_date']))
+        if self.mcoctools['cutoffs_date'] != now:
+            # print('debug cutoffs url '+self.mcoctools['cutoffs'])
+            # print('debug cutoffs date '+str(self.mcoctools['cutoffs_date']))
             await gsh.cache_gsheets('cutoffs')
-            self.mcoctools['cutoffs'] = await SCREENSHOT.get_screenshot(self, url=PUBLISHED, w=1440, h=900)
+            # self.mcoctools['cutoffs'] = await SCREENSHOT.get_screenshot(self, url=PUBLISHED, w=1440, h=900)
             self.mcoctools['cutoffs_date'] = now
             self.cutoffs = dataIO.load_json('data/mcocTools/cutoffs.json')
             description = []
@@ -1310,20 +1310,20 @@ class MCOCTools:
         pages = []
         for d in arena_pages:
             data = discord.Embed(color=ucolor, title='Arena Cutoffs', url=PATREON, description=chat.box(d))
-            data.add_field(name='UMCOC Cutoffs Graph',
-                           value='[Graph may be slow to load.]'
+            data.add_field(name='Cutoffs Graph',
+                           value='[Link to graph]'
                                  '({})'.format(PUBLISHED))
             data.set_author(name='CollectorDevTeam | Powered by ArenaResultsKnight', icon_url=COLLECTOR_ICON)
             data.set_footer(text='Requested by {}'.format(author.display_name), icon_url=author.avatar_url)
-            data.set_image(url=self.mcoctools['cutoffs'])
+            # data.set_image(url=self.mcoctools['cutoffs'])
             data.set_thumbnail(url=thumbnail)
             pages.append(data)
         if len(pages) > 0:
             menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
             await menu.menu_start(pages=pages)
         if self.mcoctools['cutoffs_date'] != now:
-            self.mcoctools['cutoffs'] = await SCREENSHOT.get_screenshot(self, url=PUBLISHED, w=1440, h=900)
-            self.mcoctools['cutoffs'] = self.mcoctools['cutoffs']
+            # self.mcoctools['cutoffs'] = await SCREENSHOT.get_screenshot(self, url=PUBLISHED, w=1440, h=900)
+            # self.mcoctools['cutoffs'] = self.mcoctools['cutoffs']
             self.mcoctools['cutoffs_date'] = now
         # dataIO.save_json('data/mcocTools/mcoctools.json', self.mcoctools)
 
