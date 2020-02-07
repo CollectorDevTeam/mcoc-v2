@@ -1256,7 +1256,6 @@ class MCOCTools:
             sheet_name='export',
             range_name='export'
         )
-        description = self.arena
         if self.mcoctools['cutoffs_date'] != now:
             await gsh.cache_gsheets('cutoffs')
             # self.mcoctools['cutoffs'] = await SCREENSHOT.get_screenshot(self, url=PUBLISHED, w=1440, h=900)
@@ -1264,20 +1263,19 @@ class MCOCTools:
             self.cutoffs = dataIO.load_json('data/mcocTools/cutoffs.json')
             desc = []
             for k in range(1, int(self.cutoffs["1"]["max"])):
-                desc.append("{} [{}] {}\n".format(self.cutoffs[str(k)]["date"],
-                                                  self.cutoffs[str(k)]["contest"],
-                                                  self.cutoffs[str(k)]["champ"]))
+                desc.append("{} [{}]{} {}\n".format(self.cutoffs[str(k)]["date"], self.cutoffs[str(k)]["contest"],
+                                                  self.cutoffs[str(k)]["champ"]), self.cutoffs[str(k)]["cutoff"])
             #load the full dataset into a default arena description file.
             self.arena = ''.join(desc)
 
+        description = self.arena
         if champ is not None:
             # If there is a champion, parse the cutoffs for that Champion.
             desc = []
             for k in range(1, int(self.cutoffs["1"]["max"])):
                 if self.cutoffs[str(k)]["champ"] == champ.full_name:
-                    desc.append("{} [{}] {}\n".format(self.cutoffs[str(k)]["date"],
-                                                      self.cutoffs[str(k)]["contest"],
-                                                      self.cutoffs[str(k)]["champ"]))
+                    desc.append("{} [{}] {}\n".format(self.cutoffs[str(k)]["date"], self.cutoffs[str(k)]["contest"],
+                                                      self.cutoffs[str(k)]["champ"]), self.cutoffs[str(k)]["cutoff"])
                     description = ''.join(desc)
 
         arena_pages = chat.pagify(description, page_length=500)
