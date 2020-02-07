@@ -1331,11 +1331,19 @@ class MCOCTools:
 
         for d in arena_pages:
             data = discord.Embed(color=ucolor, title='Arena Cutoffs', url=PATREON, description=chat.box(d))
+            data.add_field(name="F5 Cutoffs", value=feature5cutoff, inline=False)
+            data.add_field(name="F5 Top 10%", value=feature5bracket2, inline=False)
+            data.add_field(name="F4 Cutoffs", value=feature4cutoff, inline=False)
+            data.add_field(name="F4 Top 10%", value=feature4bracket2, inline=False)
+            data.add_field(name="B4 Cutoffs", value=basic4cutoff, inline=False)
+            data.add_field(name="B4 11-25%", value=basic4bracket2,inline=False)
+
+
             data.add_field(name='Cutoffs Graph',
                            value='[Link to graph]'
                                  '({})'.format(PUBLISHED), inline=False)
-            data.add_field(name='90 Days Cutoff Stats', value=cutoffstats, inline=False)
-            data.add_field(name='90 Days Bracket 2 Stats', value=bracketstats, inline=False)
+            # data.add_field(name='90 Days Cutoff Stats', value=cutoffstats, inline=False)
+            # data.add_field(name='90 Days Bracket 2 Stats', value=bracketstats, inline=False)
             data.set_author(name='CollectorDevTeam | Powered by ArenaResultsKnight', icon_url=COLLECTOR_ICON)
             data.set_footer(text='Requested by {}'.format(author.display_name), icon_url=author.avatar_url)
             # data.set_image(url=self.mcoctools['cutoffs'])
