@@ -1271,6 +1271,7 @@ class MCOCTools:
             self.arena = ''.join(desc)
 
         if champ is not None:
+            # If there is a champion, parse the cutoffs for that Champion.
             desc = []
             for k in range(1, int(self.cutoffs["1"]["max"])):
                 if self.cutoffs[str(k)]["champ"] == champ.full_name:
