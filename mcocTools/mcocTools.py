@@ -1308,9 +1308,8 @@ class MCOCTools:
                     self.summarystats["4FNcutoff"]["max"], self.summarystats["4FRcutoff"]["min"],
                     self.summarystats["4FRcutoff"]["average"], self.summarystats["4FRcutoff"]["max"],
                     prize, self.summarystats["5FRcutoff"]["prize"])
-        basic4cutoff = 'New: Min {} | Avg {} | Max {}\nRerun: Min {} | Avg {} | Max {}\n{} {}'\
-            .format(self.summarystats["4BNcutoff"]["min"], self.summarystats["4BNcutoff"]["average"],
-                    self.summarystats["4BNcutoff"]["max"], self.summarystats["4BRcutoff"]["min"],
+        basic4cutoff = 'Rerun: Min {} | Avg {} | Max {}\n{} {}'\
+            .format(self.summarystats["4BRcutoff"]["min"],
                     self.summarystats["4BRcutoff"]["average"], self.summarystats["4BRcutoff"]["max"],
                     prize, self.summarystats["5FRcutoff"]["prize"])
         feature5bracket2 = 'New: Min {} | Avg {} | Max {}\nRerun: Min {} | Avg {} | Max {}\n{}'\
@@ -1323,9 +1322,8 @@ class MCOCTools:
                     self.summarystats["4FNbracket2"]["max"], self.summarystats["4FRbracket2"]["min"],
                     self.summarystats["4FRbracket2"]["average"], self.summarystats["4FRbracket2"]["max"],
                     self.summarystats["5FRbracket2"]["prize"])
-        basic4bracket2 = 'New: Min {} | Avg {} | Max {}\nRerun: Min {} | Avg {} | Max {}\n{}'\
-            .format(self.summarystats["4BNbracket2"]["min"], self.summarystats["4BNbracket2"]["average"],
-                    self.summarystats["4BNbracket2"]["max"], self.summarystats["4BRbracket2"]["min"],
+        basic4bracket2 = 'Rerun: Min {} | Avg {} | Max {}\n{}'\
+            .format(self.summarystats["4BRbracket2"]["min"],
                     self.summarystats["4BRbracket2"]["average"], self.summarystats["4BRbracket2"]["max"],
                     self.summarystats["4BRbracket2"]["prize"])
         cutoffstats = '\n'.join(feature5cutoff, feature4cutoff, basic4cutoff)
