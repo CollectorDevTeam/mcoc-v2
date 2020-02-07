@@ -1261,7 +1261,7 @@ class MCOCTools:
             name='summarystats',
             gkey='15F7_kKpiudp3FJu_poQohkWlCRi1CSylQOdGoyuVqSE',
             local='data/mcocTools/summarystats.json',
-            sheet_name='cleanup',
+            sheet_name='stats',
             range_name='summarystats'
         )
         if self.mcoctools['cutoffs_date'] != now:
