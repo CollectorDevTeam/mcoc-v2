@@ -1054,7 +1054,7 @@ class MCOCTools:
         # self.cutoffs_url = ''
         self.arena = ''
         self.cutoffs = dataIO.load_json('data/mcocTools/cutoffs.json')
-        self.summarystats = dataIO.load_json('data/mcocTools/summarystats.json')
+        self.summarystats = ''
 
         # self.tldr = dataIO.load_json('data/mcocTools/tldr.json')
         # self.date = ''
@@ -1188,7 +1188,8 @@ class MCOCTools:
                     package += 'Quest: Off\n'
                 package += 'War {}: {}'.format(calendar[i]['awseason'], calendar[i]['aw'])
                 data.add_field(name=name, value=package)
-            data.add_field(name='Link to MCOC Schedule', value='[MCOC Shcedule by CollectorDevTeam]({})'.format(PUBLISHED))
+            data.add_field(name='Link to MCOC Schedule',
+                           value='[MCOC Shcedule by CollectorDevTeam]({})'.format(PUBLISHED))
             pages.append(data)
         menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
         await menu.menu_start(pages=pages, page_number=2)
@@ -1226,13 +1227,9 @@ class MCOCTools:
             await menu.menu_start(pages=pages, page_number=0)
 
 
-
-
-
     @commands.command(pass_context=True, name='cutoffs')
     async def _cutoffs(self, ctx, champ=None):
         """Cutoff results sourced from ArenaResultsKnight on the r/ContestOfChammpions subreddit."""
-
         # PUBLISHED = 'https://docs.google.com/spreadsheets/d/15F7_kKpiudp3FJu_poQohkWlCRi1CSylQOdGoyuVqSE/pubhtml'
         PUBLISHED = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQPCDFUfBDv66g9ngxeQebfiu-rNUK377tYj_VZ5byu6sznShTBF3c7AlFF5IbWV3V4bc5qMu6PPDwl/pubhtml?gid=1281713249&single=true'
         author = ctx.message.author
@@ -1277,7 +1274,7 @@ class MCOCTools:
             desc = []
             for k in range(1, int(self.cutoffs["1"]["max"])):
                 desc.append("{} [{}]{} {}\n".format(self.cutoffs[str(k)]["date"], self.cutoffs[str(k)]["contest"],
-                                                  self.cutoffs[str(k)]["champ"], self.cutoffs[str(k)]["cutoff"]))
+                                                    self.cutoffs[str(k)]["champ"], self.cutoffs[str(k)]["cutoff"]))
             #load the full dataset into a default arena description file.
             self.arena = ''.join(desc)
 
@@ -1288,7 +1285,7 @@ class MCOCTools:
             for k in range(1, int(self.cutoffs["1"]["max"])):
                 if self.cutoffs[str(k)]["champ"] == champ.full_name:
                     desc.append("{} [{}]{} {}\n".format(self.cutoffs[str(k)]["date"], self.cutoffs[str(k)]["contest"],
-                                                      self.cutoffs[str(k)]["champ"], self.cutoffs[str(k)]["cutoff"]))
+                                                        self.cutoffs[str(k)]["champ"], self.cutoffs[str(k)]["cutoff"]))
                     description = ''.join(desc)
 
         arena_pages = chat.pagify(description, page_length=500)
@@ -1301,12 +1298,30 @@ class MCOCTools:
 
         pages = []
 
-        feature5cutoff = 'New: Min {0.min} | Avg {0.average} | Max {0.max}\nRerun: Min {1.min} | Avg {1.average} | Max {1.max}\n{0.bracket} {2}{0.prize}'.format(self.summarystats["5FNcutoff"], self.summarystats["5FRcutoff"], prize)
-        feature4cutoff = 'New: Min {0.min} | Avg {0.average} | Max {0.max}\nRerun: Min {1.min} | Avg {1.average} | Max {1.max}\n{0.bracket} {2}{0.prize}'.format(self.summarystats["4FNcutoff"], self.summarystats["4FRcutoff"], prize)
-        basic4cutoff = 'New: Min {0.min} | Avg {0.average} | Max {0.max}\nRerun: Min {1.min} | Avg {1.average} | Max {1.max}\n{0.bracket} {2}{0.prize}'.format(self.summarystats["4BNcutoff"], self.summarystats["4BRcutoff"], prize)
-        feature5bracket2 = 'New: Min {0.min} | Avg {0.average} | Max {0.max}\nRerun: Min {1.min} | Avg {1.average} | Max {1.max}\n{0.bracket} {0.prize}'.format(self.summarystats["5FNbracket2"], self.summarystats["5FRbracket2"])
-        feature4bracket2 = 'New: Min {0.min} | Avg {0.average} | Max {0.max}\nRerun: Min {1.min} | Avg {1.average} | Max {1.max}\n{0.bracket} {0.prize}'.format(self.summarystats["4FNbracket2"], self.summarystats["4FRbracket2"])
-        basic4bracket2 = 'New: Min {0.min} | Avg {0.average} | Max {0.max}\nRerun: Min {1.min} | Avg {1.average} | Max {1.max}\n{0.bracket} {0.prize}'.format(self.summarystats["4BNbracket2"], self.summarystats["4BRbracket2"])
+        feature5cutoff = 'New: Min {0.min} | Avg {0.average} | Max {0.max}' \
+                         'Rerun: Min {1.min} | Avg {1.average} | Max {1.max}' \
+                         '{0.bracket} {2}{0.prize}'.format(self.summarystats["5FNcutoff"],
+                                                           self.summarystats["5FRcutoff"], prize)
+        feature4cutoff = 'New: Min {0.min} | Avg {0.average} | Max {0.max}' \
+                         'Rerun: Min {1.min} | Avg {1.average} | Max {1.max}' \
+                         '{0.bracket} {2}{0.prize}'.format(self.summarystats["4FNcutoff"],
+                                                           self.summarystats["4FRcutoff"], prize)
+        basic4cutoff = 'New: Min {0.min} | Avg {0.average} | Max {0.max}' \
+                       'Rerun: Min {1.min} | Avg {1.average} | Max {1.max}' \
+                       '{0.bracket} {2}{0.prize}'.format(self.summarystats["4BNcutoff"],
+                                                         self.summarystats["4BRcutoff"], prize)
+        feature5bracket2 = 'New: Min {0.min} | Avg {0.average} | Max {0.max}' \
+                           'Rerun: Min {1.min} | Avg {1.average} | Max {1.max}' \
+                           '{0.bracket} {0.prize}'.format(self.summarystats["5FNbracket2"],
+                                                          self.summarystats["5FRbracket2"])
+        feature4bracket2 = 'New: Min {0.min} | Avg {0.average} | Max {0.max}' \
+                           'Rerun: Min {1.min} | Avg {1.average} | Max {1.max}' \
+                           '{0.bracket} {0.prize}'.format(self.summarystats["4FNbracket2"],
+                                                          self.summarystats["4FRbracket2"])
+        basic4bracket2 = 'New: Min {0.min} | Avg {0.average} | Max {0.max}' \
+                         'Rerun: Min {1.min} | Avg {1.average} | Max {1.max}' \
+                         '{0.bracket} {0.prize}'.format(self.summarystats["4BNbracket2"],
+                                                        self.summarystats["4BRbracket2"])
         cutoffstats = '\n'.join(feature5cutoff, feature4cutoff, basic4cutoff)
         bracketstats = '\n'.join(feature5bracket2, feature4bracket2, basic4bracket2)
 
@@ -1329,9 +1344,6 @@ class MCOCTools:
             # self.mcoctools['cutoffs'] = await SCREENSHOT.get_screenshot(self, url=PUBLISHED, w=1440, h=900)
             # self.mcoctools['cutoffs'] = self.mcoctools['cutoffs']
             self.mcoctools['cutoffs_date'] = now
-        # dataIO.save_json('data/mcocTools/mcoctools.json', self.mcoctools)
-
-
 
 
     @commands.command(pass_context=True, no_pm=True)
