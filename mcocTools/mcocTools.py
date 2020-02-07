@@ -1343,7 +1343,7 @@ class MCOCTools:
             # data.add_field(name='90 Days Cutoff Stats', value=cutoffstats, inline=False)
             # data.add_field(name='90 Days Bracket 2 Stats', value=bracketstats, inline=False)
             data.set_author(name='CollectorDevTeam + ArenaResultsKnight', icon_url=COLLECTOR_ICON)
-            data.set_footer(text='Requested by {}'.format(author.display_name), icon_url=author.avatar_url)
+            data.set_footer(text='``/cutoffs`` Requested by {}'.format(author.display_name), icon_url=author.avatar_url)
             # data.set_image(url=self.mcoctools['cutoffs'])
             data.set_thumbnail(url=thumbnail)
             pages.append(data)
