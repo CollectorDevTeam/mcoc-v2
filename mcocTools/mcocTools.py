@@ -1331,9 +1331,9 @@ class MCOCTools:
 
         for d in arena_pages:
             data = discord.Embed(color=ucolor, title='Arena Cutoffs', url=PATREON, description=chat.box(d))
-            data.add_field(name="F5 Cutoffs", value=feature5cutoff, inline=False)
+            data.add_field(name="F5 Top 150", value=feature5cutoff, inline=False)
             data.add_field(name="F5 Top 10%", value=feature5bracket2, inline=False)
-            data.add_field(name="F4 Cutoffs", value=feature4cutoff, inline=False)
+            data.add_field(name="F4 Top 800", value=feature4cutoff, inline=False)
             data.add_field(name="F4 Top 10%", value=feature4bracket2, inline=False)
             data.add_field(name="B4 Cutoffs", value=basic4cutoff, inline=False)
             data.add_field(name="B4 11-25%", value=basic4bracket2,inline=False)
