@@ -1258,23 +1258,21 @@ class MCOCTools:
         )
         description = self.arena
         if self.mcoctools['cutoffs_date'] != now:
-            # print('debug cutoffs url '+self.mcoctools['cutoffs'])
-            # print('debug cutoffs date '+str(self.mcoctools['cutoffs_date']))
             await gsh.cache_gsheets('cutoffs')
             # self.mcoctools['cutoffs'] = await SCREENSHOT.get_screenshot(self, url=PUBLISHED, w=1440, h=900)
             self.mcoctools['cutoffs_date'] = now
             self.cutoffs = dataIO.load_json('data/mcocTools/cutoffs.json')
             desc = []
-            max = self.cutoffs["1"]['max']
-            for k in range(1, int(max)):
+            for k in range(1, int(self.cutoffs["1"]["max"])):
                 desc.append("{} [{}] {}\n".format(self.cutoffs[str(k)]["date"],
                                                   self.cutoffs[str(k)]["contest"],
                                                   self.cutoffs[str(k)]["champ"]))
+            #load the full dataset into a default arena description file.
             self.arena = ''.join(desc)
 
         if champ is not None:
             desc = []
-            for k in range(1, int(max)):
+            for k in range(1, int(self.cutoffs["1"]["max"])):
                 if self.cutoffs[str(k)]["champ"] == champ.full_name:
                     desc.append("{} [{}] {}\n".format(self.cutoffs[str(k)]["date"],
                                                       self.cutoffs[str(k)]["contest"],
