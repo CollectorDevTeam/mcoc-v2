@@ -1255,18 +1255,20 @@ class MCOCTools:
             range_name='export'
         )
         # description = self.arena
-        if self.mcoctools['cutoffs_date'] != now or self.arena == '':
+        if self.mcoctools['cutoffs_date'] != now:
             # print('debug cutoffs url '+self.mcoctools['cutoffs'])
             # print('debug cutoffs date '+str(self.mcoctools['cutoffs_date']))
             await gsh.cache_gsheets('cutoffs')
             # self.mcoctools['cutoffs'] = await SCREENSHOT.get_screenshot(self, url=PUBLISHED, w=1440, h=900)
             self.mcoctools['cutoffs_date'] = now
             self.cutoffs = dataIO.load_json('data/mcocTools/cutoffs.json')
-            description = []
+            desc = []
             max = self.cutoffs["1"]['max']
             for k in range(1, int(max)):
-                description.append('{0.date} [{0.contest}] {0.champ}\n'.format(self.cutoffs[str(k)]))
-            self.arena = ''.join(description)
+                desc.append("{} [{}] {}\n".format(self.cutoffs[str(k)]["date"],
+                                                  self.cutoffs[str(k)]["contest"],
+                                                  self.cutoffs[str(k)]["champ"]))
+            self.arena = ''.join(desc)
 
         if champ is not None:
             description = self.arena
@@ -1274,8 +1276,10 @@ class MCOCTools:
             desc = []
             for k in range(1, int(max)):
                 if self.cutoffs[str(k)]['champ'] == champ.full_name:
-                    desc.append('{0.date} [{0.contest}] {0.champ}\n'.format(self.cutoffs[str(k)]))
-            description = ''.join(desc)
+                    desc.append("{} [{}] {}\n".format(self.cutoffs[str(k)]["date"],
+                                                      self.cutoffs[str(k)]["contest"],
+                                                      self.cutoffs[str(k)]["date"]["champ"]))
+                    description = ''.join(desc)
                 # if '5feature' in self.cutoffs[k] and self.cutoffs[k]['feature'] != '' and self.cutoffs[k]['5feature'] != '':
                 #     description.append(
                 #         '{} [F5★ {}] {}\n'.format(self.cutoffs[k]['arena_date'], self.cutoffs[k]['5feature'],
