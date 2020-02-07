@@ -1054,6 +1054,8 @@ class MCOCTools:
         # self.cutoffs_url = ''
         self.arena = ''
         self.cutoffs = dataIO.load_json('data/mcocTools/cutoffs.json')
+        self.summarystats = dataIO.load_json('data/mcocTools/summarystats.json')
+
         # self.tldr = dataIO.load_json('data/mcocTools/tldr.json')
         # self.date = ''
         # self.calendar = {}
@@ -1256,11 +1258,20 @@ class MCOCTools:
             sheet_name='export',
             range_name='export'
         )
+        gsh.register_gsheet(
+            name='summarystats',
+            gkey='15F7_kKpiudp3FJu_poQohkWlCRi1CSylQOdGoyuVqSE',
+            local='data/mcocTools/summarystats.json',
+            sheet_name='cleanup',
+            range_name='summarystats'
+        )
         if self.mcoctools['cutoffs_date'] != now:
             await gsh.cache_gsheets('cutoffs')
+            await gsh.cache_gsheets('summarystats')
             # self.mcoctools['cutoffs'] = await SCREENSHOT.get_screenshot(self, url=PUBLISHED, w=1440, h=900)
             self.mcoctools['cutoffs_date'] = now
             self.cutoffs = dataIO.load_json('data/mcocTools/cutoffs.json')
+            self.summarystats = dataIO.load_json('data/mcocTools/summarystats.json')
             desc = []
             for k in range(1, int(self.cutoffs["1"]["max"])):
                 desc.append("{} [{}]{} {}\n".format(self.cutoffs[str(k)]["date"], self.cutoffs[str(k)]["contest"],
@@ -1287,11 +1298,22 @@ class MCOCTools:
             await gsh.cache_gsheets('cutoffs')
 
         pages = []
+        feature5cutoff = 'New: Min {0.min} | Avg {0.average} | Max {0.max}\nRerun: Min {1.min} | Avg {1.average} | Max {1.max}\n{0.bracket} {0.prize}'.format(self.summarystats["5FNcutoff"], self.summarystats["5FRcutoff"])
+        feature4cutoff = 'New: Min {0.min} | Avg {0.average} | Max {0.max}\nRerun: Min {1.min} | Avg {1.average} | Max {1.max}\n{0.bracket} {0.prize}'.format(self.summarystats["4FNcutoff"], self.summarystats["4FRcutoff"])
+        basic4cutoff = 'New: Min {0.min} | Avg {0.average} | Max {0.max}\nRerun: Min {1.min} | Avg {1.average} | Max {1.max}\n{0.bracket} {0.prize}'.format(self.summarystats["4BNcutoff"], self.summarystats["4BRcutoff"])
+        feature5bracket2 = 'New: Min {0.min} | Avg {0.average} | Max {0.max}\nRerun: Min {1.min} | Avg {1.average} | Max {1.max}\n{0.bracket} {0.prize}'.format(self.summarystats["5FNbracket2"], self.summarystats["5FRbracket2"])
+        feature4bracket2 = 'New: Min {0.min} | Avg {0.average} | Max {0.max}\nRerun: Min {1.min} | Avg {1.average} | Max {1.max}\n{0.bracket} {0.prize}'.format(self.summarystats["4FNbracket2"], self.summarystats["4FRbracket2"])
+        basic4bracket2 = 'New: Min {0.min} | Avg {0.average} | Max {0.max}\nRerun: Min {1.min} | Avg {1.average} | Max {1.max}\n{0.bracket} {0.prize}'.format(self.summarystats["4BNbracket2"], self.summarystats["4BRbracket2"])
+        cutoffstats = '\n'.join(feature5cutoff, feature4cutoff, basic4cutoff)
+        bracketstats = '\n'.join(feature5cutoff, feature4cutoff, basic4cutoff)
+
         for d in arena_pages:
             data = discord.Embed(color=ucolor, title='Arena Cutoffs', url=PATREON, description=chat.box(d))
             data.add_field(name='Cutoffs Graph',
                            value='[Link to graph]'
                                  '({})'.format(PUBLISHED))
+            data.add_field(name='90 Days Cutoff Stats', value=cutoffstats)
+            data.add_field(name='90 Days Bracket 2 Stats', value=bracketstats)
             data.set_author(name='CollectorDevTeam | Powered by ArenaResultsKnight', icon_url=COLLECTOR_ICON)
             data.set_footer(text='Requested by {}'.format(author.display_name), icon_url=author.avatar_url)
             # data.set_image(url=self.mcoctools['cutoffs'])
