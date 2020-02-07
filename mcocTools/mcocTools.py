@@ -1330,8 +1330,9 @@ class MCOCTools:
         bracketstats = '{}\n{}\n{}'.format(feature5bracket2, feature4bracket2, basic4bracket2)
 
         for d in arena_pages:
-            data = discord.Embed(color=ucolor, title='Arena Cutoffs [Link to Graph]', url=PUBLISHED, description=chat.box(d))
-            data.add_field(name="90-Day Summary Statistics", value="The following fields contain Min/Average/Max breakouts for New and Old champions.", inline=False)
+            data = discord.Embed(color=ucolor, title='Arena Cutoffs [Link to Graph]', url=PUBLISHED,
+                                 description=chat.box(d))
+            data.add_field(name="90-Day Summary Statistics", value="The following fields contain Min/Average/Max breakouts for New and Old champions over the last 90 days.", inline=False)
             data.add_field(name="Feature 5★ Top 150", value=feature5cutoff, inline=False)
             data.add_field(name="Feature 5★ Top 10%", value=feature5bracket2, inline=False)
             data.add_field(name="Feature 4★ Top 800", value=feature4cutoff, inline=False)
@@ -1341,8 +1342,8 @@ class MCOCTools:
 
             # data.add_field(name='90 Days Cutoff Stats', value=cutoffstats, inline=False)
             # data.add_field(name='90 Days Bracket 2 Stats', value=bracketstats, inline=False)
-            # data.set_author(name='CollectorDevTeam | Powered by ArenaResultsKnight', icon_url=COLLECTOR_ICON)
-            data.set_footer(text='CollectorDevTeam + ArenaResultsKnight | Requested by {}'.format(author.display_name), icon_url=author.avatar_url)
+            data.set_author(name='CollectorDevTeam + ArenaResultsKnight', icon_url=COLLECTOR_ICON)
+            data.set_footer(text='Requested by {}'.format(author.display_name), icon_url=author.avatar_url)
             # data.set_image(url=self.mcoctools['cutoffs'])
             data.set_thumbnail(url=thumbnail)
             pages.append(data)
