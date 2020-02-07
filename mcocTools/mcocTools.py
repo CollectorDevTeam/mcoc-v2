@@ -1229,6 +1229,8 @@ class MCOCTools:
 
     @commands.command(pass_context=True, name='cutoffs')
     async def _cutoffs(self, ctx, champ=None):
+        """Cutoff results sourced from ArenaResultsKnight on the r/ContestOfChammpions subreddit."""
+
         # PUBLISHED = 'https://docs.google.com/spreadsheets/d/15F7_kKpiudp3FJu_poQohkWlCRi1CSylQOdGoyuVqSE/pubhtml'
         PUBLISHED = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQPCDFUfBDv66g9ngxeQebfiu-rNUK377tYj_VZ5byu6sznShTBF3c7AlFF5IbWV3V4bc5qMu6PPDwl/pubhtml?gid=1281713249&single=true'
         author = ctx.message.author
@@ -1254,7 +1256,7 @@ class MCOCTools:
             sheet_name='export',
             range_name='export'
         )
-        # description = self.arena
+        description = self.arena
         if self.mcoctools['cutoffs_date'] != now:
             # print('debug cutoffs url '+self.mcoctools['cutoffs'])
             # print('debug cutoffs date '+str(self.mcoctools['cutoffs_date']))
@@ -1271,47 +1273,13 @@ class MCOCTools:
             self.arena = ''.join(desc)
 
         if champ is not None:
-            description = self.arena
-        else:
             desc = []
             for k in range(1, int(max)):
-                if self.cutoffs[str(k)]['champ'] == champ.full_name:
+                if self.cutoffs[str(k)]["champ"] == champ.full_name:
                     desc.append("{} [{}] {}\n".format(self.cutoffs[str(k)]["date"],
                                                       self.cutoffs[str(k)]["contest"],
-                                                      self.cutoffs[str(k)]["date"]["champ"]))
+                                                      self.cutoffs[str(k)]["champ"]))
                     description = ''.join(desc)
-                # if '5feature' in self.cutoffs[k] and self.cutoffs[k]['feature'] != '' and self.cutoffs[k]['5feature'] != '':
-                #     description.append(
-                #         '{} [F5★ {}] {}\n'.format(self.cutoffs[k]['arena_date'], self.cutoffs[k]['5feature'],
-                #                                   self.cutoffs[k]['feature']))
-                # if '4feature' in self.cutoffs[k] and self.cutoffs[k]['feature'] != '' and self.cutoffs[k]['4feature'] != '':
-                #     description.append(
-                #         '{} [F4★ {}] {}\n'.format(self.cutoffs[k]['arena_date'], self.cutoffs[k]['4feature'],
-                #                                   self.cutoffs[k]['feature']))
-                # if '4basic' in self.cutoffs[k].keys() and self.cutoffs[k]['basic'] != '' and self.cutoffs[k]['4basic'] != '':
-                #     description.append(
-                #         '{} [B4★ {}] {}\n'.format(self.cutoffs[k]['arena_date'], self.cutoffs[k]['4basic'],
-                #                                   self.cutoffs[k]['basic']))
-        #     description = ''.join(description)
-        #     self.arena = description
-        #
-        # if champ is not None:
-        #     description = []
-        #     max = int(self.cutoffs["1"]['max'])
-        #     for k in range(1, max):
-        #         k = str(k)
-        #         if '5feature' in self.cutoffs[k] and self.cutoffs[k]['5feature'] != '' and self.cutoffs[k]['feature'] == champ.full_name:
-        #             description.append(
-        #                 '{} [F5★ {}] {}\n'.format(self.cutoffs[k]['arena_date'], self.cutoffs[k]['5feature'],
-        #                                              self.cutoffs[k]['feature']))
-        #         if '4feature' in self.cutoffs[k] and self.cutoffs[k]['4feature'] != '' and self.cutoffs[k]['feature'] == champ.full_name:
-        #             description.append(
-        #                 '{} [F4★ {}] {}\n'.format(self.cutoffs[k]['arena_date'], self.cutoffs[k]['4feature'],
-        #                                              self.cutoffs[k]['feature']))
-        #         if '4basic' in self.cutoffs[k] and self.cutoffs[k]['4basic'] != '' and self.cutoffs[k]['basic'] == champ.full_name:
-        #             description.append('{} [B4★ {}] {}\n'.format(self.cutoffs[k]['arena_date'], self.cutoffs[k]['4basic'],
-        #                                                             self.cutoffs[k]['basic']))
-        #     description = ''.join(description)
 
         arena_pages = chat.pagify(description, page_length=500)
         filetime = datetime.datetime.fromtimestamp(os.path.getctime('data/mcocTools/cutoffs.json'))
