@@ -1326,8 +1326,8 @@ class MCOCTools:
             .format(self.summarystats["4BRbracket2"]["min"],
                     self.summarystats["4BRbracket2"]["average"], self.summarystats["4BRbracket2"]["max"],
                     self.summarystats["4BRbracket2"]["prize"])
-        cutoffstats = '\n'.join(feature5cutoff, feature4cutoff, basic4cutoff)
-        bracketstats = '\n'.join(feature5bracket2, feature4bracket2, basic4bracket2)
+        cutoffstats = '{}\n{}\n{}'.format(feature5cutoff, feature4cutoff, basic4cutoff)
+        bracketstats = '{}\n{}\n{}'.format(feature5bracket2, feature4bracket2, basic4bracket2)
 
         for d in arena_pages:
             data = discord.Embed(color=ucolor, title='Arena Cutoffs', url=PATREON, description=chat.box(d))
