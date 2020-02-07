@@ -1241,11 +1241,13 @@ class MCOCTools:
         else:
             ucolor = discord.Color.gold()
         thumbnail = COLLECTOR_FEATURED
+        prize = ''
         if champ is not None:
             mcoc = self.bot.get_cog('MCOC')
             try:
                 champ = await mcoc.get_champion(champ.lower())
                 thumbnail = champ.get_featured()
+                prize = champ.collectoremoji
             except:
                 champ = None
                 await self.bot.say('Not a valid champion.')
@@ -1298,14 +1300,15 @@ class MCOCTools:
             await gsh.cache_gsheets('cutoffs')
 
         pages = []
-        feature5cutoff = 'New: Min {0.min} | Avg {0.average} | Max {0.max}\nRerun: Min {1.min} | Avg {1.average} | Max {1.max}\n{0.bracket} {0.prize}'.format(self.summarystats["5FNcutoff"], self.summarystats["5FRcutoff"])
-        feature4cutoff = 'New: Min {0.min} | Avg {0.average} | Max {0.max}\nRerun: Min {1.min} | Avg {1.average} | Max {1.max}\n{0.bracket} {0.prize}'.format(self.summarystats["4FNcutoff"], self.summarystats["4FRcutoff"])
-        basic4cutoff = 'New: Min {0.min} | Avg {0.average} | Max {0.max}\nRerun: Min {1.min} | Avg {1.average} | Max {1.max}\n{0.bracket} {0.prize}'.format(self.summarystats["4BNcutoff"], self.summarystats["4BRcutoff"])
+
+        feature5cutoff = 'New: Min {0.min} | Avg {0.average} | Max {0.max}\nRerun: Min {1.min} | Avg {1.average} | Max {1.max}\n{0.bracket} {2}{0.prize}'.format(self.summarystats["5FNcutoff"], self.summarystats["5FRcutoff"], prize)
+        feature4cutoff = 'New: Min {0.min} | Avg {0.average} | Max {0.max}\nRerun: Min {1.min} | Avg {1.average} | Max {1.max}\n{0.bracket} {2}{0.prize}'.format(self.summarystats["4FNcutoff"], self.summarystats["4FRcutoff"], prize)
+        basic4cutoff = 'New: Min {0.min} | Avg {0.average} | Max {0.max}\nRerun: Min {1.min} | Avg {1.average} | Max {1.max}\n{0.bracket} {2}{0.prize}'.format(self.summarystats["4BNcutoff"], self.summarystats["4BRcutoff"], prize)
         feature5bracket2 = 'New: Min {0.min} | Avg {0.average} | Max {0.max}\nRerun: Min {1.min} | Avg {1.average} | Max {1.max}\n{0.bracket} {0.prize}'.format(self.summarystats["5FNbracket2"], self.summarystats["5FRbracket2"])
         feature4bracket2 = 'New: Min {0.min} | Avg {0.average} | Max {0.max}\nRerun: Min {1.min} | Avg {1.average} | Max {1.max}\n{0.bracket} {0.prize}'.format(self.summarystats["4FNbracket2"], self.summarystats["4FRbracket2"])
         basic4bracket2 = 'New: Min {0.min} | Avg {0.average} | Max {0.max}\nRerun: Min {1.min} | Avg {1.average} | Max {1.max}\n{0.bracket} {0.prize}'.format(self.summarystats["4BNbracket2"], self.summarystats["4BRbracket2"])
         cutoffstats = '\n'.join(feature5cutoff, feature4cutoff, basic4cutoff)
-        bracketstats = '\n'.join(feature5cutoff, feature4cutoff, basic4cutoff)
+        bracketstats = '\n'.join(feature5bracket2, feature4bracket2, basic4bracket2)
 
         for d in arena_pages:
             data = discord.Embed(color=ucolor, title='Arena Cutoffs', url=PATREON, description=chat.box(d))
