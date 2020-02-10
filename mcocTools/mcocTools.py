@@ -1273,8 +1273,8 @@ class MCOCTools:
             self.summarystats = dataIO.load_json('data/mcocTools/summarystats.json')
             desc = []
             for k in range(1, int(self.cutoffs["1"]["max"])):
-                desc.append("{} [{}]{} {}\n".format(self.cutoffs[str(k)]["date"], self.cutoffs[str(k)]["contest"],
-                                                    self.cutoffs[str(k)]["champ"], self.cutoffs[str(k)]["cutoff"]))
+                desc.append("{} [{}] {} c: {} b: {}\n".format(self.cutoffs[str(k)]["date"], self.cutoffs[str(k)]["contest"],
+                                                    self.cutoffs[str(k)]["champ"], self.cutoffs[str(k)]["cutoff"], self.cutoffs[str(k)]["bracket2"]))
             #load the full dataset into a default arena description file.
             self.arena = ''.join(desc)
 
