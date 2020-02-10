@@ -1326,7 +1326,7 @@ class MCOCTools:
         for d in arena_pages:
             data = discord.Embed(color=ucolor, title='Arena Cutoffs [Link to Graph]', url=PUBLISHED,
                                  description=chat.box(d))
-            data.add_field(name="90-Day Summary Statistics", value="The following fields contain ``Min | Average | Max`` breakouts for New and Rerun champions over the last 90 days.", inline=False)
+            data.add_field(name="90-Day Summary Statistics", value="The following fields contain ``Min | Average | Max`` breakouts for ``N``ew and ``R``erun champions over the last 90 days.", inline=False)
             data.add_field(name="Feature 5★ Top 150 = {} + {}".format(
                 prize, self.summarystats["5FRcutoff"]["prize"]), value=feature5cutoff, inline=False)
             data.add_field(name="Feature 5★ Top 10% = {}".format(
