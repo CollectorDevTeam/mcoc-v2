@@ -1331,7 +1331,7 @@ class MCOCTools:
                 prize, self.summarystats["5FRcutoff"]["prize"]), value=feature5cutoff, inline=False)
             data.add_field(name="Feature 5★ Top 10% = {}".format(
                 self.summarystats["5FRbracket2"]["prize"]), value=feature5bracket2, inline=False)
-            data.add_field(name="Feature 4★ Top 800 = Feature {} + {}".foramt(
+            data.add_field(name="Feature 4★ Top 800 = Feature {} + {}".format(
                 prize, self.summarystats["4FRcutoff"]["prize"]), value=feature4cutoff, inline=False)
             data.add_field(name="Feature 4★ Top 10% = {}".format(
                 self.summarystats["4FNbracket2"]["prize"]), value=feature4bracket2, inline=False)
