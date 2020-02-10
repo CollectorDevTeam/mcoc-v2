@@ -1274,7 +1274,7 @@ class MCOCTools:
             desc = []
             for k in range(1, int(self.cutoffs["1"]["max"])):
                 desc.append("{} [{}] {} c: {} b: {}\n".format(self.cutoffs[str(k)]["date"], self.cutoffs[str(k)]["contest"],
-                                                    self.cutoffs[str(k)]["champ"], self.cutoffs[str(k)]["cutoff"], self.cutoffs[str(k)]["bracket2"]))
+                                                    self.cutoffs[str(k)]["champ"], self.cutoffs[str(k)]["cutoff"], self.cutoffs[str(k)]["bracket1"]))
             #load the full dataset into a default arena description file.
             self.arena = ''.join(desc)
 
@@ -1285,7 +1285,7 @@ class MCOCTools:
             for k in range(1, int(self.cutoffs["1"]["max"])):
                 if self.cutoffs[str(k)]["champ"] == champ.full_name:
                     desc.append("{} [{}] {} c: {} b:{}\n".format(self.cutoffs[str(k)]["date"], self.cutoffs[str(k)]["contest"],
-                                                        self.cutoffs[str(k)]["champ"], self.cutoffs[str(k)]["cutoff"], self.cutoffs[str(k)]["bracket2"]))
+                                                        self.cutoffs[str(k)]["champ"], self.cutoffs[str(k)]["cutoff"], self.cutoffs[str(k)]["bracket1"]))
                     description = ''.join(desc)
 
         arena_pages = chat.pagify(description, page_length=500)
