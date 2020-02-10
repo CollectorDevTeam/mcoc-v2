@@ -1298,26 +1298,26 @@ class MCOCTools:
 
         pages = []
 
-        feature5cutoff = '```New\nMin {} | Avg {} | Max {}\nRerun\nMin {} | Avg {} | Max {}```'\
+        feature5cutoff = '```ruby\nNew\nMin {} | Avg {} | Max {}\nRerun\nMin {} | Avg {} | Max {}```'\
             .format(self.summarystats["5FNcutoff"]["min"], self.summarystats["5FNcutoff"]["average"],
                     self.summarystats["5FNcutoff"]["max"], self.summarystats["5FRcutoff"]["min"],
                     self.summarystats["5FRcutoff"]["average"], self.summarystats["5FRcutoff"]["max"])
-        feature4cutoff = '```New\nMin {} | Avg {} | Max {}\nRerun\nMin {} | Avg {} | Max {}```'\
+        feature4cutoff = '```ruby\nNew\nMin {} | Avg {} | Max {}\nRerun\nMin {} | Avg {} | Max {}```'\
             .format(self.summarystats["4FNcutoff"]["min"], self.summarystats["4FNcutoff"]["average"],
                     self.summarystats["4FNcutoff"]["max"], self.summarystats["4FRcutoff"]["min"],
                     self.summarystats["4FRcutoff"]["average"], self.summarystats["4FRcutoff"]["max"])
-        basic4cutoff = '```Rerun\nMin {} | Avg {} | Max {}```'\
+        basic4cutoff = '```ruby\nRerun\nMin {} | Avg {} | Max {}```'\
             .format(self.summarystats["4BRcutoff"]["min"],
                     self.summarystats["4BRcutoff"]["average"], self.summarystats["4BRcutoff"]["max"])
-        feature5bracket2 = '```New\nMin {} | Avg {} | Max {}\nRerun\nMin {} | Avg {} | Max {}```'\
+        feature5bracket2 = '```ruby\nNew\nMin {} | Avg {} | Max {}\nRerun\nMin {} | Avg {} | Max {}```'\
             .format(self.summarystats["5FNbracket2"]["min"], self.summarystats["5FNbracket2"]["average"],
                     self.summarystats["5FNbracket2"]["max"], self.summarystats["5FRbracket2"]["min"],
                     self.summarystats["5FRbracket2"]["average"], self.summarystats["5FRbracket2"]["max"])
-        feature4bracket2 = '```New\nMin {} | Avg {} | Max {}\nRerun\nMin {} | Avg {} | Max {}```'\
+        feature4bracket2 = '```ruby\nNew\nMin {} | Avg {} | Max {}\nRerun\nMin {} | Avg {} | Max {}```'\
             .format(self.summarystats["4FNbracket2"]["min"], self.summarystats["4FNbracket2"]["average"],
                     self.summarystats["4FNbracket2"]["max"], self.summarystats["4FRbracket2"]["min"],
                     self.summarystats["4FRbracket2"]["average"], self.summarystats["4FRbracket2"]["max"])
-        basic4bracket2 = '```Rerun\nMin {} | Avg {} | Max {}```'\
+        basic4bracket2 = '```ruby\nRerun\nMin {} | Avg {} | Max {}```'\
             .format(self.summarystats["4BRbracket2"]["min"],
                     self.summarystats["4BRbracket2"]["average"], self.summarystats["4BRbracket2"]["max"])
         cutoffstats = '{}\n{}\n{}'.format(feature5cutoff, feature4cutoff, basic4cutoff)
@@ -1326,7 +1326,7 @@ class MCOCTools:
         for d in arena_pages:
             data = discord.Embed(color=ucolor, title='Arena Cutoffs [Link to Graph]', url=PUBLISHED,
                                  description=chat.box(d))
-            data.add_field(name="90-Day Summary Statistics", value="The following fields contain Min/Average/Max breakouts for New and Old champions over the last 90 days.", inline=False)
+            data.add_field(name="90-Day Summary Statistics", value="The following fields contain ``Min | Average | Max`` breakouts for New and Rerun champions over the last 90 days.", inline=False)
             data.add_field(name="Feature 5★ Top 150 = {} + {}".format(
                 prize, self.summarystats["5FRcutoff"]["prize"]), value=feature5cutoff, inline=False)
             data.add_field(name="Feature 5★ Top 10% = {}".format(
