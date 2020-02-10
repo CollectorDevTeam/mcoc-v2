@@ -1284,7 +1284,7 @@ class MCOCTools:
             desc = []
             for k in range(1, int(self.cutoffs["1"]["max"])):
                 if self.cutoffs[str(k)]["champ"] == champ.full_name:
-                    desc.append("{} [{}]{} {}\n".format(self.cutoffs[str(k)]["date"], self.cutoffs[str(k)]["contest"],
+                    desc.append("{} [{}] {} {}\n".format(self.cutoffs[str(k)]["date"], self.cutoffs[str(k)]["contest"],
                                                         self.cutoffs[str(k)]["champ"], self.cutoffs[str(k)]["cutoff"]))
                     description = ''.join(desc)
 
