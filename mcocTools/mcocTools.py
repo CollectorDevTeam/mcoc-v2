@@ -1298,26 +1298,26 @@ class MCOCTools:
 
         pages = []
 
-        feature5cutoff = '```N: Min {} | Avg {} | Max {}\nR: Min {} | Avg {} | Max {}```'\
+        feature5cutoff = '```N Min {} | Avg {} | Max {}\nR Min {} | Avg {} | Max {}```'\
             .format(self.summarystats["5FNcutoff"]["min"], self.summarystats["5FNcutoff"]["average"],
                     self.summarystats["5FNcutoff"]["max"], self.summarystats["5FRcutoff"]["min"],
                     self.summarystats["5FRcutoff"]["average"], self.summarystats["5FRcutoff"]["max"])
-        feature4cutoff = '```N: Min {} | Avg {} | Max {}\nR: Min {} | Avg {} | Max {}```'\
+        feature4cutoff = '```N Min {} | Avg {} | Max {}\nR Min {} | Avg {} | Max {}```'\
             .format(self.summarystats["4FNcutoff"]["min"], self.summarystats["4FNcutoff"]["average"],
                     self.summarystats["4FNcutoff"]["max"], self.summarystats["4FRcutoff"]["min"],
                     self.summarystats["4FRcutoff"]["average"], self.summarystats["4FRcutoff"]["max"])
-        basic4cutoff = '```R: Min {} | Avg {} | Max {}```'\
+        basic4cutoff = '```R Min {} | Avg {} | Max {}```'\
             .format(self.summarystats["4BRcutoff"]["min"],
                     self.summarystats["4BRcutoff"]["average"], self.summarystats["4BRcutoff"]["max"])
-        feature5bracket2 = '```N: Min {} | Avg {} | Max {}\nR: Min {} | Avg {} | Max {}```'\
+        feature5bracket2 = '```N Min {} | Avg {} | Max {}\nR Min {} | Avg {} | Max {}```'\
             .format(self.summarystats["5FNbracket2"]["min"], self.summarystats["5FNbracket2"]["average"],
                     self.summarystats["5FNbracket2"]["max"], self.summarystats["5FRbracket2"]["min"],
                     self.summarystats["5FRbracket2"]["average"], self.summarystats["5FRbracket2"]["max"])
-        feature4bracket2 = '```N: Min {} | Avg {} | Max {}\nR: Min {} | Avg {} | Max {}```'\
+        feature4bracket2 = '```N Min {} | Avg {} | Max {}\nR Min {} | Avg {} | Max {}```'\
             .format(self.summarystats["4FNbracket2"]["min"], self.summarystats["4FNbracket2"]["average"],
                     self.summarystats["4FNbracket2"]["max"], self.summarystats["4FRbracket2"]["min"],
                     self.summarystats["4FRbracket2"]["average"], self.summarystats["4FRbracket2"]["max"])
-        basic4bracket2 = '```R: Min {} | Avg {} | Max {}```'\
+        basic4bracket2 = '```R Min {} | Avg {} | Max {}```'\
             .format(self.summarystats["4BRbracket2"]["min"],
                     self.summarystats["4BRbracket2"]["average"], self.summarystats["4BRbracket2"]["max"])
         cutoffstats = '{}\n{}\n{}'.format(feature5cutoff, feature4cutoff, basic4cutoff)
