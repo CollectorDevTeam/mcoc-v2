@@ -1323,9 +1323,10 @@ class MCOCTools:
         cutoffstats = '{}\n{}\n{}'.format(feature5cutoff, feature4cutoff, basic4cutoff)
         bracketstats = '{}\n{}\n{}'.format(feature5bracket2, feature4bracket2, basic4bracket2)
 
+        pred = "mm/dd/yy champion cutoff [bracket 2]\n"
         for d in arena_pages:
             data = discord.Embed(color=ucolor, title='Arena Cutoffs [Link to Graph]', url=PUBLISHED,
-                                 description=chat.box(d))
+                                 description=chat.box(pred+d))
             data.add_field(name="90-Day Summary Statistics", value="The following fields contain ``Min | Average | Max`` breakouts for [N]ew and [R]erun champions over the last 90 days.", inline=False)
             data.add_field(name="Feature 5★ Top 150 = {} + {}".format(
                 prize, self.summarystats["5FRcutoff"]["prize"]), value=feature5cutoff, inline=False)
