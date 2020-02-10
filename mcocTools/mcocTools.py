@@ -1323,7 +1323,7 @@ class MCOCTools:
         cutoffstats = '{}\n{}\n{}'.format(feature5cutoff, feature4cutoff, basic4cutoff)
         bracketstats = '{}\n{}\n{}'.format(feature5bracket2, feature4bracket2, basic4bracket2)
 
-        pred = "mm/dd/yy champion cutoff [bracket 2]\n"
+        pred = "date contest champ cutoff [bracket]\n"
         for d in arena_pages:
             data = discord.Embed(color=ucolor, title='Arena Cutoffs [Link to Graph]', url=PUBLISHED,
                                  description=chat.box(pred+d))
