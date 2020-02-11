@@ -779,11 +779,11 @@ class MCOC(ChampionFactory):
                 rank = i
         if not found:
             em = discord.Embed(color=discord.Color.gold(), title="Mastery Help",
-                               description="Syntax: ```/mastery <mastery> [rank]```"
-                                           "Present Mastery Text and rank information\n"
-                                           "``/mastery \"Deep Wounds\" 4``\n"
-                                           "``/mastery deepwounds 4``\n"
-                                           "``/mastery Deep Wounds 4``\n")
+                               description="Present Mastery effects, cost, and rankup information\n"
+                                           "Syntax: ```/mastery <mastery> [rank]```\n"
+                                           "```/mastery \"Deep Wounds\" 4\n"
+                                           "/mastery deepwounds 4\n"
+                                           "/mastery Deep Wounds 4```")
             offense = []
             defense = []
             utility = []
