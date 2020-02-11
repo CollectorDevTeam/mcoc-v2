@@ -787,9 +787,9 @@ class MCOC(ChampionFactory):
             defense = []
             utility = []
             for k in cm.keys():
-                if cm[k]["Category"] == "Offense":
+                if cm[k]["category"] == "Offense":
                     offense.append(cm[k]["proper"])
-                elif cm[k]["Category"] == "Defense":
+                elif cm[k]["category"] == "Defense":
                     defense.append(cm[k]["proper"])
                 else:
                     utility.append(cm[k]["proper"])
