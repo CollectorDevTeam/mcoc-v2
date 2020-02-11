@@ -743,7 +743,7 @@ class MCOC(ChampionFactory):
          await self.update_local()
          await self.gsheet_handler.cache_gsheets(key)
 
-    @commands.command(pass_context=True, aliases=['masteries','mastery info'])
+    @commands.command(pass_context=True, aliases=['masteries',])
     async def mastery(self, ctx, word: str, rank: int = None):
     #     if ctx.invoked_subcommand is None:
     #         await send_cmd_help(ctx)
