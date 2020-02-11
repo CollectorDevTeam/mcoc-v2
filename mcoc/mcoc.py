@@ -779,10 +779,11 @@ class MCOC(ChampionFactory):
                 rank = i
         if not found:
             em = discord.Embed(color=discord.Color.gold(), title="Mastery Help",
-                               description="Present Mastery Text and rank information"
-                                           "``/mastery info \"Deep Wounds\" 4``"
-                                           "``/mastery info deepwounds 4``"
-                                           "``/mastery info Deep Wounds 4``")
+                               description="Syntax: ```/mastery <mastery> [rank]```"
+                                           "Present Mastery Text and rank information\n"
+                                           "``/mastery \"Deep Wounds\" 4``\n"
+                                           "``/mastery deepwounds 4``\n"
+                                           "``/mastery Deep Wounds 4``\n")
             offense = []
             defense = []
             utility = []
@@ -793,9 +794,9 @@ class MCOC(ChampionFactory):
                     defense.append(cm[k]["proper"])
                 else:
                     utility.append(cm[k]["proper"])
-            em.add_field(name="Offense", value=", ".join(offense))
-            em.add_field(name="Defense", value=", ".join(defense))
-            em.add_field(name="Proficiencies", value=", ".join(utility))
+            em.add_field(name="Offense", value=", ".join(sorted(offense)))
+            em.add_field(name="Defense", value=", ".join(sorted(defense)))
+            em.add_field(name="Proficiencies", value=", ".join(sorted(utility)))
             page_list.append(em)
         elif found:
             classcores = {
