@@ -769,7 +769,7 @@ class MCOC(ChampionFactory):
                 found = True
                 break
             elif cm[key]['initials'] is not None and cm[key]['initials'] != "":
-                if cm[key]['initials'] in ctx.message.content.lower():
+                if " {}".format(cm[key]['initials']) in ctx.message.content.lower():
                     word = key
                     found = True
                     break
@@ -777,7 +777,7 @@ class MCOC(ChampionFactory):
         for i in range(1, 9):
             if str(i) in ctx.message.content:
                 rank = i
-        if ctx.message.content == "" or ctx.message.content is None:
+        if not found:
             em = discord.Embed(color=discord.Color.gold(), title="Mastery Help",
                                description="Present Mastery Text and rank information"
                                            "``/mastery info \"Deep Wounds\" 4``"
