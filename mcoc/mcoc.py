@@ -743,24 +743,20 @@ class MCOC(ChampionFactory):
          await self.update_local()
          await self.gsheet_handler.cache_gsheets(key)
 
-    @commands.command(pass_context=True, aliases=['masteries','mastery'])
-    # async def mastery(self, ctx, word: str, rank: int = None):
-    #     if ctx.invoked_subcommand is None:
-    #         await send_cmd_help(ctx)
-    #
-    # @mastery.command(pass_context=True, name='info')
-    # # @commands.command(pass_context=True, hidden=True)
+    @commands.command(pass_context=True, aliases=['masteries', 'mastery'])
     async def mastery_info(self, ctx): #, word: str, rank: int = None):
-        '''BETA: Present Mastery Text and rank information
-        Mastery must be in quotes if it includes whitespace
-        ex
-        /mastery info "Deep Wounds" 4 [works]
-        /mastery info deepwounds 4 [works]
-        /mastery info Deep Wounds 4 [fails]'''
+        """BETA: Present Mastery Text and rank information
+        /mastery info "Deep Wounds" 4
+        /mastery info deepwounds 4
+        /mastery info Deep Wounds 4"""
         sgd = cogs.mcocTools.StaticGameData()
         #print(len(sgd.cdt_data), len(sgd.cdt_masteries), sgd.test)
         cm = sgd.cdt_masteries
         found = False
+        page_list = []
+        colors = {'offense': discord.Color.red(), 'defense': discord.Color.red(),
+                  'proficiencies': discord.Color.green()}
+
         for key in cm.keys():
             if key in ctx.message.content:
                 word = key
@@ -770,22 +766,15 @@ class MCOC(ChampionFactory):
                 word = key
                 found = True
                 break
+            elif cm[key]['initials'] is not None and cm[key]['initials'] != '':
+                if cm[key]['initials'] in ctx.message.content.lower():
+                    word = key
+                    found = True
+                    break
         rank = None
         for i in range(1, 9):
             if str(i) in ctx.message.content:
                 rank = i
-
-
-        # if word.lower() in cm:
-        #     key = word
-        #     # await self.bot.say('mastery key found')
-        #     found = True
-        # else:
-        #     for key in cm.keys():
-        #         if word.lower() == cm[key]['proper'].lower():
-        #             # await self.bot.say('mastery Title found')
-        #             found = True
-        #             break
         if found:
             classcores = {
                     'mutagenesis':'<:mutantcore:527924989643587584> Mastery Core X',
@@ -804,8 +793,6 @@ class MCOC(ChampionFactory):
             classcorekeys = classcores.keys()
             unlocks = {'ucarbs': '<:carbcore:527924990159355904> Carbonium Core(s)', 'uclass': ' {} Core(s)'.format(classcores[key] if key in classcores else 'Class'), 'ustony': '<:stonycore:416405764937089044> Stony Core(s)', 'uunits': '<:units:344506213335302145> Units'}
             rankups = {'rgold': '<:gold:344506213662326785> Gold', 'runit': '<:units:344506213335302145> Unit(s)'}
-            colors = {'offense': discord.Color.red(),'defense':discord.Color.red(), 'proficiencies': discord.Color.green()}
-            page_list = []
             maxranks = cm[key]['ranks']
             titled = cm[key]['icon']+' '+cm[key]['proper']+ ' {}/'+str(maxranks)
             embedcolor = colors[cm[key]['category'].lower()]
@@ -848,18 +835,22 @@ class MCOC(ChampionFactory):
                     em.add_field(name='Cumulative Rank Up Cost', value='\n'.join(cum_rankup_costs), inline=False)
                 em.add_field(name='Prestige Bump', value='{} %'.format(round(cm[key][mrank]['pibump']*100,3)), inline=False)
                 page_list.append(em)
+        else:
+            for k in colors.keys():
+                em = discord.Embed(color=discord.Color.gold(), title="Mastery Help")
 
-            if len(page_list) > 0:
-                menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
-                if rank == None:
-                    page_number = 0
-                elif maxranks == 0:
-                    page_number = 0
-                elif rank >= maxranks:
-                    page_number = maxranks -1
-                else:
-                    page_number = max(rank-1, 0)
-                await menu.menu_start(pages=page_list, page_number=page_number)
+
+        if len(page_list) > 0:
+            menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
+            if rank == None:
+                page_number = 0
+            elif maxranks == 0:
+                page_number = 0
+            elif rank >= maxranks:
+                page_number = maxranks -1
+            else:
+                page_number = max(rank-1, 0)
+            await menu.menu_start(pages=page_list, page_number=page_number)
 
     @commands.command(pass_context=True, aliases=['modok',], hidden=True)
     async def modok_says(self, ctx, *, word:str = None):
