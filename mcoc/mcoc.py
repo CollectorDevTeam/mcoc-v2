@@ -745,7 +745,7 @@ class MCOC(ChampionFactory):
 
     @commands.command(pass_context=True, aliases=['masteries', 'mastery'])
     async def mastery_info(self, ctx): #, word: str, rank: int = None):
-        """BETA: Present Mastery Text and rank information
+        """Present Mastery Text and rank information
         /mastery info "Deep Wounds" 4
         /mastery info deepwounds 4
         /mastery info Deep Wounds 4"""
@@ -836,9 +836,26 @@ class MCOC(ChampionFactory):
                 em.add_field(name='Prestige Bump', value='{} %'.format(round(cm[key][mrank]['pibump']*100,3)), inline=False)
                 page_list.append(em)
         else:
-            for k in colors.keys():
-                em = discord.Embed(color=discord.Color.gold(), title="Mastery Help")
 
+            em = discord.Embed(color=discord.Color.gold(), title="Mastery Help",
+                               description="Present Mastery Text and rank information"
+                                           "``/mastery info \"Deep Wounds\" 4``"
+                                           "``/mastery info deepwounds 4``"
+                                           "``/mastery info Deep Wounds 4``")
+            offense = []
+            defense = []
+            utility = []
+            for k in cm.keys():
+                if cm[k]["Category"] == "Offense":
+                    offense.append(cm[k]["proper"])
+                elif cm[k]["Category"] == "Defense":
+                    defense.append(cm[k]["proper"])
+                else:
+                    utility.append(cm[k]["proper"])
+            em.add_field(name="Offense", value=", ".join(offense))
+            em.add_field(name="Defense", value=", ".join(defense))
+            em.add_field(name="Proficiencies", value=", ".join(utility))
+            page_list.append(em)
 
         if len(page_list) > 0:
             menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
