@@ -762,17 +762,17 @@ class MCOC(ChampionFactory):
         cm = sgd.cdt_masteries
         found = False
         for key in cm.keys():
-            if key in ctx.message:
+            if key in ctx.message.content:
                 word = key
                 found = True
                 break
-            elif cm[key]['proper'].lower() in ctx.message.lower():
+            elif cm[key]['proper'].lower() in ctx.message.content.lower():
                 word = key
                 found = True
                 break
         rank = None
         for i in range(1, 9):
-            if str(i) in ctx.message:
+            if str(i) in ctx.message.content:
                 rank = i
 
 
