@@ -757,6 +757,8 @@ class MCOC(ChampionFactory):
         colors = {'offense': discord.Color.red(), 'defense': discord.Color.red(),
                   'proficiencies': discord.Color.green()}
 
+
+
         for key in cm.keys():
             if key in ctx.message.content:
                 word = key
@@ -766,7 +768,7 @@ class MCOC(ChampionFactory):
                 word = key
                 found = True
                 break
-            elif cm[key]['initials'] is not None and cm[key]['initials'] != '':
+            elif cm[key]['initials'] is not None and cm[key]['initials'] != "":
                 if cm[key]['initials'] in ctx.message.content.lower():
                     word = key
                     found = True
@@ -775,7 +777,27 @@ class MCOC(ChampionFactory):
         for i in range(1, 9):
             if str(i) in ctx.message.content:
                 rank = i
-        if found:
+        if ctx.message.content == "" or ctx.message.content is None:
+            em = discord.Embed(color=discord.Color.gold(), title="Mastery Help",
+                               description="Present Mastery Text and rank information"
+                                           "``/mastery info \"Deep Wounds\" 4``"
+                                           "``/mastery info deepwounds 4``"
+                                           "``/mastery info Deep Wounds 4``")
+            offense = []
+            defense = []
+            utility = []
+            for k in cm.keys():
+                if cm[k]["Category"] == "Offense":
+                    offense.append(cm[k]["proper"])
+                elif cm[k]["Category"] == "Defense":
+                    defense.append(cm[k]["proper"])
+                else:
+                    utility.append(cm[k]["proper"])
+            em.add_field(name="Offense", value=", ".join(offense))
+            em.add_field(name="Defense", value=", ".join(defense))
+            em.add_field(name="Proficiencies", value=", ".join(utility))
+            page_list.append(em)
+        elif found:
             classcores = {
                     'mutagenesis':'<:mutantcore:527924989643587584> Mastery Core X',
                     'pureskill':'<:skillcore:527924989970743316> Mastery Core of Aptitude',
@@ -835,27 +857,7 @@ class MCOC(ChampionFactory):
                     em.add_field(name='Cumulative Rank Up Cost', value='\n'.join(cum_rankup_costs), inline=False)
                 em.add_field(name='Prestige Bump', value='{} %'.format(round(cm[key][mrank]['pibump']*100,3)), inline=False)
                 page_list.append(em)
-        else:
 
-            em = discord.Embed(color=discord.Color.gold(), title="Mastery Help",
-                               description="Present Mastery Text and rank information"
-                                           "``/mastery info \"Deep Wounds\" 4``"
-                                           "``/mastery info deepwounds 4``"
-                                           "``/mastery info Deep Wounds 4``")
-            offense = []
-            defense = []
-            utility = []
-            for k in cm.keys():
-                if cm[k]["Category"] == "Offense":
-                    offense.append(cm[k]["proper"])
-                elif cm[k]["Category"] == "Defense":
-                    defense.append(cm[k]["proper"])
-                else:
-                    utility.append(cm[k]["proper"])
-            em.add_field(name="Offense", value=", ".join(offense))
-            em.add_field(name="Defense", value=", ".join(defense))
-            em.add_field(name="Proficiencies", value=", ".join(utility))
-            page_list.append(em)
 
         if len(page_list) > 0:
             menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
