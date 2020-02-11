@@ -750,7 +750,7 @@ class MCOC(ChampionFactory):
     #
     # @mastery.command(pass_context=True, name='info')
     # # @commands.command(pass_context=True, hidden=True)
-    async def mastery_info(self, ctx, word: str, rank: int = None):
+    async def mastery_info(self, ctx): #, word: str, rank: int = None):
         '''BETA: Present Mastery Text and rank information
         Mastery must be in quotes if it includes whitespace
         ex
@@ -761,16 +761,31 @@ class MCOC(ChampionFactory):
         #print(len(sgd.cdt_data), len(sgd.cdt_masteries), sgd.test)
         cm = sgd.cdt_masteries
         found = False
-        if word.lower() in cm:
-            key = word
-            # await self.bot.say('mastery key found')
-            found = True
-        else:
-            for key in cm.keys():
-                if word.lower() == cm[key]['proper'].lower():
-                    # await self.bot.say('mastery Title found')
-                    found = True
-                    break
+        for key in cm.keys():
+            if key in ctx.message:
+                word = key
+                found = True
+                break
+            elif cm[key]['proper'].lower() in ctx.message.lower():
+                word = key
+                found = True
+                break
+        rank = None
+        for i in range(1, 9):
+            if str(i) in ctx.message:
+                rank = i
+
+
+        # if word.lower() in cm:
+        #     key = word
+        #     # await self.bot.say('mastery key found')
+        #     found = True
+        # else:
+        #     for key in cm.keys():
+        #         if word.lower() == cm[key]['proper'].lower():
+        #             # await self.bot.say('mastery Title found')
+        #             found = True
+        #             break
         if found:
             classcores = {
                     'mutagenesis':'<:mutantcore:527924989643587584> Mastery Core X',
