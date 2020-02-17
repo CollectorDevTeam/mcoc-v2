@@ -147,7 +147,7 @@ class Account:
         user = ctx.message.author
 
         if user.id not in self.nerdie:
-            data = self._unknownuser(ctx, user)
+            data = self._createuser(ctx, user)
         else:
             data = self._updateuser(ctx, key, value)
         await PagesMenu.menu_start(self, [data])
@@ -167,7 +167,7 @@ class Account:
         elif 'both' in value.lower():
             value = '<:ios:548619937296416789> iOS & <:android:548634644455882762> Android'
         if user.id not in self.nerdie:
-            data = self._unknownuser(ctx, user)
+            data = self._createuser(ctx, user)
         else:
             data = self._updateuser(ctx, key, value)
         await PagesMenu.menu_start(self, [data])
@@ -178,7 +178,7 @@ class Account:
         key = "Alliance"
         user = ctx.message.author
         if user.id not in self.nerdie:
-            data = self._unknownuser(ctx, user)
+            data = self._createuser(ctx, user)
         else:
             if "Recruiting" in self.nerdie[user.id]:
                 if 'Looking for Alliance' in self.nerdie[user.id]["Recruiting"]:
@@ -200,7 +200,7 @@ class Account:
         valid = {'lfa':'Looking for Alliance', 'lfm': 'Looking for Members', 'merge':'Looking for Merger'}
         if value in valid.keys():
             if user.id not in self.nerdie:
-                data = self._unknownuser(ctx, user)
+                data = self._createuser(ctx, user)
             else:
                 if value in ('lfa','Looking for Alliance'):
                     self.nerdie[user.id].pop("Alliance",None)
@@ -223,7 +223,7 @@ class Account:
         user = ctx.message.author
         if 'UTC+' in value or 'UTC-' in value:
             if user.id not in self.nerdie:
-                data = self._unknownuser(ctx, user)
+                data = self._createuser(ctx, user)
             else:
                 data = self._updateuser(ctx, key, value)
         else:
@@ -242,7 +242,7 @@ class Account:
         user = ctx.message.author
 
         if user.id not in self.nerdie:
-            data = self._unknownuser(ctx, user)
+            data = self._createuser(ctx, user)
         else:
             data = self._updateuser(ctx, key, value)
         await PagesMenu.menu_start(self, [data])
@@ -255,7 +255,7 @@ class Account:
         user = ctx.message.author
 
         if ctx.message.author.id not in self.nerdie:
-            data = self._unknownuser(ctx, user)
+            data = self._createuser(ctx, user)
         else:
             data = self._updateuser(ctx, key, value)
         await PagesMenu.menu_start(self, [data])
@@ -269,7 +269,7 @@ class Account:
         user = ctx.message.author
 
         if ctx.message.author.id not in self.nerdie:
-            data = self._unknownuser(ctx, user)
+            data = self._createuser(ctx, user)
         else:
             data = self._updateuser(ctx, key, value)
         await PagesMenu.menu_start(self, [data])
@@ -283,7 +283,7 @@ class Account:
         user = ctx.message.author
 
         if ctx.message.author.id not in self.nerdie:
-            data = self._unknownuser(ctx, user)
+            data = self._createuser(ctx, user)
         else:
             data = self._updateuser(ctx, key, value)
         await PagesMenu.menu_start(self, [data])
@@ -297,7 +297,7 @@ class Account:
         user = ctx.message.author
 
         if ctx.message.author.id not in self.nerdie:
-            data = self._unknownuser(ctx, user)
+            data = self._createuser(ctx, user)
         else:
             data = self._updateuser(ctx, key, value)
         await PagesMenu.menu_start(self, [data])
@@ -314,7 +314,7 @@ class Account:
         if isinstance(started, datetime.datetime):
             user = ctx.message.author
             if ctx.message.author.id not in self.nerdie:
-                data = self._unknownuser(ctx, user)
+                data = self._createuser(ctx, user)
             else:
                 data = self._updateuser(ctx, key, value)
             await PagesMenu.menu_start(self, [data])
@@ -330,7 +330,7 @@ class Account:
         user = ctx.message.author
 
         if ctx.message.author.id not in self.nerdie:
-            data = self._unknownuser(ctx, user)
+            data = self._createuser(ctx, user)
         else:
             data = self._updateuser(ctx, key, value)
         await PagesMenu.menu_start(self, [data])
@@ -339,17 +339,19 @@ class Account:
         self.nerdie[user.id] = {}
         dataIO.save_json(self.profile, self.nerdie)
         data = discord.Embed(colour=get_color(ctx))
-        data.add_field(name="Congrats!:sparkles:", value="You have offically created your CollectorVerse , {}.".format(user.mention))
+        data.add_field(name="Congrats!:sparkles:", value="You have officially created your CollectorVerse account, {}.".format(user.mention))
+        data.add_field(name="Account properties", value="You can set any of the following account properties using the ``/alliance set`` command.\n"
+                                                        "about\nage\nalliance\ngender\ningame\njob\nother\nphone\nrecruiting\nstarted\ntimezone\nwebsite")
         data.set_footer(text='CollectorDevTeam',
                 icon_url=COLLECTOR_ICON)
         return data
 
-    def _unknownuser(self, ctx, user):
-        data = discord.Embed(colour=get_color(ctx))
-        data.add_field(name="Error:warning:",value="Sadly, this feature is only available for people who had registered for an account. \n\nYou can register for a account today for free. All you have to do is say ``{}account`` and you'll be all set.".format(ctx.prefix))
-        data.set_footer(text='CollectorDevTeam',
-                icon_url=COLLECTOR_ICON)
-        return data
+    # def _createuser(self, ctx, user):
+    #     data = discord.Embed(colour=get_color(ctx))
+    #     data.add_field(name="Error:warning:",value="Sadly, this feature is only available for people who had registered for an account. \n\nYou can register for a account today for free. All you have to do is say ``{}account`` and you'll be all set.".format(ctx.prefix))
+    #     data.set_footer(text='CollectorDevTeam',
+    #             icon_url=COLLECTOR_ICON)
+    #     return data
 
     def _updateuser(self, ctx, key, value):
         user = ctx.message.author
