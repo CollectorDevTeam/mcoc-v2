@@ -340,19 +340,18 @@ class Account:
         dataIO.save_json(self.profile, self.nerdie)
         data = discord.Embed(colour=get_color(ctx))
         data.add_field(name="Congrats!:sparkles:", value="You have officially created your CollectorVerse account, {}.".format(user.mention))
-        data.add_field(name="Account properties", value="```/account [set|update]\n 
+        data.add_field(name="Account properties", value="```/account [set|update] \n" 
                                                         "Update your CollectorVerse account\n"
-                                                        "Commands:\n"
                                                         "  about      Tell us about yourself\n"
                                                         "  age        How old are you?\n"
-                                                        "  alliance   What's your Alliance name?\n"
-                                                        "  gender     What's your gender?\n"
-                                                        "  ingame     What's your in-game MCOC username?\n"
+                                                        "  alliance   Your Alliance name?\n"
+                                                        "  gender     Your gender?\n"
+                                                        "  ingame     Your in-game MCOC username?\n"
                                                         "  job        Do you have an alliance job?\n"
-                                                        "  other      Incase you want to add anything else...\n"
+                                                        "  other      If you want to add anything else...\n"
                                                         "  phone      What's your device OS?\n"
                                                         "  recruiting Are you Looking for Alliance or Members?\n"
-                                                        "  started    When did you start playing Contest of Champions?\n"
+                                                        "  started    When did you start playing MCOC?\n"
                                                         "  timezone   What's your UTC timezone?\n"
                                                         "  website    Do you have a website?```", inline=False)
         data.set_footer(text='CollectorDevTeam',
