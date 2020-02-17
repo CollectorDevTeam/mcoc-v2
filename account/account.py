@@ -346,7 +346,7 @@ class Account:
 
     def _unknownuser(self, ctx, user):
         data = discord.Embed(colour=get_color(ctx))
-        data.add_field(name="Error:warning:",value="Sadly, this feature is only available for people who had registered for an account. \n\nYou can register for a account today for free. All you have to do is say `{}account signup` and you'll be all set.".format(ctx.prefix))
+        data.add_field(name="Error:warning:",value="Sadly, this feature is only available for people who had registered for an account. \n\nYou can register for a account today for free. All you have to do is say ``{}account`` and you'll be all set.".format(ctx.prefix))
         data.set_footer(text='CollectorDevTeam',
                 icon_url=COLLECTOR_ICON)
         return data
