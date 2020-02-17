@@ -136,6 +136,8 @@ class Account:
     @_account.group(name="set", aliases=('update',), pass_context=True, invoke_without_command=True)
     async def _update(self, ctx):
         """Update your CollectorVerse account"""
+        if ctx.message.author.id not in self.nerdie:
+            data = self._createuser(ctx, user)
         await send_cmd_help(ctx)
 
     @_update.command(pass_context=True)
@@ -337,14 +339,14 @@ class Account:
         self.nerdie[user.id] = {}
         dataIO.save_json(self.profile, self.nerdie)
         data = discord.Embed(colour=get_color(ctx))
-        data.add_field(name="Congrats!:sparkles:", value="You have officaly created your CollectorVerse , {}.".format(user.mention))
+        data.add_field(name="Congrats!:sparkles:", value="You have offically created your CollectorVerse , {}.".format(user.mention))
         data.set_footer(text='CollectorDevTeam',
                 icon_url=COLLECTOR_ICON)
         return data
 
     def _unknownuser(self, ctx, user):
         data = discord.Embed(colour=get_color(ctx))
-        data.add_field(name="Error:warning:",value="Sadly, this feature is only available for people who had registered for an account. \n\nYou can register for a account today for free. All you have to do is say `{}signup` and you'll be all set.".format(ctx.prefix))
+        data.add_field(name="Error:warning:",value="Sadly, this feature is only available for people who had registered for an account. \n\nYou can register for a account today for free. All you have to do is say `{} account signup` and you'll be all set.".format(ctx.prefix))
         data.set_footer(text='CollectorDevTeam',
                 icon_url=COLLECTOR_ICON)
         return data
