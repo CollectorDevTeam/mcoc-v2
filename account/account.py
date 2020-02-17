@@ -68,7 +68,7 @@ class Account:
                 user = ctx.message.author
             if user.id not in self.nerdie:
                 data = self._createuser(ctx, user)
-
+                await self.bot.say(embed=data)
             if 'MCOC username' in self.nerdie[user.id]:
                 ingame = 'MCOC in-game id: {}'.format(self.nerdie[user.id]['MCOC username'])
             else:
@@ -340,8 +340,21 @@ class Account:
         dataIO.save_json(self.profile, self.nerdie)
         data = discord.Embed(colour=get_color(ctx))
         data.add_field(name="Congrats!:sparkles:", value="You have officially created your CollectorVerse account, {}.".format(user.mention))
-        data.add_field(name="Account properties", value="You can set any of the following account properties using the ``/alliance set`` command.\n"
-                                                        "about\nage\nalliance\ngender\ningame\njob\nother\nphone\nrecruiting\nstarted\ntimezone\nwebsite")
+        data.add_field(name="Account properties", value="```/account [set|update]\n 
+                                                        "Update your CollectorVerse account\n"
+                                                        "Commands:\n"
+                                                        "  about      Tell us about yourself\n"
+                                                        "  age        How old are you?\n"
+                                                        "  alliance   What's your Alliance name?\n"
+                                                        "  gender     What's your gender?\n"
+                                                        "  ingame     What's your in-game MCOC username?\n"
+                                                        "  job        Do you have an alliance job?\n"
+                                                        "  other      Incase you want to add anything else...\n"
+                                                        "  phone      What's your device OS?\n"
+                                                        "  recruiting Are you Looking for Alliance or Members?\n"
+                                                        "  started    When did you start playing Contest of Champions?\n"
+                                                        "  timezone   What's your UTC timezone?\n"
+                                                        "  website    Do you have a website?```", inline=False)
         data.set_footer(text='CollectorDevTeam',
                 icon_url=COLLECTOR_ICON)
         return data
