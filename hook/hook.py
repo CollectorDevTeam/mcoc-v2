@@ -577,7 +577,7 @@ class Hook:
             ret = '\n'.join([m.name for m in members])
         if len(ret) > 0:
             # rets = chat.pagify(ret)
-            pagified = chat.pagify(text=tracked, page_length=1700)
+            pagified = chat.pagify(text=ret, page_length=1700)
             pages = []
             for page in pagified:
                 em = discord.Embed(title='{0.name} Role - {1} member(s)'.format(role, len(members)),
