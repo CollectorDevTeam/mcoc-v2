@@ -576,12 +576,13 @@ class Hook:
         else:
             ret = '\n'.join([m.name for m in members])
         if len(ret) > 0:
-            rets = chat.pagify(ret)
+            # rets = chat.pagify(ret)
+            pagified = chat.pagify(text=tracked, page_length=1700)
             pages = []
-            for r in rets:
+            for page in pagified:
                 em = discord.Embed(title='{0.name} Role - {1} member(s)'.format(role, len(members)),
-                        description=ret, color=role.color)
-                pages.append(r)
+                        description=page, color=role.color)
+                pages.append(em)
             menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
             await menu.menu_start(pages=pages)
 
