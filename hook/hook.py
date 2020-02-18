@@ -582,6 +582,7 @@ class Hook:
             for page in pagified:
                 em = discord.Embed(title='{0.name} Role - {1} member(s)'.format(role, len(members)),
                         description=page, color=role.color)
+                em.set_footer(text="Requested by {}".ctx.message.author.display_name, icon_url=ctx.message.author.avatar_url)
                 pages.append(em)
             menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
             await menu.menu_start(pages=pages)
