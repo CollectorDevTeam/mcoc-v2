@@ -575,9 +575,17 @@ class Hook:
             ret = '\n'.join([m.display_name for m in members])
         else:
             ret = '\n'.join([m.name for m in members])
-        em = discord.Embed(title='{0.name} Role - {1} member(s)'.format(role, len(members)),
-                description=ret, color=role.color)
-        await self.bot.say(embed=em)
+        if len(ret) > 0:
+            rets = chat.pagify(ret)
+            pages = []
+            for r in rets:
+                em = discord.Embed(title='{0.name} Role - {1} member(s)'.format(role, len(members)),
+                        description=ret, color=role.color)
+                pages.append(r)
+            menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
+            await menu.menu_start(pages=pages)
+
+        # await self.bot.say(embed=em)
 
     # @commands.command(pass_context=True, no_pm=True)
     # async def team(self,ctx, *, user : discord.Member=None):
