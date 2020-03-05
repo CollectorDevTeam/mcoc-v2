@@ -937,7 +937,7 @@ class Hook:
         tmp_file = '{}-{}.tmp'.format(path, rand)
         # with open(tmp_file, 'w') as fp:
         with open(tmp_file, 'w', encoding='utf-8') as fp:
-            writer = csv.DictWriter(fp, fieldnames=['member_mention', 'member_name', *(roster.fieldnames)],'bg', extrasaction='ignore', lineterminator='\n')
+            writer = csv.DictWriter(fp, fieldnames=['member_mention', 'member_name', *(roster.fieldnames),'bg'], extrasaction='ignore', lineterminator='\n')
             writer.writeheader()
             for member in server.members:
                 if 'bg1' in member.roles:
