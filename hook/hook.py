@@ -940,14 +940,19 @@ class Hook:
             writer = csv.DictWriter(fp, fieldnames=['member_mention', 'member_name', *(roster.fieldnames),'bg'], extrasaction='ignore', lineterminator='\n')
             writer.writeheader()
             for member in server.members:
-                if 'bg1' in member.roles:
-                    bg = 'bg1'
-                elif 'bg2' in member.roles:
-                    bg = 'bg2'
-                elif 'bg3' in member.roles:
-                    bg = 'bg3'
-                else:
-                    bg = 'NA'
+                for roles in member.roles:
+                    if 'bg1' in roles.name:
+                        bg = 'bg1'
+                        continue
+                    elif 'bg2' in roles.name:
+                        bg = 'bg2'
+                        continue
+                    elif 'bg3' in roles.name:
+                        bg = 'bg3'
+                        continue
+                    else:
+                        bg = 'NA'
+                        continue
                 if role in member.roles:
                     roster = ChampionRoster(ctx.bot, member)
                     await roster.load_champions(silent=True)
