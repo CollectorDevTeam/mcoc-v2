@@ -6,13 +6,14 @@ import datetime
 import discord
 import requests
 import csv
+import pygsheets
 from discord.ext import commands
 from dateutil.parser import parse as date_parse
 from __main__ import send_cmd_help
 from .utils.dataIO import dataIO
 from .utils import checks
 from .utils import chat_formatting as chat
-from cogs.mcocTools import (KABAM_ICON, COLLECTOR_ICON, PagesMenu, CDT_COLORS, PATREON)
+from cogs.mcocTools import (KABAM_ICON, COLLECTOR_ICON, PagesMenu, CDT_COLORS, PATREON, gapi_service_creds)
 from cogs.hook import RosterUserConverter, ChampionRoster
 # import cogs.mcocTools
 
@@ -25,6 +26,7 @@ class EnhancedRoleConverter(commands.RoleConverter):
         if self.argument == 'everyone':
             self.argument = '@everyone'
         return super().convert()
+
 
 
 class Alliance:
@@ -914,12 +916,19 @@ class Alliance:
         """Save your WarTool URL"""
         check = False
         data = self._get_embed(ctx)
-        data.title = "WarTool URL"
+        c = pygsheets.authorize(service_file=gapi_service_creds, no_cache=True)
+        try: 
+            c.open_by_url(wartool_url)
+            sheet_id = c.id
+            data = self._update_guilds[ctx, 'wartool', sheet_id]
+        except: 
 
         if check:
+            data.title = "WarTool URL"
             data.url=wartool_url
             data.description = "Valid WarTool URL provided."
         else:
+            data.title = "Get CollectorDevTeam WarTool"
             data.description = "Invalid WarTool URL provided.  If you do not have a valid WarTool URL open the following Google Sheet and create a copy for your alliance.  Save the URL to your WarTool and try this command again."
         await self.bot.say(embed=data)
     
