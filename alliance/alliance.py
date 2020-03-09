@@ -6,7 +6,6 @@ import datetime
 import discord
 import requests
 import csv
-from random import randint
 from discord.ext import commands
 from dateutil.parser import parse as date_parse
 from __main__ import send_cmd_help
@@ -272,9 +271,9 @@ class Alliance:
         alliance = server.id
         roster = ChampionRoster(ctx.bot, ctx.message.author)
         await roster.load_champions(silent=True)
-        rand = randint(1000, 9999)
+        # rand = randint(1000, 9999)
         path, ext = os.path.split(roster.champs_file)
-        tmp_file = '{}-{}.tmp'.format(path, rand)
+        tmp_file = '{}-{}.tmp'.format(path, alliance)
         # with open(tmp_file, 'w') as fp:
         with open(tmp_file, 'w', encoding='utf-8') as fp:
             writer = csv.DictWriter(fp, fieldnames=['member_mention', 'member_name', *(roster.fieldnames),'bg'], extrasaction='ignore', lineterminator='\n')
@@ -321,7 +320,6 @@ class Alliance:
                         else:
                             bg = 'NA'
                             continue
-                    if role in member.roles:
                         roster = ChampionRoster(ctx.bot, member)
                         await roster.load_champions(silent=True)
                         for champ in roster.roster.values():
@@ -330,7 +328,7 @@ class Alliance:
                             champ_dict['member_name'] = member.name
                             champ_dict['bg'] = bg
                             writer.writerow(champ_dict)
-        filename = roster.data_dir + '/' + role.name + '.csv'
+        filename = roster.data_dir + '/' + alliance + '.csv'
         os.replace(tmp_file, filename)
         await self.bot.upload(filename)
         os.remove(filename)
