@@ -928,7 +928,7 @@ class Alliance:
         data.title = "WarTool URL"
         # data.url=wartool_url
         data.description = "Valid WarTool URL provided."
-        data.add_field(name="Wartool ID", value=wartool.sheet_id))
+        data.add_field(name="Wartool ID", value=wartool.sheet_id)
         
         # else:
         #     data.title = "Get CollectorDevTeam WarTool"
