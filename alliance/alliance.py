@@ -263,6 +263,78 @@ class Alliance:
                             inline=False)
                 return data
 
+    @alliance.command(pass_context=True, hidden=False, name='war_exprt', aliases=('awx',))
+    async def _role_roster_export(self, ctx):
+        '''Returns a CSV file with all Roster data for alliance members'''
+        server = ctx.message.server
+        alliane = server.id
+        roster = ChampionRoster(ctx.bot, ctx.message.author)
+        await roster.load_champions(silent=True)
+        rand = randint(1000, 9999)
+        path, ext = os.path.split(roster.champs_file)
+        tmp_file = '{}-{}.tmp'.format(path, rand)
+        # with open(tmp_file, 'w') as fp:
+        with open(tmp_file, 'w', encoding='utf-8') as fp:
+            writer = csv.DictWriter(fp, fieldnames=['member_mention', 'member_name', *(roster.fieldnames),'bg'], extrasaction='ignore', lineterminator='\n')
+            writer.writeheader()
+            if alliance in self.guilds.keys():
+                members = _get_members(server, self._get_role(server, 'alliance'))
+                if self.guilds[alliance]['type'] == 'basic':
+                    bg1 =  self._get_role(server, 'bg1')
+                    bg2 = self._get_role(server, 'bg2')
+                    bg3 = self._get_role(server, 'bg3')
+                else:
+                    bg1 = self._get_role(server, 'bg1aw')
+                    bg2 = self._get_role(server, 'bg2aw')
+                    bg3 = self._get_role(server, 'bg3aw')
+                for member in members:
+                    if bg1 in member.roles:
+                        bg = 'bg1'
+                    elif bg2 in member.roles:
+                        bg = 'bg2'
+                    elif bg3 in member.roles:
+                        bg = 'bg3'
+                    else:
+                        bg = 'NA'
+                    if role in member.roles:
+                    roster = ChampionRoster(ctx.bot, member)
+                    await roster.load_champions(silent=True)
+                    for champ in roster.roster.values():
+                        champ_dict = champ.to_json()
+                        champ_dict['member_mention'] = member.mention
+                        champ_dict['member_name'] = member.name
+                        champ_dict['bg'] = bg
+                        writer.writerow(champ_dict)
+            else:
+                for member in server.members:
+                    for roles in member.roles:
+                        if 'bg1' in roles.name:
+                            bg = 'bg1'
+                            continue
+                        elif 'bg2' in roles.name:
+                            bg = 'bg2'
+                            continue
+                        elif 'bg3' in roles.name:
+                            bg = 'bg3'
+                            continue
+                        else:
+                            bg = 'NA'
+                            continue
+                    if role in member.roles:
+                        roster = ChampionRoster(ctx.bot, member)
+                        await roster.load_champions(silent=True)
+                        for champ in roster.roster.values():
+                            champ_dict = champ.to_json()
+                            champ_dict['member_mention'] = member.mention
+                            champ_dict['member_name'] = member.name
+                            champ_dict['bg'] = bg
+                            writer.writerow(champ_dict)
+        filename = roster.data_dir + '/' + role.name + '.csv'
+        os.replace(tmp_file, filename)
+        await self.bot.upload(filename)
+        os.remove(filename)
+
+
     @checks.admin_or_permissions(manage_server=True)
     @alliance.command(name='delete', aliases=('unregister', 'del' 'remove', 'rm',), pass_context=True,
                       invoke_without_command=True, no_pm=True)
