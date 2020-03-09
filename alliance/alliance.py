@@ -263,7 +263,7 @@ class Alliance:
                             inline=False)
                 return data
 
-    @alliance.command(pass_context=True, hidden=False, name='war_exprt', aliases=('awx',))
+    @alliance.command(pass_context=True, hidden=False, name='export', aliases=('awx',))
     async def _role_roster_export(self, ctx):
         '''Returns a CSV file with all Roster data for alliance members'''
         server = ctx.message.server
