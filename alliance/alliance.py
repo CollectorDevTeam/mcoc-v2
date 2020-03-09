@@ -5,6 +5,7 @@ import logging
 import datetime
 import discord
 import requests
+import csv
 from discord.ext import commands
 from dateutil.parser import parse as date_parse
 from __main__ import send_cmd_help
@@ -267,7 +268,7 @@ class Alliance:
     async def _role_roster_export(self, ctx):
         '''Returns a CSV file with all Roster data for alliance members'''
         server = ctx.message.server
-        alliane = server.id
+        alliance = server.id
         roster = ChampionRoster(ctx.bot, ctx.message.author)
         await roster.load_champions(silent=True)
         rand = randint(1000, 9999)
@@ -296,7 +297,6 @@ class Alliance:
                         bg = 'bg3'
                     else:
                         bg = 'NA'
-                    if role in member.roles:
                     roster = ChampionRoster(ctx.bot, member)
                     await roster.load_champions(silent=True)
                     for champ in roster.roster.values():
