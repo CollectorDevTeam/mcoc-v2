@@ -40,6 +40,7 @@ class Alliance:
         self.advanced_keys = ('officers', 'bg1', 'bg2', 'bg3', 'alliance',
                               'bg1aq', 'bg2aq', 'bg3aq', 'bg1aw', 'bg2aw', 'bg3aw',)
         self.info_keys = ('name', 'tag', 'type', 'about', 'started', 'invite', 'poster', 'wartool')
+        self.service_file = gapi_service_creds
 
     @commands.command(pass_context=True, no_pm=True, hidden=True)
     async def lanes(self, ctx, user: discord.Member = None):
@@ -914,25 +915,26 @@ class Alliance:
     @update.command(pass_context=True, name='wartool')
     async def _wartool(self, ctx, wartool_url: str = None):
         """Save your WarTool URL"""
-        check = False
         data = self._get_embed(ctx)
-        c = pygsheets.authorize(service_file=gapi_service_creds, no_cache=True)
+        await c = self.authorize()
+        sheet_id = re.findall(r'/spreadsheets/d/([a-zA-Z0-9-_]+)', wartool_url)
+        print(wartool_url)
         try: 
             c.open_by_url(wartool_url)
-            sheet_id = c.id
+            check=True
+            # sheet_id = c.id
+        except: 
+            check = False
+        
+        if check:
             data = self._update_guilds[ctx, 'wartool', sheet_id]
             data.title = "WarTool URL"
             data.url=wartool_url
             data.description = "Valid WarTool URL provided."
-        except: 
+        else:
             data.title = "Get CollectorDevTeam WarTool"
             data.description = "Invalid WarTool URL provided.  If you do not have a valid WarTool URL open the following Google Sheet and create a copy for your alliance.  Save the URL to your WarTool and try this command again."
-            
-        # if check:
-        #     data.title = "WarTool URL"
-        #     data.url=wartool_url
-        #     data.description = "Valid WarTool URL provided."
-        # else:
+
         await self.bot.say(embed=data)
     
 
@@ -1096,6 +1098,14 @@ class Alliance:
     #         data.add_field(name=m.upper(), value=self.guilds[alliance]['assignments'][user.id][m])
     #     await self.bot.say(embed=data)
 
+    async def authorize(self):
+        try:
+            return pygsheets.authorize(service_file=self.service_file, no_cache=True)
+        except FileNotFoundError:
+            err_msg = 'Cannot find credentials file.  Needs to be located:\n' \
+                      + self.service_file
+            await self.bot.say(err_msg)
+            raise FileNotFoundError(err_msg)
 
 def send_request(url):
     try:
