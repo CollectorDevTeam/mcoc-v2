@@ -37,7 +37,7 @@ class Alliance:
         self.alliance_keys = ('officers', 'bg1', 'bg2', 'bg3', 'alliance',)
         self.advanced_keys = ('officers', 'bg1', 'bg2', 'bg3', 'alliance',
                               'bg1aq', 'bg2aq', 'bg3aq', 'bg1aw', 'bg2aw', 'bg3aw',)
-        self.info_keys = ('name', 'tag', 'type', 'about', 'started', 'invite', 'poster')
+        self.info_keys = ('name', 'tag', 'type', 'about', 'started', 'invite', 'poster', 'wartool')
 
     @commands.command(pass_context=True, no_pm=True, hidden=True)
     async def lanes(self, ctx, user: discord.Member = None):
@@ -266,7 +266,9 @@ class Alliance:
 
     @alliance.command(pass_context=True, hidden=False, name='export', aliases=('awx',))
     async def _role_roster_export(self, ctx):
-        '''Returns a CSV file with all Roster data for alliance members'''
+        '''Returns a CSV file with all Roster data for alliance members
+        Requires that ALLIANCE settings be configured with roles for alliance, bg1, bg2, bg3
+        '''
         server = ctx.message.server
         alliance = server.id
         roster = ChampionRoster(ctx.bot, ctx.message.author)
@@ -289,11 +291,11 @@ class Alliance:
                     bg2 = self._get_role(server, 'bg2aw')
                     bg3 = self._get_role(server, 'bg3aw')
                 for member in members:
-                    if bg1 in member.roles:
+                    if bg1 in member.roles and bg1 is not None:
                         bg = 'bg1'
-                    elif bg2 in member.roles:
+                    elif bg2 in member.roles and bg2 is not None:
                         bg = 'bg2'
-                    elif bg3 in member.roles:
+                    elif bg3 in member.roles and bg3 is not None:
                         bg = 'bg3'
                     else:
                         bg = 'NA'
@@ -426,9 +428,10 @@ class Alliance:
 
     def _get_role(self, server, role_key: str):
         """Returns discord.Role"""
-        for role in server.roles:
-            if role.id == self.guilds[server.id][role_key]['id']:
-                return role
+        if role_key in self.guilds[server.id].keys() and self.guilds[server.id][role_key] is not None:
+            for role in server.roles:
+                if role.id == self.guilds[server.id][role_key]['id']:
+                    return role
         return None
 
     @alliance.command(name='bg', aliases=('battlegroups', 'bgs', 'BG', 'BGs'), pass_context=True, no_pm=True)
@@ -905,6 +908,21 @@ class Alliance:
         """Which role represents all members of your alliance (up to 30)?"""
         data = await self._update_role(ctx, key='alliance', role=role)
         await self.bot.say(embed=data)
+
+    @update.command(pass_context=True, name='wartool')
+    async def _wartool(self, ctx, wartool_url: str = None)
+        """Save your WarTool URL"""
+        check = False
+        data = self._get_embed(ctx)
+        data.title = "WarTool URL"
+
+        if check:
+            data.url=wartool_url
+            data.description = "Valid WarTool URL provided."
+        else:
+            data.description = "Invalid WarTool URL provided.  If you do not have a valid WarTool URL open the following Google Sheet and create a copy for your alliance.  Save the URL to your WarTool and try this command again."
+        await self.bot.say(embed=data)
+    
 
     def _create_alliance(self, ctx, server):
         """Create alliance.
