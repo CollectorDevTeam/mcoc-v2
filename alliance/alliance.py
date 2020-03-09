@@ -916,11 +916,12 @@ class Alliance:
     async def _wartool(self, ctx, wartool_url: str = None):
         """Save your WarTool URL"""
         data = self._get_embed(ctx)
-        await c = self.authorize()
+        c = await self.authorize()
         sheet_id = re.findall(r'/spreadsheets/d/([a-zA-Z0-9-_]+)', wartool_url)
-        print(wartool_url)
+        print(sheet_id)
         try: 
-            c.open_by_url(wartool_url)
+            # c.open_by_url(wartool_url)
+            c.open_by_key(sheet_id)
             check=True
             # sheet_id = c.id
         except: 
