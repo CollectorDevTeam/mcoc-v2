@@ -910,7 +910,7 @@ class Alliance:
         await self.bot.say(embed=data)
 
     @update.command(pass_context=True, name='wartool')
-    async def _wartool(self, ctx, wartool_url: str = None)
+    async def _wartool(self, ctx, wartool_url: str = None):
         """Save your WarTool URL"""
         check = False
         data = self._get_embed(ctx)
