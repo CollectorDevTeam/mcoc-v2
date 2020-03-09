@@ -6,6 +6,7 @@ import datetime
 import discord
 import requests
 import csv
+from random import randint
 from discord.ext import commands
 from dateutil.parser import parse as date_parse
 from __main__ import send_cmd_help
