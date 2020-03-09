@@ -919,7 +919,7 @@ class Alliance:
         c = await self.authorize()
         # sheet_data = await self.retrieve_data()
         sheet_id = re.findall(r'/spreadsheets/d/([a-zA-Z0-9-_]+)', wartool_url)
-        wartool = c.open_by_key(sheet_id)
+        wartool = c.open_by_url(wartool_url)
         print(wartool.id)
         print(wartool.url)
         print(wartool.datarange.name())
