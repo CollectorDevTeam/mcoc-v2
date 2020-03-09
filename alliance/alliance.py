@@ -921,15 +921,18 @@ class Alliance:
             c.open_by_url(wartool_url)
             sheet_id = c.id
             data = self._update_guilds[ctx, 'wartool', sheet_id]
-        except: 
-
-        if check:
             data.title = "WarTool URL"
             data.url=wartool_url
             data.description = "Valid WarTool URL provided."
-        else:
+        except: 
             data.title = "Get CollectorDevTeam WarTool"
             data.description = "Invalid WarTool URL provided.  If you do not have a valid WarTool URL open the following Google Sheet and create a copy for your alliance.  Save the URL to your WarTool and try this command again."
+            
+        # if check:
+        #     data.title = "WarTool URL"
+        #     data.url=wartool_url
+        #     data.description = "Valid WarTool URL provided."
+        # else:
         await self.bot.say(embed=data)
     
 
