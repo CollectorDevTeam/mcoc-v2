@@ -13,7 +13,7 @@ from __main__ import send_cmd_help
 from .utils.dataIO import dataIO
 from .utils import checks
 from .utils import chat_formatting as chat
-from cogs.mcocTools import (KABAM_ICON, COLLECTOR_ICON, PagesMenu, CDT_COLORS, PATREON, gapi_service_creds)
+from cogs.mcocTools import (KABAM_ICON, COLLECTOR_ICON, PagesMenu, CDT_COLORS, PATREON)
 from cogs.hook import RosterUserConverter, ChampionRoster
 # import cogs.mcocTools
 
@@ -40,7 +40,7 @@ class Alliance:
         self.advanced_keys = ('officers', 'bg1', 'bg2', 'bg3', 'alliance',
                               'bg1aq', 'bg2aq', 'bg3aq', 'bg1aw', 'bg2aw', 'bg3aw',)
         self.info_keys = ('name', 'tag', 'type', 'about', 'started', 'invite', 'poster', 'wartool')
-        self.service_file = gapi_service_creds
+        self.service_file = "data/mcoc/mcoc_service_creds.json"
 
     @commands.command(pass_context=True, no_pm=True, hidden=True)
     async def lanes(self, ctx, user: discord.Member = None):
@@ -917,24 +917,22 @@ class Alliance:
         """Save your WarTool URL"""
         data = self._get_embed(ctx)
         c = await self.authorize()
+        # sheet_data = await self.retrieve_data()
         sheet_id = re.findall(r'/spreadsheets/d/([a-zA-Z0-9-_]+)', wartool_url)
-        print(sheet_id)
-        try: 
-            # c.open_by_url(wartool_url)
-            c.open_by_key(sheet_id)
-            check=True
-            # sheet_id = c.id
-        except: 
-            check = False
+        wartool = c.open_by_key(sheet_id)
+        print(wartool.id)
+        print(wartool.url)
+        print(wartool.datarange.name())
+    
+        data = self._update_guilds[ctx, 'wartool', wartool.sheet_id]
+        data.title = "WarTool URL"
+        # data.url=wartool_url
+        data.description = "Valid WarTool URL provided."
+        data.add_field(name="Wartool ID", value=wartool.sheet_id))
         
-        if check:
-            data = self._update_guilds[ctx, 'wartool', sheet_id]
-            data.title = "WarTool URL"
-            data.url=wartool_url
-            data.description = "Valid WarTool URL provided."
-        else:
-            data.title = "Get CollectorDevTeam WarTool"
-            data.description = "Invalid WarTool URL provided.  If you do not have a valid WarTool URL open the following Google Sheet and create a copy for your alliance.  Save the URL to your WarTool and try this command again."
+        # else:
+        #     data.title = "Get CollectorDevTeam WarTool"
+        #     data.description = "Invalid WarTool URL provided.  If you do not have a valid WarTool URL open the following Google Sheet and create a copy for your alliance.  Save the URL to your WarTool and try this command again."
 
         await self.bot.say(embed=data)
     
@@ -1107,6 +1105,7 @@ class Alliance:
                       + self.service_file
             await self.bot.say(err_msg)
             raise FileNotFoundError(err_msg)
+    
 
 def send_request(url):
     try:
