@@ -193,7 +193,7 @@ class Alliance:
                 pages.append(data)
         if len(pages) > 0:
             if ctx.message.server.id in alliances:
-                i = list.index(ctx.message.server.id)
+                i = alliances.index(ctx.message.server.id)
             else:
                 i = 0
             menu = PagesMenu(self.bot, timeout=120,
