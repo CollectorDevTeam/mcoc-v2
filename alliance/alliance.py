@@ -299,8 +299,8 @@ class Alliance:
         pages = chat.pagify('\n'.join(sorted(message)))
         header = '```Alliance Guilds    | CollectorVerse Guilds```'
         for page in pages:
-            # await self.bot.send_message(self.diagnostics, header)
-            await self.bot.send_message(self.diagnostics, chat.box(header+page))
+            await self.bot.send_message(self.diagnostics, header)
+            await self.bot.send_message(self.diagnostics, chat.box(page))
 
     @alliance.command(pass_context=True, hidden=False, name='export', aliases=('awx',))
     async def _role_roster_export(self, ctx):
