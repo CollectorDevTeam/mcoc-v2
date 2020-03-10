@@ -434,7 +434,7 @@ class Alliance:
         user_alliances = []
         bot_servers = self.bot.servers
         for guild in self.guilds.keys():
-            if 'alliance' in self.guild[guild].keys():
+            if 'alliance' in self.guilds[guild].keys():
                 if user.id in self.guilds[guild]['alliance']['member_ids']:
                     # verify or scavenge
                     serv = self.bot.get_server(guild)
