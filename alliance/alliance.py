@@ -107,7 +107,7 @@ class Alliance:
         """Display Alliance public profile"""
         if user is None:
             user = ctx.message.author
-        alliances, message = await self._find_alliance(user)
+        alliances, message = await self._find_alliance(ctx, user)
         pages = []
         if alliances is None:
             data = self._get_embed(ctx)
@@ -429,16 +429,21 @@ class Alliance:
                 ctx.message.author.display_name, ctx.message.author.id, ctx.message.server.name, ctx.message.server.id))
             await self.bot.send_message(self.diagnostics, embed=data)
 
-    async def _find_alliance(self, user):
+    async def _find_alliance(self, ctx, user):
         """Returns a list of Server IDs or None"""
         user_alliances = []
+        bot_servers = self.bot.servers
         for guild in self.guilds.keys():
             if user.id in self.guilds[guild]['alliance']['member_ids']:
                 # verify or scavenge
                 serv = self.bot.get_server(guild)
                 if serv is None:
                     print('_find_alliance found no server {}'.format(guild))
-                else:
+                    for server in bot_servers:
+                        if server.id == guild:
+                            serv = server
+                            print('secondary lookup found server')
+                if serv is not None:
                     alliance_role = self._get_role(
                         serv, self.guilds[serv.id]['alliance'])
                     if alliance_role is None:
@@ -474,7 +479,7 @@ class Alliance:
     @alliance.command(name='bg', aliases=('battlegroups', 'bgs', 'BG', 'BGs'), pass_context=True, no_pm=True)
     async def _battle_groups(self, ctx):
         """Report Alliance Battlegroups"""
-        alliances, message = await self._find_alliance(ctx.message.author)
+        alliances, message = await self._find_alliance(ctx, ctx.message.author)
         dcolor = discord.Color.gold()
         server = ctx.message.server
         alliance = server.id
