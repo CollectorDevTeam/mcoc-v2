@@ -494,18 +494,18 @@ class Alliance:
     async def _battle_groups(self, ctx):
         """Report Alliance Battlegroups"""
         alliances, message = await self._find_alliance(ctx, ctx.message.author)
-        dcolor = discord.Color.gold()
+        # dcolor = discord.Color.gold()
         server = ctx.message.server
         alliance = server.id
         if alliances is None:
-            data = self._get_embed(ctx, color=dcolor)
+            data = self._get_embed(ctx)
             data.title = 'Access Denied:sparkles:'
             data.description = 'This tool is only available for members of this alliance.'
             await self.bot.say(embed=data)
             return
-        elif ctx.message.server.id in self.guilds.keys():
-            server = ctx.message.server
-            alliance = server.id
+        elif alliance in self.guilds.keys():
+            # server = ctx.message.server
+            # alliance = server.id
             if 'alliance' in self.guilds[alliance].keys():
                 members = _get_members(server, 'alliance')
                 if members is None:
@@ -521,7 +521,7 @@ class Alliance:
             basic = False
             if self.guilds[alliance]['type'] == 'basic':
                 basic = True
-                for bg in 'bg1', 'bg2', 'bg3':
+                for bg in ('bg1', 'bg2', 'bg3'):
                     role = self._get_role(server, bg)
                     if role is not None:
                         role_members = _get_members(server, role)
