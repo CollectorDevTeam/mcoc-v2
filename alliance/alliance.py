@@ -488,9 +488,9 @@ class Alliance:
                                 for m in server.members:
                                     if alliance_role in m.roles:
                                         # for m in alliance_role.members:
-                                    if user == m:
-                                        user_alliances.append(alliance)
-                                        continue
+                                        if user == m:
+                                            user_alliances.append(alliance)
+                                            continue
 
         await self.bot.send_message(self.diagnostics, user_alliances)
         if len(user_alliances) > 0:
