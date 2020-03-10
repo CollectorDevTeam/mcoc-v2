@@ -460,59 +460,31 @@ class Alliance:
                 await self.bot.send_message(self.diagnostics, "{} Alliance Guild has no 'alliance' role".format(alliance))
                 await self.bot.send_message(self.diagnostics, self.guilds[alliance].keys())
             if "alliance" in self.guilds[alliance].keys():
-                await self.bot.send_message(self.diagnostics, "{} Alliance Guild has an 'alliance' role".format(alliance))
+                # await self.bot.send_message(self.diagnostics, "{} Alliance Guild has an 'alliance' role".format(alliance))
                 if user.id in self.guilds[alliance]["alliance"]["member_ids"]:
                     await self.bot.send_message(self.diagnostics, "Found user {} in guild {}".format(user.id, alliance))
                     # get role & verify
                     server = self.bot.get_server(alliance)
-                    if server is None:
-                        for s in self.bot.servers:
-                            if alliance == s.id:
-                                server = s
-                                await self.bot.send_message(self.diagnostics, "Found alliance on bot_server crawl.")
-                                continue
+                    # if server is None:
+                    #     for s in self.bot.servers:
+                    #         if alliance == s.id:
+                    #             server = s
+                    #             await self.bot.send_message(self.diagnostics, "Found alliance on bot_server crawl.")
+                    #             continue
                     if server is None:
                         await self.bot.send_message(self.diagnostics, "{} guild not found in CollectorVerse".format(alliance))
                     else:
                         alliance_role = self._get_role(server, 'alliance')
+
                         if alliance_role is None:
                             await self.bot.send_message(self.diagnostics, "but Alliance role not found on {}".format(server.id))
                         else:
-                            await self.bot.send_message(self.diagnostics, "but Alliance role found on {}".format(server.id))
-                            if user in alliance_role.members():
+                            member = server.get_member(user.id)
+                            if alliance_role in member.roles:
+                                # await self.bot.send_message(self.diagnostics, "but Alliance role found on {}".format(server.id))
+                                # if user in alliance_role.members():
                                 user_alliances.append(alliance)
-
-        # for guild in self.guilds.keys():
-        #     if 'alliance' in self.guilds[guild].keys():
-        #         if user.id in self.guilds[guild]['alliance']['member_ids']:
-        #             # verify or scavenge
-        #             serv = self.bot.get_server(guild)
-        #             if serv is None:
-        #                 print('_find_alliance found no server {}'.format(guild))
-        #                 for server in bot_servers:
-        #                     if server.id == guild:
-        #                         serv = server
-        #                         print('secondary lookup found server')
-        #             if serv is not None:
-        #                 alliance_role = self._get_role(
-        #                     serv, self.guilds[serv.id]['alliance'])
-        #                 if alliance_role is None:
-        #                     # scavenge alliance role
-        #                     await self.bot.send_message(self.diagnostics, 'Alliance role not found on server: {}\nAttempt to notify owner {}'.format(guild, serv.owner_id))
-        #                 elif user in alliance_role:
-        #                     user_alliances.append(guild)
-        #                     continue
-        #                 else:
-        #                     # update member_ids
-        #                     self._update_members(serv)
-
-            # keys = self.guilds[guild].keys()
-            # for key in keys:
-            #     if key in self.advanced_keys:
-            #         if user.id in self.guilds[guild][key]['member_ids']:
-            #             if guild not in user_alliances:
-            #                 user_alliances.append(guild)
-            #             print('keys: '.join([guild, key, 'member_ids']))
+        await self.bot.send_message(self.diagnostics, user_alliances)
         if len(user_alliances) > 0:
             return user_alliances, '{} found.'.format(user.name)
         else:
