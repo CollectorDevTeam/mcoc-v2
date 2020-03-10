@@ -436,17 +436,20 @@ class Alliance:
             if user.id in self.guilds[guild]['alliance']['member_ids']:
                 # verify or scavenge
                 serv = self.bot.get_server(guild)
-                alliance_role = self._get_role(
-                    serv, self.guilds[serv.id]['alliance'])
-                if alliance_role is None:
-                    # scavenge alliance role
-                    await self.bot.send_message(self.diagnostics, 'Alliance role not found on server: {}\nAttempt to notify owner {}'.format(guild, serv.owner_id))
-                elif user in alliance_role:
-                    user_alliances.append(guild)
-                    continue
+                if serv is None:
+                    print('_find_alliance found no server {}'.format(guild))
                 else:
-                    # update member_ids
-                    self._update_members(serv)
+                    alliance_role = self._get_role(
+                        serv, self.guilds[serv.id]['alliance'])
+                    if alliance_role is None:
+                        # scavenge alliance role
+                        await self.bot.send_message(self.diagnostics, 'Alliance role not found on server: {}\nAttempt to notify owner {}'.format(guild, serv.owner_id))
+                    elif user in alliance_role:
+                        user_alliances.append(guild)
+                        continue
+                    else:
+                        # update member_ids
+                        self._update_members(serv)
 
             # keys = self.guilds[guild].keys()
             # for key in keys:
