@@ -13,7 +13,8 @@ from __main__ import send_cmd_help
 from .utils.dataIO import dataIO
 from .utils import checks
 from .utils import chat_formatting as chat
-from cogs.mcocTools import (KABAM_ICON, COLLECTOR_ICON, PagesMenu, CDT_COLORS, PATREON)
+from cogs.mcocTools import (
+    KABAM_ICON, COLLECTOR_ICON, PagesMenu, CDT_COLORS, PATREON)
 from cogs.hook import RosterUserConverter, ChampionRoster
 # import cogs.mcocTools
 
@@ -28,7 +29,6 @@ class EnhancedRoleConverter(commands.RoleConverter):
         return super().convert()
 
 
-
 class Alliance:
     """The CollectorVerse Alliance Cog"""
 
@@ -39,8 +39,10 @@ class Alliance:
         self.alliance_keys = ('officers', 'bg1', 'bg2', 'bg3', 'alliance',)
         self.advanced_keys = ('officers', 'bg1', 'bg2', 'bg3', 'alliance',
                               'bg1aq', 'bg2aq', 'bg3aq', 'bg1aw', 'bg2aw', 'bg3aw',)
-        self.info_keys = ('name', 'tag', 'type', 'about', 'started', 'invite', 'poster', 'wartool')
+        self.info_keys = ('name', 'tag', 'type', 'about',
+                          'started', 'invite', 'poster', 'wartool')
         self.service_file = "data/mcoc/mcoc_service_creds.json"
+        self.diagnostics = self.bot.get_channel('565254324595326996')
 
     @commands.command(pass_context=True, no_pm=True, hidden=True)
     async def lanes(self, ctx, user: discord.Member = None):
@@ -67,18 +69,22 @@ class Alliance:
         if members is not None:
             pages = []
             for m in ('aq1', 'aq2', 'aq3', 'aq4', 'aq5', 'aq6', 'aq7', 'aw',):
-                data = self._get_embed(ctx, alliance=alliance, color=role.color)
-                data.title = '{} Assignments for {}'.format(role.name, m.upper())
+                data = self._get_embed(
+                    ctx, alliance=alliance, color=role.color)
+                data.title = '{} Assignments for {}'.format(
+                    role.name, m.upper())
                 cnt = 0
                 for member in members:
                     if member.id in self.guilds[alliance]['assignments'].keys():
                         if m in self.guilds[alliance]['assignments'][member.id].keys():
-                            data.add_field(name=member.display_name, value=self.guilds[alliance]['assignments'][member.id][m])
+                            data.add_field(
+                                name=member.display_name, value=self.guilds[alliance]['assignments'][member.id][m])
                             cnt += 1
                 if cnt > 0:
                     pages.append(data)
             if len(pages) > 0:
-                menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
+                menu = PagesMenu(self.bot, timeout=120,
+                                 delete_onX=True, add_pageof=True)
                 await menu.menu_start(pages=pages)
             else:
                 logger.warning('No Pages to display')
@@ -101,7 +107,7 @@ class Alliance:
         """Display Alliance public profile"""
         if user is None:
             user = ctx.message.author
-        alliances, message = self._find_alliance(user)
+        alliances, message = await self._find_alliance(user)
         pages = []
         if alliances is None:
             data = self._get_embed(ctx)
@@ -132,12 +138,15 @@ class Alliance:
             if server is not None:
                 if 'tag' in keys:
                     if 'name' in keys:
-                        data.title = '[{}] {}:sparkles:'.format(self.guilds[alliance]['tag'], self.guilds[alliance]['name'])
+                        data.title = '[{}] {}:sparkles:'.format(
+                            self.guilds[alliance]['tag'], self.guilds[alliance]['name'])
                     else:
-                        data.title = '[{}] {}:sparkles:'.format(self.guilds[alliance]['tag'], server.name)
+                        data.title = '[{}] {}:sparkles:'.format(
+                            self.guilds[alliance]['tag'], server.name)
                 elif 'name' in keys:
                     data.title = '{}:sparkles:'.format(server.name)
-                    data.add_field(name='Alliance Tag', value='Alliance Tag not set.')
+                    data.add_field(name='Alliance Tag',
+                                   value='Alliance Tag not set.')
                 else:
                     data.title = server.name+':sparkles:'
                 if 'about' in keys:
@@ -168,12 +177,15 @@ class Alliance:
                     data.set_image(url=self.guilds[alliance]['poster'])
                 if 'invite' in keys:
                     data.url = self.guilds[alliance]['invite']
-                    data.add_field(name='Join server', value=self.guilds[alliance]['invite'])
+                    data.add_field(name='Join server',
+                                   value=self.guilds[alliance]['invite'])
                 else:
-                    data.add_field(name='Join server', value='Invitation not set.')
+                    data.add_field(name='Join server',
+                                   value='Invitation not set.')
                 pages.append(data)
         if len(pages) > 0:
-            menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
+            menu = PagesMenu(self.bot, timeout=120,
+                             delete_onX=True, add_pageof=True)
             await menu.menu_start(pages=pages)
         else:
             logger.warning('No Pages to display')
@@ -197,7 +209,8 @@ class Alliance:
                 color = get_color(ctx)
 
         data = discord.Embed(color=color, title='', description='')
-        data.set_author(name='A CollectorVerse Alliance', icon_url=COLLECTOR_ICON)
+        data.set_author(name='A CollectorVerse Alliance',
+                        icon_url=COLLECTOR_ICON)
         if server is not None:
             data.set_thumbnail(url=server.icon_url)
         data.set_footer(text='CollectorDevTeam', icon_url=COLLECTOR_ICON)
@@ -207,7 +220,7 @@ class Alliance:
                             data=None, role_members: list = None):
         """Return Clan Prestige and Verbose Prestige for Role members"""
         logger.info("Retrieving prestige for role '{}' on guild '{}'".format(
-                role.name, server.name, ))
+            role.name, server.name, ))
         # members = []
         line_out = {}
         # line_out = []
@@ -227,7 +240,7 @@ class Alliance:
                     prestige += roster.prestige
                     cnt += 1
                 temp_line = '{:{width}} p = {}'.format(
-                        member.display_name, int(roster.prestige), width=width)
+                    member.display_name, int(roster.prestige), width=width)
                 # print(temp_line)
                 # line_out.append(temp_line)
                 line_out.update({roster.prestige: temp_line})
@@ -256,15 +269,15 @@ class Alliance:
                                    value=verbose_prestige, inline=False)
                 elif verbose:
                     data.add_field(
-                            name='{} prestige {}'.format(role.name, clan_prestige),
-                            value=summary + '\n\nVerbose prestige details '
-                                            'restricted for roles with more than 30 members.',
-                            inline=False)
+                        name='{} prestige {}'.format(role.name, clan_prestige),
+                        value=summary + '\n\nVerbose prestige details '
+                        'restricted for roles with more than 30 members.',
+                        inline=False)
                 else:
                     data.add_field(
-                            name='{} prestige {}'.format(role.name, clan_prestige),
-                            value=summary,
-                            inline=False)
+                        name='{} prestige {}'.format(role.name, clan_prestige),
+                        value=summary,
+                        inline=False)
                 return data
 
     @alliance.command(pass_context=True, hidden=False, name='export', aliases=('awx',))
@@ -281,12 +294,14 @@ class Alliance:
         tmp_file = '{}-{}.tmp'.format(path, alliance)
         # with open(tmp_file, 'w') as fp:
         with open(tmp_file, 'w', encoding='utf-8') as fp:
-            writer = csv.DictWriter(fp, fieldnames=['member_mention', 'member_name', *(roster.fieldnames),'bg'], extrasaction='ignore', lineterminator='\n')
+            writer = csv.DictWriter(fp, fieldnames=['member_mention', 'member_name', *(
+                roster.fieldnames), 'bg'], extrasaction='ignore', lineterminator='\n')
             writer.writeheader()
             if alliance in self.guilds.keys():
-                members = _get_members(server, self._get_role(server, 'alliance'))
+                members = _get_members(
+                    server, self._get_role(server, 'alliance'))
                 if self.guilds[alliance]['type'] == 'basic':
-                    bg1 =  self._get_role(server, 'bg1')
+                    bg1 = self._get_role(server, 'bg1')
                     bg2 = self._get_role(server, 'bg2')
                     bg3 = self._get_role(server, 'bg3')
                 else:
@@ -338,7 +353,6 @@ class Alliance:
         await self.bot.upload(filename)
         os.remove(filename)
 
-
     @checks.admin_or_permissions(manage_server=True)
     @alliance.command(name='delete', aliases=('unregister', 'del' 'remove', 'rm',), pass_context=True,
                       invoke_without_command=True, no_pm=True)
@@ -359,17 +373,18 @@ class Alliance:
                 data = discord.Embed(title="Sorry!:sparkles:",
                                      description="You have no CollectorVerse Alliance.",
                                      color=get_color(ctx))
-            menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
+            menu = PagesMenu(self.bot, timeout=120,
+                             delete_onX=True, add_pageof=True)
             await self.bot.delete_message(confirmation)
             await menu.menu_start(pages=[data])
 
     @checks.admin_or_permissions(manage_server=True)
     @alliance.command(
-                name='settings',
-                pass_context=True,
-                invoke_without_command=True,
-                hidden=True,
-                no_pm=True)
+        name='settings',
+        pass_context=True,
+        invoke_without_command=True,
+        hidden=True,
+        no_pm=True)
     async def _settings(self, ctx, serverid=None):
         if serverid is None:
             server = ctx.message.server
@@ -383,7 +398,8 @@ class Alliance:
             data.title = 'Alliance Settings:sparkles:'
             for item in self.info_keys:
                 if item in keys:
-                    data.add_field(name=item, value=self.guilds[alliance][item])
+                    data.add_field(
+                        name=item, value=self.guilds[alliance][item])
                 else:
                     data.add_field(name=item, value='Not set.\n``/alliance set {} value``'
                                    .format(item), inline=False)
@@ -402,28 +418,43 @@ class Alliance:
                 if key in keys:
                     for role in server.roles:
                         if self.guilds[alliance][key]['id'] == role.id:
-                            data.add_field(name=key, value='{} : {}'.format(role.name, role.id))
+                            data.add_field(
+                                name=key, value='{} : {}'.format(role.name, role.id))
                 else:
                     data.add_field(name=key, value='Role is not set.\n``/alliance set {} value``'
                                    .format(key), inline=False)
             await self.bot.say(embed=data)
-            channel = self.bot.get_channel('565254324595326996')
-            data.add_field(name='Requested by', value='User: {} \nID: {} \nServer {} \nID: {}'.format(ctx.message.author.display_name, ctx.message.author.id, ctx.message.server.name, ctx.message.server.id))
-            await self.bot.send_message(channel, embed=data)
+            # channel = self.bot.get_channel('565254324595326996')
+            data.add_field(name='Requested by', value='User: {} \nID: {} \nServer {} \nID: {}'.format(
+                ctx.message.author.display_name, ctx.message.author.id, ctx.message.server.name, ctx.message.server.id))
+            await self.bot.send_message(self.diagnostics, embed=data)
 
-    def _find_alliance(self, user):
+    async def _find_alliance(self, user):
         """Returns a list of Server IDs or None"""
         user_alliances = []
         for guild in self.guilds.keys():
-            keys = self.guilds[guild].keys()
-            for key in keys:
-                if key in self.advanced_keys:
-                    if user.id in self.guilds[guild][key]['member_ids']:
-                        if guild not in user_alliances:
-                            user_alliances.append(guild)
-                        print('keys: '.join([guild, key, 'member_ids']))
-                        continue
+            if user.id in self.guilds[guild]['alliance']['member_ids']:
+                # verify or scavenge
+                serv = self.bot.get_server(guild)
+                alliance_role = self._get_role(
+                    serv, self.guilds[serv.id]['alliance'])
+                if alliance_role is None:
+                    # scavenge alliance role
+                    await self.bot.send_message(self.diagnostics, 'Alliance role not found on server: {}\nAttempt to notify owner {}'.format(guild, serv.owner_id))
+                elif user in alliance_role:
+                    user_alliances.append(guild)
+                    continue
+                else:
+                    # update member_ids
+                    self._update_members(serv)
 
+            # keys = self.guilds[guild].keys()
+            # for key in keys:
+            #     if key in self.advanced_keys:
+            #         if user.id in self.guilds[guild][key]['member_ids']:
+            #             if guild not in user_alliances:
+            #                 user_alliances.append(guild)
+            #             print('keys: '.join([guild, key, 'member_ids']))
         if len(user_alliances) > 0:
             return user_alliances, '{} found.'.format(user.name)
         else:
@@ -440,7 +471,7 @@ class Alliance:
     @alliance.command(name='bg', aliases=('battlegroups', 'bgs', 'BG', 'BGs'), pass_context=True, no_pm=True)
     async def _battle_groups(self, ctx):
         """Report Alliance Battlegroups"""
-        alliances, message = self._find_alliance(ctx.message.author)
+        alliances, message = await self._find_alliance(ctx.message.author)
         dcolor = discord.Color.gold()
         server = ctx.message.server
         alliance = server.id
@@ -473,7 +504,8 @@ class Alliance:
                     if role is not None:
                         role_members = _get_members(server, role)
                         if role_members is not None:
-                            battle_groups.update({bg: {'role': role, 'members': role_members}})
+                            battle_groups.update(
+                                {bg: {'role': role, 'members': role_members}})
             else:
                 for bg in ('bg1', 'bg2', 'bg3', 'bg1aq', 'bg2aq', 'bg3aq', 'bg1aw', 'bg2aw', 'bg3aw'):
                     if bg in self.guilds[alliance].keys():
@@ -481,7 +513,8 @@ class Alliance:
                         if role is not None:
                             role_members = _get_members(server, role)
                             if role_members is not None:
-                                battle_groups.update({bg: {'role': role, 'members': role_members}})
+                                battle_groups.update(
+                                    {bg: {'role': role, 'members': role_members}})
             tag = ''
             if 'tag' in self.guilds[alliance].keys():
                 tag = '[{}] '.format(self.guilds[alliance]['tag'])
@@ -493,7 +526,8 @@ class Alliance:
                         data = await self._get_prestige(server, battle_groups[bg]['role'], verbose=True,
                                                         data=data, role_members=battle_groups[bg]['members'])
                     elif bg in battle_groups.keys() and len(battle_groups[bg]['members']) == 0:
-                        data.description = 'Battlegroup {} has no members assigned'.format(bg)
+                        data.description = 'Battlegroup {} has no members assigned'.format(
+                            bg)
                 needsbg = []
                 if self.guilds[alliance]['alliance']['id'] is not None:
                     alliance_role = self._get_role(server, 'alliance')
@@ -553,15 +587,17 @@ class Alliance:
                 data = self._get_embed(ctx, alliance=alliance, color=dcolor)
                 data.title = 'Overloaded Battle Groups'
                 block = '\n'.join(m.display_name for m in overload)
-                data.add_field(name='Check these user\'s roles', value='```{}```'.format(block))
+                data.add_field(name='Check these user\'s roles',
+                               value='```{}```'.format(block))
                 pages.append(data)
 
-            menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
+            menu = PagesMenu(self.bot, timeout=120,
+                             delete_onX=True, add_pageof=True)
             await menu.menu_start(pages=pages)
 
     # @alliance.command(name="timezone", aliases=('tz','time','times'), pass_context=True, no_pm=True)
     # async def _timezone_by_role(self, ctx, role: discord.Role = None):
-    #     alliances, message = self._find_alliance(ctx.message.author)
+    #     alliances, message = await self._find_alliance(ctx.message.author)
     #     dcolor = discord.Color.gold()
     #     server = ctx.message.server
     #     data = self._get_embed(ctx, color=dcolor)
@@ -586,10 +622,9 @@ class Alliance:
     @checks.admin_or_permissions(manage_server=True)
     @alliance.command(name="create", aliases=('register', 'add'),
                       pass_context=True, invoke_without_command=True, no_pm=True)
-    async def _reg(self,ctx):
+    async def _reg(self, ctx):
         await self.register_alliance(ctx)
         return
-
 
     async def register_alliance(self, ctx):
         """Sign up to register your Alliance server!"""
@@ -623,22 +658,24 @@ class Alliance:
                 data.add_field(name="Error:warning:",
                                value="Oops, it seems like you have already registered this guild, {}."
                                .format(user.mention))
-                data.set_footer(text='CollectorDevTeam', icon_url=COLLECTOR_ICON)
+                data.set_footer(text='CollectorDevTeam',
+                                icon_url=COLLECTOR_ICON)
                 data_pages.append(data)
             if len(data_pages) > 0:
                 await self.bot.delete_message(confirmation)
-            menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
+            menu = PagesMenu(self.bot, timeout=120,
+                             delete_onX=True, add_pageof=True)
             await menu.menu_start(pages=data_pages)
         else:
             return
 
     @checks.admin_or_permissions(manage_server=True)
     @alliance.group(
-            name="set",
-            aliases=('update',),
-            pass_context=True,
-            invoke_without_command=True,
-            no_pm=True)
+        name="set",
+        aliases=('update',),
+        pass_context=True,
+        invoke_without_command=True,
+        no_pm=True)
     async def update(self, ctx):
         """Update your CollectorVerse Alliance"""
         await send_cmd_help(ctx)
@@ -833,10 +870,12 @@ class Alliance:
                                'I ran out of breath.'
         elif 'discord.gg' not in value:
             data = self._get_embed(ctx)
-            data.add_field(name='Warning:sparkles:', value='Only Discord server links are supported.')
+            data.add_field(name='Warning:sparkles:',
+                           value='Only Discord server links are supported.')
         else:
             data = self._update_guilds(ctx, key, value)
-        menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
+        menu = PagesMenu(self.bot, timeout=120,
+                         delete_onX=True, add_pageof=True)
         await menu.menu_start(pages=[data])
 
     @checks.admin_or_permissions(manage_server=True)
@@ -920,37 +959,34 @@ class Alliance:
         # sheet_data = await self.retrieve_data()
         sheet_id = re.findall(r'/spreadsheets/d/([a-zA-Z0-9-_]+)', wartool_url)
         wartool = c.open_by_key(sheet_id)
-        print(wartool.id)
-        print(wartool.url)
-        print(wartool.datarange.name())
-    
-        data = self._update_guilds[ctx, 'wartool', wartool.sheet_id]
+
+        data = self._update_guilds[ctx, 'wartool', sheet_id]
         data.title = "WarTool URL"
         # data.url=wartool_url
         data.description = "Valid WarTool URL provided."
-        data.add_field(name="Wartool ID", value=wartool.sheet_id)
-        
+        data.add_field(name="Wartool ID", value=sheet_id)
+
         # else:
         #     data.title = "Get CollectorDevTeam WarTool"
         #     data.description = "Invalid WarTool URL provided.  If you do not have a valid WarTool URL open the following Google Sheet and create a copy for your alliance.  Save the URL to your WarTool and try this command again."
 
         await self.bot.say(embed=data)
-    
 
     def _create_alliance(self, ctx, server):
         """Create alliance.
         Set basic information"""
-        self.guilds[server.id] = {'type': 'basic', 'name': server.name, 'assign': 'officers'}
+        self.guilds[server.id] = {'type': 'basic',
+                                  'name': server.name, 'assign': 'officers'}
         dataIO.save_json(self.alliances, self.guilds)
         data = discord.Embed(colour=get_color(ctx), url=PATREON)
         data.add_field(name="Congrats!:sparkles:",
-                       value='{}, you have officially registered {} as a CollectorVerse Alliance.\n' \
+                       value='{}, you have officially registered {} as a CollectorVerse Alliance.\n'
                              ':warning: The Alliance tool will not function unless an **alliance** role is designated.\n'
-                             'If you do not have an **alliance** role, create one and assign it to the members of your alliance.\n' \
-                             'Designate that role using the command ``/alliance set alliance <role>``\n' \
+                             'If you do not have an **alliance** role, create one and assign it to the members of your alliance.\n'
+                             'Designate that role using the command ``/alliance set alliance <role>``\n'
                              'If you have other issues, use the command ``/alliance settings`` to view and verify your settings.\n'
                              'For additional support visit the CollectorDevTeam ``/joincdt``.\n'
-                             'Reminder: Patrons receive priority support.\n'\
+                             'Reminder: Patrons receive priority support.\n'
                        .format(ctx.message.author.mention, server.name))
         data.set_footer(text='CollectorDevTeam', icon_url=COLLECTOR_ICON)
         return data
@@ -967,7 +1003,8 @@ class Alliance:
             data.description = 'The ``@everyone`` role is prohibited from ' \
                                'being set as an alliance role.'
             return data
-        data = discord.Embed(colour=get_color(ctx), title='Role Registration:sparkles:')
+        data = discord.Embed(colour=get_color(
+            ctx), title='Role Registration:sparkles:')
         if role is None:
             question = '{}, do you want to remove this ``{}`` registration?'.format(
                 ctx.message.author.mention, key)
@@ -1002,9 +1039,11 @@ class Alliance:
             data.add_field(name="Congrats!:sparkles:",
                            value="You have set your {} to {}".format(key, role.name), inline=False)
             if len(member_names) > 0:
-                data.add_field(name='{} members'.format(role.name), value='\n'.join(member_names))
+                data.add_field(name='{} members'.format(
+                    role.name), value='\n'.join(member_names))
             else:
-                data.add_field(name='{} members'.format(role.name), value='No Members assigned')
+                data.add_field(name='{} members'.format(
+                    role.name), value='No Members assigned')
         dataIO.save_json(self.alliances, self.guilds)
         data.set_footer(text='CollectorDevTeam', icon_url=COLLECTOR_ICON)
         return data
@@ -1012,20 +1051,19 @@ class Alliance:
     def _update_members(self, server):
         for key in self.advanced_keys:
             if key in self.guilds:
-                for role in server.roles:
-                    if self.guilds[key]['id'] == role.id:
-                        member_names = []
-                        member_ids = []
-                        for m in server.members:
-                            if role in m.roles:
-                                member_names.append(m.name)
-                                member_ids.append(m.id)
-                        package = {'id': role.id,
-                                   'name': role.name,
-                                   'member_ids': member_ids,
-                                   'member_names': member_names}
-                        self.guilds[server.id].update({key: package})
-                        continue
+                role = self._get_role(server, key)
+                member_names = []
+                member_ids = []
+                for m in server.members:
+                    if role in m.roles:
+                        member_names.append(m.name)
+                        member_ids.append(m.id)
+                package = {'id': role.id,
+                           'name': role.name,
+                           'member_ids': member_ids,
+                           'member_names': member_names}
+                self.guilds[server.id].update({key: package})
+                continue
         dataIO.save_json(self.alliances, self.guilds)
         print('Debug: Alliance details refreshed')
         return
@@ -1035,10 +1073,12 @@ class Alliance:
         data = discord.Embed(colour=get_color(ctx))
         if value in ('""', "''", " ", "None", "none", "-",):
             self.guilds[server.id].pop(key, None)
-            data.add_field(name="Congrats!:sparkles:", value="You have deleted {} from your Alliance.".format(key))
+            data.add_field(name="Congrats!:sparkles:",
+                           value="You have deleted {} from your Alliance.".format(key))
         else:
             self.guilds[server.id].update({key: value})
-            data.add_field(name="Congrats!:sparkles:", value="You have set your {} to {}".format(key, value))
+            data.add_field(name="Congrats!:sparkles:",
+                           value="You have set your {} to {}".format(key, value))
         dataIO.save_json(self.alliances, self.guilds)
         data.set_footer(text='CollectorDevTeam', icon_url=COLLECTOR_ICON)
         return data
@@ -1105,7 +1145,7 @@ class Alliance:
                       + self.service_file
             await self.bot.say(err_msg)
             raise FileNotFoundError(err_msg)
-    
+
 
 def send_request(url):
     try:
