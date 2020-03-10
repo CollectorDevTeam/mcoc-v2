@@ -134,10 +134,10 @@ class Alliance:
                                          '``alliance``, ``officers`` or ``bg1 | bg2 | bg3``')
             await self.bot.say(embed=data)
             return
-        elif ctx.message.server.id in alliances:
-            alliances = [ctx.message.server.id]
-        else:
-            pass
+        # elif ctx.message.server.id in alliances:
+        #     alliances = [ctx.message.server.id]
+        # else:
+        #     pass
 
         for alliance in alliances:
             keys = self.guilds[alliance].keys()
@@ -192,8 +192,12 @@ class Alliance:
                                    value='Invitation not set.')
                 pages.append(data)
         if len(pages) > 0:
+            if ctx.message.server.id in alliances:
+                i = list.index(ctx.message.server.id)
+            else:
+                i = 0
             menu = PagesMenu(self.bot, timeout=120,
-                             delete_onX=True, add_pageof=True)
+                             delete_onX=True, add_pageof=True, page=i)
             await menu.menu_start(pages=pages)
         else:
             logger.warning('No Pages to display')
@@ -465,38 +469,14 @@ class Alliance:
 
         for alliance in self.guilds.keys():
             if "alliance" not in self.guilds[alliance].keys():
-                await self.bot.send_message(self.diagnostics, "{} Alliance Guild has no 'alliance' role".format(alliance))
-                await self.bot.send_message(self.diagnostics, self.guilds[alliance].keys())
+                # await self.bot.send_message(self.diagnostics, "{} Alliance Guild has no 'alliance' role".format(alliance))
+                # await self.bot.send_message(self.diagnostics, self.guilds[alliance].keys())
             if "alliance" in self.guilds[alliance].keys():
                 # await self.bot.send_message(self.diagnostics, "{} Alliance Guild has an 'alliance' role".format(alliance))
                 if user.id in self.guilds[alliance]["alliance"]["member_ids"]:
                     user_alliances.append(alliance)
-        # if len(user_alliances) == 0:
-        #     for alliance in self.guilds.keys():
-        #         if "alliance" in self.guilds[alliance].keys():
-        #             server = self.bot.get_server(alliance)
-        #             if server is None:
-        #                 await self.bot.send_message(self.diagnostics, "{} guild not found in CollectorVerse".format(alliance))
-        #             else:
-        #                 for role in server.roles:
-        #                     if role.id == alliance:
-        #                         alliance_role = role
-        #                         continue
-        #                 if alliance_role is None:
-        #                     await self.bot.send_message(self.diagnostics, "but Alliance role not found on {}".format(server.id))
-        #                 else:
-        #                     # if user in alliance_role.members:
-        #                     if alliance_role in user.roles:
-        #                         user_alliances.append(alliance)
-        #                     else:
-        #                         for m in server.members:
-        #                             if alliance_role in m.roles:
-        #                                 # for m in alliance_role.members:
-        #                                 if user == m:
-        #                                     user_alliances.append(alliance)
-        #                                     continue
 
-        await self.bot.send_message(self.diagnostics, user_alliances)
+        # await self.bot.send_message(self.diagnostics, user_alliances)
         if len(user_alliances) > 0:
             return user_alliances, '{} found.'.format(user.name)
         else:
