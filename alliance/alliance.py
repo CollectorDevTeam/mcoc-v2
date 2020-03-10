@@ -455,29 +455,45 @@ class Alliance:
         """Returns a list of Server IDs or None"""
         user_alliances = []
         bot_servers = self.bot.servers
-        for guild in self.guilds.keys():
-            if 'alliance' in self.guilds[guild].keys():
-                if user.id in self.guilds[guild]['alliance']['member_ids']:
-                    # verify or scavenge
-                    serv = self.bot.get_server(guild)
-                    if serv is None:
-                        print('_find_alliance found no server {}'.format(guild))
-                        for server in bot_servers:
-                            if server.id == guild:
-                                serv = server
-                                print('secondary lookup found server')
-                    if serv is not None:
-                        alliance_role = self._get_role(
-                            serv, self.guilds[serv.id]['alliance'])
-                        if alliance_role is None:
-                            # scavenge alliance role
-                            await self.bot.send_message(self.diagnostics, 'Alliance role not found on server: {}\nAttempt to notify owner {}'.format(guild, serv.owner_id))
-                        elif user in alliance_role:
-                            user_alliances.append(guild)
-                            continue
-                        else:
-                            # update member_ids
-                            self._update_members(serv)
+
+        for alliance in self.guilds.keys():
+            if "alliance" not in self.guilds[alliance]:
+                await self.bot.send_message(self.diagnostics, "{} Alliance Guild has no 'alliance' role".format(alliance))
+            if "alliance" in self.guilds[alliance].keys():
+                if user.id in self.guilds[alliance]["alliance"]["member_ids"]:
+                    # get role & verify
+                    alliance_role = self.bot._get_role(
+                        self.bot.get_server(alliance))
+                    if alliance_role is None:
+                        await self.bot.send_message(self.diagnostics, "Alliance role not found on {}".format(alliance))
+                    else:
+                        await self.bot.send_message(self.diagnostics, "Alliance role found on {}".format(alliance))
+                        if user in alliance_role.members():
+                            user_alliances.append(alliance)
+
+        # for guild in self.guilds.keys():
+        #     if 'alliance' in self.guilds[guild].keys():
+        #         if user.id in self.guilds[guild]['alliance']['member_ids']:
+        #             # verify or scavenge
+        #             serv = self.bot.get_server(guild)
+        #             if serv is None:
+        #                 print('_find_alliance found no server {}'.format(guild))
+        #                 for server in bot_servers:
+        #                     if server.id == guild:
+        #                         serv = server
+        #                         print('secondary lookup found server')
+        #             if serv is not None:
+        #                 alliance_role = self._get_role(
+        #                     serv, self.guilds[serv.id]['alliance'])
+        #                 if alliance_role is None:
+        #                     # scavenge alliance role
+        #                     await self.bot.send_message(self.diagnostics, 'Alliance role not found on server: {}\nAttempt to notify owner {}'.format(guild, serv.owner_id))
+        #                 elif user in alliance_role:
+        #                     user_alliances.append(guild)
+        #                     continue
+        #                 else:
+        #                     # update member_ids
+        #                     self._update_members(serv)
 
             # keys = self.guilds[guild].keys()
             # for key in keys:
