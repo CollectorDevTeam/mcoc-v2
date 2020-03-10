@@ -280,6 +280,24 @@ class Alliance:
                         inline=False)
                 return data
 
+    @checks.owner()
+    @alliance.command(pass_context=True, hidden=True, name='scavenge')
+    async def _scavenge(self, ctx):
+        servers = self.bot.servers
+        serverids = []
+        # message = ['guildkeys          | server ids\n'
+        message = []
+        for server in servers:
+            serverids.append(server.id)
+            if server.id in self.guild.keys():
+                message.append('{} | {}'.format(server.id, server.id))
+            else:
+                message.append('Not an Alliance    | {}'.format(server.id))
+        for key in self.guilds.keys():
+            if key not in serverids:
+                message.append('{} | {}'.format(key, 'Not in CollectorVerse'))
+        await self.bot.send_message(self.diagnostics, '\n'.join(message))
+
     @alliance.command(pass_context=True, hidden=False, name='export', aliases=('awx',))
     async def _role_roster_export(self, ctx):
         '''Returns a CSV file with all Roster data for alliance members
