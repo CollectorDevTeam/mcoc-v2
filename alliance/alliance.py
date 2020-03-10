@@ -469,7 +469,7 @@ class Alliance:
                                 await self.bot.send_message(self.diagnostics, "Found alliance on bot_server crawl.")
                                 continue
                     if server is None:
-                        await self.bot.send_message(self.diagnostics, "{} guild not found in CollectorVerse"format(alliance))
+                        await self.bot.send_message(self.diagnostics, "{} guild not found in CollectorVerse".format(alliance))
                     else:
                         alliance_role = self._get_role(server, 'alliance')
                         if alliance_role is None:
