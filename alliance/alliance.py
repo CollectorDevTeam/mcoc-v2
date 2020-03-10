@@ -163,8 +163,8 @@ class Alliance:
                     data.description = 'Alliance About is not set.'
                 if 'alliance' in keys:
                     role = self._get_role(server, 'alliance')
-                    role_members = _get_members(server, role)
                     if role is not None:
+                        role_members = _get_members(server, 'alliance')
                         verbose = False
                         if ctx.message.server == server:  # on home server
                             verbose = True
