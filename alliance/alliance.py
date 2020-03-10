@@ -454,7 +454,6 @@ class Alliance:
     async def _find_alliance(self, ctx, user):
         """Returns a list of Server IDs or None"""
         user_alliances = []
-        bot_servers = self.bot.servers
 
         for alliance in self.guilds.keys():
             if "alliance" not in self.guilds[alliance]:
@@ -462,14 +461,23 @@ class Alliance:
             if "alliance" in self.guilds[alliance].keys():
                 if user.id in self.guilds[alliance]["alliance"]["member_ids"]:
                     # get role & verify
-                    alliance_role = self._get_role(
-                        self.bot.get_server(alliance), 'alliance')
-                    if alliance_role is None:
-                        await self.bot.send_message(self.diagnostics, "Alliance role not found on {}".format(alliance))
+                    server = self.bot.get_server(alliance)
+                    if server is None:
+                        for s in self.bot.servers:
+                            if alliance == s.id:
+                                server = s
+                                await self.bot.send_message(self.diagnostics, "Found alliance on bot_server crawl.")
+                                continue
+                    if server is None:
+                        await self.bot.send_message(self.diagnostics, "{} guild not found in CollectorVerse")
                     else:
-                        await self.bot.send_message(self.diagnostics, "Alliance role found on {}".format(alliance))
-                        if user in alliance_role.members():
-                            user_alliances.append(alliance)
+                        alliance_role = self._get_role(server, 'alliance')
+                        if alliance_role is None:
+                            await self.bot.send_message(self.diagnostics, "Alliance role not found on {}".format(alliance))
+                        else:
+                            await self.bot.send_message(self.diagnostics, "Alliance role found on {}".format(alliance))
+                            if user in alliance_role.members():
+                                user_alliances.append(alliance)
 
         # for guild in self.guilds.keys():
         #     if 'alliance' in self.guilds[guild].keys():
