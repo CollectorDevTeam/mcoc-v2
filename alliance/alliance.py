@@ -462,6 +462,7 @@ class Alliance:
             if "alliance" in self.guilds[alliance].keys():
                 await self.bot.send_message(self.diagnostics, "{} Alliance Guild has an 'alliance' role".format(alliance))
                 if user.id in self.guilds[alliance]["alliance"]["member_ids"]:
+                    await self.bot.send_message(self.diagnostics, "Found user {} in guild {}".format(user.id, alliance))
                     # get role & verify
                     server = self.bot.get_server(alliance)
                     if server is None:
@@ -475,9 +476,9 @@ class Alliance:
                     else:
                         alliance_role = self._get_role(server, 'alliance')
                         if alliance_role is None:
-                            await self.bot.send_message(self.diagnostics, "Alliance role not found on {}".format(alliance))
+                            await self.bot.send_message(self.diagnostics, "but Alliance role not found on {}".format(server.id))
                         else:
-                            await self.bot.send_message(self.diagnostics, "Alliance role found on {}".format(alliance))
+                            await self.bot.send_message(self.diagnostics, "but Alliance role found on {}".format(server.id))
                             if user in alliance_role.members():
                                 user_alliances.append(alliance)
 
