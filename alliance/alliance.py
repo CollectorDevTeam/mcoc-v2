@@ -541,7 +541,7 @@ class Alliance:
             if 'tag' in self.guilds[alliance].keys():
                 tag = '[{}] '.format(self.guilds[alliance]['tag'])
             if basic:
-                data = self._get_embed(ctx, alliance=alliance, color=dcolor)
+                data = self._get_embed(ctx, alliance=alliance)
                 data.title = tag+'Alliance Battlegroups:sparkles:'
                 for bg in ('bg1', 'bg2', 'bg3'):
                     if bg in battle_groups.keys() and len(battle_groups[bg]['members']) > 0:
@@ -571,14 +571,14 @@ class Alliance:
                             # await self.bot.say("Needs BG assignment\n"+package)
                 pages.append(data)
             else:
-                data = self._get_embed(ctx, alliance=alliance, color=dcolor)
+                data = self._get_embed(ctx, alliance=alliance)
                 data.title = tag + 'Alliance Quest Battlegroups:sparkles:'
                 for bg in ('bg1aq', 'bg2aq', 'bg3aq'):
                     if bg in battle_groups.keys():
                         data = await self._get_prestige(server, battle_groups[bg]['role'], verbose=True, data=data,
                                                         role_members=battle_groups[bg]['members'])
                 pages.append(data)
-                data = self._get_embed(ctx, alliance=alliance, color=dcolor)
+                data = self._get_embed(ctx, alliance=alliance)
                 data.title = tag + 'Alliance War Battlegroups:sparkles:'
                 for bg in ('bg1aw', 'bg2aw', 'bg3aw'):
                     if bg in battle_groups.keys():
@@ -606,7 +606,7 @@ class Alliance:
                 if cnt > 1:
                     overload.append(m)
             if len(overload) > 0:
-                data = self._get_embed(ctx, alliance=alliance, color=dcolor)
+                data = self._get_embed(ctx, alliance=alliance)
                 data.title = 'Overloaded Battle Groups'
                 block = '\n'.join(m.display_name for m in overload)
                 data.add_field(name='Check these user\'s roles',
