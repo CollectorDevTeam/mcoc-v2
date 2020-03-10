@@ -142,7 +142,7 @@ class Alliance:
         for alliance in alliances:
             keys = self.guilds[alliance].keys()
             server = self.bot.get_server(alliance)
-            data = self._get_embed(ctx, alliance, user.id)
+            data = self._get_embed(ctx, alliance=alliance, user_id=user.id)
             if server is not None:
                 if 'tag' in keys:
                     if 'name' in keys:
@@ -162,9 +162,9 @@ class Alliance:
                 else:
                     data.description = 'Alliance About is not set.'
                 if 'alliance' in keys:
-                    role = self._get_role(server, 'alliance')
                     if role is not None:
-                        role_members = _get_members(server, 'alliance')
+                        role_members = _get_members(
+                            server, self._get_role(server, 'alliance'))
                         verbose = False
                         if ctx.message.server == server:  # on home server
                             verbose = True
@@ -483,7 +483,7 @@ class Alliance:
         else:
             return None, '{} not found in a registered CollectorVerse Alliance.'.format(user.name)
 
-    def _get_role(self, server, role_key: str):
+    def _get_role(self, server: discord.Server, role_key: str):
         """Returns discord.Role"""
         if role_key in self.guilds[server.id].items() and self.guilds[server.id][role_key] is not None:
             for role in server.roles:
@@ -508,7 +508,8 @@ class Alliance:
             # server = ctx.message.server
             # alliance = server.id
             if 'alliance' in self.guilds[alliance].keys():
-                members = _get_members(server, 'alliance')
+                members = _get_members(
+                    server, self._get_role(server, 'alliance'))
                 if members is None:
                     members = server.members
             else:
@@ -1207,7 +1208,7 @@ def get_color(ctx):
         return ctx.message.author.color
 
 
-def _get_members(server, role):
+def _get_members(server: discord.Server, role: discord.Role):
     """Returns list of discord.server.members"""
     members = []
     for m in server.members:
