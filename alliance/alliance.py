@@ -485,7 +485,9 @@ class Alliance:
                             if alliance_role in user.roles:
                                 user_alliances.append(alliance)
                             else:
-                                for m in alliance_role.members:
+                                for m in server.members:
+                                    if alliance_role in m.roles:
+                                        # for m in alliance_role.members:
                                     if user == m:
                                         user_alliances.append(alliance)
                                         continue
