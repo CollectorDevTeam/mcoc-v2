@@ -464,7 +464,7 @@ class Alliance:
                 ctx.message.author.display_name, ctx.message.author.id, ctx.message.server.name, ctx.message.server.id))
             await self.bot.send_message(self.diagnostics, embed=data)
 
-    async def _find_alliance(self, ctx, user):
+    async def _find_alliance(self, ctx, user: discord.User):
         """Returns a list of Server IDs or None"""
         user_alliances = []
 
@@ -477,7 +477,7 @@ class Alliance:
                 if user.id in self.guilds[alliance]["alliance"]["member_ids"]:
                     user_alliances.append(alliance)
 
-        # await self.bot.send_message(self.diagnostics, user_alliances)
+        await self.bot.send_message(self.diagnostics, user_alliances)
         if len(user_alliances) > 0:
             return user_alliances, '{} found.'.format(user.name)
         else:
