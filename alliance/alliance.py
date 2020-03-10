@@ -197,8 +197,8 @@ class Alliance:
             else:
                 i = 0
             menu = PagesMenu(self.bot, timeout=120,
-                             delete_onX=True, add_pageof=True, page=i)
-            await menu.menu_start(pages=pages)
+                             delete_onX=True, add_pageof=True)
+            await menu.menu_start(pages=pages, page_number=i)
         else:
             logger.warning('No Pages to display')
             # print('alliance._show_public - no pages')
