@@ -462,8 +462,8 @@ class Alliance:
             if "alliance" in self.guilds[alliance].keys():
                 if user.id in self.guilds[alliance]["alliance"]["member_ids"]:
                     # get role & verify
-                    alliance_role = self.bot._get_role(
-                        self.bot.get_server(alliance))
+                    alliance_role = self._get_role(
+                        self.bot.get_server(alliance), 'alliance')
                     if alliance_role is None:
                         await self.bot.send_message(self.diagnostics, "Alliance role not found on {}".format(alliance))
                     else:
