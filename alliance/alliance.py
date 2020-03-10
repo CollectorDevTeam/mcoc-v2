@@ -458,6 +458,7 @@ class Alliance:
         for alliance in self.guilds.keys():
             if "alliance" not in self.guilds[alliance].keys():
                 await self.bot.send_message(self.diagnostics, "{} Alliance Guild has no 'alliance' role".format(alliance))
+                await self.bot.send_message(self.diagnostics, self.guilds[alliance].keys())
             if "alliance" in self.guilds[alliance].keys():
                 await self.bot.send_message(self.diagnostics, "{} Alliance Guild has an 'alliance' role".format(alliance))
                 if user.id in self.guilds[alliance]["alliance"]["member_ids"]:
