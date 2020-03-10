@@ -289,7 +289,7 @@ class Alliance:
         message = []
         for server in servers:
             serverids.append(server.id)
-            if server.id in self.guild.keys():
+            if server.id in self.guilds.keys():
                 message.append('{} | {}'.format(server.id, server.id))
             else:
                 message.append('Not an Alliance    | {}'.format(server.id))
