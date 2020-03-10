@@ -228,11 +228,12 @@ class Alliance:
         data.set_footer(text='CollectorDevTeam', icon_url=COLLECTOR_ICON)
         return data
 
-    async def _get_prestige(self, server, role, verbose=False,
-                            data=None, role_members: list = None):
+    async def _get_prestige(self, server: discord.Server, role: discord.Role, verbose=False,
+                            data: discord.Embed = None, role_members: list = None):
         """Return Clan Prestige and Verbose Prestige for Role members"""
-        logger.info("Retrieving prestige for role '{}' on guild '{}'".format(
-            role.name, server.name, ))
+        await self.bot.send_message(self.diagnostics, "_get_prestige for role: {} on guild: {}".format(role.id, server.id))
+        # logger.info("Retrieving prestige for role '{}' on guild '{}'".format(
+        #     role.name, server.name, ))
         # members = []
         line_out = {}
         # line_out = []
