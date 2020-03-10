@@ -162,13 +162,14 @@ class Alliance:
                 else:
                     data.description = 'Alliance About is not set.'
                 if 'alliance' in keys:
-                    if role is not None:
-                        role_members = _get_members(
-                            server, self._get_role(server, 'alliance'))
+                    alliance_role = self._get_role(server, 'alliance')
+
+                    if alliance_role is not None:
+                        role_members = _get_members(server, alliance_role)
                         verbose = False
                         if ctx.message.server == server:  # on home server
                             verbose = True
-                        data = await self._get_prestige(server=server, role=role, verbose=verbose,
+                        data = await self._get_prestige(server=server, role=alliance_role, verbose=verbose,
                                                         data=data, role_members=role_members)
                         # data.add_field(name='Alliance Prestige', value=clan_prestige)
                 else:
