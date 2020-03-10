@@ -280,7 +280,7 @@ class Alliance:
                         inline=False)
                 return data
 
-    @checks.owner()
+    @checks.is_owner()
     @alliance.command(pass_context=True, hidden=True, name='scavenge')
     async def _scavenge(self, ctx):
         servers = self.bot.servers
