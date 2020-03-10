@@ -296,9 +296,10 @@ class Alliance:
         for key in self.guilds.keys():
             if key not in serverids:
                 message.append('{} | {}'.format(key, 'Not in CollectorVerse'))
-        pages = chat.pagify('\n'.join(message))
+        pages = chat.pagify(sorted('\n'.join(message)))
+        header = 'Alliance Guilds    | CollectorVerse Guilds\n'
         for page in pages:
-            await self.bot.send_message(self.diagnostics, page)
+            await self.bot.send_message(self.diagnostics, chat.box(header+page))
 
     @alliance.command(pass_context=True, hidden=False, name='export', aliases=('awx',))
     async def _role_roster_export(self, ctx):
