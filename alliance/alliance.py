@@ -296,9 +296,10 @@ class Alliance:
         for key in self.guilds.keys():
             if key not in serverids:
                 message.append('{} | {}'.format(key, 'Not in CollectorVerse'))
-        pages = chat.pagify(sorted('\n'.join(message)))
-        header = 'Alliance Guilds    | CollectorVerse Guilds\n'
+        pages = chat.pagify('\n'.join(sorted(message)))
+        header = '```Alliance Guilds    | CollectorVerse Guilds```'
         for page in pages:
+            # await self.bot.send_message(self.diagnostics, header)
             await self.bot.send_message(self.diagnostics, chat.box(header+page))
 
     @alliance.command(pass_context=True, hidden=False, name='export', aliases=('awx',))
