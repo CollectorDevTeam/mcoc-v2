@@ -481,7 +481,8 @@ class Alliance:
                         if alliance_role is None:
                             await self.bot.send_message(self.diagnostics, "but Alliance role not found on {}".format(server.id))
                         else:
-                            if user in alliance_role.members:
+                            # if user in alliance_role.members:
+                            if alliance_role in user.roles:
                                 user_alliances.append(alliance)
                             else:
                                 for m in alliance_role.members:
