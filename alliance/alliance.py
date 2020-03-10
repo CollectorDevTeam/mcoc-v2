@@ -474,8 +474,10 @@ class Alliance:
                     if server is None:
                         await self.bot.send_message(self.diagnostics, "{} guild not found in CollectorVerse".format(alliance))
                     else:
-                        alliance_role = server.get_role(alliance)
-
+                        for role in server.roles:
+                            if role.id == alliance:
+                                alliance_role = role
+                                continue
                         if alliance_role is None:
                             await self.bot.send_message(self.diagnostics, "but Alliance role not found on {}".format(server.id))
                         else:
