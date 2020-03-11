@@ -322,7 +322,7 @@ class Alliance:
                                    'name': alliance_role.name,
                                    'member_ids': member_ids,
                                    'member_names': member_names}
-                        self._update_guilds(ctx,  'alliance', package)
+                        self._update_guilds(ctx, 'alliance', package)
                         good_alliance += 1
                     else:
                         bad_alliance_role += 1
@@ -333,6 +333,7 @@ class Alliance:
                 abandoned_server += 1
                 message.append('{} | {}'.format(key, 'Not in CollectorVerse'))
                 self.guilds.pop(key, None)
+                dataIO.save_json(self.alliances, self.guilds)
                 deleted += 1
         pages = chat.pagify('\n'.join(sorted(message)))
         header = '```Alliance Guilds    | CollectorVerse Guilds```'
