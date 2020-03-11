@@ -329,7 +329,7 @@ class Alliance:
             # else:
                 # message.append('Not an Alliance    | {}'.format(server.id))
         guildkeys = self.guilds.keys()
-        for key in guildskeys:
+        for key in guildkeys:
             if key not in serverids:
                 abandoned_server += 1
                 message.append('{} | {}'.format(key, 'Not in CollectorVerse'))
