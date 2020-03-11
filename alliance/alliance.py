@@ -300,7 +300,7 @@ class Alliance:
         servers = self.bot.servers
         serverids = []
         good_alliance = 0
-        bad_alliance = 0
+        bad_alliance_role = 0
         abandoned_server = 0
         deleted = 0
         # message = ['guildkeys          | server ids\n'
