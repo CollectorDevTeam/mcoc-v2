@@ -328,14 +328,16 @@ class Alliance:
                         bad_alliance_role += 1
             # else:
                 # message.append('Not an Alliance    | {}'.format(server.id))
-        guildkeys = self.guilds.keys()
-        for key in guildkeys:
+        kill_list = []
+        for key in self.guilds.keys():
             if key not in serverids:
                 abandoned_server += 1
                 message.append('{} | {}'.format(key, 'Not in CollectorVerse'))
-                self.guilds.pop(key, None)
-                deleted += 1
-                dataIO.save_json(self.alliances, self.guilds)
+                kill_list.append(key)
+        for key in kill_list:
+            self.guilds.pop(key, None)
+            deleted += 1
+        dataIO.save_json(self.alliances, self.guilds)
         pages = chat.pagify('\n'.join(sorted(message)))
         header = '```Alliance Guilds    | CollectorVerse Guilds```'
         for page in pages:
