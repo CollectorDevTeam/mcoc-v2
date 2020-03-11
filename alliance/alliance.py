@@ -343,7 +343,7 @@ class Alliance:
         for page in pages:
             await self.bot.send_message(self.diagnostics, header)
             await self.bot.send_message(self.diagnostics, chat.box(page))
-        await self.bot.say("Good Alliances: {}\nBad Alliances: {}\nAbandoned Servers Deleted: {}\nTotal Servers: {}".format(good_alliance, abandoned_server, len(servers)))
+        await self.bot.say("Good Alliances: {}\nBad Alliances: {}\nAbandoned Servers Deleted: {}\nTotal Servers: {}".format(good_alliance, bad_alliance_role, abandoned_server, len(servers)))
 
     @alliance.command(pass_context=True, hidden=False, name='export', aliases=('awx',))
     async def _role_roster_export(self, ctx):
