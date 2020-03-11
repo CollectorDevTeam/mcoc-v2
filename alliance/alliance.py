@@ -309,23 +309,23 @@ class Alliance:
             serverids.append(server.id)
             if server.id in self.guilds.keys():
                 message.append('{} | {}'.format(server.id, server.id))
-            if "alliance" in self.guilds[server.id].keys():
-                alliance_role = self._get_role(server, 'alliance')
-                if alliance_role is not None:
-                    member_names = []
-                    member_ids = []
-                    for m in server.members:
-                        if alliance_role in m.roles:
-                            member_names.append(m.display_name)
-                            member_ids.append(m.id)
-                    package = {'id': role.id,
-                               'name': role.name,
-                               'member_ids': member_ids,
-                               'member_names': member_names}
-                    self._update_guilds(ctx,  'alliance', package)
-                    good_alliance += 1
-                else:
-                    bad_alliance_role += 1
+                if "alliance" in self.guilds[server.id].keys():
+                    alliance_role = self._get_role(server, 'alliance')
+                    if alliance_role is not None:
+                        member_names = []
+                        member_ids = []
+                        for m in server.members:
+                            if alliance_role in m.roles:
+                                member_names.append(m.display_name)
+                                member_ids.append(m.id)
+                        package = {'id': role.id,
+                                   'name': role.name,
+                                   'member_ids': member_ids,
+                                   'member_names': member_names}
+                        self._update_guilds(ctx,  'alliance', package)
+                        good_alliance += 1
+                    else:
+                        bad_alliance_role += 1
             # else:
                 # message.append('Not an Alliance    | {}'.format(server.id))
         for key in self.guilds.keys():
