@@ -326,7 +326,7 @@ class Alliance:
                                    'member_names': member_names}
                         self._update_guilds(ctx, 'alliance', package)
                         dataIO.save_json(self.alliances, self.guilds)
-                        await self.send_message(self.diagnostics, "Server {} has been updated.".format(server.id))
+                        await self.bot.send_message(self.diagnostics, "Server {} has been updated.".format(server.id))
                         good_alliance += 1
                     else:
                         bad_alliance_role += 1
