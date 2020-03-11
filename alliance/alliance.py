@@ -231,7 +231,7 @@ class Alliance:
         return data
 
     async def _get_prestige(self, server: discord.Server, role: discord.Role, verbose=False,
-                            data: discord.Embed = None, role_members: list = None):
+                            data: discord.Embed = None):
         """Return Clan Prestige and Verbose Prestige for Role members"""
         await self.bot.send_message(self.diagnostics, "_get_prestige for role: {} on guild: {}".format(role.id, server.id))
         # logger.info("Retrieving prestige for role '{}' on guild '{}'".format(
@@ -242,13 +242,10 @@ class Alliance:
         width = 20
         prestige = 0
         cnt = 0
-        if role_members is None:
-            for member in server.members:
-                if role in member.roles:
-                    role_members.append(member)
-        if len(role_members) > 0:
-            for member in role_members:
-                # members.append(member)
+        role_members = []
+        for member in server.members:
+            if role in member.roles:
+                role_members.append(member)
                 roster = ChampionRoster(self.bot, member)
                 await roster.load_champions(silent=True)
                 if roster.prestige > 0:
