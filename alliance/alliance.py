@@ -243,6 +243,7 @@ class Alliance:
         prestige = 0
         cnt = 0
         if role_members is None:
+            role_members = []
             for member in server.members:
                 if role in member.roles:
                     role_members.append(member)
