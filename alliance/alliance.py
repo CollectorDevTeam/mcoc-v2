@@ -335,7 +335,7 @@ class Alliance:
                 message.append('{} | {}'.format(key, 'Not in CollectorVerse'))
                 self.guilds.pop(key, None)
                 deleted += 1
-        dataIO.save_json(self.alliances, self.guilds)
+                dataIO.save_json(self.alliances, self.guilds)
         pages = chat.pagify('\n'.join(sorted(message)))
         header = '```Alliance Guilds    | CollectorVerse Guilds```'
         for page in pages:
