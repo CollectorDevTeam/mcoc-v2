@@ -318,7 +318,7 @@ class Alliance:
                             if alliance_role in m.roles:
                                 member_names.append(m.display_name)
                                 member_ids.append(m.id)
-                        package = {'id': role.id,
+                        package = {'id': alliance_role.id,
                                    'name': role.name,
                                    'member_ids': member_ids,
                                    'member_names': member_names}
