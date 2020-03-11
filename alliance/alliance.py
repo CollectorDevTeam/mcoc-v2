@@ -300,27 +300,46 @@ class Alliance:
         servers = self.bot.servers
         serverids = []
         good_alliance = 0
+        bad_alliance = 0
         abandoned_server = 0
+        deleted = 0
         # message = ['guildkeys          | server ids\n'
         message = []
         for server in servers:
             serverids.append(server.id)
             if server.id in self.guilds.keys():
                 message.append('{} | {}'.format(server.id, server.id))
+            if "alliance" in self.guilds[server.id].keys():
+                alliance_role = self._get_role(server, 'alliance')
+                if alliance_role is not None:
+                    member_names = []
+                    member_ids = []
+                    for m in server.members:
+                        if alliance_role in m.roles:
+                            member_names.append(m.display_name)
+                            member_ids.append(m.id)
+                    package = {'id': role.id,
+                               'name': role.name,
+                               'member_ids': member_ids,
+                               'member_names': member_names}
+                    self._update_guilds(ctx,  'alliance', package)
+                    good_alliance += 1
+                else:
+                    bad_alliance_role += 1
             # else:
                 # message.append('Not an Alliance    | {}'.format(server.id))
         for key in self.guilds.keys():
             if key not in serverids:
                 abandoned_server += 1
                 message.append('{} | {}'.format(key, 'Not in CollectorVerse'))
-            else:
-                good_alliance += 1
+                self.guilds.pop(key, None)
+                deleted += 1
         pages = chat.pagify('\n'.join(sorted(message)))
         header = '```Alliance Guilds    | CollectorVerse Guilds```'
         for page in pages:
             await self.bot.send_message(self.diagnostics, header)
             await self.bot.send_message(self.diagnostics, chat.box(page))
-        await self.bot.say("Good Alliances: {}\nAbandoned Servers: {}\nTotal Servers: {}".format(good_alliance, abandoned_server, len(servers)))
+        await self.bot.say("Good Alliances: {}\nBad Alliances: {}\nAbandoned Servers Deleted: {}\nTotal Servers: {}".format(good_alliance, abandoned_server, len(servers)))
 
     @alliance.command(pass_context=True, hidden=False, name='export', aliases=('awx',))
     async def _role_roster_export(self, ctx):
