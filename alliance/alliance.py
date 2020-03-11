@@ -487,9 +487,10 @@ class Alliance:
 
     def _get_role(self, server: discord.Server, role_key: str):
         """Returns discord.Role"""
-        if role_key in self.guilds[server.id].items() and self.guilds[server.id][role_key] is not None:
+        if role_key in self.guilds[server.id].keys() and self.guilds[server.id][role_key] is not None:
             for role in server.roles:
                 if role.id == self.guilds[server.id][role_key]['id']:
+                    await self.bot.send_message(self.diagnostics, "_get_role found role")
                     return role
         return None
 
