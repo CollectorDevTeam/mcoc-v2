@@ -296,7 +296,7 @@ class Alliance:
 
     @checks.is_owner()
     @alliance.command(pass_context=True, hidden=True, name='scavenge')
-    async def _scavenge(self, ctx):
+    async def _scavenge(self, ctx, server=None):
         servers = self.bot.servers
         serverids = []
         good_alliance = 0
@@ -305,6 +305,8 @@ class Alliance:
         deleted = 0
         # message = ['guildkeys          | server ids\n'
         message = []
+        if server is not None:
+            servers = [self.bot.get_server(server)]
         for server in servers:
             serverids.append(server.id)
             if server.id in self.guilds.keys():
@@ -323,6 +325,8 @@ class Alliance:
                                    'member_ids': member_ids,
                                    'member_names': member_names}
                         self._update_guilds(ctx, 'alliance', package)
+                        dataIO.save_json(self.alliances, self.guilds)
+                        await self.send_message(self.diagnostics, "Server {} has been updated.".format(server.id))
                         good_alliance += 1
                     else:
                         bad_alliance_role += 1
