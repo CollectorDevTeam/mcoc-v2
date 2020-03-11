@@ -231,7 +231,7 @@ class Alliance:
         return data
 
     async def _get_prestige(self, server: discord.Server, role: discord.Role, verbose=False,
-                            data: discord.Embed = None):
+                            data: discord.Embed = None, role_members=None):
         """Return Clan Prestige and Verbose Prestige for Role members"""
         await self.bot.send_message(self.diagnostics, "_get_prestige for role: {} on guild: {}".format(role.id, server.id))
         # logger.info("Retrieving prestige for role '{}' on guild '{}'".format(
@@ -242,55 +242,56 @@ class Alliance:
         width = 20
         prestige = 0
         cnt = 0
-        role_members = []
-        for member in server.members:
-            if role in member.roles:
-                role_members.append(member)
-                roster = ChampionRoster(self.bot, member)
-                await roster.load_champions(silent=True)
-                if roster.prestige > 0:
-                    prestige += roster.prestige
-                    cnt += 1
-                temp_line = '{:{width}} p = {}'.format(
-                    member.display_name, int(roster.prestige), width=width)
-                # print(temp_line)
-                # line_out.append(temp_line)
-                line_out.update({roster.prestige: temp_line})
-            joined = '\n'.join(v for k, v in line_out.items())
-            # verbose_prestige = '```{}```'.format('\n'.join(line_out))
-            verbose_prestige = '```{}```'.format(joined)
-            # line_out.append('_' * (width + 11))
-            clan_prestige = 0
-            summary = 0
-            if cnt > 0:
-                summary = '{0:{width}}   = {1} from {2}/{3} members'.format(
-                    role.name, round(prestige / cnt, 0), cnt, len(role_members), width=width)
-                clan_prestige = int(round(prestige / cnt, 0))
-                # print("Prestige:  ", clan_prestige)
-            if data is None:
-                if len(role_members) == 0 or len(role_members) > 30:
-                    return None
-                elif verbose:
-                    return verbose_prestige
-                else:
-                    return clan_prestige
+        if role_members is None:
+            for member in server.members:
+                if role in member.roles:
+                    role_members.append(member)
+        for member in role_members:
+            roster = ChampionRoster(self.bot, member)
+            await roster.load_champions(silent=True)
+            if roster.prestige > 0:
+                prestige += roster.prestige
+                cnt += 1
+            temp_line = '{:{width}} p = {}'.format(
+                member.display_name, int(roster.prestige), width=width)
+            # print(temp_line)
+            # line_out.append(temp_line)
+            line_out.update({roster.prestige: temp_line})
+        joined = '\n'.join(v for k, v in line_out.items())
+        # verbose_prestige = '```{}```'.format('\n'.join(line_out))
+        verbose_prestige = '```{}```'.format(joined)
+        # line_out.append('_' * (width + 11))
+        clan_prestige = 0
+        summary = 0
+        if cnt > 0 and <= 30:
+            summary = '{0:{width}}   = {1} from {2}/{3} members'.format(
+                role.name, round(prestige / cnt, 0), cnt, len(role_members), width=width)
+            clan_prestige = int(round(prestige / cnt, 0))
+            # print("Prestige:  ", clan_prestige)
+        if data is None:
+            if len(role_members) == 0 or len(role_members) > 30:
+                return None
+            elif verbose:
+                return verbose_prestige
             else:
-                if verbose and len(role_members) <= 30:
-                    data.add_field(name='{} [{}/{}] prestige: {}'
-                                   .format(role.name, cnt, len(role_members), clan_prestige),
-                                   value=verbose_prestige, inline=False)
-                elif verbose:
-                    data.add_field(
-                        name='{} prestige {}'.format(role.name, clan_prestige),
-                        value=summary + '\n\nVerbose prestige details '
-                        'restricted for roles with more than 30 members.',
-                        inline=False)
-                else:
-                    data.add_field(
-                        name='{} prestige {}'.format(role.name, clan_prestige),
-                        value=summary,
-                        inline=False)
-                return data
+                return clan_prestige
+        else:
+            if verbose and len(role_members) <= 30:
+                data.add_field(name='{} [{}/{}] prestige: {}'
+                               .format(role.name, cnt, len(role_members), clan_prestige),
+                               value=verbose_prestige, inline=False)
+            elif verbose:
+                data.add_field(
+                    name='{} prestige {}'.format(role.name, clan_prestige),
+                    value=summary + '\n\nVerbose prestige details '
+                    'restricted for roles with more than 30 members.',
+                    inline=False)
+            else:
+                data.add_field(
+                    name='{} prestige {}'.format(role.name, clan_prestige),
+                    value=summary,
+                    inline=False)
+            return data
 
     @checks.is_owner()
     @alliance.command(pass_context=True, hidden=True, name='scavenge')
@@ -548,7 +549,7 @@ class Alliance:
                 for bg in ('bg1', 'bg2', 'bg3'):
                     if bg in battle_groups.keys() and len(battle_groups[bg]['members']) > 0:
                         data = await self._get_prestige(server, battle_groups[bg]['role'], verbose=True,
-                                                        data=data, role_members=battle_groups[bg]['members'])
+                                                        data=data)
                     elif bg in battle_groups.keys() and len(battle_groups[bg]['members']) == 0:
                         data.description = 'Battlegroup {} has no members assigned'.format(
                             bg)
@@ -577,15 +578,13 @@ class Alliance:
                 data.title = tag + 'Alliance Quest Battlegroups:sparkles:'
                 for bg in ('bg1aq', 'bg2aq', 'bg3aq'):
                     if bg in battle_groups.keys():
-                        data = await self._get_prestige(server, battle_groups[bg]['role'], verbose=True, data=data,
-                                                        role_members=battle_groups[bg]['members'])
+                        data = await self._get_prestige(server, battle_groups[bg]['role'], verbose=True, data=data)
                 pages.append(data)
                 data = self._get_embed(ctx, alliance=alliance)
                 data.title = tag + 'Alliance War Battlegroups:sparkles:'
                 for bg in ('bg1aw', 'bg2aw', 'bg3aw'):
                     if bg in battle_groups.keys():
-                        data = await self._get_prestige(server, battle_groups[bg]['role'], verbose=True, data=data,
-                                                        role_members=battle_groups[bg]['members'])
+                        data = await self._get_prestige(server, battle_groups[bg]['role'], verbose=True, data=data)
                 pages.append(data)
             overload = []
             for m in members:
