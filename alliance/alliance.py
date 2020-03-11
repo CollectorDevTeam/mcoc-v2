@@ -163,14 +163,15 @@ class Alliance:
                     data.description = 'Alliance About is not set.'
                 if 'alliance' in keys:
                     alliance_role = self._get_role(server, 'alliance')
-
-                    if alliance_role is not None:
-                        role_members = _get_members(server, alliance_role)
+                    if alliance_role is None:
+                        await self.bot.send_message(self.diagnostics, 'Alliance role not found')
+                    else:
+                        # role_members = _get_members(server, alliance_role)
                         verbose = False
                         if ctx.message.server == server:  # on home server
                             verbose = True
                         data = await self._get_prestige(server=server, role=alliance_role, verbose=verbose,
-                                                        data=data, role_members=role_members)
+                                                        data=data)
                         # data.add_field(name='Alliance Prestige', value=clan_prestige)
                 else:
                     data.add_field(name='⚠ Alliance Role ⚠',
