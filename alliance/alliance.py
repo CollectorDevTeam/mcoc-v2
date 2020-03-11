@@ -490,7 +490,7 @@ class Alliance:
         if role_key in self.guilds[server.id].keys() and self.guilds[server.id][role_key] is not None:
             for role in server.roles:
                 if role.id == self.guilds[server.id][role_key]['id']:
-                    await self.bot.send_message(self.diagnostics, "_get_role found role")
+                    print("_get_role found role")
                     return role
         return None
 
