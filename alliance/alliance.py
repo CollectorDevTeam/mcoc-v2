@@ -299,22 +299,28 @@ class Alliance:
     async def _scavenge(self, ctx):
         servers = self.bot.servers
         serverids = []
+        good_alliance = 0
+        abandoned_server = 0
         # message = ['guildkeys          | server ids\n'
         message = []
         for server in servers:
             serverids.append(server.id)
             if server.id in self.guilds.keys():
                 message.append('{} | {}'.format(server.id, server.id))
-            else:
-                message.append('Not an Alliance    | {}'.format(server.id))
+            # else:
+                # message.append('Not an Alliance    | {}'.format(server.id))
         for key in self.guilds.keys():
             if key not in serverids:
+                abandoned_server += 1
                 message.append('{} | {}'.format(key, 'Not in CollectorVerse'))
+            else:
+                good_alliance += 1
         pages = chat.pagify('\n'.join(sorted(message)))
         header = '```Alliance Guilds    | CollectorVerse Guilds```'
         for page in pages:
             await self.bot.send_message(self.diagnostics, header)
             await self.bot.send_message(self.diagnostics, chat.box(page))
+        await self.bot.say("Good Alliances: {}\nAbandoned Servers: {}\nTotal Servers: {}".format(good_alliance, abandoned_server, len(servers)))
 
     @alliance.command(pass_context=True, hidden=False, name='export', aliases=('awx',))
     async def _role_roster_export(self, ctx):
