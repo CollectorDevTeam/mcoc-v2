@@ -263,7 +263,7 @@ class Alliance:
         # line_out.append('_' * (width + 11))
         clan_prestige = 0
         summary = 0
-        if cnt > 0 and <= 30:
+        if cnt > 0 and cnt <= 30:
             summary = '{0:{width}}   = {1} from {2}/{3} members'.format(
                 role.name, round(prestige / cnt, 0), cnt, len(role_members), width=width)
             clan_prestige = int(round(prestige / cnt, 0))
