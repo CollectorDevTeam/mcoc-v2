@@ -1055,10 +1055,15 @@ class Alliance:
         data.set_footer(text='CollectorDevTeam', icon_url=COLLECTOR_ICON)
         return data
 
-    async def _update_role(self, ctx, key, role: discord.Role):
+    async def _update_role(self, ctx, key, role: None):
         """For a given context, key, and role, search message server for role and set role for that alliance key"""
         server = ctx.message.server
-        print("update: ", server.name, role.name)
+        # if role is not None:
+        #     print("update: ", server.name, role.name)
+        data = discord.Embed(colour=get_color(
+            ctx), title='Role Registration:sparkles:')
+        if role == "None":
+            role = None
         if server.id not in self.guilds:
             return _unknown_guild(ctx)
         if role is not None and role.name == '@everyone':
@@ -1067,9 +1072,7 @@ class Alliance:
             data.description = 'The ``@everyone`` role is prohibited from ' \
                                'being set as an alliance role.'
             return data
-        data = discord.Embed(colour=get_color(
-            ctx), title='Role Registration:sparkles:')
-        if role is None:
+        elif role is None:
             question = '{}, do you want to remove this ``{}`` registration?'.format(
                 ctx.message.author.mention, key)
             answer, confirmation = await PagesMenu.confirm(self, ctx, question)
