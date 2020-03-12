@@ -335,9 +335,10 @@ class Alliance:
                 await self.send_message(self.diagnostics, "Updating members in server "+key)
                 self._update_members(test)
 
-        for key in kill_list:
-            self.guilds.pop(key, None)
-        dataIO.save_json(self.alliances, self.guilds)
+        if len(kill_list) > 0:
+            for k in kill_list:
+                self.guilds.pop(k, None)
+            dataIO.save_json(self.alliances, self.guilds)
         pages = chat.pagify('\n'.join(sorted(message)))
         header = '```Alliance Guilds    | found y/n  | status ```'
         for page in pages:
@@ -497,12 +498,11 @@ class Alliance:
     async def _find_alliance(self, ctx, user: discord.User):
         """Returns a list of Server IDs or None"""
         user_alliances = []
-        guildkeys = self.guilds.keys()
-        for alliance in guildkeys:
+        poplist = []
+        for alliance in self.guilds.keys():
             server = self.bot.get_server(alliance)
             if server is None:
-                self.guilds.pop(alliance)
-                dataIO.save_json(self.alliances, self.guilds)
+                poplist.append(alliance)
                 await self.bot.send_message(self.diagnostics, "find_alliance not-CollectorVerse {}: popped".format(alliance))
             else:
                 self._update_members(server)
@@ -510,6 +510,10 @@ class Alliance:
                     # await self.bot.send_message(self.diagnostics, "{} Alliance Guild has an 'alliance' role".format(alliance))
                     if user.id in self.guilds[alliance]["alliance"]["member_ids"]:
                         user_alliances.append(alliance)
+        if len(poplist) > 0:
+            for a in poplist:
+                self.guilds.pop(a, None)
+            dataIO.save_json(self.alliances, self.guilds)
 
         # await self.bot.send_message(self.diagnostics, user_alliances)
         if len(user_alliances) > 0:
@@ -1123,7 +1127,7 @@ class Alliance:
                     self.guilds[server.id].update({key: package})
                     continue
                 elif role is None:
-                    self.guilds[server.id].pop(key)
+                    self.guilds[server.id].pop(key, None)
         dataIO.save_json(self.alliances, self.guilds)
         print('Debug: Alliance details refreshed')
         return
