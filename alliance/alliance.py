@@ -496,8 +496,13 @@ class Alliance:
     async def _find_alliance(self, ctx, user: discord.User):
         """Returns a list of Server IDs or None"""
         user_alliances = []
-
         for alliance in self.guilds.keys():
+            server = self.bot.get_server()
+            if server is None:
+                self.guilds.pop(alliance)
+                await self.bot.send_message(self.diagnostics, "find_alliance Unregisterd Alliance : popped")
+            else:
+                self._update_members(server)
             # if "alliance" not in self.guilds[alliance].keys():
             # await self.bot.send_message(self.diagnostics, "{} Alliance Guild has no 'alliance' role".format(alliance))
             # await self.bot.send_message(self.diagnostics, self.guilds[alliance].keys())
