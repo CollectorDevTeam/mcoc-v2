@@ -43,7 +43,7 @@ class Alliance:
         self.info_keys = ('name', 'tag', 'type', 'about',
                           'started', 'invite', 'poster', 'wartool')
         self.service_file = "data/mcoc/mcoc_service_creds.json"
-        self.diagnostics_channel = self.bot.get_channel('565254324595326996')
+        self.diagnostics_channel = '565254324595326996'
 
     @commands.command(pass_context=True, no_pm=True, hidden=True)
     async def lanes(self, ctx, user: discord.Member = None):
