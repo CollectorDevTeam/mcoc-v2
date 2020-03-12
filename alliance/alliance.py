@@ -500,18 +500,15 @@ class Alliance:
             server = self.bot.get_server(alliance)
             if server is None:
                 self.guilds.pop(alliance)
-                await self.bot.send_message(self.diagnostics, "find_alliance Unregisterd Alliance : popped")
+                await self.bot.send_message(self.diagnostics, "find_alliance Unregisterd Alliance {}: popped".format(alliance))
             else:
                 self._update_members(server)
-            # if "alliance" not in self.guilds[alliance].keys():
-            # await self.bot.send_message(self.diagnostics, "{} Alliance Guild has no 'alliance' role".format(alliance))
-            # await self.bot.send_message(self.diagnostics, self.guilds[alliance].keys())
-            if "alliance" in self.guilds[alliance].keys():
-                # await self.bot.send_message(self.diagnostics, "{} Alliance Guild has an 'alliance' role".format(alliance))
-                if user.id in self.guilds[alliance]["alliance"]["member_ids"]:
-                    user_alliances.append(alliance)
+                if "alliance" in self.guilds[alliance].keys():
+                    # await self.bot.send_message(self.diagnostics, "{} Alliance Guild has an 'alliance' role".format(alliance))
+                    if user.id in self.guilds[alliance]["alliance"]["member_ids"]:
+                        user_alliances.append(alliance)
 
-        await self.bot.send_message(self.diagnostics, user_alliances)
+        # await self.bot.send_message(self.diagnostics, user_alliances)
         if len(user_alliances) > 0:
             return user_alliances, '{} found.'.format(user.name)
         else:
