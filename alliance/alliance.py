@@ -505,17 +505,17 @@ class Alliance:
             else:
                 # self._update_members(server)
                 if "alliance" in self.guilds[alliance].keys():
-                    # await self.diagnostics("{} Alliance Guild has an 'alliance' role".format(alliance))
                     if user.id in self.guilds[alliance]["alliance"]["member_ids"]:
                         user_alliances.append(alliance)
+                        await self.diagnostics("{} found in {} members".format(user.id, alliance))
         if len(poplist) > 0:
             for a in poplist:
                 self.guilds.pop(a, None)
-            dataIO.save_json(self.alliances, self.guilds)
+        dataIO.save_json(self.alliances, self.guilds)
 
         # await self.diagnostics(user_alliances)
         if len(user_alliances) > 0:
-            return user_alliances, '{} found.'.format(user.name)
+            return user_alliances, None
         else:
             return None, '{} not found in a registered CollectorVerse Alliance.'.format(user.name)
 
