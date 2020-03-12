@@ -504,6 +504,10 @@ class Alliance:
                 await self.diagnostics("find_alliance not-CollectorVerse {}: popped".format(alliance))
             else:
                 # self._update_members(server)
+                if "alliance" not in self.guilds[alliance].keys():
+                    for r in server.roles:
+                        if r.name == 'alliance':
+                            self._update_role(ctx, 'alliance', r)
                 if "alliance" in self.guilds[alliance].keys():
                     if user.id in self.guilds[alliance]["alliance"]["member_ids"]:
                         user_alliances.append(alliance)
@@ -1050,7 +1054,7 @@ class Alliance:
         data.set_footer(text='CollectorDevTeam', icon_url=COLLECTOR_ICON)
         return data
 
-    async def _update_role(self, ctx, key, role):
+    async def _update_role(self, ctx, key, role: discord.Role):
         """For a given context, key, and role, search message server for role and set role for that alliance key"""
         server = ctx.message.server
         print("update: ", server.name, role.name)
