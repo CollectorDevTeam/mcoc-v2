@@ -500,7 +500,7 @@ class Alliance:
             server = self.bot.get_server(alliance)
             if server is None:
                 self.guilds.pop(alliance)
-                await self.bot.send_message(self.diagnostics, "find_alliance Unregisterd Alliance {}: popped".format(alliance))
+                await self.bot.send_message(self.diagnostics, "find_alliance not-CollectorVerse {}: popped".format(alliance))
             else:
                 self._update_members(server)
                 if "alliance" in self.guilds[alliance].keys():
