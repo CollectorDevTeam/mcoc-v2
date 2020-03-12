@@ -497,7 +497,7 @@ class Alliance:
         """Returns a list of Server IDs or None"""
         user_alliances = []
         for alliance in self.guilds.keys():
-            server = self.bot.get_server()
+            server = self.bot.get_server(alliance)
             if server is None:
                 self.guilds.pop(alliance)
                 await self.bot.send_message(self.diagnostics, "find_alliance Unregisterd Alliance : popped")
