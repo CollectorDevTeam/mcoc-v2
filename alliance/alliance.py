@@ -234,7 +234,7 @@ class Alliance:
     async def _get_prestige(self, server: discord.Server, role: discord.Role, verbose=False,
                             data: discord.Embed = None, role_members=None):
         """Return Clan Prestige and Verbose Prestige for Role members"""
-        await self.diagnostics("_get_prestige for role: {} on guild: {}".format(role.id, server.id))
+        # await self.diagnostics("_get_prestige for role: {} on guild: {}".format(role.id, server.id))
         # logger.info("Retrieving prestige for role '{}' on guild '{}'".format(
         #     role.name, server.name, ))
         # members = []
