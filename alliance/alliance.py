@@ -97,7 +97,7 @@ class Alliance:
         """
         # server = ctx.message.server
         print('debug: alliance group')
-        # self._update_members(ctx.message.server)
+        # self._update_members(ctx, ctx.message.server)
 
         if ctx.invoked_subcommand is None:
             if user is None:
@@ -137,7 +137,7 @@ class Alliance:
             return
         else:
             for alliance in alliances:
-                self._update_members(self.bot.get_server(alliance))
+                self._update_members(ctx, self.bot.get_server(alliance))
         alliances, message = await self._find_alliance(ctx, user)
         if alliances is not None:
             for alliance in alliances:
@@ -324,14 +324,15 @@ class Alliance:
                             await self.diagnostics("'alliance' = {} role found for server {}".format(r.id, key))
                             message.append('{} | {}'.format(
                                 key, 'found      | setting alliance id = {}'.format(r.id)))
-                            self._update_role(ctx, 'alliance', r)
+                            # self._update_role(ctx, 'alliance', r)
+                            self._get_role_members(ctx, server, r, "alliance")
                             break
                     if 'alliance' not in self.guilds[key].keys():
                         message.append('{} | {}'.format(
                             key, 'not found  | alliance undefined'))
 
                 await self.diagnostics("Updating members in server "+key)
-                self._update_members(server)
+                self._update_members(ctx, server)
 
         if len(kill_list) > 0:
             for k in kill_list:
@@ -503,11 +504,12 @@ class Alliance:
                 poplist.append(alliance)
                 await self.diagnostics("find_alliance not-CollectorVerse {}: popped".format(alliance))
             else:
-                # self._update_members(server)
+                # self._update_members(ctx, server)
                 if "alliance" not in self.guilds[alliance].keys():
                     for r in server.roles:
                         if r.name == 'alliance':
-                            self._update_role(ctx, 'alliance', r)
+                            # self._update_role(ctx, 'alliance', r)
+                            self._get_role_members(ctx, server, r, "alliance")
                             await self.diagnostics("find_alliance 'alliance' role found, updated guild")
                 if "alliance" in self.guilds[alliance].keys():
                     if user.id in self.guilds[alliance]["alliance"]["member_ids"]:
@@ -1082,27 +1084,7 @@ class Alliance:
                 data.add_field(name="Congrats!:sparkles:",
                                value="You have unregistered ``{}`` from your Alliance.".format(key))
         else:
-            member_names = []
-            member_ids = []
-            for m in server.members:
-                if role in m.roles:
-                    member_names.append(m.display_name)
-                    member_ids.append(m.id)
-            package = {'id': role.id,
-                       'name': role.name,
-                       'member_ids': member_ids,
-                       'member_names': member_names}
-            if key in ('bg1', 'bg2', 'bg3', 'bg1aw', 'bg1aq', 'bg2aw', 'bg2aq', 'bg3aw', 'bg3aq'):
-                if len(member_ids) > 10:
-                    data.add_field(name=':warning: Warning - Overloaded Battlegroup:',
-                                   value='Battlegroups are limited to 10 members. '
-                                         'Check your {} assignments'.format(role.name))
-            elif key == 'alliance':
-                if len(member_ids) > 30:
-                    data.add_field(name=':warning: Warning - Overloaded Alliance',
-                                   value='Alliances are limited to 30 members. '
-                                         'Check your {} members'.format(role.name))
-            self.guilds[server.id].update({key: package})
+            data = self._get_role_members(ctx, server, role, key, data)
             data.add_field(name="Congrats!:sparkles:",
                            value="You have set your {} to {}".format(key, role.name), inline=False)
             if len(member_names) > 0:
@@ -1115,24 +1097,52 @@ class Alliance:
         data.set_footer(text='CollectorDevTeam', icon_url=COLLECTOR_ICON)
         return data
 
-    def _update_members(self, server):
+    def _get_role_members(self, ctx, server: discord.Server, role: discord.Role, key: str, data=None):
+        """package and set role members & ids"""
+        if server is None or role is None or key is None:
+            return data
+        member_names = []
+        member_ids = []
+        for m in server.members:
+            if role in m.roles:
+                member_names.append(m.display_name)
+                member_ids.append(m.id)
+        package = {'id': role.id,
+                   'name': role.name,
+                   'member_ids': member_ids,
+                   'member_names': member_names}
+        if key in ('bg1', 'bg2', 'bg3', 'bg1aw', 'bg1aq', 'bg2aw', 'bg2aq', 'bg3aw', 'bg3aq'):
+            if len(member_ids) > 10 and data is not None:
+                data.add_field(name=':warning: Warning - Overloaded Battlegroup:',
+                               value='Battlegroups are limited to 10 members. '
+                               'Check your {} assignments'.format(role.name))
+        elif key == 'alliance':
+            if len(member_ids) > 30 and data is not None:
+                data.add_field(name=':warning: Warning - Overloaded Alliance',
+                               value='Alliances are limited to 30 members. '
+                               'Check your {} members'.format(role.name))
+        self.guilds[server.id].update({key: package})
+        return data
+
+    def _update_members(self, ctx, server):
         if server is None:
             return
         for key in self.advanced_keys:
             if key in self.guilds[server.id]:
                 role = self._get_role(server, key)
                 if role is not None:
-                    member_names = []
-                    member_ids = []
-                    for m in server.members:
-                        if role in m.roles:
-                            member_names.append(m.name)
-                            member_ids.append(m.id)
-                    package = {'id': role.id,
-                               'name': role.name,
-                               'member_ids': member_ids,
-                               'member_names': member_names}
-                    self.guilds[server.id].update({key: package})
+                    self._get_role_members(ctx, server, role, key)
+                    # member_names = []
+                    # member_ids = []
+                    # for m in server.members:
+                    #     if role in m.roles:
+                    #         member_names.append(m.name)
+                    #         member_ids.append(m.id)
+                    # package = {'id': role.id,
+                    #            'name': role.name,
+                    #            'member_ids': member_ids,
+                    #            'member_names': member_names}
+                    # self.guilds[server.id].update({key: package})
                     continue
                 elif role is None:
                     self.guilds[server.id].pop(key, None)
