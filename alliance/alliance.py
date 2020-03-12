@@ -35,7 +35,7 @@ class Alliance:
     def __init__(self, bot):
         self.bot = bot
         self.alliances = "data/account/alliances.json"
-        self.backup = "data/account/alliances-backup-{}"
+        self.backup = "data/account/alliances-backup-{}.json"
         self.guilds = dataIO.load_json(self.alliances)
         self.alliance_keys = ('officers', 'bg1', 'bg2', 'bg3', 'alliance',)
         self.advanced_keys = ('officers', 'bg1', 'bg2', 'bg3', 'alliance',
