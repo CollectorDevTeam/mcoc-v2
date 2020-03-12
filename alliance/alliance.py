@@ -114,7 +114,7 @@ class Alliance:
             if "alliance" not in self.guilds[ctx.message.server.id].keys():
                 data = self._get_embed(ctx)
                 data.title = "Attention"
-                data.description = "This Discord guild is a registered CollectorVerse Alliance.\nThe ``alliance`` role is not set.\n\nUse the command ''/alliance set alliance <alliance role>`` to set this value.\nThe Alliance system will be disabled until this is corrected."
+                data.description = "This Discord guild is a registered CollectorVerse Alliance.\nThe ``alliance`` role is not set.\n\nUse the command ``/alliance set alliance <alliance role>`` to set this value.\nThe Alliance system will be disabled until this is corrected."
                 data.add_field(name="Server ID", value=ctx.message.server.id)
                 await self.bot.say(embed=data)
                 await self.diagnostics(data)
