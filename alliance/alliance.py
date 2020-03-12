@@ -498,7 +498,7 @@ class Alliance:
         """Returns a list of Server IDs or None"""
         user_alliances = []
         guildkeys = self.guilds.keys()
-        for alliance in guildkeys():
+        for alliance in guildkeys:
             server = self.bot.get_server(alliance)
             if server is None:
                 self.guilds.pop(alliance)
