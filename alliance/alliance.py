@@ -508,6 +508,7 @@ class Alliance:
                     for r in server.roles:
                         if r.name == 'alliance':
                             self._update_role(ctx, 'alliance', r)
+                            await self.diagnostcs("find_alliance 'alliance' role found, updated guild")
                 if "alliance" in self.guilds[alliance].keys():
                     if user.id in self.guilds[alliance]["alliance"]["member_ids"]:
                         user_alliances.append(alliance)
