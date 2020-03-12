@@ -330,7 +330,7 @@ class Alliance:
                             break
                     if found is False:
                         message.append('{} | {}'.format(
-                            key, 'found      | popping allinace'))
+                            key, 'not found  | popping allinace'))
 
                 await self.diagnostics("Updating members in server "+key)
                 self._update_members(server)
