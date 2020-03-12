@@ -1226,7 +1226,7 @@ class Alliance:
         else:
             messages = message
         for m in messages:
-            channel = self.diagnostics_channel
+            channel = self.bot.get_channel(self.diagnostics_channel)
             if isinstance(m, discord.Embed):
                 await self.bot.send_message(channel, embed=m)
             elif m is not None:
