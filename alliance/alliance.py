@@ -323,7 +323,7 @@ class Alliance:
                         if r.name == 'alliance':
                             await self.diagnostics("'alliance' = {} role found for server {}".format(r.id, key))
                             message.append('{} | {}'.format(
-                                key, 'found      | setting alliance key'))
+                                key, 'found      | setting alliance id = {}'.format(r.id)))
                             self._update_role(ctx, 'alliance', r)
                             break
                     if 'alliance' not in self.guilds[key].keys():
