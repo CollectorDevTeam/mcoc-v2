@@ -307,7 +307,8 @@ class Alliance:
         # message = ['guildkeys          | server ids\n'
         message = []
         kill_list = []
-        for key in self.guilds.keys():
+        guildkeys = self.guilds.keys()
+        for key in guildkeys:
             test = self.bot.get_server(key)
             if test is None:
                 await self.send_message(self.diagnostics, "Could not retrieve server "+key)
@@ -496,10 +497,12 @@ class Alliance:
     async def _find_alliance(self, ctx, user: discord.User):
         """Returns a list of Server IDs or None"""
         user_alliances = []
-        for alliance in self.guilds.keys():
+        guildkeys = self.guilds.keys()
+        for alliance in guildkeys():
             server = self.bot.get_server(alliance)
             if server is None:
                 self.guilds.pop(alliance)
+                dataIO.save_json(self.alliances, self.guilds)
                 await self.bot.send_message(self.diagnostics, "find_alliance not-CollectorVerse {}: popped".format(alliance))
             else:
                 self._update_members(server)
