@@ -309,13 +309,13 @@ class Alliance:
         kill_list = []
         guildkeys = self.guilds.keys()
         for key in guildkeys:
-            test = self.bot.get_server(key)
-            if test is None:
+            server = self.bot.get_server(key)
+            if server is None:
                 await self.diagnostics("Could not retrieve server "+key)
             # if key not in serverids:
                 message.append('{} | {}'.format(key, 'not found'))
                 kill_list.append(key)
-            if test is not None:
+            if server is not None:
                 if 'alliance' not in self.guilds[key].keys():
                     # bad alliance:
                     await self.diagnostics("Searching for 'alliance' role in server "+key)
@@ -333,7 +333,7 @@ class Alliance:
                             key, 'found      | popping allinace'))
 
                 await self.diagnostics("Updating members in server "+key)
-                self._update_members(test)
+                self._update_members(server)
 
         if len(kill_list) > 0:
             for k in kill_list:
