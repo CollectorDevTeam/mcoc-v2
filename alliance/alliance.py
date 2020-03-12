@@ -320,17 +320,15 @@ class Alliance:
                     # bad alliance:
                     await self.diagnostics("Searching for 'alliance' role in server "+key)
                     for r in server.roles:
-                        found = False
                         if r.name == 'alliance':
-                            await self.diagnostics("'alliance' role found for server "+key)
+                            await self.diagnostics("'alliance' = {} role found for server {}".format(r.id, key))
                             message.append('{} | {}'.format(
-                                key, 'found      | updated'))
+                                key, 'found      | setting alliance key'))
                             self._update_role(ctx, 'alliance', r)
-                            found = True
                             break
-                    if found is False:
+                    if 'alliance' not in self.guilds[key].keys():
                         message.append('{} | {}'.format(
-                            key, 'not found  | popping allinace'))
+                            key, 'not found  | alliance undefined'))
 
                 await self.diagnostics("Updating members in server "+key)
                 self._update_members(server)
@@ -338,7 +336,7 @@ class Alliance:
         if len(kill_list) > 0:
             for k in kill_list:
                 self.guilds.pop(k, None)
-            dataIO.save_json(self.alliances, self.guilds)
+        dataIO.save_json(self.alliances, self.guilds)
         pages = chat.pagify('\n'.join(sorted(message)))
         header = '```Alliance Guilds    | found y/n  | status ```'
         for page in pages:
