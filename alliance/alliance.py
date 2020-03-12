@@ -135,65 +135,65 @@ class Alliance:
                                          '``alliance``, ``officers`` or ``bg1 | bg2 | bg3``')
             await self.bot.say(embed=data)
             return
-        # elif ctx.message.server.id in alliances:
-        #     alliances = [ctx.message.server.id]
-        # else:
-        #     pass
-
-        for alliance in alliances:
-            keys = self.guilds[alliance].keys()
-            server = self.bot.get_server(alliance)
-            data = self._get_embed(ctx, alliance=alliance, user_id=user.id)
-            if server is not None:
-                if 'tag' in keys:
-                    if 'name' in keys:
-                        data.title = '[{}] {}:sparkles:'.format(
-                            self.guilds[alliance]['tag'], self.guilds[alliance]['name'])
+        else:
+            for alliance in alliances:
+                self._update_members(self.bot.get_server(alliance))
+        alliances, message = await self._find_alliance(ctx, user)
+        if alliances is not None:
+            for alliance in alliances:
+                keys = self.guilds[alliance].keys()
+                server = self.bot.get_server(alliance)
+                data = self._get_embed(ctx, alliance=alliance, user_id=user.id)
+                if server is not None:
+                    if 'tag' in keys:
+                        if 'name' in keys:
+                            data.title = '[{}] {}:sparkles:'.format(
+                                self.guilds[alliance]['tag'], self.guilds[alliance]['name'])
+                        else:
+                            data.title = '[{}] {}:sparkles:'.format(
+                                self.guilds[alliance]['tag'], server.name)
+                    elif 'name' in keys:
+                        data.title = '{}:sparkles:'.format(server.name)
+                        data.add_field(name='Alliance Tag',
+                                       value='Alliance Tag not set.')
                     else:
-                        data.title = '[{}] {}:sparkles:'.format(
-                            self.guilds[alliance]['tag'], server.name)
-                elif 'name' in keys:
-                    data.title = '{}:sparkles:'.format(server.name)
-                    data.add_field(name='Alliance Tag',
-                                   value='Alliance Tag not set.')
-                else:
-                    data.title = server.name+':sparkles:'
-                if 'about' in keys:
-                    data.description = self.guilds[alliance]['about']
-                else:
-                    data.description = 'Alliance About is not set.'
-                if 'alliance' in keys:
-                    alliance_role = self._get_role(server, 'alliance')
-                    if alliance_role is None:
-                        await self.bot.send_message(self.diagnostics, 'Alliance role not found')
+                        data.title = server.name+':sparkles:'
+                    if 'about' in keys:
+                        data.description = self.guilds[alliance]['about']
                     else:
-                        # role_members = _get_members(server, alliance_role)
-                        verbose = False
-                        if ctx.message.server == server:  # on home server
-                            verbose = True
-                        data = await self._get_prestige(server=server, role=alliance_role, verbose=verbose,
-                                                        data=data)
-                        # data.add_field(name='Alliance Prestige', value=clan_prestige)
-                else:
-                    data.add_field(name='⚠ Alliance Role ⚠',
-                                   value='Alliance role is not set. '
-                                         'A role to designate all 30 alliance members is essential. '
-                                         'Use the command ``/alliance set alliance <role>`` to correct.')
-                if 'started' in keys:
-                    since = date_parse(self.guilds[alliance]['started'])
-                    days_since = (datetime.datetime.utcnow() - since).days
-                    data.add_field(name='Alliance founded: {}'.format(since.date()), value="Playing for {} days!"
-                                   .format(days_since))
-                if 'poster' in keys:
-                    data.set_image(url=self.guilds[alliance]['poster'])
-                if 'invite' in keys:
-                    data.url = self.guilds[alliance]['invite']
-                    data.add_field(name='Join server',
-                                   value=self.guilds[alliance]['invite'])
-                else:
-                    data.add_field(name='Join server',
-                                   value='Invitation not set.')
-                pages.append(data)
+                        data.description = 'Alliance About is not set.'
+                    if 'alliance' in keys:
+                        alliance_role = self._get_role(server, 'alliance')
+                        if alliance_role is None:
+                            await self.bot.send_message(self.diagnostics, 'Alliance role not found')
+                        else:
+                            # role_members = _get_members(server, alliance_role)
+                            verbose = False
+                            if ctx.message.server == server:  # on home server
+                                verbose = True
+                            data = await self._get_prestige(server=server, role=alliance_role, verbose=verbose,
+                                                            data=data)
+                            # data.add_field(name='Alliance Prestige', value=clan_prestige)
+                    else:
+                        data.add_field(name='⚠ Alliance Role ⚠',
+                                       value='Alliance role is not set. '
+                                            'A role to designate all 30 alliance members is essential. '
+                                            'Use the command ``/alliance set alliance <role>`` to correct.')
+                    if 'started' in keys:
+                        since = date_parse(self.guilds[alliance]['started'])
+                        days_since = (datetime.datetime.utcnow() - since).days
+                        data.add_field(name='Alliance founded: {}'.format(since.date()), value="Playing for {} days!"
+                                       .format(days_since))
+                    if 'poster' in keys:
+                        data.set_image(url=self.guilds[alliance]['poster'])
+                    if 'invite' in keys:
+                        data.url = self.guilds[alliance]['invite']
+                        data.add_field(name='Join server',
+                                       value=self.guilds[alliance]['invite'])
+                    else:
+                        data.add_field(name='Join server',
+                                       value='Invitation not set.')
+                    pages.append(data)
         if len(pages) > 0:
             if ctx.message.server.id in alliances:
                 i = alliances.index(ctx.message.server.id)
@@ -311,7 +311,7 @@ class Alliance:
         for key in guildkeys:
             test = self.bot.get_server(key)
             if test is None:
-                await self.send_message(self.diagnostics, "Could not retrieve server "+key)
+                await self.bot.send_message(self.diagnostics, "Could not retrieve server "+key)
             # if key not in serverids:
                 message.append('{} | {}'.format(key, 'not found'))
                 kill_list.append(key)
@@ -505,7 +505,7 @@ class Alliance:
                 poplist.append(alliance)
                 await self.bot.send_message(self.diagnostics, "find_alliance not-CollectorVerse {}: popped".format(alliance))
             else:
-                self._update_members(server)
+                # self._update_members(server)
                 if "alliance" in self.guilds[alliance].keys():
                     # await self.bot.send_message(self.diagnostics, "{} Alliance Guild has an 'alliance' role".format(alliance))
                     if user.id in self.guilds[alliance]["alliance"]["member_ids"]:
@@ -1110,6 +1110,8 @@ class Alliance:
         return data
 
     def _update_members(self, server):
+        if server is None:
+            return
         for key in self.advanced_keys:
             if key in self.guilds[server.id]:
                 role = self._get_role(server, key)
