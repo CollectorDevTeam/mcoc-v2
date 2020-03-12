@@ -43,7 +43,7 @@ class Alliance:
         self.info_keys = ('name', 'tag', 'type', 'about',
                           'started', 'invite', 'poster', 'wartool')
         self.service_file = "data/mcoc/mcoc_service_creds.json"
-        self.diagnostics = self.bot.get_channel('565254324595326996')
+        self.diagnostics_channel = self.bot.get_channel('565254324595326996')
 
     @commands.command(pass_context=True, no_pm=True, hidden=True)
     async def lanes(self, ctx, user: discord.Member = None):
@@ -117,7 +117,7 @@ class Alliance:
                 data.description = "This Discord guild is a registered CollectorVerse Alliance.\nThe ``alliance`` role is not set.\n\nUse the command ''/alliance set alliance <alliance role>`` to set this value.\nThe Alliance system will be disabled until this is corrected."
                 data.add_field(name="Server ID", value=ctx.message.server.id)
                 await self.bot.say(embed=data)
-                await self.bot.send_message(self.diagnostics, embed=data)
+                await self.diagnostics(embed=data)
         if alliances is None:
             data = self._get_embed(ctx)
             data.title = message+':sparkles:'
@@ -165,7 +165,7 @@ class Alliance:
                     if 'alliance' in keys:
                         alliance_role = self._get_role(server, 'alliance')
                         if alliance_role is None:
-                            await self.bot.send_message(self.diagnostics, 'Alliance role not found')
+                            await self.diagnostics('Alliance role not found')
                         else:
                             # role_members = _get_members(server, alliance_role)
                             verbose = False
@@ -234,7 +234,7 @@ class Alliance:
     async def _get_prestige(self, server: discord.Server, role: discord.Role, verbose=False,
                             data: discord.Embed = None, role_members=None):
         """Return Clan Prestige and Verbose Prestige for Role members"""
-        await self.bot.send_message(self.diagnostics, "_get_prestige for role: {} on guild: {}".format(role.id, server.id))
+        await self.diagnostics("_get_prestige for role: {} on guild: {}".format(role.id, server.id))
         # logger.info("Retrieving prestige for role '{}' on guild '{}'".format(
         #     role.name, server.name, ))
         # members = []
@@ -311,18 +311,18 @@ class Alliance:
         for key in guildkeys:
             test = self.bot.get_server(key)
             if test is None:
-                await self.bot.send_message(self.diagnostics, "Could not retrieve server "+key)
+                await self.diagnostics("Could not retrieve server "+key)
             # if key not in serverids:
                 message.append('{} | {}'.format(key, 'not found'))
                 kill_list.append(key)
             if test is not None:
                 if 'alliance' not in self.guilds[key].keys():
                     # bad alliance:
-                    await self.send_message(self.diagnostics, "Searching for 'alliance' role in server "+key)
+                    await self.diagnostics("Searching for 'alliance' role in server "+key)
                     for r in server.roles:
                         found = False
                         if r.name == 'alliance':
-                            await self.send_message(self.diagnostics, "'alliance' role found for server "+key)
+                            await self.diagnostics("'alliance' role found for server "+key)
                             message.append('{} | {}'.format(
                                 key, 'found      | updated'))
                             self._update_role(ctx, 'alliance', r)
@@ -332,7 +332,7 @@ class Alliance:
                         message.append('{} | {}'.format(
                             key, 'found      | popping allinace'))
 
-                await self.send_message(self.diagnostics, "Updating members in server "+key)
+                await self.diagnostics("Updating members in server "+key)
                 self._update_members(test)
 
         if len(kill_list) > 0:
@@ -342,8 +342,8 @@ class Alliance:
         pages = chat.pagify('\n'.join(sorted(message)))
         header = '```Alliance Guilds    | found y/n  | status ```'
         for page in pages:
-            await self.bot.send_message(self.diagnostics, header)
-            await self.bot.send_message(self.diagnostics, chat.box(page))
+            await self.diagnostics(header)
+            await self.diagnostics(chat.box(page))
         await self.bot.say("Alliance good: {}\nAlliance bad updated: {}\nAlliance deleted: {}\nTotal guilds checked: {}".format(good_alliance, bad_alliance_role, len(kill_list), len(servers)))
 
     @alliance.command(pass_context=True, hidden=False, name='export', aliases=('awx',))
@@ -493,7 +493,7 @@ class Alliance:
             # channel = self.bot.get_channel('565254324595326996')
             data.add_field(name='Requested by', value='User: {} \nID: {} \nServer {} \nID: {}'.format(
                 ctx.message.author.display_name, ctx.message.author.id, ctx.message.server.name, ctx.message.server.id))
-            await self.bot.send_message(self.diagnostics, embed=data)
+            await self.diagnostics(embed=data)
 
     async def _find_alliance(self, ctx, user: discord.User):
         """Returns a list of Server IDs or None"""
@@ -503,11 +503,11 @@ class Alliance:
             server = self.bot.get_server(alliance)
             if server is None:
                 poplist.append(alliance)
-                await self.bot.send_message(self.diagnostics, "find_alliance not-CollectorVerse {}: popped".format(alliance))
+                await self.diagnostics("find_alliance not-CollectorVerse {}: popped".format(alliance))
             else:
                 # self._update_members(server)
                 if "alliance" in self.guilds[alliance].keys():
-                    # await self.bot.send_message(self.diagnostics, "{} Alliance Guild has an 'alliance' role".format(alliance))
+                    # await self.diagnostics("{} Alliance Guild has an 'alliance' role".format(alliance))
                     if user.id in self.guilds[alliance]["alliance"]["member_ids"]:
                         user_alliances.append(alliance)
         if len(poplist) > 0:
@@ -515,7 +515,7 @@ class Alliance:
                 self.guilds.pop(a, None)
             dataIO.save_json(self.alliances, self.guilds)
 
-        # await self.bot.send_message(self.diagnostics, user_alliances)
+        # await self.diagnostics(user_alliances)
         if len(user_alliances) > 0:
             return user_alliances, '{} found.'.format(user.name)
         else:
@@ -1202,6 +1202,10 @@ class Alliance:
     #     for m in self.guilds[alliance]['assignments'][user.id].keys():
     #         data.add_field(name=m.upper(), value=self.guilds[alliance]['assignments'][user.id][m])
     #     await self.bot.say(embed=data)
+
+    async def diagnostics(self, message):
+        await self.bot.send_message(self.diagnostics_channel, message)
+        return
 
     async def authorize(self):
         try:
