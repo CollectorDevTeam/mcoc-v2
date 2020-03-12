@@ -35,6 +35,7 @@ class Alliance:
     def __init__(self, bot):
         self.bot = bot
         self.alliances = "data/account/alliances.json"
+        self.backup = "data/account/alliances-backup-{}"
         self.guilds = dataIO.load_json(self.alliances)
         self.alliance_keys = ('officers', 'bg1', 'bg2', 'bg3', 'alliance',)
         self.advanced_keys = ('officers', 'bg1', 'bg2', 'bg3', 'alliance',
@@ -297,57 +298,51 @@ class Alliance:
     @checks.is_owner()
     @alliance.command(pass_context=True, hidden=True, name='scavenge')
     async def _scavenge(self, ctx, server=None):
+        dataIO.save_json(
+            self.backup.format(ctx.message.id), self.guilds)
         servers = self.bot.servers
         serverids = []
         good_alliance = 0
         bad_alliance_role = 0
-        abandoned_server = 0
-        deleted = 0
         # message = ['guildkeys          | server ids\n'
         message = []
-        if server is not None:
-            servers = [self.bot.get_server(server)]
-        for server in servers:
-            serverids.append(server.id)
-            if server.id in self.guilds.keys():
-                message.append('{} | {}'.format(server.id, server.id))
-                if "alliance" in self.guilds[server.id].keys():
-                    alliance_role = self._get_role(server, 'alliance')
-                    if alliance_role is not None:
-                        member_names = []
-                        member_ids = []
-                        for m in server.members:
-                            if alliance_role in m.roles:
-                                member_names.append(m.display_name)
-                                member_ids.append(m.id)
-                        package = {'id': alliance_role.id,
-                                   'name': alliance_role.name,
-                                   'member_ids': member_ids,
-                                   'member_names': member_names}
-                        self._update_guilds(ctx, 'alliance', package)
-                        dataIO.save_json(self.alliances, self.guilds)
-                        await self.bot.send_message(self.diagnostics, "Server {} has been updated.".format(server.id))
-                        good_alliance += 1
-                    else:
-                        bad_alliance_role += 1
-            # else:
-                # message.append('Not an Alliance    | {}'.format(server.id))
         kill_list = []
         for key in self.guilds.keys():
-            if key not in serverids:
-                abandoned_server += 1
-                message.append('{} | {}'.format(key, 'Not in CollectorVerse'))
+            test = self.bot.get_server(key)
+            if test is None:
+                await self.send_message(self.diagnostics, "Could not retrieve server "+key)
+            # if key not in serverids:
+                message.append('{} | {}'.format(key, 'not found'))
                 kill_list.append(key)
+            if test is not None:
+                if 'alliance' not in self.guilds[key].keys():
+                    # bad alliance:
+                    await self.send_message(self.diagnostics, "Searching for 'alliance' role in server "+key)
+                    for r in server.roles:
+                        found = False
+                        if r.name == 'alliance':
+                            await self.send_message(self.diagnostics, "'alliance' role found for server "+key)
+                            message.append('{} | {}'.format(
+                                key, 'found      | updated'))
+                            self._update_role(ctx, 'alliance', r)
+                            found = True
+                            break
+                    if found is False:
+                        message.append('{} | {}'.format(
+                            key, 'found      | popping allinace'))
+
+                await self.send_message(self.diagnostics, "Updating members in server "+key)
+                self._update_members(test)
+
         for key in kill_list:
             self.guilds.pop(key, None)
-            deleted += 1
         dataIO.save_json(self.alliances, self.guilds)
         pages = chat.pagify('\n'.join(sorted(message)))
-        header = '```Alliance Guilds    | CollectorVerse Guilds```'
+        header = '```Alliance Guilds    | found y/n  | status ```'
         for page in pages:
             await self.bot.send_message(self.diagnostics, header)
             await self.bot.send_message(self.diagnostics, chat.box(page))
-        await self.bot.say("Good Alliances: {}\nBad Alliances: {}\nAbandoned Servers Deleted: {}\nTotal Servers: {}".format(good_alliance, bad_alliance_role, abandoned_server, len(servers)))
+        await self.bot.say("Alliance good: {}\nAlliance bad updated: {}\nAlliance deleted: {}\nTotal guilds checked: {}".format(good_alliance, bad_alliance_role, len(kill_list), len(servers)))
 
     @alliance.command(pass_context=True, hidden=False, name='export', aliases=('awx',))
     async def _role_roster_export(self, ctx):
@@ -1107,20 +1102,23 @@ class Alliance:
 
     def _update_members(self, server):
         for key in self.advanced_keys:
-            if key in self.guilds:
+            if key in self.guilds[server.id]:
                 role = self._get_role(server, key)
-                member_names = []
-                member_ids = []
-                for m in server.members:
-                    if role in m.roles:
-                        member_names.append(m.name)
-                        member_ids.append(m.id)
-                package = {'id': role.id,
-                           'name': role.name,
-                           'member_ids': member_ids,
-                           'member_names': member_names}
-                self.guilds[server.id].update({key: package})
-                continue
+                if role is not None:
+                    member_names = []
+                    member_ids = []
+                    for m in server.members:
+                        if role in m.roles:
+                            member_names.append(m.name)
+                            member_ids.append(m.id)
+                    package = {'id': role.id,
+                               'name': role.name,
+                               'member_ids': member_ids,
+                               'member_names': member_names}
+                    self.guilds[server.id].update({key: package})
+                    continue
+                elif role is None:
+                    self.guilds[server.id].pop(key)
         dataIO.save_json(self.alliances, self.guilds)
         print('Debug: Alliance details refreshed')
         return
