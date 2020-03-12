@@ -1226,10 +1226,11 @@ class Alliance:
         else:
             messages = message
         for m in messages:
+            channel = self.diagnostics_channel
             if isinstance(m, discord.Embed):
-                await self.bot.send_message(self.diagnostics_channel, embed=m)
-            else:
-                await self.bot.send_message(self.diagnostics_channel, m)
+                await self.bot.send_message(channel, embed=m)
+            elif m is not None:
+                await self.bot.send_message(channel, m)
         return
 
     async def authorize(self):
