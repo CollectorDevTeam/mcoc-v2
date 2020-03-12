@@ -117,7 +117,7 @@ class Alliance:
                 data.description = "This Discord guild is a registered CollectorVerse Alliance.\nThe ``alliance`` role is not set.\n\nUse the command ''/alliance set alliance <alliance role>`` to set this value.\nThe Alliance system will be disabled until this is corrected."
                 data.add_field(name="Server ID", value=ctx.message.server.id)
                 await self.bot.say(embed=data)
-                await self.diagnostics(embed=data)
+                await self.diagnostics(data)
         if alliances is None:
             data = self._get_embed(ctx)
             data.title = message+':sparkles:'
@@ -493,7 +493,7 @@ class Alliance:
             # channel = self.bot.get_channel('565254324595326996')
             data.add_field(name='Requested by', value='User: {} \nID: {} \nServer {} \nID: {}'.format(
                 ctx.message.author.display_name, ctx.message.author.id, ctx.message.server.name, ctx.message.server.id))
-            await self.diagnostics(embed=data)
+            await self.diagnostics(data)
 
     async def _find_alliance(self, ctx, user: discord.User):
         """Returns a list of Server IDs or None"""
@@ -1204,10 +1204,20 @@ class Alliance:
     #     await self.bot.say(embed=data)
 
     async def diagnostics(self, message):
-        await self.bot.send_message(self.diagnostics_channel, message)
+        """Messages accepts string, embed, or list of strings or embeds"""
+        if isinstance(message, list) == False:
+            messages = [message]
+        else:
+            messages = message
+        for m in messages:
+            if isinstance(m, discord.Embed):
+                await self.bot.send_message(self.diagnostics_channel, embed=m)
+            else:
+                await self.bot.send_message(self.diagnostics_channel, m)
         return
 
     async def authorize(self):
+        """pygsheets authorizes client based on credentials file"""
         try:
             return pygsheets.authorize(service_file=self.service_file, no_cache=True)
         except FileNotFoundError:
