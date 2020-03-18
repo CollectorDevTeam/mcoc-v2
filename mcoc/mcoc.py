@@ -680,7 +680,7 @@ class MCOC(ChampionFactory):
         logger.info("MCOC Init")
         super().__init__()
 
-    @commands.command(name='invite', aliases=('collectorverse'), pass_context=True)
+    @commands.command(name='invite', pass_context=True)
     async def get_collector(self, ctx, user: discord.User = None):
         whisper = True
         if user is None:
@@ -707,7 +707,7 @@ class MCOC(ChampionFactory):
         else:
             await self.bot.say(embed=data)
 
-    @commands.command(aliases=('p2f',), hidden=True)
+    @commands.command(aliases=['p2f', ], hidden=True)
     async def per2flat(self, per: float, ch_rating: int = 100):
         '''Convert Percentage to MCOC Flat Value'''
         await self.bot.say(to_flat(per, ch_rating))
@@ -737,7 +737,7 @@ class MCOC(ChampionFactory):
         em.add_field(name='Percentage:', value='{}\%'.format(p))
         await self.bot.say(embed=em)
 
-    @commands.command(aliases=('compf', 'cfrac'), hidden=True)
+    @commands.command(aliases=['compf', 'cfrac'], hidden=True)
     async def compound_frac(self, base: float, exp: int):
         '''Calculate multiplicative compounded fractions'''
         if base > 1:
@@ -749,7 +749,7 @@ class MCOC(ChampionFactory):
         em.add_field(name='Expected Chance', value='{:.2%}'.format(compound))
         await self.bot.say(embed=em)
 
-    @commands.command(aliases=('update_mcoc', 'mu', 'um',), hidden=True)
+    @commands.command(aliases=['mu', ], hidden=True)
     async def mcoc_update(self, fname, force=False):
         if len(fname) > 3:
             for key in data_files.keys():
@@ -1013,7 +1013,7 @@ class MCOC(ChampionFactory):
                 print(champ.get_avatar())
                 await self.bot.say(embed=em)
 
-    @champ.command(pass_context=True, name='bio', aliases=('biography',))
+    @champ.command(pass_context=True, name='bio', aliases=['biography', ])
     async def champ_bio(self, ctx, *, champ: ChampConverterDebug):
         '''Champio Bio'''
         try:
@@ -1091,7 +1091,7 @@ class MCOC(ChampionFactory):
             em.add_field(name='Shortcode', value=champ.short, inline=False)
             await self.bot.say(embed=em)
 
-    @champ.command(pass_context=True, name='about', aliases=('about_champ',))
+    @champ.command(pass_context=True, name='about', aliases=['about_champ', ])
     async def champ_about(self, ctx, *, champ: ChampConverterRank):
         '''Champion Base Stats'''
         released = await self.check_release(ctx, champ)
@@ -1253,7 +1253,7 @@ class MCOC(ChampionFactory):
         else:
             await self.bot.say('Sorry, the Hook cog is not loaded right now.')
 
-    @champ.command(pass_context=True, name='released', aliases=('odds', 'chances',))
+    @champ.command(pass_context=True, name='released', aliases=['odds', 'chances', ])
     async def champ_released(self, ctx, champ: ChampConverter = None):
         '''Champion Release Date & Crystal Odds'''
         print('check_release')
@@ -1437,7 +1437,7 @@ class MCOC(ChampionFactory):
         except:
             print('champ_sigplot nothing happened')
 
-    @champ.command(pass_context=True, name='stats', aliases=('stat',))
+    @champ.command(pass_context=True, name='stats', aliases=['stat', ])
     async def champ_stats(self, ctx, *, champs: ChampConverterMult):
         '''Champion(s) Base Stats'''
         # sgd = cogs.mcocTools.StaticGameData()
@@ -1539,7 +1539,7 @@ class MCOC(ChampionFactory):
                     print('PagesMenu failure')
                     await self.bot.say(embed=em)
 
-    @champ.command(pass_context=True, name='update', aliases=('add', 'dupe'), hidden=True)
+    @champ.command(pass_context=True, name='update', aliases=['add', 'dupe'], hidden=True)
     async def champ_update(self, ctx, *, args):
         '''Not a real command'''
         msg = '`{0}champ update` does not exist.\n' \
