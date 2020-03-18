@@ -1222,6 +1222,8 @@ class MCOC(ChampionFactory):
                 pages = chat.pagify(package, page_length=2000)
                 for page in pages:
                     await self.bot.say(chat.box(page))
+            else:
+                await self.bot.say('Sorry, the Hook cog is not loaded right now.')
 
     @champ.command(pass_context=True, name='list')
     async def champ_list(self, ctx, *, hargs=''):
@@ -1241,12 +1243,15 @@ class MCOC(ChampionFactory):
         #roster = hook.ChampionRoster(self.bot, self.bot.user, attrs=hargs.attrs)
         # await roster.display(hargs.tags)
         hook = self.bot.get_cog('hook')
-        sgd = StaticGameData()
-        aliases = {'#var2': '(#5star | #6star) & #size:xl',
-                   '#poisoni': '#poisonimmunity'}
-        roster = await sgd.parse_with_attr(ctx, hargs, hook.ChampionRoster, aliases=aliases)
-        if roster is not None:
-            await roster.display()
+        if hook is not None:
+            sgd = StaticGameData()
+            aliases = {'#var2': '(#5star | #6star) & #size:xl',
+                       '#poisoni': '#poisonimmunity'}
+            roster = await sgd.parse_with_attr(ctx, hargs, hook.ChampionRoster, aliases=aliases)
+            if roster is not None:
+                await roster.display()
+        else:
+            await self.bot.say('Sorry, the Hook cog is not loaded right now.')
 
     @champ.command(pass_context=True, name='released', aliases=('odds', 'chances',))
     async def champ_released(self, ctx, champ: ChampConverter = None):
