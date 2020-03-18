@@ -1,7 +1,7 @@
 from .mcocTools import (KABAM_ICON, COLLECTOR_ICON, PagesMenu,
                         GSHandler, gapi_service_creds, GSExport, CDT_COLORS, StaticGameData)
 import cogs.mcocTools
-from . import hook as hook
+# from . import hook as hook
 import re
 from datetime import datetime, timedelta
 from dateutil.parser import parse as dateParse
@@ -1207,19 +1207,21 @@ class MCOC(ChampionFactory):
             await self.bot.say('This server is unauthorized.')
             return
         else:
-            # harglist = self.bot.user + hargs
-            # hargs = await hook.HashtagRankConverter(ctx, hargs).convert() #imported from hook
-            roster = hook.HashtagRosterConverter(ctx.bot, hargs).convert()
-            # await self.update_local()
-            # roster = hargs.roster.filter_champs(hargs.tags)
-            # filtered = roster.filter_champs(hargs.attrs.copy())
-            # sorted(filtered, reverse=True, key=attrgetter('full_name'))]
-            strs = [champ.full_name for champ in roster]
-            package = '\n'.join(strs)
-            print(package)
-            pages = chat.pagify(package, page_length=2000)
-            for page in pages:
-                await self.bot.say(chat.box(page))
+            hook = self.bot.get_cog('hook')
+            if hook is not None:
+                # harglist = self.bot.user + hargs
+                # hargs = await hook.HashtagRankConverter(ctx, hargs).convert() #imported from hook
+                roster = hook.HashtagRosterConverter(ctx.bot, hargs).convert()
+                # await self.update_local()
+                # roster = hargs.roster.filter_champs(hargs.tags)
+                # filtered = roster.filter_champs(hargs.attrs.copy())
+                # sorted(filtered, reverse=True, key=attrgetter('full_name'))]
+                strs = [champ.full_name for champ in roster]
+                package = '\n'.join(strs)
+                print(package)
+                pages = chat.pagify(package, page_length=2000)
+                for page in pages:
+                    await self.bot.say(chat.box(page))
 
     @champ.command(pass_context=True, name='list')
     async def champ_list(self, ctx, *, hargs=''):
@@ -1238,6 +1240,7 @@ class MCOC(ChampionFactory):
         # hargs = await hook.HashtagRankConverter(ctx, hargs).convert() #imported from hook
         #roster = hook.ChampionRoster(self.bot, self.bot.user, attrs=hargs.attrs)
         # await roster.display(hargs.tags)
+        hook = self.bot.get_cog('hook')
         sgd = StaticGameData()
         aliases = {'#var2': '(#5star | #6star) & #size:xl',
                    '#poisoni': '#poisonimmunity'}
@@ -2016,7 +2019,7 @@ class MCOC(ChampionFactory):
                           icon_url=AUNTMAI)
             await self.bot.say(embed=em)
 
-    @champ.command(pass_context=True, name='aliases', aliases=('alias',))
+    @champ.command(pass_context=True, name='aliases', aliases=('names',))
     async def champ_aliases(self, ctx, *args):
         '''Champion Aliases'''
         em = discord.Embed(color=discord.Color.teal(),
