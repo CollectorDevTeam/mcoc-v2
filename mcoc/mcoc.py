@@ -1207,7 +1207,7 @@ class MCOC(ChampionFactory):
             await self.bot.say('This server is unauthorized.')
             return
         else:
-            hook = self.bot.get_cog('hook')
+            hook = self.bot.get_cog('Hook')
             if hook is not None:
                 # harglist = self.bot.user + hargs
                 # hargs = await hook.HashtagRankConverter(ctx, hargs).convert() #imported from hook
@@ -1242,7 +1242,7 @@ class MCOC(ChampionFactory):
         # hargs = await hook.HashtagRankConverter(ctx, hargs).convert() #imported from hook
         #roster = hook.ChampionRoster(self.bot, self.bot.user, attrs=hargs.attrs)
         # await roster.display(hargs.tags)
-        hook = self.bot.get_cog('hook')
+        hook = self.bot.get_cog('Hook')
         if hook is not None:
             sgd = StaticGameData()
             aliases = {'#var2': '(#5star | #6star) & #size:xl',
