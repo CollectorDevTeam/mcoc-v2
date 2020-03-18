@@ -1,7 +1,8 @@
 from .mcocTools import (KABAM_ICON, COLLECTOR_ICON, PagesMenu,
                         GSHandler, gapi_service_creds, GSExport, CDT_COLORS, StaticGameData)
-import cogs.mcocTools
+# import cogs.mcocTools
 # from . import hook as hook
+from .hook import (ChampionRoster, HashtagRosterConverter)
 import re
 from datetime import datetime, timedelta
 from dateutil.parser import parse as dateParse
@@ -104,7 +105,8 @@ local_files = {
 
 
 async def postprocess_sig_data(bot, struct):
-    sgd = cogs.mcocTools.StaticGameData()
+    # sgd = cogs.mcocTools.StaticGameData()
+    sgd = StaticGameData
     sigs = sgd.cdt_data
     # sigs = load_kabam_json(kabam_bcg_stat_en, aux=struct.get("bcg_stat_en_aux"))
     mcoc = bot.get_cog('MCOC')
@@ -787,7 +789,8 @@ class MCOC(ChampionFactory):
         /mastery info "Deep Wounds" 4
         /mastery info deepwounds 4
         /mastery info Deep Wounds 4"""
-        sgd = cogs.mcocTools.StaticGameData()
+        # sgd = cogs.mcocTools.StaticGameData()
+        sgd = StaticGameData
         #print(len(sgd.cdt_data), len(sgd.cdt_masteries), sgd.test)
         cm = sgd.cdt_masteries
         found = False
@@ -1207,11 +1210,11 @@ class MCOC(ChampionFactory):
             await self.bot.say('This server is unauthorized.')
             return
         else:
-            hook = self.bot.get_cog('Hook')
-            if hook is not None:
+            if HashtagRosterConverter is not None:
                 # harglist = self.bot.user + hargs
                 # hargs = await hook.HashtagRankConverter(ctx, hargs).convert() #imported from hook
-                roster = hook.HashtagRosterConverter(ctx.bot, hargs).convert()
+                # roster = hook.HashtagRosterConverter(ctx.bot, hargs).convert()
+                roster = HashtagRosterConverter(ctx.bot, hargs).convert()
                 # await self.update_local()
                 # roster = hargs.roster.filter_champs(hargs.tags)
                 # filtered = roster.filter_champs(hargs.attrs.copy())
@@ -1242,12 +1245,11 @@ class MCOC(ChampionFactory):
         # hargs = await hook.HashtagRankConverter(ctx, hargs).convert() #imported from hook
         #roster = hook.ChampionRoster(self.bot, self.bot.user, attrs=hargs.attrs)
         # await roster.display(hargs.tags)
-        hook = self.bot.get_cog('Hook')
-        if hook is not None:
+        if ChampionRoster is not None:
             sgd = StaticGameData()
             aliases = {'#var2': '(#5star | #6star) & #size:xl',
                        '#poisoni': '#poisonimmunity'}
-            roster = await sgd.parse_with_attr(ctx, hargs, hook.ChampionRoster, aliases=aliases)
+            roster = await sgd.parse_with_attr(ctx, hargs, ChampionRoster, aliases=aliases)
             if roster is not None:
                 await roster.display()
         else:
@@ -2812,7 +2814,8 @@ class Champion:
         return image
 
     async def get_bio(self):
-        sgd = cogs.mcocTools.StaticGameData()
+        # sgd = cogs.mcocTools.StaticGameData()
+        sgd = StaticGameData
 
         if "MS_ID_CHARACTER_BIOS_{}".format(self.mcocjson) in sgd.cdt_data:
             key = "MS_ID_CHARACTER_BIOS_{}".format(self.mcocjson)
@@ -2944,7 +2947,8 @@ class Champion:
         return pack
 
     def get_special_attacks(self):
-        sgd = cogs.mcocTools.StaticGameData()
+        # sgd = cogs.mcocTools.StaticGameData()
+        sgd = StaticGameData
         cdt_data = sgd.cdt_data
         prefix = 'ID_SPECIAL_ATTACK_'
         desc = 'DESCRIPTION_'
@@ -3201,7 +3205,8 @@ class Champion:
         descriptionkey = preamble + desc,
         '''
 
-        sgd = cogs.mcocTools.StaticGameData()
+        # sgd = cogs.mcocTools.StaticGameData()
+        sgd = StaticGameData
         if sgd.cdt_data is None:
             print("Sig Error: {} isn't pulling game data".format(self.mcocsig))
             raise TitleError(self.full_name)
