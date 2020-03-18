@@ -3,7 +3,7 @@ from .mcocTools import (KABAM_ICON, COLLECTOR_ICON, PagesMenu,
 # import cogs.mcocTools
 # from . import hook as hook
 # from .hook import (ChampionRoster, HashtagRosterConverter)
-# from .hook import ChampionRoster as hookChampionRoster
+from cogs.hook import ChampionRoster as ChampionRoster
 # from .hook import HashtagRosterConverter as hookHashtagRosterConverter
 import re
 from datetime import datetime, timedelta
@@ -1247,13 +1247,12 @@ class MCOC(ChampionFactory):
         # hargs = await hook.HashtagRankConverter(ctx, hargs).convert() #imported from hook
         #roster = hook.ChampionRoster(self.bot, self.bot.user, attrs=hargs.attrs)
         # await roster.display(hargs.tags)
-        hook = self.bot.get_cog('Hook')
-        if hook is not None:
-            hookChampionRoster = hook.ChampionRoster()
+
+        if ChampionRoster is not None:
             sgd = StaticGameData()
             aliases = {'#var2': '(#5star | #6star) & #size:xl',
                        '#poisoni': '#poisonimmunity'}
-            roster = await sgd.parse_with_attr(ctx, hargs, hookChampionRoster, aliases=aliases)
+            roster = await sgd.parse_with_attr(ctx, hargs, ChampionRoster, aliases=aliases)
             if roster is not None:
                 await roster.display()
         else:
