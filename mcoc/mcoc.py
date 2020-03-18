@@ -2,7 +2,9 @@ from .mcocTools import (KABAM_ICON, COLLECTOR_ICON, PagesMenu,
                         GSHandler, gapi_service_creds, GSExport, CDT_COLORS, StaticGameData)
 # import cogs.mcocTools
 # from . import hook as hook
-from .hook import (ChampionRoster, HashtagRosterConverter)
+# from .hook import (ChampionRoster, HashtagRosterConverter)
+from .hook import ChampionRoster as hookChampionRoster
+from .hook import HashtagRosterConverter as hookHashtagRosterConverter
 import re
 from datetime import datetime, timedelta
 from dateutil.parser import parse as dateParse
@@ -1210,11 +1212,11 @@ class MCOC(ChampionFactory):
             await self.bot.say('This server is unauthorized.')
             return
         else:
-            if HashtagRosterConverter is not None:
+            if hookHashtagRosterConverter is not None:
                 # harglist = self.bot.user + hargs
                 # hargs = await hook.HashtagRankConverter(ctx, hargs).convert() #imported from hook
                 # roster = hook.HashtagRosterConverter(ctx.bot, hargs).convert()
-                roster = HashtagRosterConverter(ctx.bot, hargs).convert()
+                roster = hookHashtagRosterConverter(ctx.bot, hargs).convert()
                 # await self.update_local()
                 # roster = hargs.roster.filter_champs(hargs.tags)
                 # filtered = roster.filter_champs(hargs.attrs.copy())
@@ -1245,11 +1247,11 @@ class MCOC(ChampionFactory):
         # hargs = await hook.HashtagRankConverter(ctx, hargs).convert() #imported from hook
         #roster = hook.ChampionRoster(self.bot, self.bot.user, attrs=hargs.attrs)
         # await roster.display(hargs.tags)
-        if ChampionRoster is not None:
+        if hookChampionRoster is not None:
             sgd = StaticGameData()
             aliases = {'#var2': '(#5star | #6star) & #size:xl',
                        '#poisoni': '#poisonimmunity'}
-            roster = await sgd.parse_with_attr(ctx, hargs, ChampionRoster, aliases=aliases)
+            roster = await sgd.parse_with_attr(ctx, hargs, hookChampionRoster, aliases=aliases)
             if roster is not None:
                 await roster.display()
         else:
