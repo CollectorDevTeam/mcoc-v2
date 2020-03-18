@@ -1248,8 +1248,8 @@ class MCOC(ChampionFactory):
         #roster = hook.ChampionRoster(self.bot, self.bot.user, attrs=hargs.attrs)
         # await roster.display(hargs.tags)
         hook = self.bot.get_cog('Hook')
-        hookChampionRoster = hook.ChampionRoster()
-        if hookChampionRoster is not None:
+        if hook is not None:
+            hookChampionRoster = hook.ChampionRoster()
             sgd = StaticGameData()
             aliases = {'#var2': '(#5star | #6star) & #size:xl',
                        '#poisoni': '#poisonimmunity'}
