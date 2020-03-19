@@ -1,7 +1,7 @@
 import discord
 from datetime import datetime, timedelta
 from discord.ext import commands
-from .mcoc import (ChampConverter, ChampConverterMult,
+from cogs.mcoc import (ChampConverter, ChampConverterMult,
                   QuietUserError, override_error_handler)
 from .utils.dataIO import dataIO
 from .utils.dataIO import fileIO
