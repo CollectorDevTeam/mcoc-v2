@@ -2,9 +2,9 @@ from .mcocTools import (KABAM_ICON, COLLECTOR_ICON, PagesMenu,
                         GSHandler, gapi_service_creds, GSExport, CDT_COLORS, StaticGameData)
 # import cogs.mcocTools
 # from . import hook as hook
-from cogs.hook import (ChampionRoster, HashtagRosterConverter)
-# from cogs.hook import ChampionRoster as ChampionRoster
-# from cogs.hook import HashtagRosterConverter as hookHashtagRosterConverter
+# from cogs.hook import (ChampionRoster, HashtagRosterConverter) 
+##  HOOK relies on MCOC.  this import is causing a circular dependency and it only used for Champ List
+
 import re
 from datetime import datetime, timedelta
 from dateutil.parser import parse as dateParse
@@ -1192,71 +1192,71 @@ class MCOC(ChampionFactory):
         data.description = package
         await self.bot.say(embed=data)
 
-    @commands.has_any_role('CollectorDevTeam', 'CollectorSupportTeam', 'CollectorPartners')
-    @champ.command(pass_context=True, name='export', hidden=True)
-    async def champ_list_export(self, ctx, *, hargs=''):
-        '''List of #hargs champions in name order.
+    # @commands.has_any_role('CollectorDevTeam', 'CollectorSupportTeam', 'CollectorPartners')
+    # @champ.command(pass_context=True, name='export', hidden=True)
+    # async def champ_list_export(self, ctx, *, hargs=''):
+    #     '''List of #hargs champions in name order.
 
-        hargs:  [attribute_args] [hashtags]
-        The optional attribute arguments can be in any order, with or without spaces.
-            <digit>* specifies star <default: 4>
-            r<digit> specifies rank <default: 5>
-            s<digit> specifies signature level <default: 99>
+    #     hargs:  [attribute_args] [hashtags]
+    #     The optional attribute arguments can be in any order, with or without spaces.
+    #         <digit>* specifies star <default: 4>
+    #         r<digit> specifies rank <default: 5>
+    #         s<digit> specifies signature level <default: 99>
 
-        Examples:
-            /champ list    (all 4* champs rank5, sig99)
-            /champ list 5*r3s20 #bleed   (all 5* bleed champs at rank3, sig20)
-        '''
-        guild = await self.check_guild(ctx)
-        if not guild:
-            await self.bot.say('This server is unauthorized.')
-            return
-        else:
-            if HashtagRosterConverter is not None:
-                # harglist = self.bot.user + hargs
-                # hargs = await hook.HashtagRankConverter(ctx, hargs).convert() #imported from hook
-                # roster = hook.HashtagRosterConverter(ctx.bot, hargs).convert()
-                roster = HashtagRosterConverter(ctx.bot, hargs).convert()
-                # await self.update_local()
-                # roster = hargs.roster.filter_champs(hargs.tags)
-                # filtered = roster.filter_champs(hargs.attrs.copy())
-                # sorted(filtered, reverse=True, key=attrgetter('full_name'))]
-                strs = [champ.full_name for champ in roster]
-                package = '\n'.join(strs)
-                print(package)
-                pages = chat.pagify(package, page_length=2000)
-                for page in pages:
-                    await self.bot.say(chat.box(page))
-            else:
-                await self.bot.say('Sorry, the Hook cog is not loaded right now.')
+    #     Examples:
+    #         /champ list    (all 4* champs rank5, sig99)
+    #         /champ list 5*r3s20 #bleed   (all 5* bleed champs at rank3, sig20)
+    #     '''
+    #     guild = await self.check_guild(ctx)
+    #     if not guild:
+    #         await self.bot.say('This server is unauthorized.')
+    #         return
+    #     else:
+    #         if HashtagRosterConverter is not None:
+    #             # harglist = self.bot.user + hargs
+    #             # hargs = await hook.HashtagRankConverter(ctx, hargs).convert() #imported from hook
+    #             # roster = hook.HashtagRosterConverter(ctx.bot, hargs).convert()
+    #             roster = HashtagRosterConverter(ctx.bot, hargs).convert()
+    #             # await self.update_local()
+    #             # roster = hargs.roster.filter_champs(hargs.tags)
+    #             # filtered = roster.filter_champs(hargs.attrs.copy())
+    #             # sorted(filtered, reverse=True, key=attrgetter('full_name'))]
+    #             strs = [champ.full_name for champ in roster]
+    #             package = '\n'.join(strs)
+    #             print(package)
+    #             pages = chat.pagify(package, page_length=2000)
+    #             for page in pages:
+    #                 await self.bot.say(chat.box(page))
+    #         else:
+    #             await self.bot.say('Sorry, the Hook cog is not loaded right now.')
 
-    @champ.command(pass_context=True, name='list')
-    async def champ_list(self, ctx, *, hargs=''):
-        '''List of all champions in prestige order.
+    # @champ.command(pass_context=True, name='list')
+    # async def champ_list(self, ctx, *, hargs=''):
+    #     '''List of all champions in prestige order.
 
-        hargs:  [attribute_args] [hashtags]
-        The optional attribute arguments can be in any order, with or without spaces.
-            <digit>* specifies star <default: 4>
-            r<digit> specifies rank <default: 5>
-            s<digit> specifies signature level <default: 99>
+    #     hargs:  [attribute_args] [hashtags]
+    #     The optional attribute arguments can be in any order, with or without spaces.
+    #         <digit>* specifies star <default: 4>
+    #         r<digit> specifies rank <default: 5>
+    #         s<digit> specifies signature level <default: 99>
 
-        Examples:
-            /champ list    (all 4* champs rank5, sig99)
-            /champ list 5*r3s20 #bleed   (all 5* bleed champs at rank3, sig20)
-        '''
-        # hargs = await hook.HashtagRankConverter(ctx, hargs).convert() #imported from hook
-        #roster = hook.ChampionRoster(self.bot, self.bot.user, attrs=hargs.attrs)
-        # await roster.display(hargs.tags)
+    #     Examples:
+    #         /champ list    (all 4* champs rank5, sig99)
+    #         /champ list 5*r3s20 #bleed   (all 5* bleed champs at rank3, sig20)
+    #     '''
+    #     # hargs = await hook.HashtagRankConverter(ctx, hargs).convert() #imported from hook
+    #     #roster = hook.ChampionRoster(self.bot, self.bot.user, attrs=hargs.attrs)
+    #     # await roster.display(hargs.tags)
 
-        if ChampionRoster is not None:
-            sgd = StaticGameData()
-            aliases = {'#var2': '(#5star | #6star) & #size:xl',
-                       '#poisoni': '#poisonimmunity'}
-            roster = await sgd.parse_with_attr(ctx, hargs, ChampionRoster, aliases=aliases)
-            if roster is not None:
-                await roster.display()
-        else:
-            await self.bot.say('Sorry, the Hook cog is not loaded right now.')
+    #     if ChampionRoster is not None:
+    #         sgd = StaticGameData()
+    #         aliases = {'#var2': '(#5star | #6star) & #size:xl',
+    #                    '#poisoni': '#poisonimmunity'}
+    #         roster = await sgd.parse_with_attr(ctx, hargs, ChampionRoster, aliases=aliases)
+    #         if roster is not None:
+    #             await roster.display()
+    #     else:
+    #         await self.bot.say('Sorry, the Hook cog is not loaded right now.')
 
     @champ.command(pass_context=True, name='released', aliases=['odds', 'chances', ])
     async def champ_released(self, ctx, champ: ChampConverter = None):
