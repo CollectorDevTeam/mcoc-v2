@@ -1230,20 +1230,25 @@ class MCOC(ChampionFactory):
     #         else:
     #             await self.bot.say('Sorry, the Hook cog is not loaded right now.')
 
-    # @champ.command(pass_context=True, name='list')
-    # async def champ_list(self, ctx, *, hargs=''):
-    #     '''List of all champions in prestige order.
+    @champ.command(pass_context=True, name='list')
+    async def champ_list(self, ctx, *, hargs=''):
+        '''List of all champions in prestige order.
 
-    #     hargs:  [attribute_args] [hashtags]
-    #     The optional attribute arguments can be in any order, with or without spaces.
-    #         <digit>* specifies star <default: 4>
-    #         r<digit> specifies rank <default: 5>
-    #         s<digit> specifies signature level <default: 99>
+        hargs:  [attribute_args] [hashtags]
+        The optional attribute arguments can be in any order, with or without spaces.
+            <digit>* specifies star <default: 4>
+            r<digit> specifies rank <default: 5>
+            s<digit> specifies signature level <default: 99>
 
-    #     Examples:
-    #         /champ list    (all 4* champs rank5, sig99)
-    #         /champ list 5*r3s20 #bleed   (all 5* bleed champs at rank3, sig20)
-    #     '''
+        Examples:
+            /champ list    (all 4* champs rank5, sig99)
+            /champ list 5*r3s20 #bleed   (all 5* bleed champs at rank3, sig20)
+        '''
+        hook = self.bot.get_cog('Hook')
+        if hook is None:
+            await self.bot.say('Sorry, the Hook cog is not currently loaded.')
+        else:
+            await hook.get_champ_list(self, ctx, hargs)
     #     # hargs = await hook.HashtagRankConverter(ctx, hargs).convert() #imported from hook
     #     #roster = hook.ChampionRoster(self.bot, self.bot.user, attrs=hargs.attrs)
     #     # await roster.display(hargs.tags)
