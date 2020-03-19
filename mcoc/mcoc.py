@@ -1248,7 +1248,7 @@ class MCOC(ChampionFactory):
         if hook is None:
             await self.bot.say('Sorry, the Hook cog is not currently loaded.')
         else:
-            await hook.get_champ_list(self, ctx, hargs)
+            await hook.get_champ_list(ctx, hargs)
     #     # hargs = await hook.HashtagRankConverter(ctx, hargs).convert() #imported from hook
     #     #roster = hook.ChampionRoster(self.bot, self.bot.user, attrs=hargs.attrs)
     #     # await roster.display(hargs.tags)
