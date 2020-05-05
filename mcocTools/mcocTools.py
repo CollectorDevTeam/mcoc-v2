@@ -1198,10 +1198,10 @@ class MCOCTools:
                     try:
                         if mcoc is not None:
                             basic = await mcoc.get_champion(calendar[i]['basic'])
-                            package += 'Basic:   4☆ {0.full_name}\n'.format(
+                            package += 'Basic:   4☆ {0.full_name}\n\n'.format(
                                 basic)
                     except:
-                        'Basic:   4☆ {0.full_name}\n'.format(basic)
+                        'Basic:   4☆ {0.full_name}\n\n'.format(basic)
                     # feature = await mcoc.get_champion(calendar[i]['feature'])
 
                 # if calendar[i]['eq'] != '':
