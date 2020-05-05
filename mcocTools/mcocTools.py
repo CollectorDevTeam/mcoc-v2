@@ -434,7 +434,6 @@ class StaticGameData:
             # settings=dict(column_handler='champs: to_list')
         )
 
-
         # Update this list to add Events
         # events = ['13', '13.1', '14', '14.1', '15', '15.1', '16', '16.1', '17', '17.1', '17.2', '18', '18.1', '19',
         #           '19.1', '20', '20.1', '21', '21.1', '21.2', '21.3', '22', '22.1','23','23.1', '24',
@@ -1088,7 +1087,6 @@ class MCOCTools:
         # self.calendar['screenshot'] = ''
         # dataIO.save_json('data/mcocTools/mcoctools.json', self.calendar)
 
-
     # lookup_links = {
     #     'hook': (
     #         '<http://hook.github.io/champions>',
@@ -1190,7 +1188,7 @@ class MCOCTools:
                         if mcoc is not None:
                             feature = await mcoc.get_champion(calendar[i]['feature'])
                             package += '__Arena__\n' \
-                                'Feature: 4★ / 5★ {0}\n'.format(
+                                'Feature: 4★ & 5★ {0}\n'.format(
                                     feature.full_name)
                             data.set_thumbnail(url=feature.get_featured())
                     except:
@@ -1206,7 +1204,6 @@ class MCOCTools:
                         'Basic:   4☆ {0.full_name}\n'.format(basic)
                     # feature = await mcoc.get_champion(calendar[i]['feature'])
 
-
                 # if calendar[i]['eq'] != '':
                 #     package += 'Event Quest vn: {0}\n``/eq {0}``\n'.format(calendar[i]['eq'])
                 if calendar[i]['notes'] != '':
@@ -1221,9 +1218,9 @@ class MCOCTools:
                     package += 'Quest: Off\n'
                 package += 'War {}: {}'.format(
                     calendar[i]['awseason'], calendar[i]['aw'])
-                data.add_field(name=name, value=package)
+                data.add_field(name=name, value=package, inline=False)
             data.add_field(name='Link to MCOC Schedule',
-                           value='[MCOC Shcedule by CollectorDevTeam]({})'.format(PUBLISHED))
+                           value='[MCOC Shcedule by CollectorDevTeam]({})'.format(PUBLISHED), inline=False)
             pages.append(data)
         menu = PagesMenu(self.bot, timeout=120,
                          delete_onX=True, add_pageof=True)
