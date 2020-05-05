@@ -1,7 +1,7 @@
 import discord
 from datetime import datetime, timedelta
 from discord.ext import commands
-from .mcoc import (ChampConverter, ChampConverterMult,
+from cogs.mcoc import (ChampConverter, ChampConverterMult,
                   QuietUserError, override_error_handler)
 from .utils.dataIO import dataIO
 from .utils.dataIO import fileIO
@@ -1063,6 +1063,20 @@ class Hook:
                     except:
                         self.bot.delete_message(message)
                     await self.bot.send_message(channel, "Did not import")
+
+    async def get_champ_list(self, ctx, hargs=''):
+
+        if ChampionRoster is not None:
+            sgd = StaticGameData()
+            aliases = {'#var2': '(#5star | #6star) & #size:xl',
+                       '#poisoni': '#poisonimmunity'}
+            roster = await sgd.parse_with_attr(ctx, hargs, ChampionRoster, aliases=aliases)
+            if roster is not None:
+                await roster.display()
+        else:
+            return
+
+
 
 def parse_value(value):
     try:

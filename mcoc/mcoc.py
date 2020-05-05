@@ -2,9 +2,9 @@ from .mcocTools import (KABAM_ICON, COLLECTOR_ICON, PagesMenu,
                         GSHandler, gapi_service_creds, GSExport, CDT_COLORS, StaticGameData)
 # import cogs.mcocTools
 # from . import hook as hook
-from cogs.hook import (ChampionRoster, HashtagRosterConverter)
-# from cogs.hook import ChampionRoster as ChampionRoster
-# from cogs.hook import HashtagRosterConverter as hookHashtagRosterConverter
+# from cogs.hook import (ChampionRoster, HashtagRosterConverter) 
+##  HOOK relies on MCOC.  this import is causing a circular dependency and it only used for Champ List
+
 import re
 from datetime import datetime, timedelta
 from dateutil.parser import parse as dateParse
@@ -1244,19 +1244,24 @@ class MCOC(ChampionFactory):
             /champ list    (all 4* champs rank5, sig99)
             /champ list 5*r3s20 #bleed   (all 5* bleed champs at rank3, sig20)
         '''
-        # hargs = await hook.HashtagRankConverter(ctx, hargs).convert() #imported from hook
-        #roster = hook.ChampionRoster(self.bot, self.bot.user, attrs=hargs.attrs)
-        # await roster.display(hargs.tags)
-
-        if ChampionRoster is not None:
-            sgd = StaticGameData()
-            aliases = {'#var2': '(#5star | #6star) & #size:xl',
-                       '#poisoni': '#poisonimmunity'}
-            roster = await sgd.parse_with_attr(ctx, hargs, ChampionRoster, aliases=aliases)
-            if roster is not None:
-                await roster.display()
+        hook = self.bot.get_cog('Hook')
+        if hook is None:
+            await self.bot.say('Sorry, the Hook cog is not currently loaded.')
         else:
-            await self.bot.say('Sorry, the Hook cog is not loaded right now.')
+            await hook.get_champ_list(ctx, hargs)
+    #     # hargs = await hook.HashtagRankConverter(ctx, hargs).convert() #imported from hook
+    #     #roster = hook.ChampionRoster(self.bot, self.bot.user, attrs=hargs.attrs)
+    #     # await roster.display(hargs.tags)
+
+    #     if ChampionRoster is not None:
+    #         sgd = StaticGameData()
+    #         aliases = {'#var2': '(#5star | #6star) & #size:xl',
+    #                    '#poisoni': '#poisonimmunity'}
+    #         roster = await sgd.parse_with_attr(ctx, hargs, ChampionRoster, aliases=aliases)
+    #         if roster is not None:
+    #             await roster.display()
+    #     else:
+    #         await self.bot.say('Sorry, the Hook cog is not loaded right now.')
 
     @champ.command(pass_context=True, name='released', aliases=['odds', 'chances', ])
     async def champ_released(self, ctx, champ: ChampConverter = None):
