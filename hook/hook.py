@@ -212,6 +212,10 @@ class ChampionRoster:
             dataIO.save_json(self.champs_file, champ_data)
             #self.save_champ_data(champ_data)
 
+    #handles user deletion
+    # def _delete_user(self):
+        
+
     async def load_champions(self, silent=False):
         data = self.load_champ_data()
         self.roster = {}
