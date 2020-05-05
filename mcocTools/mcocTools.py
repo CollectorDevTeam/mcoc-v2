@@ -133,7 +133,8 @@ class GSExport:
 
         if meta:
             for record in meta.get_all_records():
-                [record.update(((k, v),)) for k, v in self.settings.items() if k not in record or not record[k]]
+                [record.update(((k, v),)) for k, v in self.settings.items(
+                ) if k not in record or not record[k]]
                 await self.retrieve_sheet(ss, **record)
         else:
             await self.retrieve_sheet(ss, **self.settings)
@@ -180,7 +181,8 @@ class GSExport:
                     if len(clean_row[1:]) < dlen or not any(clean_row[1:]):
                         pack = None
                     else:
-                        pack = [clean_row[i:i + dlen] for i in range(1, len(clean_row), dlen)]
+                        pack = [clean_row[i:i + dlen]
+                                for i in range(1, len(clean_row), dlen)]
                 else:
                     await self.bot.say("Unknown data type '{}' for worksheet '{}' in spreadsheet '{}'".format(
                         data_type, sheet_name, self.name))
@@ -329,14 +331,16 @@ class GSHandler:
                         pulled = True
                         break
                     except:
-                        logger.info("Error while pulling '{}' try: {}".format(k, try_num))
+                        logger.info(
+                            "Error while pulling '{}' try: {}".format(k, try_num))
                         if try_num < 3:
                             # time.sleep(.3 * try_num)
                             asyncio.sleep(.3*try_num)
                             await self.bot.say("Error while pulling '{}', try: {}".format(k, try_num))
             msg = await self.bot.edit_message(msg,
                                               'Pulled Google Sheet data {}/{}'.format(i + 1, num_files))
-            logger.info('Pulled Google Sheet data {}/{}, {}'.format(i + 1, num_files, "" if pulled else "Failed"))
+            logger.info('Pulled Google Sheet data {}/{}, {}'.format(i +
+                                                                    1, num_files, "" if pulled else "Failed"))
         msg = await self.bot.edit_message(msg, 'Retrieval Complete')
         return package
 
@@ -412,7 +416,6 @@ class StaticGameData:
             # settings=dict(column_handler='champs: to_list')
         )
 
-
         self.gsheet_handler.register_gsheet(
             name='tldr',
             gkey='1tQdQNjzr8dlSz2A8-G33YoNIU1NF8xqAmIgZtR7DPjM',
@@ -430,7 +433,6 @@ class StaticGameData:
             range_name='variant',
             # settings=dict(column_handler='champs: to_list')
         )
-
 
 
         # Update this list to add Events
@@ -478,7 +480,6 @@ class StaticGameData:
                 self.remote_data_basepath + 'json/masteries.json',
                 session)
             self.cdt_stats = StaticGameData.get_gsheets_data('cdt_stats')
-
 
     async def cache_gsheets(self):
         print("Attempt gsheet pull")
@@ -606,7 +607,8 @@ class P0Expr(md.Grammar):
 
 
 class SearchExpr(md.Grammar):
-    grammar = (P0Expr | ParenExpr | SearchNumber | SearchPhrase | ExplicitKeyword)
+    grammar = (P0Expr | ParenExpr | SearchNumber |
+               SearchPhrase | ExplicitKeyword)
 
     def match(self, data, ver_data):
         return self[0].match(data, ver_data)
@@ -621,17 +623,20 @@ class AttrSigToken(md.Grammar):
     def get_attrs(self, attrs):
         attrs['sig'] = int(self.string[1:])
 
+
 class AttrRankToken(md.Grammar):
     grammar = md.WORD('r', '0-9', count=2)
 
     def get_attrs(self, attrs):
         attrs['rank'] = int(self.string[1])
 
+
 class AttrDebugToken(md.Grammar):
     grammar = md.WORD('d', '0-9', count=2)
 
     def get_attrs(self, attrs):
         attrs['debug'] = int(self.string[1])
+
 
 class AttrStarToken(md.Grammar):
     grammar = (md.WORD('0-9', count=1),
@@ -641,27 +646,32 @@ class AttrStarToken(md.Grammar):
     def get_attrs(self, attrs):
         attrs['star'] = int(self.string[0])
 
+
 class AttrExpr(md.Grammar):
     grammar = md.ONE_OR_MORE(AttrSigToken | AttrRankToken |
-                        AttrDebugToken | AttrStarToken, collapse=True)
+                             AttrDebugToken | AttrStarToken, collapse=True)
 
     def get_attrs(self, attrs=None):
         attrs = attrs if attrs is not None else {}
         {e.get_attrs(attrs) for e in self}
         return attrs
 
+
 class UserSnowflake(md.Grammar):
     grammar = md.L('<@'), md.OPTIONAL(md.L('!')), md.WORD('0-9'), md.L('>')
     grammar_whitespace_mode = 'explicit'
+
 
 class UserDiscriminator(md.Grammar):
     grammar = md.L('#'), md.WORD('0-9', count=4)
     grammar_whitespace_mode = 'explicit'
 
+
 class UserString(md.Grammar):
     grammar = (md.OPTIONAL(md.L('@')), md.ANY_EXCEPT('@!#()&|'),
-                md.OPTIONAL(UserDiscriminator))
+               md.OPTIONAL(UserDiscriminator))
     grammar_whitespace_mode = 'explicit'
+
 
 class UserExpr(md.Grammar):
     grammar = UserString | UserSnowflake
@@ -672,8 +682,10 @@ class UserExpr(md.Grammar):
 ##################################################
 #  Hashtag grammar
 
+
 class HashtagPlusError(TypeError):
     pass
+
 
 class HashtagToken(md.Grammar):
     grammar = md.WORD('#', "_a-zA-Z:*'0-9-"), md.WORD('_a-zA-Z:*0-9')
@@ -716,11 +728,13 @@ class HashBinaryOperator(md.Grammar):
         elif self.string == '-':
             return set.difference
         elif self.string == '+':
-            raise HashtagPlusError("Operator '+' is not defined for Hashtag Syntax")
+            raise HashtagPlusError(
+                "Operator '+' is not defined for Hashtag Syntax")
 
     def sub_aliases(self, aliases):
         if self.string == '+':
-            raise HashtagPlusError("Operator '+' is not defined for Hashtag Syntax")
+            raise HashtagPlusError(
+                "Operator '+' is not defined for Hashtag Syntax")
         else:
             return self.string
 
@@ -810,6 +824,7 @@ class HashAttrSearchExpr(md.Grammar):
         attrs = self[2].get_attrs(attrs) if self[2] else attrs
         return (attrs, self[1].sub_aliases(aliases)) if self[1] else (attrs, '')
 
+
 class HashUserSearchExpr(md.Grammar):
     grammar = (md.OPTIONAL(UserExpr),
                md.OPTIONAL(HashImplicitSearchExpr | HashExplicitSearchExpr))
@@ -859,7 +874,7 @@ class HashParser:
         aliases = aliases if aliases else {}
         try:
             attrs, expl_hargs = await self.parse_1st_pass(ctx,
-                                self.attr_parser, hargs, aliases)
+                                                          self.attr_parser, hargs, aliases)
         except (HashtagPlusError, md.ParseError) as e:
             #logger.info('SyntaxError caught ', str(e))
             return
@@ -871,7 +886,7 @@ class HashParser:
         aliases = aliases if aliases else {}
         try:
             user, expl_hargs = await self.parse_1st_pass(ctx, self.user_parser,
-                                hargs, aliases)
+                                                         hargs, aliases)
         except (HashtagPlusError, md.ParseError) as e:
             #logger.info('SyntaxError caught ', str(e))
             return
@@ -881,18 +896,18 @@ class HashParser:
 
     async def generic_syntax_error_msg(self, hargs, e=None):
         em = discord.Embed(title='Input Error', description='Syntax problem',
-                color=discord.Color.red())
+                           color=discord.Color.red())
         em.add_field(name="Don't mix implicit and explicit operators",
-                value=hargs)
+                     value=hargs)
         await self.bot.say(embed=em)
         return
 
     async def hashtag_plus_error_msg(self):
         em = discord.Embed(title='Input Error', description='Syntax problem',
-                color=discord.Color.red())
+                           color=discord.Color.red())
         em.add_field(name="`+` operator is not defined for hashtags.",
-                value="You probably want the `|` operator.  Call "
-                      "`/help hashtags` for detailed syntax.")
+                     value="You probably want the `|` operator.  Call "
+                     "`/help hashtags` for detailed syntax.")
         await self.bot.say(embed=em)
         return
 
@@ -936,11 +951,13 @@ class PagesMenu:
             return
         self.embedded = isinstance(page_list[0], discord.Embed)
         self.all_emojis = OrderedDict([(i.emoji, i) for i in (
-            self.EmojiReact("\N{BLACK LEFT-POINTING DOUBLE TRIANGLE}", page_length > 5, -5),
+            self.EmojiReact(
+                "\N{BLACK LEFT-POINTING DOUBLE TRIANGLE}", page_length > 5, -5),
             self.EmojiReact("\N{BLACK LEFT-POINTING TRIANGLE}", True, -1),
             self.EmojiReact("\N{CROSS MARK}", True, None),
             self.EmojiReact("\N{BLACK RIGHT-POINTING TRIANGLE}", True, 1),
-            self.EmojiReact("\N{BLACK RIGHT-POINTING DOUBLE TRIANGLE}", page_length > 5, 5),
+            self.EmojiReact(
+                "\N{BLACK RIGHT-POINTING DOUBLE TRIANGLE}", page_length > 5, 5),
         )])
 
         print('menu_pages is embedded: ' + str(self.embedded))
@@ -1003,7 +1020,8 @@ class PagesMenu:
             try:
                 if self.delete_onX:
                     await self.bot.delete_message(message)
-                    report = ('Message deleted by {} {} on {} {}'.format(react.user.display_name, react.user.id, message.server.name, message.server.id))
+                    report = ('Message deleted by {} {} on {} {}'.format(
+                        react.user.display_name, react.user.id, message.server.name, message.server.id))
                     print(report)
                     channel = self.bot.get_channel('537330789332025364')
                     await self.bot.send_message(channel, report)
@@ -1019,8 +1037,10 @@ class PagesMenu:
             ucolor = discord.Color.gold()
         else:
             ucolor = ctx.message.author.color
-        data = discord.Embed(title='Confirmation:sparkles:', description=question, color=ucolor)
-        data.set_footer(text='CollectorDevTeam Dataset', icon_url=COLLECTOR_ICON)
+        data = discord.Embed(title='Confirmation:sparkles:',
+                             description=question, color=ucolor)
+        data.set_footer(text='CollectorDevTeam Dataset',
+                        icon_url=COLLECTOR_ICON)
         message = await self.bot.say(embed=data)
 
         await self.bot.add_reaction(message, '❌')
@@ -1029,17 +1049,20 @@ class PagesMenu:
                                                  user=ctx.message.author, timeout=90, emoji=['❌', '🆗'])
         if react is not None:
             if react.reaction.emoji == '❌':
-                data.description = '{} has canceled confirmation'.format(ctx.message.author.name)
+                data.description = '{} has canceled confirmation'.format(
+                    ctx.message.author.name)
                 # data.add_field(name='Confirmation', value='{} has canceled confirmation'.format(ctx.message.author.name))
                 await self.bot.edit_message(message, embed=data)
                 return False, message
             elif react.reaction.emoji == '🆗':
-                data.description = '{} has confirmed.'.format(ctx.message.author.name)
+                data.description = '{} has confirmed.'.format(
+                    ctx.message.author.name)
                 # data.add_field(name='Confirmation', value='{} has confirmed.'.format(ctx.message.author.name))
                 await self.bot.edit_message(message, embed=data)
                 return True, message
         else:
-            data.description = '{} has not responded'.format(ctx.message.author.name)
+            data.description = '{} has not responded'.format(
+                ctx.message.author.name)
             # data.add_field(name='Confirmation', value='{} has not responded'.format(ctx.message.author.name))
             await self.bot.edit_message(message, embed=data)
             return False, message
@@ -1047,6 +1070,7 @@ class PagesMenu:
 
 class MCOCTools:
     """Tools for Marvel Contest of Champions"""
+
     def __init__(self, bot):
         self.bot = bot
         self.search_parser = SearchExpr.parser()
@@ -1063,7 +1087,6 @@ class MCOCTools:
         # self.calendar['time'] = dateParse(0)
         # self.calendar['screenshot'] = ''
         # dataIO.save_json('data/mcocTools/mcoctools.json', self.calendar)
-
 
 
     # lookup_links = {
@@ -1109,7 +1132,6 @@ class MCOCTools:
         dataIO.save_json('data/mcocTools/collectormap.json', buildlist)
         await self.bot.upload('data/mcocTools/collectormap.json')
 
-
     @commands.command(pass_context=True, name='calendar', aliases=('events',))
     async def _calendar(self, ctx, force=False):
         PUBLISHED = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vT5A1MOwm3CvOGjn7fMvYaiTKDuIdvKMnH5XHRcgzi3eqLikm9SdwfkrSuilnZ1VQt8aSfAFJzZ02zM/pubhtml?gid=390226786'
@@ -1132,7 +1154,8 @@ class MCOCTools:
             # dataIO.save_json('data/mcocTools/mcoctools.json', self.mcoctools)
         ssurl = self.calendar_url
         mcoc = self.bot.get_cog('MCOC')
-        filetime = datetime.datetime.fromtimestamp(os.path.getctime('data/mcocTools/calendar.json'))
+        filetime = datetime.datetime.fromtimestamp(
+            os.path.getctime('data/mcocTools/calendar.json'))
         if os.path.exists('data/mcocTools/calendar.json'):
             if filetime.date() != now:
                 await gsh.cache_gsheets('calendar')
@@ -1144,9 +1167,11 @@ class MCOCTools:
             ucolor = author.color
         pages = []
         for start in range(1, 10):
-            data = discord.Embed(color=ucolor, title='CollectorDevTeam | MCOC Schedule', url=PUBLISHED)
+            data = discord.Embed(
+                color=ucolor, title='CollectorDevTeam | MCOC Schedule', url=PUBLISHED)
             data.set_thumbnail(url=COLLECTOR_FEATURED)
-            data.set_footer(text='Requested by {}'.format(author.display_name), icon_url=author.avatar_url)
+            data.set_footer(text='Requested by {}'.format(
+                author.display_name), icon_url=author.avatar_url)
             data.set_image(url=ssurl)
             for i in range(start, start+2):
                 i = str(i)
@@ -1155,46 +1180,53 @@ class MCOCTools:
                 elif i == '4':
                     name = 'Tomorrow, {}'.format(calendar[i]['date'])
                 else:
-                    name = '{}, {}'.format(calendar[i]['day'], calendar[i]['date'])
+                    name = '{}, {}'.format(
+                        calendar[i]['day'], calendar[i]['date'])
                 package = ''
                 if calendar[i]['feature'] == 'Crystal':
                     package += 'Arena: Crystal Cornucopia\n'
                 elif calendar[i]['feature'] != "?" and calendar[i]['feature'] != "Crystal":
                     try:
                         if mcoc is not None:
-                            feature = mcoc.get_champion(calendar[i]['feature'])
+                            feature = await mcoc.get_champion(calendar[i]['feature'])
                             package += '__Arena__\n' \
-                                    'Feature: 4★ / 5★ {0}\n'.format(feature.full_name)
+                                'Feature: 4★ / 5★ {0}\n'.format(
+                                    feature.full_name)
                             data.set_thumbnail(url=feature.get_featured())
                     except:
                         package += '__Arena__\n' \
-                                   'Feature: {0}\n'.format(calendar[i]['feature'])
+                                   'Feature: {0}\n'.format(
+                                       calendar[i]['feature'])
                     try:
                         if mcoc is not None:
                             basic = await mcoc.get_champion(calendar[i]['basic'])
-                            package += 'Basic:   4☆ {0.full_name}\n'.format(basic)
+                            package += 'Basic:   4☆ {0.full_name}\n'.format(
+                                basic)
                     except:
                         'Basic:   4☆ {0.full_name}\n'.format(basic)
                     # feature = await mcoc.get_champion(calendar[i]['feature'])
 
 
-
-                if calendar[i]['eq'] != '':
-                    package += 'Event Quest vn: {0}\n``/eq {0}``\n'.format(calendar[i]['eq'])
+                # if calendar[i]['eq'] != '':
+                #     package += 'Event Quest vn: {0}\n``/eq {0}``\n'.format(calendar[i]['eq'])
                 if calendar[i]['notes'] != '':
                     package += 'Notes: {}\n'.format(calendar[i]['notes'])
-                package += '__Alliance Events__\n1 Day : {}\n3 Day : {}\n'.format(calendar[i]['1day'], calendar[i]['3day'])
+                package += '__Alliance Events__\n1 Day : {}\n3 Day : {}\n'.format(
+                    calendar[i]['1day'], calendar[i]['3day'])
                 if calendar[i]['aq'] != 'off':
                     day = calendar[i]['aq']
-                    package += 'Quest {}: On, Day {}\n'.format(calendar[i]['aqseason'], day[-1:])
+                    package += 'Quest {}: On, Day {}\n'.format(
+                        calendar[i]['aqseason'], day[-1:])
                 else:
                     package += 'Quest: Off\n'
-                package += 'War {}: {}'.format(calendar[i]['awseason'], calendar[i]['aw'])
+                package += 'War {}: {}'.format(
+                    calendar[i]['awseason'], calendar[i]['aw'])
                 data.add_field(name=name, value=package)
             data.add_field(name='Link to MCOC Schedule',
                            value='[MCOC Shcedule by CollectorDevTeam]({})'.format(PUBLISHED))
             pages.append(data)
-        menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
+        menu = PagesMenu(self.bot, timeout=120,
+                         delete_onX=True, add_pageof=True)
         await menu.menu_start(pages=pages, page_number=2)
         # take a new ssurl after the fact
         if self.mcoctools['calendar_date'] != now:
@@ -1203,32 +1235,37 @@ class MCOCTools:
             self.mcoctools['calendar_date'] = now
             # dataIO.save_json('data/mcocTools/mcoctools.json', self.mcoctools)
 
-    @commands.command(pass_context=True, name='commands', aliases=('dummies','dummy',))
+    @commands.command(pass_context=True, name='commands', aliases=('dummies', 'dummy',))
     async def _command_images(self, ctx, name: str = None):
         ucolor = discord.Color.gold()
         author = ctx.message.author
         if ctx.message.channel.is_private is False:
             ucolor = author.color
         IMGBASE = 'https://raw.githubusercontent.com/CollectorDevTeam/assets/master/data/images/commands/'
-        commands = ('admin','moderator','alliance','roster','champ')
+        commands = ('admin', 'moderator', 'alliance', 'roster', 'champ')
         if name is not None and name.lower() in commands:
-            data = discord.Embed(color=ucolor, title='Commands for Dummies', url=PATREON)
+            data = discord.Embed(
+                color=ucolor, title='Commands for Dummies', url=PATREON)
             data.set_image(url='{}{}1.png'.format(IMGBASE, name.lower()))
-            data.set_footer(text='Requested by {}'.format(author.display_name), icon_url=author.avatar_url)
+            data.set_footer(text='Requested by {}'.format(
+                author.display_name), icon_url=author.avatar_url)
             data.set_author(name='CollectorDevTeam', icon_url=COLLECTOR_ICON)
             await self.bot.say(embed=data)
             return
         else:
             pages = []
             for i in commands:
-                data = discord.Embed(color=ucolor, title='Commands for Dummies', url=PATREON)
+                data = discord.Embed(
+                    color=ucolor, title='Commands for Dummies', url=PATREON)
                 data.set_image(url='{}{}1.png'.format(IMGBASE, i))
-                data.set_footer(text='Requested by {}'.format(author.display_name), icon_url=author.avatar_url)
-                data.set_author(name='CollectorDevTeam', icon_url=COLLECTOR_ICON)
+                data.set_footer(text='Requested by {}'.format(
+                    author.display_name), icon_url=author.avatar_url)
+                data.set_author(name='CollectorDevTeam',
+                                icon_url=COLLECTOR_ICON)
                 pages.append(data)
-            menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
+            menu = PagesMenu(self.bot, timeout=120,
+                             delete_onX=True, add_pageof=True)
             await menu.menu_start(pages=pages, page_number=0)
-
 
     @commands.command(pass_context=True, name='cutoffs')
     async def _cutoffs(self, ctx, champ=None):
@@ -1273,12 +1310,13 @@ class MCOCTools:
             # self.mcoctools['cutoffs'] = await SCREENSHOT.get_screenshot(self, url=PUBLISHED, w=1440, h=900)
             self.mcoctools['cutoffs_date'] = now
             self.cutoffs = dataIO.load_json('data/mcocTools/cutoffs.json')
-            self.summarystats = dataIO.load_json('data/mcocTools/summarystats.json')
+            self.summarystats = dataIO.load_json(
+                'data/mcocTools/summarystats.json')
             desc = []
             for k in range(1, int(self.cutoffs["1"]["max"])):
                 desc.append("{} {} {} {} [{}]\n".format(self.cutoffs[str(k)]["date"], self.cutoffs[str(k)]["contest"],
-                                                    self.cutoffs[str(k)]["champ"], self.cutoffs[str(k)]["cutoff"], self.cutoffs[str(k)]["bracket1"]))
-            #load the full dataset into a default arena description file.
+                                                        self.cutoffs[str(k)]["champ"], self.cutoffs[str(k)]["cutoff"], self.cutoffs[str(k)]["bracket1"]))
+            # load the full dataset into a default arena description file.
             self.arena = ''.join(desc)
 
         description = self.arena
@@ -1288,11 +1326,12 @@ class MCOCTools:
             for k in range(1, int(self.cutoffs["1"]["max"])):
                 if self.cutoffs[str(k)]["champ"] == champ.full_name:
                     desc.append("{} {} {} {} [{}]\n".format(self.cutoffs[str(k)]["date"], self.cutoffs[str(k)]["contest"],
-                                                        self.cutoffs[str(k)]["champ"], self.cutoffs[str(k)]["cutoff"], self.cutoffs[str(k)]["bracket1"]))
+                                                            self.cutoffs[str(k)]["champ"], self.cutoffs[str(k)]["cutoff"], self.cutoffs[str(k)]["bracket1"]))
                     description = ''.join(desc)
 
         arena_pages = chat.pagify(description, page_length=500)
-        filetime = datetime.datetime.fromtimestamp(os.path.getctime('data/mcocTools/cutoffs.json'))
+        filetime = datetime.datetime.fromtimestamp(
+            os.path.getctime('data/mcocTools/cutoffs.json'))
         if os.path.exists('data/mcocTools/cutoffs.json'):
             if filetime.date() != datetime.datetime.now().date():
                 await gsh.cache_gsheets('cutoffs')
@@ -1323,14 +1362,17 @@ class MCOCTools:
         basic4bracket2 = '```R Min {} | Avg {} | Max {}```'\
             .format(self.summarystats["4BRbracket2"]["min"],
                     self.summarystats["4BRbracket2"]["average"], self.summarystats["4BRbracket2"]["max"])
-        cutoffstats = '{}\n{}\n{}'.format(feature5cutoff, feature4cutoff, basic4cutoff)
-        bracketstats = '{}\n{}\n{}'.format(feature5bracket2, feature4bracket2, basic4bracket2)
+        cutoffstats = '{}\n{}\n{}'.format(
+            feature5cutoff, feature4cutoff, basic4cutoff)
+        bracketstats = '{}\n{}\n{}'.format(
+            feature5bracket2, feature4bracket2, basic4bracket2)
 
         pred = "date contest champ cutoff [bracket]\n"
         for d in arena_pages:
             data = discord.Embed(color=ucolor, title='Arena Cutoffs [Link to Graph]', url=PUBLISHED,
                                  description=chat.box(pred+d))
-            data.add_field(name="90-Day Summary Statistics", value="The following fields contain ``Min | Average | Max`` breakouts for [N]ew and [R]erun champions over the last 90 days.", inline=False)
+            data.add_field(name="90-Day Summary Statistics",
+                           value="The following fields contain ``Min | Average | Max`` breakouts for [N]ew and [R]erun champions over the last 90 days.", inline=False)
             data.add_field(name="Feature 5★ Top 150 = {} + {}".format(
                 prize, self.summarystats["5FRcutoff"]["prize"]), value=feature5cutoff, inline=False)
             data.add_field(name="Feature 5★ Top 10% = {}".format(
@@ -1340,25 +1382,27 @@ class MCOCTools:
             data.add_field(name="Feature 4★ Top 10% = {}".format(
                 self.summarystats["4FNbracket2"]["prize"]), value=feature4bracket2, inline=False)
             data.add_field(name="Basic 4★ Cutoffs = {} + {}".format(
-                    prize, self.summarystats["5FRcutoff"]["prize"]), value=basic4cutoff, inline=False)
+                prize, self.summarystats["5FRcutoff"]["prize"]), value=basic4cutoff, inline=False)
             data.add_field(name="Basic 4★ 11-25% = {}".format(
                 self.summarystats["4BRbracket2"]["prize"]), value=basic4bracket2, inline=False)
 
             # data.add_field(name='90 Days Cutoff Stats', value=cutoffstats, inline=False)
             # data.add_field(name='90 Days Bracket 2 Stats', value=bracketstats, inline=False)
-            data.set_author(name='CollectorDevTeam + ArenaResultsKnight', icon_url=COLLECTOR_ICON)
-            data.set_footer(text='Requested by {}'.format(author.display_name), icon_url=author.avatar_url)
+            data.set_author(
+                name='CollectorDevTeam + ArenaResultsKnight', icon_url=COLLECTOR_ICON)
+            data.set_footer(text='Requested by {}'.format(
+                author.display_name), icon_url=author.avatar_url)
             # data.set_image(url=self.mcoctools['cutoffs'])
             data.set_thumbnail(url=thumbnail)
             pages.append(data)
         if len(pages) > 0:
-            menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
+            menu = PagesMenu(self.bot, timeout=120,
+                             delete_onX=True, add_pageof=True)
             await menu.menu_start(pages=pages)
         if self.mcoctools['cutoffs_date'] != now:
             # self.mcoctools['cutoffs'] = await SCREENSHOT.get_screenshot(self, url=PUBLISHED, w=1440, h=900)
             # self.mcoctools['cutoffs'] = self.mcoctools['cutoffs']
             self.mcoctools['cutoffs_date'] = now
-
 
     @commands.command(pass_context=True, no_pm=True)
     async def topic(self, ctx, channel: discord.Channel = None):
@@ -1368,7 +1412,8 @@ class MCOCTools:
         topic = channel.topic
         if topic is not None and topic != '':
             data = discord.Embed(color=ctx.message.author.color,
-                                 title='#{} Topic :sparkles:'.format(channel.name),
+                                 title='#{} Topic :sparkles:'.format(
+                                     channel.name),
                                  description=topic)
             data.set_thumbnail(url=ctx.message.server.icon_url)
             data.set_footer(text='CollectorDevTeam', icon_url=COLLECTOR_ICON)
@@ -1383,7 +1428,7 @@ class MCOCTools:
             ucolor = discord.Color.gold()
         else:
             ucolor = author.color
-        #user lists from CDT
+        # user lists from CDT
         cdt = self.bot.get_server("215271081517383682")
         cdtdevteam = self._get_role(cdt, "390253643330355200")
         cdtpatrons = self._get_role(cdt, "428627905233420288")
@@ -1397,7 +1442,6 @@ class MCOCTools:
             patrons += ', Caitibee, Fabio F., Vajda R.'
         else:
             patrons = "[Become a CollectorBot patron today!](https://patreon.com/collectorbot)"
-
 
         author_repo = "https://github.com/Twentysix26"
         red_repo = author_repo + "/Red-DiscordBot"
@@ -1438,17 +1482,22 @@ class MCOCTools:
         #            )
         supportteam = support
         # supportteam = ('phil_wo#3733\nSpiderSebas#9910\nsuprmatt#2753\ntaoness#5565')
-        embed = discord.Embed(colour=ucolor, title="Collector", url=collectorpatreon)
+        embed = discord.Embed(
+            colour=ucolor, title="Collector", url=collectorpatreon)
         embed.add_field(name="Instance owned by", value=str(owner))
         embed.add_field(name="Python", value=py_version)
         embed.add_field(name="discord.py", value=dpy_version)
         embed.add_field(name="About", value=about, inline=False)
-        embed.add_field(name="PrestigePartners", value='Kelldor#3162\nmutamatt#4704', inline=True)
+        embed.add_field(name="PrestigePartners",
+                        value='Kelldor#3162\nmutamatt#4704', inline=True)
         embed.add_field(name='DuelsPartners', value='ƦƆ51#4587', inline=True)
-        embed.add_field(name='MapsPartners', value='jpags#5202\nBlooregarde#5848 ', inline=True)
-        embed.add_field(name='LabyrinthTeam', value='Kiryu#5755\nre-1#7595', inline=True)
+        embed.add_field(name='MapsPartners',
+                        value='jpags#5202\nBlooregarde#5848 ', inline=True)
+        embed.add_field(name='LabyrinthTeam',
+                        value='Kiryu#5755\nre-1#7595', inline=True)
         embed.add_field(name='Collector Partners', value=partners, inline=True)
-        embed.add_field(name='CollectorSupportTeam', value=supportteam, inline=True)
+        embed.add_field(name='CollectorSupportTeam',
+                        value=supportteam, inline=True)
         embed.add_field(name="CollectorDevTeam", value=devteam, inline=True)
         embed.add_field(name="Patrons", value=patrons, inline=True)
         embed.set_footer(text="Bringing joy since 02 Jan 2016 (over "
@@ -1546,11 +1595,14 @@ class MCOCTools:
         pages = chat.pagify('\n'.join(package))
         page_list = []
         for page in pages:
-            em = discord.Embed(title='Data Search', description=page, color=ucolor)
+            em = discord.Embed(title='Data Search',
+                               description=page, color=ucolor)
             em.set_author(name='CollectorDevTeam', icon_url=COLLECTOR_ICON)
-            em.set_footer(text='MCOC Game Files | requested by {}'.format(author.display_name), icon_url=KABAM_ICON)
+            em.set_footer(text='MCOC Game Files | requested by {}'.format(
+                author.display_name), icon_url=KABAM_ICON)
             page_list.append(em)
-        menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
+        menu = PagesMenu(self.bot, timeout=120,
+                         delete_onX=True, add_pageof=True)
         await menu.menu_start(page_list)
 
     def _bcg_recompile(self, str_data):
@@ -1565,9 +1617,8 @@ class MCOCTools:
     async def aux_sheets(self):
         await self.cache_sgd_gsheets()
 
-
     @commands.command(hidden=True, pass_context=True)
-    async def get_file(self, ctx, *, filename:str):
+    async def get_file(self, ctx, *, filename: str):
         if self.check_collectordevteam(ctx) is False:
             return
         elif filename is 'mcoc_service_creds':
@@ -1626,7 +1677,6 @@ class MCOCEvents:
         cdt_trials = await sgd.get_gsheets_data('elemental_trials')
         trials = set(cdt_trials.keys()) - {'_headers'}
 
-
         if trial not in trials:
             em = discord.Embed(color=discord.Color.red(), title='Trials Error',
                                description="Invalid trial '{}'".format(trial))
@@ -1654,12 +1704,13 @@ class MCOCEvents:
                              value=cdt_trials['rewards'][tier])
             em.set_author(name='CollectorDevTeam',
                           icon_url=COLLECTOR_ICON)
-            em.set_footer(text='Requested by {}'.format(author.display_name), icon_url=author.avatar_url)
+            em.set_footer(text='Requested by {}'.format(
+                author.display_name), icon_url=author.avatar_url)
             await self.bot.say(embed=em)
 
     ### BEGIN EVENTQUEST GROUP ###
 
-    @commands.group(pass_context=True, aliases=('eq','event'), hidden=False)
+    @commands.group(pass_context=True, aliases=('eq', 'event'), hidden=False)
     async def eventquest(self, ctx, eq: str, tier=None):
         author = ctx.message.author
         if ctx.message.channel.is_private:
@@ -1670,12 +1721,15 @@ class MCOCEvents:
         if self.event_data is None:
             if os.path.exists('data/mcoc/event_data.json'):
                 now = datetime.datetime.now().date()
-                filetime = datetime.datetime.fromtimestamp(os.path.getctime('data/mcoc/event_data.json'))
+                filetime = datetime.datetime.fromtimestamp(
+                    os.path.getctime('data/mcoc/event_data.json'))
                 if filetime.date() == now:
-                    self.event_data = dataIO.load_json('data/mcoc/event_data.json')
+                    self.event_data = dataIO.load_json(
+                        'data/mcoc/event_data.json')
                 else:
                     await self.gsheet_handler.cache_gsheets('event_data')
-                    self.event_data = dataIO.load_json('data/mcoc/event_data.json')
+                    self.event_data = dataIO.load_json(
+                        'data/mcoc/event_data.json')
         if eq in self.event_data.keys():
             valid = True
         elif eq not in self.event_data.keys():
@@ -1683,7 +1737,8 @@ class MCOCEvents:
             await self.gsheet_handler.cache_gsheets('event_data')
             self.event_data = dataIO.load_json('data/mcoc/event_data.json')
             if eq not in self.event_data.keys():
-                data = discord.Embed(color=ucolor,title='Event Quest Help', description='Please choose a valid Event Quest version number:\n')
+                data = discord.Embed(color=ucolor, title='Event Quest Help',
+                                     description='Please choose a valid Event Quest version number:\n')
                 # eqs = OrderedDict([(i, self.event_data[i]['event_title']) for i in self.event_data.keys()
                 eqs = []
                 for k in self.event_data.keys():
@@ -1692,12 +1747,14 @@ class MCOCEvents:
                 for k in eqs:
                     if k is not None:
                         try:
-                            data.description += '{} : {}\n'.format(k, self.event_data[k]['event_title'])
+                            data.description += '{} : {}\n'.format(
+                                k, self.event_data[k]['event_title'])
                         except:
                             continue
                 data.set_author(name='CollectorDevTeam',
-                              icon_url=COLLECTOR_ICON)
-                data.set_footer(text='Requested by {}'.format(author.display_name), icon_url=author.avatar_url)
+                                icon_url=COLLECTOR_ICON)
+                data.set_footer(text='Requested by {}'.format(
+                    author.display_name), icon_url=author.avatar_url)
                 await self.bot.say(embed=data)
                 return
         #
@@ -1950,7 +2007,8 @@ class MCOCEvents:
 
         sgd = StaticGameData()
         vq = await sgd.get_gsheets_data('variant')
-        chapters = ('1.1', '1.2', '1.3', '2.1', '2.2', '2.3', '3.1', '3.2', '3.3')
+        chapters = ('1.1', '1.2', '1.3', '2.1',
+                    '2.2', '2.3', '3.1', '3.2', '3.3')
         valid = ['1.1A', '1.1B', '1.1C', '1.1D', '1.1E', '1.1F', '1.1Boss', '1.2A', '1.2B', '1.2C', '1.2D', '1.2E',
                  '1.2Boss', '1.3A', '1.3B', '1.3C', '1.3D', '1.3E', '1.3Boss', '2.1A', '2.1B', '2.1C', '2.1D', '2.1E',
                  '2.1F', '2.1Boss', '2.2A', '2.2B', '2.2C', '2.2D', '2.2Boss', '2.3A', '2.3B', '2.3C', '2.3D', '2.3E',
@@ -1961,7 +2019,8 @@ class MCOCEvents:
         elif chapter in valid:
             v = vq[chapter]
             data = discord.Embed(color=discord.Color.gold(), title=v['title'])
-            data.set_footer(text='CollectorDevTeam + ƦƆ51', icon_url=COLLECTOR_ICON)
+            data.set_footer(text='CollectorDevTeam + ƦƆ51',
+                            icon_url=COLLECTOR_ICON)
             if 'imageurl' in v:
                 data.set_image(url=v['imageurl'])
                 data.url = v['imageurl']
@@ -1980,23 +2039,28 @@ class MCOCEvents:
             page_list = []
             for cp in valid:
                 v = vq[cp]
-                data = discord.Embed(color=discord.Color.gold(), title=v['title'])
-                data.set_footer(text='CollectorDevTeam + ƦƆ51', icon_url=COLLECTOR_ICON)
+                data = discord.Embed(
+                    color=discord.Color.gold(), title=v['title'])
+                data.set_footer(text='CollectorDevTeam + ƦƆ51',
+                                icon_url=COLLECTOR_ICON)
                 if 'imageurl' in v:
                     data.set_image(url=v['imageurl'])
                     data.url = v['imageurl']
                 if 'comments' in v:
-                    data.description = 'ƦƆ51 Coments:\n{}'.format(v['comments'])
+                    data.description = 'ƦƆ51 Coments:\n{}'.format(
+                        v['comments'])
                 data.add_field(name='Fights', value=v['fights'])
                 data.add_field(name='Boosts', value=v['boosts'])
                 data.add_field(name='MVPs', value=v['mvps'])
                 data.add_field(name='Alternatives', value=v['options'])
                 data.add_field(name=v['af1_name'], value=v['af1_value'])
                 page_list.append(data)
-            menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
+            menu = PagesMenu(self.bot, timeout=120,
+                             delete_onX=True, add_pageof=True)
             await menu.menu_start(page_list, page_number)
 
-    async def format_eventquest(self, event, tier, rewards=True):  # , tiers=('beginner','normal','heroic','master')):
+    # , tiers=('beginner','normal','heroic','master')):
+    async def format_eventquest(self, event, tier, rewards=True):
         # sgd = StaticGameData()
         # sgd = self.sgd
         # cdt_eq = await sgd.get_gsheets_data(event)
@@ -2020,19 +2084,24 @@ class MCOCEvents:
                 em = discord.Embed(color=color, title=self.event_data[event]['event_title'].capitalize(),
                                    url=self.event_data[event]['event_url'])
                 em.set_author(name=self.event_data[event]['date'])
-                em.description = '{}\n\n{}'.format(self.event_data[event]['story_title'].capitalize(), self.event_data[event]['story_value'])
+                em.description = '{}\n\n{}'.format(
+                    self.event_data[event]['story_title'].capitalize(), self.event_data[event]['story_value'])
                 # em.add_field(name=cdt_eq['story_title']['value'], value=cdt_eq['story_value']['value'])
                 if rewards:
-                    em.add_field(name='{} Rewards'.format(row.title()), value=self.event_data[event][row])
+                    em.add_field(name='{} Rewards'.format(
+                        row.title()), value=self.event_data[event][row])
                 else:
-                    em.add_field(name='{}'.format(row.title()), value=self.event_data[event][row])
+                    em.add_field(name='{}'.format(row.title()),
+                                 value=self.event_data[event][row])
                 if 'champions' in self.event_data[event] and 'value' in self.event_data[event]['champions'] != "":
-                    em.add_field(name='Introducing', value=self.event_data[event]['champions'])
+                    em.add_field(name='Introducing',
+                                 value=self.event_data[event]['champions'])
                 em.set_image(url=self.event_data[event]['story_image'])
                 em.set_footer(text='CollectorDevTeam', icon_url=COLLECTOR_ICON)
                 page_list.append(em)
 
-            menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
+            menu = PagesMenu(self.bot, timeout=120,
+                             delete_onX=True, add_pageof=True)
             await menu.menu_start(page_list, page_number)
 
 
@@ -2080,8 +2149,10 @@ class CDTGAPS:
                        'Channel permissions will be configured.\n'
                        'After the G.A.P.S. system prepares your server, there will be additional instructions.\n'
                        'If you consent, press OK')
-        em = discord.Embed(color=ctx.message.author.color, title='G.A.P.S. Warning Message', description=warning_msg)
-        em.set_author(name='CollectorDevTeam Guild Alliance Popup System', url=COLLECTOR_ICON)
+        em = discord.Embed(color=ctx.message.author.color,
+                           title='G.A.P.S. Warning Message', description=warning_msg)
+        em.set_author(
+            name='CollectorDevTeam Guild Alliance Popup System', url=COLLECTOR_ICON)
         message = await self.bot.say(embed=em)
         await self.bot.add_reaction(message, '❌')
         await self.bot.add_reaction(message, '🆗')
@@ -2143,8 +2214,10 @@ class CDTGAPS:
                 await self.bot.add_roles(user, r)
             elif r.name == 'alliance':
                 await self.bot.add_roles(user, r)
-        roles = sorted(server.roles, key=lambda roles: roles.position, reverse=True)
-        em = discord.Embed(color=discord.Color.red(), title='Guild Alliance Popup System', description='')
+        roles = sorted(
+            server.roles, key=lambda roles: roles.position, reverse=True)
+        em = discord.Embed(color=discord.Color.red(),
+                           title='Guild Alliance Popup System', description='')
         positions = []
         for r in roles:
             positions.append('{} = {}'.format(r.position, r.mention))
@@ -2164,7 +2237,8 @@ class CDTGAPS:
                 admin = r
             elif r.name == 'everyone':
                 everyone = r
-        em.add_field(name='Stage 1 Role Creation', value='\n'.join(positions), inline=False)
+        em.add_field(name='Stage 1 Role Creation',
+                     value='\n'.join(positions), inline=False)
         await self.bot.say(embed=em)
 
         # everyone_perms = discord.PermissionOverwrite(read_messages=False)
@@ -2176,7 +2250,6 @@ class CDTGAPS:
         # bg1perms = discord.ChannelPermissions(target=bg1, overwrite=discord.PermissionOverwrite(read_messages=True))
         # bg2perms = discord.ChannelPermissions(target=bg2, overwrite=discord.PermissionOverwrite(read_messages=True))
         # bg3perms = discord.ChannelPermissions(target=bg3, overwrite=discord.PermissionOverwrite(read_messages=True))
-
 
         # channellist = []
         # for c in server.channels:
@@ -2202,16 +2275,15 @@ class CDTGAPS:
         # if 'bg3aw' not in channellist:
         #     await self.bot.create_channel(server, 'bg3aw', everyoneperms, officerperms, bg2perms)
 
-        peveryone = discord.ChannelPermissions(target=server.default_role, overwrite=discord.PermissionOverwrite(read_messages=False))
+        peveryone = discord.ChannelPermissions(
+            target=server.default_role, overwrite=discord.PermissionOverwrite(read_messages=False))
         pofficers = discord.PermissionOverwrite(read_messages=True)
         pbg1 = discord.PermissionOverwrite(read_messages=True)
         pbg2 = discord.PermissionOverwrite(read_messages=True)
         pbg3 = discord.PermissionOverwrite(read_messages=True)
         palliance = discord.PermissionOverwrite(read_messages=True)
-
-
-
-        channels = sorted(server.channels, key=lambda channels: channels.position, reverse=False)
+        channels = sorted(
+            server.channels, key=lambda channels: channels.position, reverse=False)
         channelnames = []
         for c in channels:
             channelnames.append('{} = {} '.format(c.position, c.mention))
@@ -2221,10 +2293,12 @@ class CDTGAPS:
 
         # if len(channelnames) > 0:
         #     em.description=''
-        em.add_field(name='Stage 2 Create Channels', value='\n'.join(channelnames), inline=False)
+        em.add_field(name='Stage 2 Create Channels',
+                     value='\n'.join(channelnames), inline=False)
         await self.bot.say(embed=em)
 
-        em = discord.Embed(color=discord.Color.red(), titel='Guild Alliance Popup System', descritpion='')
+        em = discord.Embed(color=discord.Color.red(),
+                           titel='Guild Alliance Popup System', descritpion='')
 
         fixNotifcations = await self.bot.say('Stage 3: Attempting to set Default Notification to Direct Message Only')
         try:
@@ -2264,12 +2338,14 @@ class CDTGAPS:
     @commands.command(pass_context=True, hidden=True, name='inspectroles', aliases=['inspectrole', 'ir', ])
     async def _inspect_roles(self, ctx):
         server = ctx.message.server
-        roles = sorted(server.roles, key=lambda roles: roles.position, reverse=True)
+        roles = sorted(
+            server.roles, key=lambda roles: roles.position, reverse=True)
         positions = []
         for r in roles:
             positions.append('{} = {}'.format(r.position, r.name))
         desc = '\n'.join(positions)
-        em = discord.Embed(color=discord.Color.red(), title='Collector Inspector: ROLES', description=desc)
+        em = discord.Embed(color=discord.Color.red(),
+                           title='Collector Inspector: ROLES', description=desc)
         await self.bot.say(embed=em)
 
     @checks.admin_or_permissions(manage_roles=True)
@@ -2293,6 +2369,7 @@ class CDTGAPS:
 
 class SCREENSHOT:
     """Save a Screenshot from x website in mcocTools"""
+
     def __init__(self, bot):
         self.bot = bot
         self.settings = dataIO.load_json('data/mcocTools/settings.json')
@@ -2300,14 +2377,14 @@ class SCREENSHOT:
             self.settings['calendar'] = {'screenshot': '', 'time': 0}
             dataIO.save_json('data/mcocTools/settings.json', self.settings)
 
-
     async def get_screenshot(self, url, w=1920, h=1080):
         chrome_options = Options()
         chrome_options.add_argument("--headless")
         chrome_options.add_argument("--window-size={}, {}".format(w, h))
         chrome_options.add_argument("allow-running-insecure-content")
         # chrome_options.binary_location = '/Applications/Google Chrome   Canary.app/Contents/MacOS/Google Chrome Canary'
-        driver = webdriver.Chrome(executable_path="C:\webdrivers\chromedriver_win32\chromedriver",   chrome_options=chrome_options)
+        driver = webdriver.Chrome(
+            executable_path="C:\webdrivers\chromedriver_win32\chromedriver",   chrome_options=chrome_options)
         channel = self.bot.get_channel('391330316662341632')
         # DRIVER = 'chromedriver'
         # driver = webdriver.Chrome(DRIVER)
@@ -2321,7 +2398,6 @@ class SCREENSHOT:
             return message.attachments[0]['url']
         else:
             return None
-
 
 
 class CDTHelperFunctions:
@@ -2341,7 +2417,8 @@ class CDTHelperFunctions:
                     fstr += '|' + '|'.join(['{:>{width}}'] * (len(i) - 1))
                 rows.append(fstr.format(*i, width=width))
             else:
-                rows.append('|'.join(['{:^{width}}'] * len(i)).format(*i, width=width))
+                rows.append('|'.join(['{:^{width}}'] *
+                                     len(i)).format(*i, width=width))
         if header_sep:
             rows.insert(1, '|'.join(['-' * width] * cells_in_row))
         return chat.box('\n'.join(rows))
@@ -2364,7 +2441,8 @@ class CDTHelperFunctions:
                 fstr = '{:{}{}}'.format(i[0], align_opts[align[0]], width[0])
                 if tbl_cols > 1:
                     for n in range(1, tbl_cols):
-                        fstr += '|{:{}{}}'.format(i[n], align_opts[align[n]], width[n])
+                        fstr += '|{:{}{}}'.format(i[n],
+                                                  align_opts[align[n]], width[n])
                 rows.append(fstr)
             if separate_header:
                 rows.insert(1, '-' * (sum(width) + len(width)))
@@ -2456,21 +2534,25 @@ class CDTReport:
             await self.bot.say("CollectorDevTeam only sucka!")
 
     @commands.command(pass_context=True, no_pm=True, name='report')
-    async def cdtreport(self, ctx, person, *, reason):  # changed terminology. Discord has people not players.
+    # changed terminology. Discord has people not players.
+    async def cdtreport(self, ctx, person, *, reason):
         """Report a user. Please provide evidence.
         Upload a screenshot, and copy a link to the screenshotself.
         Include the link in your report."""  # Where is the evidence field? Might want to add one
         author = ctx.message.author.name  # String for the Author's name
         server = ctx.message.server
         try:
-            reportchannel = self.bot.get_channel(self.settings[server.id]['report-channel'])
-            masterchannel = self.bot.get_channel(self.settings['cdt-master-channel'])
+            reportchannel = self.bot.get_channel(
+                self.settings[server.id]['report-channel'])
+            masterchannel = self.bot.get_channel(
+                self.settings['cdt-master-channel'])
         except:
             KeyError
             await self.bot.send_message(ctx.message.author,
                                         "Uh Oh! Your report was not sent D: Please let an admin know that they need to set the default report channel")
             return
-        embed = discord.Embed(title="Report:", description="A Report has been filed against somebody!")
+        embed = discord.Embed(
+            title="Report:", description="A Report has been filed against somebody!")
         embed.set_author(name="CollectorVerse Report System")
         embed.add_field(name="User:", value=person, inline=False)
         embed.add_field(name="Reason:", value=reason, inline=False)
@@ -2479,8 +2561,10 @@ class CDTReport:
                          icon_url=COLLECTOR_ICON)
         await self.bot.send_message(ctx.message.author, "Your report against {} has been created.".format(
             person))  # Privately whispers to a user that said report was created and sent
-        await self.bot.send_message(reportchannel, embed=embed)  # Sends report to the channel we specified earlier
-        await self.bot.send_message(masterchannel, embed=embed)  # Sends report to the channel we specified earlier
+        # Sends report to the channel we specified earlier
+        await self.bot.send_message(reportchannel, embed=embed)
+        # Sends report to the channel we specified earlier
+        await self.bot.send_message(masterchannel, embed=embed)
 
 
 def cell_to_list(cell):
@@ -2491,11 +2575,12 @@ def cell_to_list(cell):
 def cell_to_dict(cell):
     if cell is None:
         return None
-    ret  = {}
+    ret = {}
     for i in cell.split(','):
         k, v = [strip_and_numericise(j) for j in i.split(':')]
         ret[k] = v
     return ret
+
 
 def check_folders():
     folders = ('data', 'data/mcocTools/', 'data/storyquest/')
@@ -2568,7 +2653,7 @@ def remove_NA(cell):
 
 
 def strip_and_numericise(val):
-        return numericise_bool(val.strip())
+    return numericise_bool(val.strip())
 
 
 def tabulate(table_data, width, rotate=True, header_sep=True):
@@ -2589,7 +2674,7 @@ def setup(bot):
     check_folders()
     check_files()
     sgd = StaticGameData(bot)
-    #sgd.register_gsheets(bot)
+    # sgd.register_gsheets(bot)
     bot.loop.create_task(sgd.load_cdt_data())
     bot.add_cog(CDTReport(bot))
     bot.add_cog(Calculator(bot))
