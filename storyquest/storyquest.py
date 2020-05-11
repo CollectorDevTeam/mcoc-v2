@@ -1,6 +1,7 @@
 import discord
 import aiohttp
-import urllib, json #For fetching JSON from alliancewar.com
+import urllib
+import json  # For fetching JSON from alliancewar.com
 import os
 import requests
 import re
@@ -11,14 +12,17 @@ from collections import defaultdict, ChainMap, namedtuple, OrderedDict
 
 from discord.ext import commands
 from __main__ import send_cmd_help
-from cogs.mcocTools import (StaticGameData, PagesMenu, KABAM_ICON, COLLECTOR_ICON, CDTHelperFunctions, GSHandler, CDT_COLORS)
-from cogs.mcocTools import (SearchExpr, P0Expr, ParenExpr, SearchNumber, SearchPhrase, ExplicitKeyword, SearchNumber, SearchWord, SearchPhrase) #search stuff
+from cogs.mcocTools import (StaticGameData, PagesMenu, KABAM_ICON,
+                            COLLECTOR_ICON, CDTHelperFunctions, GSHandler, CDT_COLORS)
+from cogs.mcocTools import (SearchExpr, P0Expr, ParenExpr, SearchNumber, SearchPhrase,
+                            ExplicitKeyword, SearchNumber, SearchWord, SearchPhrase)  # search stuff
 from cogs.mcoc import ChampConverter, ChampConverterDebug, Champion
 
 GSHEET_ICON = 'https://d2jixqqjqj5d23.cloudfront.net/assets/developer/imgs/icons/google-spreadsheet-icon.png'
 ACT6_SHEET = 'https://docs.google.com/spreadsheets/d/1xTw37M_fwYClNfgvi7-09M6MLIcgMziTfM5_MGbAs0Q/view'
 REBIRTH = 'https://cdn.discordapp.com/attachments/398210253923024902/556216721933991936/46BBFB298E7EEA7DD8A5A1FAC65FBA621A6212B5.jpg'
 PATREON = 'https://patreon.com/collectorbot'
+
 
 class STORYQUEST:
     EmojiReact = namedtuple('EmojiReact', 'emoji include path text')
@@ -28,19 +32,19 @@ class STORYQUEST:
         self.search_parser = SearchExpr.parser()
         self.gsheet_handler = GSHandler(bot)
         self.gsheet_handler.register_gsheet(
-                name='cdt_glossary',
-                gkey='1Up5SpQDhp_SUOb5UFuD6BwkVKsJ4ZKN13DHHNJrNrEc',
-                local='data/storyquest/cdt_glossary.json',
-                sheet_name='glossary',
-                range_name='glossary_export'
-            )
+            name='cdt_glossary',
+            gkey='1Up5SpQDhp_SUOb5UFuD6BwkVKsJ4ZKN13DHHNJrNrEc',
+            local='data/storyquest/cdt_glossary.json',
+            sheet_name='glossary',
+            range_name='glossary_export'
+        )
         self.gsheet_handler.register_gsheet(
-                name='cdt_export',
-                gkey='1Up5SpQDhp_SUOb5UFuD6BwkVKsJ4ZKN13DHHNJrNrEc',
-                local='data/storyquest/cdt_export.json',
-                sheet_name='export',
-                range_name='export'
-            )
+            name='cdt_export',
+            gkey='1Up5SpQDhp_SUOb5UFuD6BwkVKsJ4ZKN13DHHNJrNrEc',
+            local='data/storyquest/cdt_export.json',
+            sheet_name='export',
+            range_name='export'
+        )
         self.gsheet_handler.register_gsheet(
             name='cdt_paths',
             gkey='1Up5SpQDhp_SUOb5UFuD6BwkVKsJ4ZKN13DHHNJrNrEc',
@@ -56,10 +60,14 @@ class STORYQUEST:
             range_name='globals'
         )
         try:
-            self.glossary = dataIO.load_json('data/storyquest/cdt_glossary.json')
-            self.glossary_desc = dataIO.load_json('data/storyquest/cdt_glossary_desc.json')
-            self.glossary_tips = dataIO.load_json('data/storyquest/cdt_glossary_tips.json')
-            self.glossary_keys = dataIO.load_json('data/storyquest/cdt_glossary_keys.json')
+            self.glossary = dataIO.load_json(
+                'data/storyquest/cdt_glossary.json')
+            self.glossary_desc = dataIO.load_json(
+                'data/storyquest/cdt_glossary_desc.json')
+            self.glossary_tips = dataIO.load_json(
+                'data/storyquest/cdt_glossary_tips.json')
+            self.glossary_keys = dataIO.load_json(
+                'data/storyquest/cdt_glossary_keys.json')
             self.export = dataIO.load_json('data/storyquest/cdt_export.json')
             self.paths = dataIO.load_json('data/storyquest/cdt_paths.json')
             self.globals = dataIO.load_json('data/storyquest/cdt_globals.json')
@@ -108,9 +116,12 @@ class STORYQUEST:
         # self.glossary_titles = glossary_titles
         self.glossary = temp
         dataIO.save_json('data/storyquest/cdt_glossary.json', self.glossary)
-        dataIO.save_json('data/storyquest/cdt_glossary_desc.json', self.glossary_desc)
-        dataIO.save_json('data/storyquest/cdt_glossary_keys.json', self.glossary_keys)
-        dataIO.save_json('data/storyquest/cdt_glossary_tips.json', self.glossary_tips)
+        dataIO.save_json(
+            'data/storyquest/cdt_glossary_desc.json', self.glossary_desc)
+        dataIO.save_json(
+            'data/storyquest/cdt_glossary_keys.json', self.glossary_keys)
+        dataIO.save_json(
+            'data/storyquest/cdt_glossary_tips.json', self.glossary_tips)
         # dataIO.save_json('data/storyquest/cdt_glossary_titles.json', self.glossary_titles)
         # self.glossary_keys = dataIO.load_json('data/storyquest/cdt_glossary_keys.json')
         self.export = dataIO.load_json('data/storyquest/cdt_export.json')
@@ -146,24 +157,27 @@ class STORYQUEST:
             ucolor = discord.Color.gold()
         else:
             ucolor = author.color
-        if boost.lower() not in keys:
+        if boost is not None and boost.lower() not in keys:
             for k in keys:
                 if self.glossary[k]['title'].lower() == boost.lower():
                     boost = k
                     continue
 
         if boost is not None and boost.lower() in keys:
-            data = discord.Embed(color=ucolor, title='{}'.format(self.glossary[boost.lower()]['title']), description='', url=PATREON)
+            data = discord.Embed(color=ucolor, title='{}'.format(
+                self.glossary[boost.lower()]['title']), description='', url=PATREON)
             data.set_thumbnail(url=COLLECTOR_ICON)
             data.set_author(name='Support CollectorDevTeam')
             data.set_thumbnail(url=REBIRTH)
             # data.set_author(name='Glossary by StarFighter + DragonFei + Royal', icon_url=GSHEET_ICON)
             data.set_footer(
-                text='Glossary by StarFighter + DragonFei + Royal | Requested by {}'.format(author.display_name),
+                text='Glossary by StarFighter + DragonFei + Royal | Requested by {}'.format(
+                    author.display_name),
                 icon_url=GSHEET_ICON)
             data.description = self.glossary[boost.lower()]['description']
             if self.glossary[boost.lower()]['tips'] != "":
-                data.add_field(name='CollectorVerse Tips', value=self.glossary[boost.lower()]['tips'])
+                data.add_field(name='CollectorVerse Tips',
+                               value=self.glossary[boost.lower()]['tips'])
             await self.bot.say(embed=data)
             return
         elif boost is None:
@@ -171,20 +185,24 @@ class STORYQUEST:
             glossary = ''
             for key in keys:
                 try:
-                    glossary += '__{}__\n{}\n\n'.format(key.title(), self.glossary[key]['description'])
+                    glossary += '__{}__\n{}\n\n'.format(
+                        key.title(), self.glossary[key]['description'])
                 except KeyError:
                     raise KeyError('Cannot resolve {}'.format(boost.lower()))
             glossary = chat.pagify(glossary)
             for g in glossary:
-                data = discord.Embed(color=ucolor, title='Story Quest Boost Glossary', description=g, url=ACT6_SHEET)
+                data = discord.Embed(
+                    color=ucolor, title='Story Quest Boost Glossary', description=g, url=ACT6_SHEET)
                 data.set_thumbnail(url=REBIRTH)
                 # data.set_author(name='Glossary by StarFighter + DragonFei + Royal', icon_url=GSHEET_ICON)
                 data.set_footer(
-                    text='Glossary by StarFighter + DragonFei + Royal | Requested by {}'.format(author.display_name),
+                    text='Glossary by StarFighter + DragonFei + Royal | Requested by {}'.format(
+                        author.display_name),
                     icon_url=GSHEET_ICON)
                 pages.append(data)
             if len(pages) > 0:
-                menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
+                menu = PagesMenu(self.bot, timeout=120,
+                                 delete_onX=True, add_pageof=True)
                 await menu.menu_start(pages)
         else:
             result = self.search_parser.parse_string(boost)
@@ -197,17 +215,20 @@ class STORYQUEST:
             pages = chat.pagify('\n'.join(package))
             page_list = []
             for page in pages:
-                data = discord.Embed(title='Support CollectorDevTeam', description=page, color=ucolor, url=PATREON)
+                data = discord.Embed(
+                    title='Support CollectorDevTeam', description=page, color=ucolor, url=PATREON)
                 data.set_thumbnail(url=COLLECTOR_ICON)
-                data.set_author(name='Glossary Search: [{}]'.format(boost.lower()))
+                data.set_author(
+                    name='Glossary Search: [{}]'.format(boost.lower()))
                 data.set_footer(
-                    text='Glossary by StarFighter + DragonFei + Royal | Requested by {}'.format(author.display_name),
+                    text='Glossary by StarFighter + DragonFei + Royal | Requested by {}'.format(
+                        author.display_name),
                     icon_url=GSHEET_ICON)
                 page_list.append(data)
-            menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
+            menu = PagesMenu(self.bot, timeout=120,
+                             delete_onX=True, add_pageof=True)
             await menu.menu_start(page_list)
             return
-
 
         # if boost in boost_keys:
         #     await self.bot.say('debug: boost found')
@@ -228,7 +249,8 @@ class STORYQUEST:
         ucolor = discord.Color.gold()
         if ctx.message.channel.is_private is False:
             ucolor = author.color
-        data = discord.Embed(color=ucolor, title='Story Quest Help', description='')
+        data = discord.Embed(
+            color=ucolor, title='Story Quest Help', description='')
         starfire_maps = ('6.1.1', '6.1.2', '6.1.3', '6.1.4', '6.1.5', '6.1.6')
         valid_maps = []
         for k in self.paths.keys():
@@ -248,7 +270,8 @@ class STORYQUEST:
             return
 
         all_paths = self.paths['_headers']['paths']
-        all_paths = list(filter(lambda a: a != '', all_paths)) #remove "" from valid paths
+        all_paths = list(filter(lambda a: a != '', all_paths)
+                         )  # remove "" from valid paths
         valid_paths = []
         for a in all_paths:
             if a in self.paths[map].keys() and self.paths[map][a] != "":
@@ -274,14 +297,13 @@ class STORYQUEST:
             print(valid_paths)
             data.set_image(url=self.globals[map]['chapter_image'])
 
-
             for p in valid_paths:
                 if p is not None and p != "":
                     key = '{}-{}-1'.format(map, p)
                     for emoji in self.all_emojis.values():
                         if emoji.path == p:
                             data.add_field(name=emoji.text, value='Quest: {}\nTiles: {}\nEnergy: {}\nNotes: {}\n'
-                                           .format(p[-1:],self.export[key]['tiles'],
+                                           .format(p[-1:], self.export[key]['tiles'],
                                                    self.export[key]['tiles']*3,
                                                    self.export[key]['notes']))
                             continue
@@ -293,7 +315,8 @@ class STORYQUEST:
                     data.add_field(name='Global Boost: {}'.format(self.glossary_keys[g].title()),
                                    value='{}'.format(self.glossary_desc[g]))
                     if self.glossary_tips[g] != "":
-                        data.add_field(name='CollectorVerse Tips', value=self.glossary_tips[g])
+                        data.add_field(name='CollectorVerse Tips',
+                                       value=self.glossary_tips[g])
 
             # data.description=description
             message = await self.bot.say(embed=data)
@@ -304,7 +327,8 @@ class STORYQUEST:
                         print(emoji.emoji)
                         await self.bot.add_reaction(message, emoji.emoji)
                     except:
-                        raise KeyError('Unknwon Emoji : {}'.format(emoji.emoji))
+                        raise KeyError(
+                            'Unknwon Emoji : {}'.format(emoji.emoji))
                     self.included_emojis.add(emoji.emoji)
             react = await self.bot.wait_for_reaction(message=message, user=ctx.message.author,
                                                      timeout=30, emoji=self.included_emojis)
@@ -345,35 +369,40 @@ class STORYQUEST:
                 tiles = self.export[key]['tiles']
                 if champion.full_name is not None:
                     if power is not None:
-                        data.set_author(name='{} : {:,}'.format(champion.full_name, power))
+                        data.set_author(name='{} : {:,}'.format(
+                            champion.full_name, power))
                     else:
                         data.set_author(name='{}'.format(champion.full_name))
                 if champion.get_avatar() is not None:
                     data.set_thumbnail(url=champion.get_avatar())
                 if tiles != '':
-                    data.description += '\nTiles: {}\n<:energy:557675957515845634>     {:,}'.format(tiles, tiles*3)
+                    data.description += '\nTiles: {}\n<:energy:557675957515845634>     {:,}'.format(
+                        tiles, tiles*3)
                 if hp != '':
-                    data.description += '\n<:friendshp:344221218708389888>     {:,}'.format(hp)
+                    data.description += '\n<:friendshp:344221218708389888>     {:,}'.format(
+                        hp)
                 else:
                     data.description += '\n<:friendshp:344221218708389888>     ???'
 
                 for g in gboosts:
                     if g != '-' and g != '':
-                        data.description+='\n\n__Global__: __{}__\n{}'.format(self.glossary_keys[g], self.glossary_desc[g])
+                        data.description += '\n\n__Global__: __{}__\n{}'.format(
+                            self.glossary_keys[g], self.glossary_desc[g])
                         # data.add_field(name='Global Boost: {}'.format(g.title()),
                         #                value='{}'.format(self.glossary_desc[g]))
                         # if self.glossary_tips[g] != "":
                         #     data.add_field(name='CollectorVerse Tips', value=self.glossary_tips[g])
 
                 for b in boosts:
-                    if b != '-' and b !='':
-                        data.description += '\n\n__{}__\n{}'.format(self.glossary_keys[b], self.glossary_desc[b])
+                    if b != '-' and b != '':
+                        data.description += '\n\n__{}__\n{}'.format(
+                            self.glossary_keys[b], self.glossary_desc[b])
                         # data.add_field(name='{}'.format(b.title()),
                         #                value='{}'.format(self.glossary_desc[b]))
                         # if self.glossary_tips[b] != "":
                         #     data.add_field(name='CollectorVerse Tips', value=self.glossary_tips[b])
                 if notes != '':
-                    data.description+='\n\n__Notes__\n{}'.format(notes)
+                    data.description += '\n\n__Notes__\n{}'.format(notes)
                     # data.add_field(name='Notes', value=notes)
                 if map in starfire_maps:
                     data.set_footer(
@@ -386,7 +415,7 @@ class STORYQUEST:
                             author.display_name),
                         icon_url=COLLECTOR_ICON)
                 pages.append(data)
-                i+=1
+                i += 1
             if verbose:
                 i = 1
                 for page in pages:
@@ -399,12 +428,13 @@ class STORYQUEST:
                         page.set_footer(
                             text='CollectorDevTeam Data + StarFighter | Requested by {}'
                                  ''.format(
-                                author.display_name),
+                                     author.display_name),
                             icon_url=COLLECTOR_ICON)
                     await self.bot.say(embed=page)
-                    i+=1
+                    i += 1
             else:
-                menu = PagesMenu(self.bot, timeout=720, delete_onX=True, add_pageof=True)
+                menu = PagesMenu(self.bot, timeout=720,
+                                 delete_onX=True, add_pageof=True)
                 await menu.menu_start(pages)
             return
 
@@ -417,7 +447,8 @@ class STORYQUEST:
         ucolor = discord.Color.gold()
         if ctx.message.channel.is_private is False:
             ucolor = author.color
-        data = discord.Embed(color=ucolor, title='Story Quest Help', description='')
+        data = discord.Embed(
+            color=ucolor, title='Story Quest Help', description='')
 
         # starfire_maps = ('6.1.1', '6.1.2', '6.1.3', '6.1.4', '6.1.5', '6.1.6')
         valid_maps = []
@@ -435,14 +466,15 @@ class STORYQUEST:
             else:
                 return
         else:
-            data.description ='Please select a valid Road to the Labyrinth Chapter:\n1, 2, 3, 4'
+            data.description = 'Please select a valid Road to the Labyrinth Chapter:\n1, 2, 3, 4'
             await self.bot.say(embed=data)
             return
 
         print(map)
         print(path)
         all_paths = self.paths['_headers']['paths']
-        all_paths = list(filter(lambda a: a != '', all_paths)) #remove "" from valid paths
+        all_paths = list(filter(lambda a: a != '', all_paths)
+                         )  # remove "" from valid paths
         valid_paths = []
         for a in all_paths:
             if a in self.paths[map].keys() and self.paths[map][a] != "":
@@ -466,14 +498,13 @@ class STORYQUEST:
                 data.set_thumbnail(url=boss.get_avatar())
             print(valid_paths)
 
-
             for p in valid_paths:
                 if p is not None and p != "":
                     key = '{}-{}-1'.format(map, p)
                     for emoji in self.all_emojis.values():
                         if emoji.path == p:
                             data.add_field(name=emoji.text, value='Quest: {}\nTiles: {}\nEnergy: {}\nNotes: {}'
-                                           .format(p[-1:],self.export[key]['tiles'],
+                                           .format(p[-1:], self.export[key]['tiles'],
                                                    self.export[key]['tiles']*3,
                                                    self.export[key]['notes']))
                             continue
@@ -483,7 +514,8 @@ class STORYQUEST:
                     data.add_field(name='Global Boost: {}'.format(g.title()),
                                    value='{}'.format(self.glossary_desc[g]))
                     if self.glossary_tips[g] != "":
-                        data.add_field(name='CollectorVerse Tips', value=self.glossary_tips[g])
+                        data.add_field(name='CollectorVerse Tips',
+                                       value=self.glossary_tips[g])
 
             message = await self.bot.say(embed=data)
             self.included_emojis = set()
@@ -493,7 +525,8 @@ class STORYQUEST:
                         print(emoji.emoji)
                         await self.bot.add_reaction(message, emoji.emoji)
                     except:
-                        raise KeyError('Unknwon Emoji : {}'.format(emoji.emoji))
+                        raise KeyError(
+                            'Unknwon Emoji : {}'.format(emoji.emoji))
                     self.included_emojis.add(emoji.emoji)
 
             react = await self.bot.wait_for_reaction(message=message, user=ctx.message.author,
@@ -534,16 +567,19 @@ class STORYQUEST:
                                      description='', url=ACT6_SHEET)
                 tiles = self.export[key]['tiles']
                 if power != '':
-                    data.set_author(name='{} : {:,}'.format(champion.full_name, power))
+                    data.set_author(name='{} : {:,}'.format(
+                        champion.full_name, power))
                 else:
                     data.set_author(name='{}'.format(champion.full_name))
                 data.set_thumbnail(url=champion.get_avatar())
                 if tiles != '':
-                    data.description += '\nTiles: {}\n<:energy:557675957515845634>     {:,}'.format(tiles, tiles*3)
+                    data.description += '\nTiles: {}\n<:energy:557675957515845634>     {:,}'.format(
+                        tiles, tiles*3)
                 # if power != '':
                 #     data.description += '\nPower  {:,}'.format(power)
                 if hp != '':
-                    data.description += '\n<:friendshp:344221218708389888>     {:,}'.format(hp)
+                    data.description += '\n<:friendshp:344221218708389888>     {:,}'.format(
+                        hp)
                 else:
                     data.description += '\n<:friendshp:344221218708389888>     ???'
                 # if attack != '':
@@ -555,14 +591,16 @@ class STORYQUEST:
                         data.add_field(name='Global Boost: {}'.format(g.title()),
                                        value='{}'.format(self.glossary_desc[g]))
                         if self.glossary_tips[g] != "":
-                            data.add_field(name='CollectorVerse Tips', value=self.glossary_tips[g])
+                            data.add_field(
+                                name='CollectorVerse Tips', value=self.glossary_tips[g])
 
                 for b in boosts:
-                    if b != '-' and b !='':
+                    if b != '-' and b != '':
                         data.add_field(name='{}'.format(b.title()),
                                        value='{}'.format(self.glossary_desc[b]))
                         if self.glossary_tips[b] != "":
-                            data.add_field(name='CollectorVerse Tips', value=self.glossary_tips[b])
+                            data.add_field(
+                                name='CollectorVerse Tips', value=self.glossary_tips[b])
                 if notes != '':
                     data.add_field(name='Notes', value=notes)
                 data.set_footer(
@@ -570,15 +608,15 @@ class STORYQUEST:
                         author.display_name),
                     icon_url=COLLECTOR_ICON)
                 pages.append(data)
-                i+=1
+                i += 1
             if verbose:
                 for page in pages:
                     await self.bot.say(embed=page)
             else:
-                menu = PagesMenu(self.bot, timeout=360, delete_onX=True, add_pageof=True)
+                menu = PagesMenu(self.bot, timeout=360,
+                                 delete_onX=True, add_pageof=True)
                 await menu.menu_start(pages)
             return
-
 
 
 
@@ -604,6 +642,7 @@ def check_files():
         if not os.path.isfile('data/storyquest/{}'.format(filename)):
             print("Creating empty {}".format(filename))
             dataIO.save_json('data/storyquest/{}'.format(filename), value)
+
 
 def setup(bot):
     check_folders()
