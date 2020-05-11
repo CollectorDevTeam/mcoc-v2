@@ -185,8 +185,8 @@ class STORYQUEST:
             glossary = ''
             for key in keys:
                 try:
-                    glossary += '__{}__\n{}\n\n'.format(
-                        key.title(), self.glossary[key]['description'])
+                    glossary += '{}\n__{}__\n{}\n'.format(
+                        key, key.title(), self.glossary[key]['description'])
                 except KeyError:
                     raise KeyError('Cannot resolve {}'.format(boost.lower()))
             glossary = chat.pagify(glossary)
@@ -617,7 +617,6 @@ class STORYQUEST:
                                  delete_onX=True, add_pageof=True)
                 await menu.menu_start(pages)
             return
-
 
 
 def check_folders():
