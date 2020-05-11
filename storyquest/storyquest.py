@@ -183,9 +183,10 @@ class STORYQUEST:
         elif boost is None:
             pages = []
             glossary = ''
+            linebreak = '---------------------------------------------------------\n'
             for key in keys:
                 try:
-                    glossary += 'key: {}\n**{}**\n{}\n'.format(
+                    glossary += linebreak+'key: {}\n**{}**\n{}\n'.format(
                         key, self.glossary[key]['title'], self.glossary[key]['description'])
                 except KeyError:
                     raise KeyError('Cannot resolve {}'.format(boost.lower()))
