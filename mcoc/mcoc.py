@@ -1955,7 +1955,7 @@ class MCOC(ChampionFactory):
             validators.url(academy)
             code = requests.get(academy).status_code
             print(code)
-            if code == 404:
+            if code == 200:
                 em.add_field(name='UMCOC Academy', value=academy)
         except:
             print("champion has no Academy link")
