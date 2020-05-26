@@ -5,6 +5,7 @@ from .mcocTools import (KABAM_ICON, COLLECTOR_ICON, PagesMenu,
 # from cogs.hook import (ChampionRoster, HashtagRosterConverter)
 # HOOK relies on MCOC.  this import is causing a circular dependency and it only used for Champ List
 from validator_collection import validators, checkers
+import requests
 
 import re
 from datetime import datetime, timedelta
@@ -1952,7 +1953,10 @@ class MCOC(ChampionFactory):
         try:
             academy = "https://link.chtbl.com/{}".format(champ.mattkraftid)
             validators.url(academy)
-            em.add_field(name='UMCOC Academy', value=academy)
+            code = requests.get(academy).status_code
+            print(code)
+            if code == 404:
+                em.add_field(name='UMCOC Academy', value=academy)
         except:
             print("champion has no Academy link")
         em.add_field(name='Auntm.ai Link',
