@@ -2,8 +2,9 @@ from .mcocTools import (KABAM_ICON, COLLECTOR_ICON, PagesMenu,
                         GSHandler, gapi_service_creds, GSExport, CDT_COLORS, StaticGameData)
 # import cogs.mcocTools
 # from . import hook as hook
-# from cogs.hook import (ChampionRoster, HashtagRosterConverter) 
-##  HOOK relies on MCOC.  this import is causing a circular dependency and it only used for Champ List
+# from cogs.hook import (ChampionRoster, HashtagRosterConverter)
+# HOOK relies on MCOC.  this import is causing a circular dependency and it only used for Champ List
+from validator_collection import validators, checkers
 
 import re
 from datetime import datetime, timedelta
@@ -1947,6 +1948,13 @@ class MCOC(ChampionFactory):
             em.add_field(name='Kabam Spotlight', value='No URL found')
         else:
             em.add_field(name='Kabam Spotlight', value=champ.infopage)
+
+        try:
+            academy = "https://link.chtbl.com/{}".format(champ.mattkraftid)
+            validators.url(academy)
+            em.add_field(name='UMCOC Academy', value=academy)
+        except:
+            print("champion has no Academy link")
         em.add_field(name='Auntm.ai Link',
                      value='https://auntm.ai/champions/{0.mattkraftid}/tier/{0.star}'.format(champ))
 
