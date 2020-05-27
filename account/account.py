@@ -310,6 +310,7 @@ class Account:
         else:
             data = self._updateuser(ctx, key, value)
         await PagesMenu.menu_start(self, [data])
+
     @_update.command(pass_context=True)
     async def started(self, ctx, *, started: str):
         """When did you start playing Contest of Champions?"""
