@@ -85,7 +85,12 @@ class Account:
             else:
                 data.add_field(
                     name='Prestige', value='User has no registerd CollectorVerse roster.\nUse the ``/roster`` command to get started.')
-            for i in ['Alliance', 'Job', 'Recruiting', 'Age', 'Gender', 'Timezone', 'Phone', 'About', 'Other',  'Mastery', 'Website']:
+            if 'Mastery' in self.nerdie[user.id]:
+                data.add_field(name='Mastery build', value="[link to Auntm.ai]({})".format(
+                    self.nerdie[user.id]['Mastery']))
+            else:
+                pass
+            for i in ['Alliance', 'Job', 'Recruiting', 'Age', 'Gender', 'Timezone', 'Phone', 'About', 'Other', 'Website']:
                 if i in self.nerdie[user.id]:
                     data.add_field(name=i+":", value=self.nerdie[user.id][i])
                 else:
