@@ -1363,91 +1363,95 @@ class MCOC(ChampionFactory):
 
     @champ.command(pass_context=True, name='sig', aliases=['signature', ])
     async def champ_sig(self, ctx, *, champ: ChampConverterSig):
-        '''Champion Signature Ability'''
-        released = await self.check_release(ctx, champ)
-        if not released:
-            await self.bot.say("Champion {} is not released yet".format(champ.fullname))
-            return
-        appinfo = await self.bot.application_info()
-        try:
-            title, desc, sig_calcs = await champ.process_sig_description(
-                isbotowner=ctx.message.author == appinfo.owner)
-            # print(desc)
-        except KeyError:
-            await champ.missing_sig_ad()
-            if champ.debug:
-                raise
-            return
-        except SignatureSchemaError as e:
-            await self.bot.say("Technical Difficulties with Signature Retrieval."
-                               "\n'{}' needs a bit of cleanup".format(
-                                   champ.full_name)
-                               )
-            if champ.debug:
-                await self.bot.say(chat.box(str(e)))
-            return
-        if title is None:
-            return
-        em = discord.Embed(color=champ.class_color, title='Signature Ability')
-        em.set_author(name='{0.full_name}'.format(
-            champ), icon_url=champ.get_avatar())
-        em.add_field(name=title, value=champ.star_str)
-        em.add_field(name='Signature Level {}'.format(champ.sig),
-                     value=desc.format(d=sig_calcs))
-        em.add_field(name='Shortcode', value=champ.short)
-        em.set_footer(text='MCOC Game Files', icon_url=KABAM_ICON)
-        em.set_thumbnail(url=champ.get_avatar())
-        await self.bot.say(embed=em)
+        '''Champion Signature Ability
+        Quick links to Auntm.ai'''
+        sigurl = 'https://auntm.ai/championsig/{0.mattkraftid}/{0.star}/{0.rank}/{0.sig}'.format(
+            champ)
+        await self.bot.say(sigurl)
+        # released = await self.check_release(ctx, champ)
+        # if not released:
+        #     await self.bot.say("Champion {} is not released yet".format(champ.fullname))
+        #     return
+        # appinfo = await self.bot.application_info()
+        # try:
+        #     title, desc, sig_calcs = await champ.process_sig_description(
+        #         isbotowner=ctx.message.author == appinfo.owner)
+        #     # print(desc)
+        # except KeyError:
+        #     await champ.missing_sig_ad()
+        #     if champ.debug:
+        #         raise
+        #     return
+        # except SignatureSchemaError as e:
+        #     await self.bot.say("Technical Difficulties with Signature Retrieval."
+        #                        "\n'{}' needs a bit of cleanup".format(
+        #                            champ.full_name)
+        #                        )
+        #     if champ.debug:
+        #         await self.bot.say(chat.box(str(e)))
+        #     return
+        # if title is None:
+        #     return
+        # em = discord.Embed(color=champ.class_color, title='Signature Ability')
+        # em.set_author(name='{0.full_name}'.format(
+        #     champ), icon_url=champ.get_avatar())
+        # em.add_field(name=title, value=champ.star_str)
+        # em.add_field(name='Signature Level {}'.format(champ.sig),
+        #              value=desc.format(d=sig_calcs))
+        # em.add_field(name='Shortcode', value=champ.short)
+        # em.set_footer(text='MCOC Game Files', icon_url=KABAM_ICON)
+        # em.set_thumbnail(url=champ.get_avatar())
+        # await self.bot.say(embed=em)
 
-    @champ.command(pass_context=True, name='sigreport', hidden=False)
-    async def champ_sig_report(self, ctx):
-        '''Check All Champion Signature Abilities'''
-        bad_champs = defaultdict(list)
-        for champ_class in self.champions.values():
-            champ = champ_class()
-            if not champ.is_user_playable:
-                continue
-            try:
-                title, desc, sig_calcs = await champ.process_sig_description(
-                    isbotowner=True, quiet=True)
-            except Exception as e:
-                bad_champs[type(e)].append(champ.full_name)
-        #pages = chat.pagify('\n'.join(bad_champ))
-        page_list = []
-        for err, champs in bad_champs.items():
-            em = discord.Embed(title='Champion Sig Errors')
-            em.add_field(name=err.__name__, value='\n'.join(champs))
-            em.set_footer(text='MCOC Game Files', icon_url=KABAM_ICON)
-            page_list.append(em)
-        menu = PagesMenu(self.bot, timeout=120,
-                         delete_onX=True, add_pageof=True)
-        await menu.menu_start(page_list)
+    # @champ.command(pass_context=True, name='sigreport', hidden=False)
+    # async def champ_sig_report(self, ctx):
+    #     '''Check All Champion Signature Abilities'''
+    #     bad_champs = defaultdict(list)
+    #     for champ_class in self.champions.values():
+    #         champ = champ_class()
+    #         if not champ.is_user_playable:
+    #             continue
+    #         try:
+    #             title, desc, sig_calcs = await champ.process_sig_description(
+    #                 isbotowner=True, quiet=True)
+    #         except Exception as e:
+    #             bad_champs[type(e)].append(champ.full_name)
+    #     #pages = chat.pagify('\n'.join(bad_champ))
+    #     page_list = []
+    #     for err, champs in bad_champs.items():
+    #         em = discord.Embed(title='Champion Sig Errors')
+    #         em.add_field(name=err.__name__, value='\n'.join(champs))
+    #         em.set_footer(text='MCOC Game Files', icon_url=KABAM_ICON)
+    #         page_list.append(em)
+    #     menu = PagesMenu(self.bot, timeout=120,
+    #                      delete_onX=True, add_pageof=True)
+    #     await menu.menu_start(page_list)
 
-    @champ.command(pass_context=True, name='sigplot', hidden=True)
-    async def champ_sigplot(self, ctx, *, champ: ChampConverterSig):
+    # @champ.command(pass_context=True, name='sigplot', hidden=True)
+    # async def champ_sigplot(self, ctx, *, champ: ChampConverterSig):
 
-        try:
-            # try:
-            #     plt.axis()
-            # except:
-            # plt.plot([1,2,3,4],[1,4,9,16], 'r-')
-            x = [1, 20, 40, 60, 80, 99]
-            y1 = [69, 182.54, 202.82, 224.2, 235.11, 243.20]
-            y2 = [23.92, 65.61, 75.39, 81.14, 85.22, 88.25]
-            plt.plot(x, y1, 'rs', label='line 1')
-            plt.plot(x, y2, 'go-', label='line 2')
-            plt.axis()
-            plt.legend()
-            plt.xlabel('Signature Ability Level')
-            plt.ylabel('Signature Ability Effect')
-            plt.suptitle('Sig Plot [Test]')
-            # plt.show()
-            plt.draw()
-            plt.savefig('data/mcoc/sigtemp.png', format='png', dpi=90)
-            await self.bot.upload('data/mcoc/sigtemp.png')
-            os.remove('data/mcoc/sigtemp.png')
-        except:
-            print('champ_sigplot nothing happened')
+    #     try:
+    #         # try:
+    #         #     plt.axis()
+    #         # except:
+    #         # plt.plot([1,2,3,4],[1,4,9,16], 'r-')
+    #         x = [1, 20, 40, 60, 80, 99]
+    #         y1 = [69, 182.54, 202.82, 224.2, 235.11, 243.20]
+    #         y2 = [23.92, 65.61, 75.39, 81.14, 85.22, 88.25]
+    #         plt.plot(x, y1, 'rs', label='line 1')
+    #         plt.plot(x, y2, 'go-', label='line 2')
+    #         plt.axis()
+    #         plt.legend()
+    #         plt.xlabel('Signature Ability Level')
+    #         plt.ylabel('Signature Ability Effect')
+    #         plt.suptitle('Sig Plot [Test]')
+    #         # plt.show()
+    #         plt.draw()
+    #         plt.savefig('data/mcoc/sigtemp.png', format='png', dpi=90)
+    #         await self.bot.upload('data/mcoc/sigtemp.png')
+    #         os.remove('data/mcoc/sigtemp.png')
+    #     except:
+    #         print('champ_sigplot nothing happened')
 
     @champ.command(pass_context=True, name='stats', aliases=['stat', ])
     async def champ_stats(self, ctx, *, champs: ChampConverterMult):
