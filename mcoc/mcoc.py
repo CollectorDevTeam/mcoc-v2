@@ -1374,10 +1374,10 @@ class MCOC(ChampionFactory):
             dataIO.save_json(self.auntmai_file, self.auntmai)
 
         data = _get_embed(self, ctx, color=champ.class_color)
-        data.title = '{} Signature Ability'.format(champ.verbose_str)
+        data.title = champ.verbose_str
         data.url = sigurl
         # data.add_field(name=champ.verbose_str, value=sigurl)
-        data.set_author(name='Powered by Auntm.ai', icon_url=AUNTMAI)
+        data.set_author(name='Signature Ability by Auntm.ai', icon_url=AUNTMAI)
         data.set_thumbnail(url=champ.get_featured())
         if champ not in self.auntmai.items():
             # provide temporary message
