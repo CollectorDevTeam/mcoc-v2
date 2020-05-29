@@ -1372,33 +1372,34 @@ class MCOC(ChampionFactory):
         if champ.debug and champ.mattkraftid in self.auntmai.keys():
             self.auntmai.pop(champ.mattkraftid)
             dataIO.save_json(self.auntmai_file, self.auntmai)
-        try:
-            validators.url(sigurl)
-            code = requests.get(sigurl).status_code
-            print(code)
-            if code == 200:
-                data = self.get_embed(ctx, color=champ.class_color)
-                data.add_field(name='Auntm.ai', value=sigurl)
-                if champ not in self.auntmai.items():
-                    # provide temporary message
-                    messageid = await self.bot.say(sigurl)
-                    sigimage_url = await SCREENSHOT.get_screenshot(self, url=sigurl, w=600, h=800)
-                    self.auntmai.update(
-                        {champ.mattkraftid: {champ.unique: sigimage_url}})
-                    data.set_thumbnail(
-                        url=self.auntmai[champ.mattkraftid][champ.unique])
-                    # remove temp, play embed
-                    await self.bot.edit_message(messageid, embed=data)
-                    # save screenie url to champ signature file
-                    dataIO.save_json(self.auntmai_file, self.auntmai)
-                else:
-                    data.set_thumbnail(url=champ.get_featured())
-                    data.set_image(
-                        url=self.auntmai[champ.mattkraftid][champ.unique])
-                    await self.bot.say(embed=data)
-        except:
-            await self.bot.say('Champion has no Signature link')
+        # try:
+        #     validators.url(sigurl)
+        #     code = requests.get(sigurl).status_code
+        #     print(code)
+        #     if code == 200:
+        data = self.get_embed(ctx, color=champ.class_color)
+        data.add_field(name='Auntm.ai', value=sigurl)
+        if champ not in self.auntmai.items():
+            # provide temporary message
+            messageid = await self.bot.say(sigurl)
+            sigimage_url = await SCREENSHOT.get_screenshot(self, url=sigurl, w=600, h=800)
+            self.auntmai.update(
+                {champ.mattkraftid: {champ.unique: sigimage_url}})
+            data.set_thumbnail(
+                url=self.auntmai[champ.mattkraftid][champ.unique])
+            # remove temp, play embed
+            await self.bot.edit_message(messageid, embed=data)
+            # save screenie url to champ signature file
+            dataIO.save_json(self.auntmai_file, self.auntmai)
+        else:
+            data.set_thumbnail(url=champ.get_featured())
+            data.set_image(
+                url=self.auntmai[champ.mattkraftid][champ.unique])
+            await self.bot.say(embed=data)
+        # except:
+        #     await self.bot.say('Champion has no Signature link')
             print(sigurl)
+            print(code)
 
     @champ.command(pass_context=True, name='sig reset', aliases=['sigpop', 'sig pop'], hidden=True)
     async def champ_sigpop(self, ctx, *, champ: ChampConverterSig):
