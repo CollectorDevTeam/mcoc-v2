@@ -1372,13 +1372,9 @@ class MCOC(ChampionFactory):
         if champ.debug and champ.mattkraftid in self.auntmai.keys():
             self.auntmai.pop(champ.mattkraftid)
             dataIO.save_json(self.auntmai_file, self.auntmai)
-        # try:
-        #     validators.url(sigurl)
-        #     code = requests.get(sigurl).status_code
-        #     print(code)
-        #     if code == 200:
+
         data = _get_embed(self, ctx, color=champ.class_color)
-        data.add_field(name='Auntm.ai', value=sigurl)
+        data.add_field(name=champ.verbose_str, value=sigurl)
         data.set_author(name='Auntm.ai', url=AUNTMAI)
         data.set_thumbnail(url=champ.get_featured())
         if champ not in self.auntmai.items():
@@ -1390,18 +1386,17 @@ class MCOC(ChampionFactory):
             data.set_image(
                 url=self.auntmai[champ.mattkraftid][champ.unique])
             # remove temp, play embed
-            await self.bot.edit_message(messageid, embed=data)
+            # await self.bot.edit_message(messageid, embed=data)
+            await self.bot.say(embed=data)
+            await self.bot.delete_message(messageid)
             # save screenie url to champ signature file
             dataIO.save_json(self.auntmai_file, self.auntmai)
+            # critical save
         else:
             data.set_thumbnail(url=champ.get_featured())
             data.set_image(
                 url=self.auntmai[champ.mattkraftid][champ.unique])
             await self.bot.say(embed=data)
-        # except:
-        #     await self.bot.say('Champion has no Signature link')
-            print(sigurl)
-            print(code)
 
     @champ.command(pass_context=True, name='sigreset', aliases=['sigpop', ], hidden=True)
     async def champ_sigpop(self, ctx, *, champ: ChampConverterSig):
