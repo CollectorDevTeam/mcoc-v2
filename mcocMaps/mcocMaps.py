@@ -286,7 +286,7 @@ class MCOCMaps:
             umcoc = self.bot.get_server('378035654736609280')
             catmurdock = umcoc.get_member('373128988962586635')
             for i in (0, 1):
-                mapurl = self.cat_map['maptype']['map'][i]
+                mapurl = self.cat_map[maptype]['map'][i]
                 maptitle = 'Alliance Quest {} :smiley_cat::sparkles:| Variation {}'.format(
                     self.cat_map['maptitle'], i+1)
                 data = discord.Embed(
