@@ -1374,8 +1374,9 @@ class MCOC(ChampionFactory):
             dataIO.save_json(self.auntmai_file, self.auntmai)
 
         data = _get_embed(self, ctx, color=champ.class_color)
+        data.title = 'Champion Signatures'
         data.add_field(name=champ.verbose_str, value=sigurl)
-        data.set_author(name='Auntm.ai', url=AUNTMAI)
+        data.set_author(name='Auntm.ai', icon_url=AUNTMAI)
         data.set_thumbnail(url=champ.get_featured())
         if champ not in self.auntmai.items():
             # provide temporary message
