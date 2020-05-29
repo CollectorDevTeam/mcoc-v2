@@ -1400,8 +1400,8 @@ class MCOC(ChampionFactory):
 
     @champ.command(pass_context=True, name='sigreset', aliases=['sigpop', ], hidden=True)
     async def champ_sigpop(self, ctx, *, champ: ChampConverterSig):
-        if champ.mattkraftid in self.auntmai.keys():
-            self.auntmai.pop(champ.mattkraftid)
+        if champ.auntmai in self.auntmai.keys():
+            self.auntmai.pop(champ.auntmai)
             dataIO.save_json(self.auntmai_file, self.auntmai)
 
     @champ.command(pass_context=True, name='stats', aliases=['stat', ])
