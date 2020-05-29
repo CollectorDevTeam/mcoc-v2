@@ -283,15 +283,17 @@ class MCOCMaps:
         author = ctx.message.author
         embeds = []
         if maptype in self.cat_map.keys():
+            umcoc = self.bot.get_server('378035654736609280')
+            catmurdock = umcoc.get_member('373128988962586635')
             for i in (0, 1):
-                mapurl = self.cat_map['map'][i]
+                mapurl = self.cat_map['maptype']['map'][i]
                 maptitle = 'Alliance Quest {} :smiley_cat::sparkles:| Variation {}'.format(
                     self.cat_map['maptitle'], i+1)
                 data = discord.Embed(
                     color=discord.Color.gold(), title=maptitle, url=PATREON)
                 data.set_image(url=mapurl)
-                data.set_author(name='CollectorDevTeam',
-                                icon_url=self.COLLECTOR_ICON)
+                data.set_author(name=catmurdock.display_name,
+                                icon_url=catmurdock.avatar_url)
                 data.set_footer(text='Requested by {}'.format(
                     author.display_name), icon_url=author.avatar_url)
                 embeds.append(data)
