@@ -1380,11 +1380,11 @@ class MCOC(ChampionFactory):
         data = _get_embed(self, ctx, color=champ.class_color)
         data.add_field(name='Auntm.ai', value=sigurl)
         data.set_author(name='Auntm.ai', url=AUNTMAI)
-        data.set_thumbnail(url=champ.get_featured)
+        data.set_thumbnail(url=champ.get_featured())
         if champ not in self.auntmai.items():
             # provide temporary message
             messageid = await self.bot.say(sigurl)
-            sigimage_url = await SCREENSHOT.get_screenshot(self, url=sigurl, w=600, h=1000)
+            sigimage_url = await SCREENSHOT.get_screenshot(self, url=sigurl, w=600, h=1200)
             self.auntmai.update(
                 {champ.mattkraftid: {champ.unique: sigimage_url}})
             data.set_image(
