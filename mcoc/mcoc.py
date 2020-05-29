@@ -1377,7 +1377,7 @@ class MCOC(ChampionFactory):
         #     code = requests.get(sigurl).status_code
         #     print(code)
         #     if code == 200:
-        data = _get_embed(ctx, color=champ.class_color)
+        data = _get_embed(self, ctx, color=champ.class_color)
         data.add_field(name='Auntm.ai', value=sigurl)
         if champ not in self.auntmai.items():
             # provide temporary message
