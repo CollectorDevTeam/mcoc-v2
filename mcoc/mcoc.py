@@ -3409,7 +3409,7 @@ def check_file():
     for i in f:
         if not dataIO.is_valid_json(i):
             print("I'm creating the file, so relax bruh.")
-            dataIO.save_json(f[i], data)
+            dataIO.save_json(i, data)
 
 
 def setup(bot):
