@@ -1398,6 +1398,7 @@ class MCOC(ChampionFactory):
                     await self.bot.say(embed=data)
         except:
             await self.bot.say('Champion has no Signature link')
+            print(sigurl)
 
     @champ.command(pass_context=True, name='sig reset', aliases=['sigpop', 'sig pop'], hidden=True)
     async def champ_sigpop(self, ctx, *, champ: ChampConverterSig):
