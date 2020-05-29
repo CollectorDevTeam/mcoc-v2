@@ -1220,7 +1220,7 @@ class MCOCTools:
                     calendar[i]['awseason'], calendar[i]['aw'])
                 data.add_field(name=name, value=package, inline=False)
             data.add_field(name='Link to MCOC Schedule',
-                           value='[MCOC Shcedule by CollectorDevTeam]({})'.format(PUBLISHED), inline=False)
+                           value='[MCOC Schedule by CollectorDevTeam]({})'.format(PUBLISHED), inline=False)
             pages.append(data)
         menu = PagesMenu(self.bot, timeout=120,
                          delete_onX=True, add_pageof=True)
