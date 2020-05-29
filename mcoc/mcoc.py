@@ -1379,7 +1379,7 @@ class MCOC(ChampionFactory):
         # data.add_field(name=champ.verbose_str, value=sigurl)
         data.set_author(name='Signature Ability by Auntm.ai', icon_url=AUNTMAI)
         data.set_thumbnail(url=champ.get_featured())
-        if champ.auntmai not in self.auntmai.items():
+        if champ.auntmai not in self.auntmai:
             # provide temporary message
             messageid = await self.bot.say(sigurl)
             sigimage_url = await SCREENSHOT.get_screenshot(self, url=sigurl, w=600, h=1200)
@@ -1395,7 +1395,6 @@ class MCOC(ChampionFactory):
             dataIO.save_json(self.auntmai_file, self.auntmai)
             # critical save
         else:
-            data.set_thumbnail(url=champ.get_featured())
             data.set_image(
                 url=self.auntmai[champ.auntmai][champ.unique])
             await self.bot.say(embed=data)
