@@ -1,4 +1,4 @@
-from .mcocTools import (KABAM_ICON, COLLECTOR_ICON, PagesMenu,
+from .mcocTools import (KABAM_ICON, COLLECTOR_ICON, PagesMenu, SCREENSHOT,
                         GSHandler, gapi_service_creds, GSExport, CDT_COLORS, StaticGameData)
 # import cogs.mcocTools
 # from . import hook as hook
@@ -635,6 +635,8 @@ class MCOC(ChampionFactory):
             'table_width': 9,
             'sig_inc_zero': False,
         }
+        self.auntmai_file = 'data/mcoc/auntmai.json'
+        self.auntmai = dataIO.load_json(self.auntmai_file)
         self.data_dir = "data/mcoc/{}/"
         self.shell_json = self.data_dir + "{}.json"
         self.split_re = re.compile(', (?=\w+:)')
@@ -1362,12 +1364,47 @@ class MCOC(ChampionFactory):
             await self.bot.say(embed=em)
 
     @champ.command(pass_context=True, name='sig', aliases=['signature', ])
-    async def champ_sig(self, ctx, *, champ: ChampConverterSig):
+    async def champ_sig(self, ctx, *, champ: ChampConverterDebug):
         '''Champion Signature Ability
         Quick links to Auntm.ai'''
         sigurl = 'https://auntm.ai/championsig/{0.mattkraftid}/{0.star}/{0.rank}/{0.sig}'.format(
             champ)
-        await self.bot.say(sigurl)
+        if champ.debug and champ.mattkraftid in self.auntmai.keys():
+            self.auntmai.pop(champ.mattkraftid)
+            dataIO.save_json(self.auntmai_file, self.auntmai)
+        try:
+            validators.url(sigurl)
+            code = requests.get(sigurl).status_code
+            print(code)
+            if code == 200:
+                data = self.get_embed(ctx, color=champ.class_color)
+                data.add_field(name='Auntm.ai', value=sigurl)
+                if champ not in self.auntmai.items():
+                    # provide temporary message
+                    messageid = await self.bot.say(sigurl)
+                    sigimage_url = await SCREENSHOT.get_screenshot(self, url=sigurl, w=600, h=800)
+                    self.auntmai.update(
+                        {champ.mattkraftid: {champ.unique: sigimage_url}})
+                    data.set_thumbnail(
+                        url=self.auntmai[champ.mattkraftid][champ.unique])
+                    # remove temp, play embed
+                    await self.bot.edit_message(messageid, embed=data)
+                    # save screenie url to champ signature file
+                    dataIO.save_json(self.auntmai_file, self.auntmai)
+                else:
+                    data.set_thumbnail(url=champ.get_featured())
+                    data.set_image(
+                        url=self.auntmai[champ.mattkraftid][champ.unique])
+                    await self.bot.say(embed=data)
+        except:
+            await self.bot.say('Champion has no Signature link')
+
+    @champ.command(pass_context=True, name='sig reset', aliases=['sigpop', 'sig pop'], hidden=True)
+    async def champ_sigpop(self, ctx, *, champ: ChampConverterSig):
+        if champ.mattkraftid in self.auntmai.keys():
+            self.auntmai.pop(champ.mattkraftid)
+            dataIO.save_json(self.auntmai_file, self.auntmai)
+
         # released = await self.check_release(ctx, champ)
         # if not released:
         #     await self.bot.say("Champion {} is not released yet".format(champ.fullname))
@@ -3275,6 +3312,21 @@ class Champion:
         return '• ' + hex_re.sub(r'**\1**', str_data)
 
 
+def _get_embed(self, ctx, user_id=None, color=discord.Color.gold()):
+    """Return a color styled embed with no title or description"""
+    if user_id is None:
+        color = discord.Color.gold()
+    else:
+        member = self.bot.get_member(user_id)
+        color = member.color
+    data = discord.Embed(color=color, title='', description='', url=PATREON)
+    data.set_author(name='A CollectorVerse Alliance',
+                    icon_url=COLLECTOR_ICON)
+    data.set_footer(text='CollectorDevTeam | Requested by {}'.format(
+        ctx.message.author), icon_url=COLLECTOR_ICON)
+    return data
+
+
 def bound_lvl(siglvl, max_lvl=99):
     if isinstance(siglvl, list):
         ret = []
@@ -3430,7 +3482,23 @@ def override_error_handler(bot):
 
 # avoiding cyclic importing
 
+def check_folder():
+    if not os.path.exists("data/mcoc"):
+        print("Creating data/mcoc folder...")
+        os.makedirs("data/mcoc")
+
+
+def check_file():
+    data = {}
+    f = ['data/mcoc/auntmai.json']
+    for i in f:
+        if not dataIO.is_valid_json(i):
+            print("I'm creating the file, so relax bruh.")
+            dataIO.save_json(f, data)
+
 
 def setup(bot):
+    check_folder()
+    check_file()
     override_error_handler(bot)
     bot.add_cog(MCOC(bot))
