@@ -1367,10 +1367,10 @@ class MCOC(ChampionFactory):
     async def champ_sig(self, ctx, *, champ: ChampConverterDebug):
         '''Champion Signature Ability
         Quick links to Auntm.ai'''
-        sigurl = 'https://auntm.ai/championsig/{0.mattkraftid}/{0.star}/{0.rank}/{0.sig}'.format(
+        sigurl = 'https://auntm.ai/championsig/{0.auntmai}/{0.star}/{0.rank}/{0.sig}'.format(
             champ)
-        if champ.debug and champ.mattkraftid in self.auntmai.keys():
-            self.auntmai.pop(champ.mattkraftid)
+        if champ.debug and champ.auntmai in self.auntmai.keys():
+            self.auntmai.pop(champ.auntmai)
             dataIO.save_json(self.auntmai_file, self.auntmai)
 
         data = _get_embed(self, ctx, color=champ.class_color)
@@ -1382,9 +1382,9 @@ class MCOC(ChampionFactory):
             messageid = await self.bot.say(sigurl)
             sigimage_url = await SCREENSHOT.get_screenshot(self, url=sigurl, w=600, h=1200)
             self.auntmai.update(
-                {champ.mattkraftid: {champ.unique: sigimage_url}})
+                {champ.auntmai: {champ.unique: sigimage_url}})
             data.set_image(
-                url=self.auntmai[champ.mattkraftid][champ.unique])
+                url=self.auntmai[champ.auntmai][champ.unique])
             # remove temp, play embed
             # await self.bot.edit_message(messageid, embed=data)
             await self.bot.say(embed=data)
@@ -1395,7 +1395,7 @@ class MCOC(ChampionFactory):
         else:
             data.set_thumbnail(url=champ.get_featured())
             data.set_image(
-                url=self.auntmai[champ.mattkraftid][champ.unique])
+                url=self.auntmai[champ.auntmai][champ.unique])
             await self.bot.say(embed=data)
 
     @champ.command(pass_context=True, name='sigreset', aliases=['sigpop', ], hidden=True)
