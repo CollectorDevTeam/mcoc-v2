@@ -285,8 +285,8 @@ class MCOCMaps:
         if maptype in self.cat_map.keys():
             for i in (0, 1):
                 mapurl = self.cat_map['map'][i]
-                maptitle = 'Alliance Quest {} | Variation {}'.format(
-                    self.cat_map['maptitle'], seven[k])
+                maptitle = 'Alliance Quest {} :smiley_cat::sparkles:| Variation {}'.format(
+                    self.cat_map['maptitle'], i+1)
                 data = discord.Embed(
                     color=discord.Color.gold(), title=maptitle, url=PATREON)
                 data.set_image(url=mapurl)
