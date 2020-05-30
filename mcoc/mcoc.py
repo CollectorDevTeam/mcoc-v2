@@ -72,7 +72,6 @@ class TitleError(Exception):
     def __init__(self, champ):
         self.champ = champ
 
-
 data_files = {
     'spotlight': {'remote': 'https://docs.google.com/spreadsheets/d/1I3T2G2tRV05vQKpBfmI04VpvP5LjCBPfVICDmuJsjks/pub?gid=0&single=true&output=csv',
                   'local': 'data/mcoc/spotlight_data.csv', 'update_delta': 1},
@@ -1367,39 +1366,44 @@ class MCOC(ChampionFactory):
     async def champ_sig(self, ctx, *, champ: ChampConverterDebug):
         '''Champion Signature Ability
         Quick links to Auntm.ai'''
-        sigurl = 'https://auntm.ai/championsig/{0.auntmai}/{0.star}/{0.rank}/{0.sig}'.format(
-            champ)
-        if champ.debug and champ.auntmai in self.auntmai.keys():
-            self.auntmai.pop(champ.auntmai)
+        tstart = time.time()
+        if champ.debug and champ.auntmai in self.auntmai:
+            # do we want the all possible combos of champs or just the specific
+            #  version when in debug mode?
+            self.auntmai[champ.auntmai].pop(champ.auntmai_url)
+            #self.auntmai.pop(champ.auntmai)
             dataIO.save_json(self.auntmai_file, self.auntmai)
 
         data = _get_embed(self, ctx, color=champ.class_color)
         data.title = champ.verbose_str
-        data.url = sigurl
+        data.url = champ.auntmai_url
         data.set_author(name='Signature Ability by Auntm.ai', icon_url=AUNTMAI)
         data.set_thumbnail(url=champ.get_featured())
-        if champ.auntmai not in self.auntmai.keys():
-            self.auntmai.update({champ.auntmai: {}})
-        if champ.unique not in self.auntmai[champ.auntmai].keys():
-            # provide temporary message
-            self.auntmai[champ.auntmai].update({champ.unique:{}})
-        if champ.sig not in self.auntmai[champ.auntmai][champ.unique].keys():
-            messageid = await self.bot.say(sigurl)
-            sigimage_url = await SCREENSHOT.get_screenshot(self, url=sigurl, w=600, h=1200)
-            self.auntmai[champ.auntmai][champ.unique].update({champ.sig: sigimage_url})
-            data.set_image(
-                url=self.auntmai[champ.auntmai][champ.unique][champ.sig])
-            # remove temp, play embed
-            # await self.bot.edit_message(messageid, embed=data)
+
+        self.auntmai.setdefault(champ.auntmai, {})
+        if champ.auntmai_url not in self.auntmai[champ.auntmai]:
+            messageid = await self.bot.say(champ.auntmai_url)
+            sigimage_url = await SCREENSHOT.get_screenshot(self,
+                            url=champ.auntmai_url, w=600, h=1200)
+            tsshot = time.time()
+            self.auntmai[champ.auntmai][champ.auntmai_url] = sigimage_url
+            data.set_image( url=self.auntmai[champ.auntmai][champ.auntmai_url])
             dataIO.save_json(self.auntmai_file, self.auntmai)
+            tjson = time.time()
             await self.bot.say(embed=data)
             await self.bot.delete_message(messageid)
-            # save screenie url to champ signature file
-            
-            # critical save
+            tmsg = time.time()
+            if champ.debug:
+                await self.bot.say('```Timing:\n\tScreenshot:    {:.3f}s'
+                        '\n\tJSON Write:    {:.3f}s'
+                        '\n\tFinal Message: {:.3f}s'
+                        '\n\tTotal:         {:.3f}s```'.format(
+                            tsshot - tstart,
+                            tjson - tsshot,
+                            tmsg - tjson,
+                            tmsg - tstart))
         else:
-            data.set_image(
-                url=self.auntmai[champ.auntmai][champ.unique][champ.sig])
+            data.set_image(url=self.auntmai[champ.auntmai][champ.auntmai_url])
             await self.bot.say(embed=data)
 
     @champ.command(pass_context=True, name='sigreset', aliases=['sigpop', ], hidden=True)
@@ -2888,6 +2892,11 @@ class Champion:
     @property
     def terse_star_str(self):
         return '{0.star}{0.star_char}'.format(self)
+
+    @property
+    def auntmai_url(self):
+        return ('https://auntm.ai/championsig/'
+                '{0.auntmai}/{0.star}/{0.rank}/{0.sig}'.format(self))
 
     @property
     def star_char(self):
