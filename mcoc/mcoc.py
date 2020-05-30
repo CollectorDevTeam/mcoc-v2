@@ -1399,7 +1399,7 @@ class MCOC(ChampionFactory):
             # critical save
         else:
             data.set_image(
-                url=self.auntmai[champ.auntmai][champ.unique])
+                url=self.auntmai[champ.auntmai][champ.unique][champ.sig])
             await self.bot.say(embed=data)
 
     @champ.command(pass_context=True, name='sigreset', aliases=['sigpop', ], hidden=True)
