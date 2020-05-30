@@ -1442,7 +1442,7 @@ class MCOC(ChampionFactory):
                         self.auntmai[champ.auntmai][sigurl] = sigimage_url
                         tjson = time.time()
                         await self.bot.say('```Timing:\n\tPredicate:     {}'
-                                'Screenshot:    {:.3f}s'
+                                '\n\tScreenshot:    {:.3f}s'
                                 '\n\tJSON Store:    {:.3f}s```'.format(
                                     predicate,
                                     tsshot - tstart,
