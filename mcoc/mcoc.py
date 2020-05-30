@@ -1379,7 +1379,7 @@ class MCOC(ChampionFactory):
         data.set_author(name='Signature Ability by Auntm.ai', icon_url=AUNTMAI)
         data.set_thumbnail(url=champ.get_featured())
         if champ.auntmai not in self.auntmai.keys():
-            self.auntmai.update({champ.auntmai: })
+            self.auntmai.update({champ.auntmai: {}})
         if champ.unique not in self.auntmai[champ.auntmai]:
             # provide temporary message
             self.auntmai[champ.auntmai].update({champ.unique:{}})
