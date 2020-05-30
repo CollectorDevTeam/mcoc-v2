@@ -1447,7 +1447,7 @@ class MCOC(ChampionFactory):
                                     predicate,
                                     tsshot - tstart,
                                     tjson - tsshot))
-        dataIO.save_json(self.auntmai_file, self.auntmai)
+                dataIO.save_json(self.auntmai_file, self.auntmai)
         tend = time.time()
         await self.bot.say('```Timing:'
                 '\n\tTotal:         {:.3f}s```'.format(
