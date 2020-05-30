@@ -1413,7 +1413,7 @@ class MCOC(ChampionFactory):
         tstart = time.time()
         lower = (1, 20, 40, 60, 80, 99)
         upper = (1, 20, 40, 60, 80, 100, 120, 140, 160, 180, 200)
-        url = 'https://auntm.ai/{0.auntmai}/{0.star}/{1}/{2}'
+        url = 'https://auntm.ai/championsig/{0.auntmai}/{0.star}/{1}/{2}'
         ranks = (1, 2, 3, 4, 5)
 
         if champ.star == 6:
