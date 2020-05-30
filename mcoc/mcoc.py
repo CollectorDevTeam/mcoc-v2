@@ -1410,6 +1410,7 @@ class MCOC(ChampionFactory):
     async def champ_sigharvest(self, ctx, *, champ: ChampConverterDebug):
         '''Champion Signature Ability
         Quick links to Auntm.ai'''
+        self.auntmai.setdefault(champ.auntmai, {})
         tbegin = time.time()
         lower = (1, 20, 40, 60, 80, 99)
         upper = (1, 20, 40, 60, 80, 100, 120, 140, 160, 180, 200)
