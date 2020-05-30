@@ -1428,7 +1428,7 @@ class MCOC(ChampionFactory):
                 sigs = lower
             for rank in ranks:        
                 for sig in sigs:
-                    predicate = '{0.auntmai}/{star}/{rank}/{sig}'.format(champ, star, rank, sig)
+                    predicate = '{0.auntmai}/{1}/{2}/{3}'.format(champ, star, rank, sig)
                     sigurl = 'https://auntm.ai/championsig/'+predicate
                     tstart = time.time()
                     if sigurl not in self.auntmai[champ.auntmai]:
