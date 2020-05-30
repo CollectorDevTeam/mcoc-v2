@@ -1379,15 +1379,14 @@ class MCOC(ChampionFactory):
         data.set_author(name='Signature Ability by Auntm.ai', icon_url=AUNTMAI)
         data.set_thumbnail(url=champ.get_featured())
         if champ.auntmai not in self.auntmai.keys():
-            self.auntmai.update({champ.auntmai: {}})
+            self.auntmai.update({champ.auntmai: })
         if champ.unique not in self.auntmai[champ.auntmai]:
             # provide temporary message
             self.auntmai[champ.auntmai].update({champ.unique:{}})
         if champ.sig not in self.auntmai[champ.auntmai][champ.unique]:
-            self.auntmai[champ.auntmai][champ.unique].update({champ.sig: sigurl})
             messageid = await self.bot.say(sigurl)
             sigimage_url = await SCREENSHOT.get_screenshot(self, url=sigurl, w=600, h=1200)
-            
+            self.auntmai[champ.auntmai][champ.unique].update({champ.sig: sigimage_url})
             data.set_image(
                 url=self.auntmai[champ.auntmai][champ.unique][champ.sig])
             # remove temp, play embed
