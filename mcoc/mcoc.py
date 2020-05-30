@@ -1417,9 +1417,13 @@ class MCOC(ChampionFactory):
         fiveranks = (1, 2, 3, 4, 5)
         sixranks = (1, 2, 3)
 
-        for star in (4, 5, 6):
+        for star in (4, 5, 6, 3, 2):
             if star == 6:
                 ranks = sixranks
+            elif star == 3:
+                ranks = (1, 2, 3, 4)
+            elif star == 2:
+                ranks = (1, 2, 3)
             else: 
                 ranks = fiveranks
             if star > 4:
@@ -1437,8 +1441,10 @@ class MCOC(ChampionFactory):
                         tsshot = time.time()
                         self.auntmai[champ.auntmai][sigurl] = sigimage_url
                         tjson = time.time()
-                        await self.bot.say('```Timing:\n\tScreenshot:    {:.3f}s'
+                        await self.bot.say('```Timing:\n\tPredicate:     {}'
+                                'Screenshot:    {:.3f}s'
                                 '\n\tJSON Store:    {:.3f}s```'.format(
+                                    predicate,
                                     tsshot - tstart,
                                     tjson - tsshot))
         dataIO.save_json(self.auntmai_file, self.auntmai)
