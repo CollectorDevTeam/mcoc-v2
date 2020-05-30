@@ -1405,6 +1405,46 @@ class MCOC(ChampionFactory):
         else:
             data.set_image(url=self.auntmai[champ.auntmai][champ.auntmai_url])
             await self.bot.say(embed=data)
+        
+    @champ.command(pass_context=True, name='sigfetch', hidden=True)
+    async def champ_sigharvest(self, ctx, *, champ: ChampConverterDebug):
+        '''Champion Signature Ability
+        Quick links to Auntm.ai'''
+        tstart = time.time()
+        lower = (1, 20, 40, 60, 80, 99)
+        upper = (1, 20, 40, 60, 80, 100, 120, 140, 160, 180, 200)
+        url = 'https://auntm.ai/{0.auntmai}/{0.star}/{1}/{2}'
+        ranks = (1, 2, 3, 4, 5)
+
+        if champ.star == 6:
+            sigs = upper
+            ranks = (1, 2, 3)
+        elif champ.star == 5:
+            sigs = upper
+        elif champ.star >= 2:
+            sigs = lower
+        else:
+            return
+
+        for r in ranks:        
+            for s in sigs:
+                sigurl = url.format(champ, r, s)
+                if sigurl not in self.auntmai[champ.auntmai]:
+                    sigimage_url = await SCREENSHOT.get_screenshot(self,
+                                url=sigurl, w=600, h=1200)
+                    tsshot = time.time()
+                    self.auntmai[champ.auntmai][sigurl] = sigimage_url
+                    tjson = time.time()
+                    await self.bot.say('```Timing:\n\tScreenshot:    {:.3f}s'
+                            '\n\tJSON Store:    {:.3f}s```'.format(
+                                tsshot - tstart,
+                                tjson - tsshot))
+        dataIO.save_json(self.auntmai_file, self.auntmai)
+        tmsg = time.time()
+        await self.bot.say('```Timing:\n\t
+                '\n\tTotal:         {:.3f}s```'.format(
+                    tmsg - tstart))
+
 
     @champ.command(pass_context=True, name='sigreset', aliases=['sigpop', ], hidden=True)
     async def champ_sigpop(self, ctx, *, champ: ChampConverterSig):
