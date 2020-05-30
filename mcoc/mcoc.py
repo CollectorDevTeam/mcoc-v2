@@ -1376,23 +1376,27 @@ class MCOC(ChampionFactory):
         data = _get_embed(self, ctx, color=champ.class_color)
         data.title = champ.verbose_str
         data.url = sigurl
-        # data.add_field(name=champ.verbose_str, value=sigurl)
         data.set_author(name='Signature Ability by Auntm.ai', icon_url=AUNTMAI)
         data.set_thumbnail(url=champ.get_featured())
-        if champ.auntmai not in self.auntmai:
+        if champ.auntmai not in self.auntmai.keys():
+            self.auntmai.update({champ.auntmai: {}})
+        if champ.unique not in self.auntmai[champ.auntmai]:
             # provide temporary message
+            self.auntmai[champ.auntmai].update({champ.unique:{}})
+        if champ.sig not in self.auntmai[champ.auntmai][champ.unique]:
+            self.auntmai[champ.auntmai][champ.unique].update({champ.sig: sigurl})
             messageid = await self.bot.say(sigurl)
             sigimage_url = await SCREENSHOT.get_screenshot(self, url=sigurl, w=600, h=1200)
-            self.auntmai.update(
-                {champ.auntmai: {champ.unique: sigimage_url}})
+            
             data.set_image(
-                url=self.auntmai[champ.auntmai][champ.unique])
+                url=self.auntmai[champ.auntmai][champ.unique][champ.sig])
             # remove temp, play embed
             # await self.bot.edit_message(messageid, embed=data)
+            dataIO.save_json(self.auntmai_file, self.auntmai)
             await self.bot.say(embed=data)
             await self.bot.delete_message(messageid)
             # save screenie url to champ signature file
-            dataIO.save_json(self.auntmai_file, self.auntmai)
+            
             # critical save
         else:
             data.set_image(
