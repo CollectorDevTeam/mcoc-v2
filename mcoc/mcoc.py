@@ -1380,10 +1380,10 @@ class MCOC(ChampionFactory):
         data.set_thumbnail(url=champ.get_featured())
         if champ.auntmai not in self.auntmai.keys():
             self.auntmai.update({champ.auntmai: {}})
-        if champ.unique not in self.auntmai[champ.auntmai]:
+        if champ.unique not in self.auntmai[champ.auntmai].keys():
             # provide temporary message
             self.auntmai[champ.auntmai].update({champ.unique:{}})
-        if champ.sig not in self.auntmai[champ.auntmai][champ.unique]:
+        if champ.sig not in self.auntmai[champ.auntmai][champ.unique].keys():
             messageid = await self.bot.say(sigurl)
             sigimage_url = await SCREENSHOT.get_screenshot(self, url=sigurl, w=600, h=1200)
             self.auntmai[champ.auntmai][champ.unique].update({champ.sig: sigimage_url})
