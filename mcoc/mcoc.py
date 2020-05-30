@@ -1414,32 +1414,33 @@ class MCOC(ChampionFactory):
         tbegin = time.time()
         lower = (1, 20, 40, 60, 80, 99)
         upper = (1, 20, 40, 60, 80, 100, 120, 140, 160, 180, 200)
-        ranks = (1, 2, 3, 4, 5)
+        fiveranks = (1, 2, 3, 4, 5)
+        sixranks = (1, 2, 3)
 
-        if champ.star == 6:
-            sigs = upper
-            ranks = (1, 2, 3)
-        elif champ.star == 5:
-            sigs = upper
-        elif champ.star >= 2:
-            sigs = lower
-        else:
-            return
-
-        for r in ranks:        
-            for s in sigs:
-                sigurl = 'https://auntm.ai/championsig/{0.auntmai}/{0.star}/{1}/{2}'.format(champ, r, s)
-                tstart = time.time()
-                if sigurl not in self.auntmai[champ.auntmai]:
-                    sigimage_url = await SCREENSHOT.get_screenshot(self,
-                                url=sigurl, w=600, h=1200)
-                    tsshot = time.time()
-                    self.auntmai[champ.auntmai][sigurl] = sigimage_url
-                    tjson = time.time()
-                    await self.bot.say('```Timing:\n\tScreenshot:    {:.3f}s'
-                            '\n\tJSON Store:    {:.3f}s```'.format(
-                                tsshot - tstart,
-                                tjson - tsshot))
+        for star in (4, 5, 6):
+            if star == 6:
+                ranks = sixranks
+            else: 
+                ranks = fiveranks
+            if star > 4:
+                sigs = upper
+            else:
+                sigs = lower
+            for rank in ranks:        
+                for sig in sigs:
+                    predicate = '{0.auntmai}/{star}/{rank}/{sig}'.format(champ, star, rank, sig)
+                    sigurl = 'https://auntm.ai/championsig/'+predicate
+                    tstart = time.time()
+                    if sigurl not in self.auntmai[champ.auntmai]:
+                        sigimage_url = await SCREENSHOT.get_screenshot(self,
+                                    url=sigurl, w=600, h=1200)
+                        tsshot = time.time()
+                        self.auntmai[champ.auntmai][sigurl] = sigimage_url
+                        tjson = time.time()
+                        await self.bot.say('```Timing:\n\tScreenshot:    {:.3f}s'
+                                '\n\tJSON Store:    {:.3f}s```'.format(
+                                    tsshot - tstart,
+                                    tjson - tsshot))
         dataIO.save_json(self.auntmai_file, self.auntmai)
         tend = time.time()
         await self.bot.say('```Timing:'
