@@ -1084,7 +1084,8 @@ class Alliance:
                 data.add_field(name="Congrats!:sparkles:",
                                value="You have unregistered ``{}`` from your Alliance.".format(key))
         else:
-            data = self._get_role_members(ctx, server, role, key, data)
+            data, member_names = self._get_role_members(
+                ctx, server, role, key, data)
             data.add_field(name="Congrats!:sparkles:",
                            value="You have set your {} to {}".format(key, role.name), inline=False)
             if len(member_names) > 0:
@@ -1122,7 +1123,7 @@ class Alliance:
                                value='Alliances are limited to 30 members. '
                                'Check your {} members'.format(role.name))
         self.guilds[server.id].update({key: package})
-        return data
+        return data, member_names
 
     def _update_members(self, ctx, server):
         if server is None:
