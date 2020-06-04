@@ -448,7 +448,7 @@ class Alliance:
         name='settings',
         pass_context=True,
         invoke_without_command=True,
-        hidden=True,
+        hidden=False,
         no_pm=True)
     async def _settings(self, ctx, serverid=None):
         if serverid is None:
