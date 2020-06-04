@@ -72,6 +72,7 @@ class TitleError(Exception):
     def __init__(self, champ):
         self.champ = champ
 
+
 data_files = {
     'spotlight': {'remote': 'https://docs.google.com/spreadsheets/d/1I3T2G2tRV05vQKpBfmI04VpvP5LjCBPfVICDmuJsjks/pub?gid=0&single=true&output=csv',
                   'local': 'data/mcoc/spotlight_data.csv', 'update_delta': 1},
@@ -1371,7 +1372,7 @@ class MCOC(ChampionFactory):
             # do we want the all possible combos of champs or just the specific
             #  version when in debug mode?
             self.auntmai[champ.auntmai].pop(champ.auntmai_url)
-            #self.auntmai.pop(champ.auntmai)
+            # self.auntmai.pop(champ.auntmai)
             dataIO.save_json(self.auntmai_file, self.auntmai)
 
         data = _get_embed(self, ctx, color=champ.class_color)
@@ -1384,10 +1385,10 @@ class MCOC(ChampionFactory):
         if champ.auntmai_url not in self.auntmai[champ.auntmai]:
             messageid = await self.bot.say(champ.auntmai_url)
             sigimage_url = await SCREENSHOT.get_screenshot(self,
-                            url=champ.auntmai_url, w=600, h=1200)
+                                                           url=champ.auntmai_url, w=600, h=1200)
             tsshot = time.time()
             self.auntmai[champ.auntmai][champ.auntmai_url] = sigimage_url
-            data.set_image( url=self.auntmai[champ.auntmai][champ.auntmai_url])
+            data.set_image(url=self.auntmai[champ.auntmai][champ.auntmai_url])
             dataIO.save_json(self.auntmai_file, self.auntmai)
             tjson = time.time()
             await self.bot.say(embed=data)
@@ -1395,17 +1396,17 @@ class MCOC(ChampionFactory):
             tmsg = time.time()
             if champ.debug:
                 await self.bot.say('```Timing:\n\tScreenshot:    {:.3f}s'
-                        '\n\tJSON Write:    {:.3f}s'
-                        '\n\tFinal Message: {:.3f}s'
-                        '\n\tTotal:         {:.3f}s```'.format(
-                            tsshot - tstart,
-                            tjson - tsshot,
-                            tmsg - tjson,
-                            tmsg - tstart))
+                                   '\n\tJSON Write:    {:.3f}s'
+                                   '\n\tFinal Message: {:.3f}s'
+                                   '\n\tTotal:         {:.3f}s```'.format(
+                                       tsshot - tstart,
+                                       tjson - tsshot,
+                                       tmsg - tjson,
+                                       tmsg - tstart))
         else:
             data.set_image(url=self.auntmai[champ.auntmai][champ.auntmai_url])
             await self.bot.say(embed=data)
-        
+
     @champ.command(pass_context=True, name='sigfetch', hidden=True)
     async def champ_sigharvest(self, ctx, *, champ: ChampConverterDebug):
         '''Champion Signature Ability
@@ -1424,35 +1425,35 @@ class MCOC(ChampionFactory):
                 ranks = (1, 2, 3, 4)
             elif star == 2:
                 ranks = (1, 2, 3)
-            else: 
+            else:
                 ranks = fiveranks
             if star > 4:
                 sigs = upper
             else:
                 sigs = lower
-            for rank in ranks:        
+            for rank in ranks:
                 for sig in sigs:
-                    predicate = '{0.auntmai}/{1}/{2}/{3}'.format(champ, star, rank, sig)
+                    predicate = '{0.auntmai}/{1}/{2}/{3}'.format(
+                        champ, star, rank, sig)
                     sigurl = 'https://auntm.ai/championsig/'+predicate
                     tstart = time.time()
                     if sigurl not in self.auntmai[champ.auntmai]:
                         sigimage_url = await SCREENSHOT.get_screenshot(self,
-                                    url=sigurl, w=600, h=1200)
+                                                                       url=sigurl, w=600, h=1200)
                         tsshot = time.time()
                         self.auntmai[champ.auntmai][sigurl] = sigimage_url
                         tjson = time.time()
                         await self.bot.say('```Timing:\n\tPredicate:     {}'
-                                '\n\tScreenshot:    {:.3f}s'
-                                '\n\tJSON Store:    {:.3f}s```'.format(
-                                    predicate,
-                                    tsshot - tstart,
-                                    tjson - tsshot))
+                                           '\n\tScreenshot:    {:.3f}s'
+                                           '\n\tJSON Store:    {:.3f}s```'.format(
+                                               predicate,
+                                               tsshot - tstart,
+                                               tjson - tsshot))
                 dataIO.save_json(self.auntmai_file, self.auntmai)
         tend = time.time()
         await self.bot.say('```Timing:'
-                '\n\tTotal:         {:.3f}s```'.format(
-                    tend - tbegin))
-
+                           '\n\tTotal:         {:.3f}s```'.format(
+                               tend - tbegin))
 
     @champ.command(pass_context=True, name='sigreset', aliases=['sigpop', ], hidden=True)
     async def champ_sigpop(self, ctx, *, champ: ChampConverterSig):
@@ -1971,7 +1972,7 @@ class MCOC(ChampionFactory):
         except:
             print("champion has no Academy link")
         em.add_field(name='Auntm.ai Link',
-                     value='https://auntm.ai/champions/{0.mattkraftid}/tier/{0.star}'.format(champ))
+                     value='https://auntm.ai/champions/{0.auntmai}/tier/{0.star}'.format(champ))
 
         em.add_field(name='Shortcode', value=champ.short)
         em.set_footer(text='MCOC Website', icon_url=KABAM_ICON)
