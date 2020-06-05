@@ -14,7 +14,7 @@ from .utils.dataIO import dataIO
 from .utils import checks
 from .utils import chat_formatting as chat
 from cogs.mcocTools import (
-    KABAM_ICON, COLLECTOR_ICON, PagesMenu, CDT_COLORS, PATREON)
+    KABAM_ICON, COLLECTOR_ICON, PagesMenu, CDT_COLORS, PATREON, COLLECTOR_FEATURED)
 from cogs.hook import RosterUserConverter, ChampionRoster
 # import cogs.mcocTools
 
@@ -344,6 +344,28 @@ class Alliance:
             await self.diagnostics(header)
             await self.diagnostics(chat.box(page))
         await self.bot.say("Alliance good: {}\nAlliance bad updated: {}\nAlliance deleted: {}\nTotal guilds checked: {}".format(good_alliance, bad_alliance_role, len(kill_list), len(servers)))
+
+    @alliance.command(pass_context=True, hidden=False, name='template', )
+    async def _template(self, ctx):
+        '''Basic server alliance creation.
+        '''
+        author = ctx.message.author()
+        chan = ctx.message.channel
+        data = self._get_embed()
+        data.title="CollectorDevTeam Alliance Template"
+        data.description='Want to create an MCOC alliance server? ' \
+                        '1. Use CDT [Alliance Template](https://discord.new/gtzuXHq2kCg4) to create a new Discord guild with necessary channels, roles, & permissions.' \
+                        '2. Invite [Collector :portrait_collector: ](https://discordapp.com/oauth2/authorize?client_id=210480249870352385&scope=bot&permissions=8)' \
+                        '3. Add announcements in #announcemets with ``/addchan`` ' \
+                        '4. Use ``/alliance create`` to register your CollectorVerse Alliance so you can easily recruit in \<#403412020155645962>.' \
+                        '5. Visit [CollectorDevTeam](https://discord.gg/BwhgZxk) for Support and Q&A.' \
+                        'Don\'t forget to follow <#616679045026938886> , <#616679471201648682> or the <#594209177639976976> ' 
+        data.set_footer(text='CollectorDevTeam | Alliance Template', url=COLLECTOR_ICON)
+        data.set_thumbnail(url=COLLECTOR_FEATURED)
+        data.set_author(name=author.display_name, icon_url=author.avatar_url)
+        await self.bot.send_message(chan, embed=data)
+        await self.diagnostics(data)
+
 
     @alliance.command(pass_context=True, hidden=False, name='export', aliases=('awx',))
     async def _role_roster_export(self, ctx):
