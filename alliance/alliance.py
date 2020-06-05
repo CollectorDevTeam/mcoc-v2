@@ -360,7 +360,7 @@ class Alliance:
                         '4. Use ``/alliance create`` to register your CollectorVerse Alliance so you can easily recruit in \<#403412020155645962>.' \
                         '5. Visit [CollectorDevTeam](https://discord.gg/BwhgZxk) for Support and Q&A.' \
                         'Don\'t forget to follow <#616679045026938886> , <#616679471201648682> or the <#594209177639976976> ' 
-        data.set_footer(text='CollectorDevTeam | Alliance Template', url=COLLECTOR_ICON)
+        data.set_footer(text='CollectorDevTeam | Alliance Template', icon_url=COLLECTOR_ICON)
         data.set_thumbnail(url=COLLECTOR_FEATURED)
         data.set_author(name=author.display_name, icon_url=author.avatar_url)
         await self.bot.send_message(chan, embed=data)
