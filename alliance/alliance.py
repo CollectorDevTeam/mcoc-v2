@@ -349,7 +349,7 @@ class Alliance:
     async def _template(self, ctx):
         '''Basic server alliance creation.
         '''
-        author = ctx.message.author()
+        author = ctx.message.author
         chan = ctx.message.channel
         data = self._get_embed()
         data.title="CollectorDevTeam Alliance Template"

@@ -2386,6 +2386,7 @@ class SCREENSHOT:
         # DRIVER = 'chromedriver'
         # driver = webdriver.Chrome(DRIVER)
         driver.get(url)
+        
         screenshot = driver.save_screenshot('data/mcocTools/temp.png')
         driver.quit()
         # await asyncio.sleep(3)
