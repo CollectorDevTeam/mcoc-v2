@@ -352,7 +352,7 @@ class Alliance:
         author = ctx.message.author
         chan = ctx.message.channel
         data = self._get_embed(ctx)
-        data.title="CollectorDevTeam Alliance Template"
+        data.title="CollectorDevTeam Alliance Template:sparkles:"
         data.description='Want to create an MCOC alliance server? ' \
                         '1. Use CDT [Alliance Template](https://discord.new/gtzuXHq2kCg4) to create a new Discord guild with necessary channels, roles, & permissions.' \
                         '2. Invite [Collector :portrait_collector: ](https://discordapp.com/oauth2/authorize?client_id=210480249870352385&scope=bot&permissions=8)' \
