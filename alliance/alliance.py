@@ -353,12 +353,12 @@ class Alliance:
         chan = ctx.message.channel
         data = self._get_embed(ctx)
         data.title="CollectorDevTeam Alliance Template:sparkles:"
-        data.description='Want to create an MCOC alliance server? ' \
-                        '1. Use CDT [Alliance Template](https://discord.new/gtzuXHq2kCg4) to create a new Discord guild with necessary channels, roles, & permissions.' \
-                        '2. Invite [Collector :portrait_collector: ](https://discordapp.com/oauth2/authorize?client_id=210480249870352385&scope=bot&permissions=8)' \
-                        '3. Add announcements in #announcemets with ``/addchan`` ' \
-                        '4. Use ``/alliance create`` to register your CollectorVerse Alliance so you can easily recruit in \<#403412020155645962>.' \
-                        '5. Visit [CollectorDevTeam](https://discord.gg/BwhgZxk) for Support and Q&A.' \
+        data.description='Want to create an MCOC alliance server? \n' \
+                        '1. Use CDT [Alliance Template](https://discord.new/gtzuXHq2kCg4) to create a new Discord guild with necessary channels, roles, & permissions. \n' \
+                        '2. Invite [Collector :portrait_collector: ](https://discordapp.com/oauth2/authorize?client_id=210480249870352385&scope=bot&permissions=8) \n' \
+                        '3. Add announcements in #announcemets with ``/addchan`` \n' \
+                        '4. Use ``/alliance create`` to register your CollectorVerse Alliance so you can easily recruit in <#403412020155645962>.\n' \
+                        '5. Visit [CollectorDevTeam](https://discord.gg/BwhgZxk) for Support and Q&A. \n' \
                         'Don\'t forget to follow <#616679045026938886> , <#616679471201648682> or the <#594209177639976976> ' 
         data.set_footer(text='CollectorDevTeam | Alliance Template', icon_url=COLLECTOR_ICON)
         data.set_thumbnail(url=COLLECTOR_FEATURED)
