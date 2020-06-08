@@ -79,7 +79,7 @@ data_files = {
     'crossreference': {'remote': 'https://docs.google.com/spreadsheets/d/1WghdD4mfchduobH0me4T6IvhZ-owesCIyLxb019744Y/pub?gid=0&single=true&output=csv',
                        'local': 'data/mcoc/crossreference.csv', 'update_delta': 1},
     'prestigeCSV': {'remote': 'https://docs.google.com/spreadsheets/d/1I3T2G2tRV05vQKpBfmI04VpvP5LjCBPfVICDmuJsjks/pub?gid=1346864636&single=true&output=csv',
-                    'local': 'data/mcoc/prestige.csv', 'update_delta': 1},
+                    'local': 'data/mcoc/prestige.csv', 'update_delta': 60},
     'duelist': {'remote': 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTsPSNaY6WbNF1fY49jqjRm9hJZ60Sa6fU6Yd_t7nOrIxikVj-Y7JW_YSPwHoJfix9MA4YgWSenIwfl/pub?gid=694495962&single=true&output=csv',
                 'local': 'data/mcoc/duelist.csv', 'update_delta': 1},
     # 'masteries' : {'remote':'https://docs.google.com/spreadsheets/d/1mEnMrBI5c8Tbszr0Zne6qHkW6WxZMXBOuZGe9XmrZm8/pub?gid=0&single=true&output=csv',
@@ -713,16 +713,16 @@ class MCOC(ChampionFactory):
         if whisper:
             await self.bot.whisper(embed=data)
         else:
-            await self.bot.say(embed=data)
+            await self.bot.send_message(ctx.message.channel, embed=data)
 
-    @commands.command(aliases=['p2f', ], hidden=True)
-    async def per2flat(self, per: float, ch_rating: int = 100):
+    @commands.command(pass_context=True, aliases=['p2f', ], hidden=True)
+    async def per2flat(self, ctx, per: float, ch_rating: int = 100):
         '''Convert Percentage to MCOC Flat Value'''
-        await self.bot.say(to_flat(per, ch_rating))
+        await self.bot.send_message(ctx.message.channel, to_flat(per, ch_rating))
 
     # , aliases=('f2p')) --> this was translating as "flat | f | 2 | p"
-    @commands.command(name='flat')
-    async def flat2per(self, *, m):
+    @commands.command(pass_context=True, name='flat')
+    async def flat2per(self, ctx, *, m):
         '''Convert MCOC Flat Value to Percentge
         <equation> [challenger rating = 100]'''
         if ' ' in m:
@@ -743,10 +743,10 @@ class MCOC(ChampionFactory):
                            title='FlatValue:',
                            description='{}'.format(flat_val))
         em.add_field(name='Percentage:', value='{}\%'.format(p))
-        await self.bot.say(embed=em)
+        await self.bot.send_message(ctx.message.channel, embed=em)
 
-    @commands.command(aliases=['compf', 'cfrac'], hidden=True)
-    async def compound_frac(self, base: float, exp: int):
+    @commands.command(pass_context=True, aliases=['compf', 'cfrac'], hidden=True)
+    async def compound_frac(self, ctx, base: float, exp: int):
         '''Calculate multiplicative compounded fractions'''
         if base > 1:
             base = base / 100
@@ -755,10 +755,10 @@ class MCOC(ChampionFactory):
                            title="Compounded Fractions",
                            description='{:.2%} compounded {} times'.format(base, exp))
         em.add_field(name='Expected Chance', value='{:.2%}'.format(compound))
-        await self.bot.say(embed=em)
+        await self.bot.send_message(ctx.message.channel, embed=em)
 
-    @commands.command(aliases=['mu', ], hidden=True)
-    async def mcoc_update(self, fname, force=False):
+    @commands.command(pass_context=True, aliases=['mu', ], hidden=True)
+    async def mcoc_update(self, ctx, fname, force=False):
         if len(fname) > 3:
             for key in data_files.keys():
                 if key.startswith(fname):
@@ -768,16 +768,16 @@ class MCOC(ChampionFactory):
             async with aiohttp.ClientSession() as s:
                 await self.cache_remote_file(fname, s, force_cache=True, verbose=True)
         else:
-            await self.bot.say('Valid options for 1st argument are one of (or initial portion of)\n\t'
+            await self.bot.send_message(ctx.message.channel, 'Valid options for 1st argument are one of (or initial portion of)\n\t'
                                + '\n\t'.join(data_files.keys()))
             return
 
         self.data_struct_init()
-        await self.bot.say('Summoner, I have Collected the data')
+        await self.bot.send_message(ctx.message.channel, 'Summoner, I have Collected the data')
 
-    async def say_user_error(self, msg):
+    async def say_user_error(self, ctx, msg):
         em = discord.Embed(color=discord.Color.gold(), title=msg)
-        await self.bot.say(embed=em)
+        await self.bot.send_message(ctx.message.channel, embed=em)
 
     @commands.command(hidden=True)
     async def mcocset(self, setting, value):
@@ -978,15 +978,15 @@ class MCOC(ChampionFactory):
                     em.set_thumbnail(url=champ.get_avatar())
                     embeds.append(em)
         try:
-            await self.bot.say(embed=em1)
+            await self.bot.send_message(ctx.message.channel, embed=em1)
             for em in embeds:
-                message = await self.bot.say(embed=em)
+                message = await self.bot.send_message(ctx.message.channel, embed=em)
                 for emoji in emojis:
                     await self.bot.add_reaction(message=message, emoji=emoji)
                     # await asyncio.sleep(1)
-            await self.bot.say(embed=em2)
+            await self.bot.send_message(ctx.message.channel, embed=em2)
         except:
-            await self.bot.say('\n'.join(s.full_name for s in selected))
+            await self.bot.send_message(ctx.message.channel, '\n'.join(s.full_name for s in selected))
 
     # START CHAMP GROUP
     #
@@ -1006,7 +1006,7 @@ class MCOC(ChampionFactory):
                 em.set_author(name=champ.full_name + ' - ' +
                               champ.short, icon_url=champ.get_avatar())
                 em.set_image(url=champ.get_featured())
-                await self.bot.say(embed=em)
+                await self.bot.send_message(ctx.message.channel, embed=em)
 
     @champ.command(pass_context=True, name='portrait', aliases=['avatar', ])
     async def champ_portrait(self, ctx, *, champs: ChampConverterMult):
@@ -1020,13 +1020,13 @@ class MCOC(ChampionFactory):
                               champ.short, icon_url=champ.get_avatar())
                 em.set_image(url=champ.get_avatar())
                 print(champ.get_avatar())
-                await self.bot.say(embed=em)
+                await self.bot.send_message(ctx.message.channel, embed=em)
 
     @champ.command(pass_context=True, name='bio', aliases=['biography', ])
     async def champ_bio(self, ctx, *, champ: ChampConverterDebug):
         '''Champio Bio'''
         try:
-            bio_desc = await champ.get_bio()
+            bio_desc = await champ.get_bio(ctx)
         except KeyError:
             await self.say_user_error("Cannot find bio for Champion '{}'".format(champ.full_name))
             return
@@ -1041,7 +1041,7 @@ class MCOC(ChampionFactory):
             em.add_field(name='Shortcode', value=champ.short, inline=False)
             em.set_thumbnail(url=champ.get_avatar())
             em.set_footer(text='MCOC Game Files', icon_url=KABAM_ICON)
-            await self.bot.say(embed=em)
+            await self.bot.send_message(ctx.message.channel, embed=em)
 
     @champ.command(pass_context=True, name='duel')
     async def champ_duel(self, ctx, champ: ChampConverter):
@@ -1057,7 +1057,7 @@ class MCOC(ChampionFactory):
             ws = sh.worksheet('title', 'DataExport')
             data = ws.get_all_records()
             if not len(data):
-                await self.bot.say("Data did not get retrieved")
+                await self.bot.send_message(ctx.message.channel, "Data did not get retrieved")
                 raise IndexError
 
             DUEL_SPREADSHEET = 'https://docs.google.com/spreadsheets/d/1FZdJPB8sayzrXkE3F2z3b1VzFsNDhh-_Ukl10OXRN6Q/view#gid=61189525'
@@ -1098,7 +1098,7 @@ class MCOC(ChampionFactory):
                 em.description = 'Target not found!\nAdd one to the Community Spreadhseet!\n[bit.ly/DuelTargetForm](http://bit.ly/DuelTargetForm)'
                 em.url = 'http://bit.ly/DuelTargetForm'
             em.add_field(name='Shortcode', value=champ.short, inline=False)
-            await self.bot.say(embed=em)
+            await self.bot.send_message(ctx.message.channel, embed=em)
 
     @champ.command(pass_context=True, name='about', aliases=['about_champ', ])
     async def champ_about(self, ctx, *, champ: ChampConverterRank):
@@ -1139,7 +1139,7 @@ class MCOC(ChampionFactory):
             em.set_footer(text='CollectorDevTeam Dataset',
                           icon_url=COLLECTOR_ICON)
             em.set_thumbnail(url=champ.get_avatar())
-            await self.bot.say(embed=em)
+            await self.bot.send_message(ctx.message.channel, embed=em)
 
     @champ.command(pass_context=True, name='tldr')
     async def champ_tldr(self, ctx, champ: ChampConverterDebug, force=False):
@@ -1194,7 +1194,7 @@ class MCOC(ChampionFactory):
             ctx.message.author.display_name), icon_url=COLLECTOR_ICON)
         data.set_thumbnail(url=champ.get_avatar())
         data.description = package
-        await self.bot.say(embed=data)
+        await self.bot.send_message(ctx.message.channel, embed=data)
 
     # @commands.has_any_role('CollectorDevTeam', 'CollectorSupportTeam', 'CollectorPartners')
     # @champ.command(pass_context=True, name='export', hidden=True)
@@ -1213,7 +1213,7 @@ class MCOC(ChampionFactory):
     #     '''
     #     guild = await self.check_guild(ctx)
     #     if not guild:
-    #         await self.bot.say('This server is unauthorized.')
+    #         await self.bot.send_message(ctx.message.channel, 'This server is unauthorized.')
     #         return
     #     else:
     #         if HashtagRosterConverter is not None:
@@ -1230,9 +1230,9 @@ class MCOC(ChampionFactory):
     #             print(package)
     #             pages = chat.pagify(package, page_length=2000)
     #             for page in pages:
-    #                 await self.bot.say(chat.box(page))
+    #                 await self.bot.send_message(ctx.message.channel, chat.box(page))
     #         else:
-    #             await self.bot.say('Sorry, the Hook cog is not loaded right now.')
+    #             await self.bot.send_message(ctx.message.channel, 'Sorry, the Hook cog is not loaded right now.')
 
     @champ.command(pass_context=True, name='list')
     async def champ_list(self, ctx, *, hargs=''):
@@ -1250,7 +1250,7 @@ class MCOC(ChampionFactory):
         '''
         hook = self.bot.get_cog('Hook')
         if hook is None:
-            await self.bot.say('Sorry, the Hook cog is not currently loaded.')
+            await self.bot.send_message(ctx.message.channel, 'Sorry, the Hook cog is not currently loaded.')
         else:
             await hook.get_champ_list(ctx, hargs)
     #     # hargs = await hook.HashtagRankConverter(ctx, hargs).convert() #imported from hook
@@ -1265,7 +1265,7 @@ class MCOC(ChampionFactory):
     #         if roster is not None:
     #             await roster.display()
     #     else:
-    #         await self.bot.say('Sorry, the Hook cog is not loaded right now.')
+    #         await self.bot.send_message(ctx.message.channel, 'Sorry, the Hook cog is not loaded right now.')
 
     @champ.command(pass_context=True, name='released', aliases=['odds', 'chances', ])
     async def champ_released(self, ctx, champ: ChampConverter = None):
@@ -1279,8 +1279,8 @@ class MCOC(ChampionFactory):
                                                                           '/champ odds <champion>'
                                  'Check out this video for help')
 
-            await self.bot.say(embed=data)
-            await self.bot.say('https://youtu.be/ewZiaL0Mcts')
+            await self.bot.send_message(ctx.message.channel, embed=data)
+            await self.bot.send_message(ctx.message.channel, 'https://youtu.be/ewZiaL0Mcts')
             return
 
         released = True
@@ -1361,7 +1361,7 @@ class MCOC(ChampionFactory):
             em.set_author(name='CollectorDevTeam', url=COLLECTOR_ICON)
             em.set_footer(text='Requested by {}'.format(ctx.message.author.display_name),
                           icon_url=ctx.message.author.avatar_url)
-            await self.bot.say(embed=em)
+            await self.bot.send_message(ctx.message.channel, embed=em)
 
     @champ.command(pass_context=True, name='sig', aliases=['signature', 'auntmai'])
     async def champ_sig(self, ctx, *, champ: ChampConverterDebug):
@@ -1383,7 +1383,7 @@ class MCOC(ChampionFactory):
 
         self.auntmai.setdefault(champ.auntmai, {})
         if champ.auntmai_url not in self.auntmai[champ.auntmai]:
-            messageid = await self.bot.say(champ.auntmai_url)
+            messageid = await self.bot.send_message(ctx.message.channel, champ.auntmai_url)
             sigimage_url = await SCREENSHOT.get_screenshot(self,
                                                            url=champ.auntmai_url, w=600, h=1200)
             tsshot = time.time()
@@ -1391,11 +1391,11 @@ class MCOC(ChampionFactory):
             data.set_image(url=self.auntmai[champ.auntmai][champ.auntmai_url])
             dataIO.save_json(self.auntmai_file, self.auntmai)
             tjson = time.time()
-            await self.bot.say(embed=data)
+            await self.bot.send_message(ctx.message.channel, embed=data)
             await self.bot.delete_message(messageid)
             tmsg = time.time()
             if champ.debug:
-                await self.bot.say('```Timing:\n\tScreenshot:    {:.3f}s'
+                await self.bot.send_message(ctx.message.channel, '```Timing:\n\tScreenshot:    {:.3f}s'
                                    '\n\tJSON Write:    {:.3f}s'
                                    '\n\tFinal Message: {:.3f}s'
                                    '\n\tTotal:         {:.3f}s```'.format(
@@ -1405,7 +1405,7 @@ class MCOC(ChampionFactory):
                                        tmsg - tstart))
         else:
             data.set_image(url=self.auntmai[champ.auntmai][champ.auntmai_url])
-            await self.bot.say(embed=data)
+            await self.bot.send_message(ctx.message.channel, embed=data)
 
     @champ.command(pass_context=True, name='sigfetch', hidden=True)
     async def champ_sigharvest(self, ctx, *, champ: ChampConverterDebug):
@@ -1443,7 +1443,7 @@ class MCOC(ChampionFactory):
                         tsshot = time.time()
                         self.auntmai[champ.auntmai][sigurl] = sigimage_url
                         tjson = time.time()
-                        await self.bot.say('```Timing:\n\tPredicate:     {}'
+                        await self.bot.send_message(ctx.message.channel, '```Timing:\n\tPredicate:     {}'
                                            '\n\tScreenshot:    {:.3f}s'
                                            '\n\tJSON Store:    {:.3f}s```'.format(
                                                predicate,
@@ -1451,7 +1451,7 @@ class MCOC(ChampionFactory):
                                                tjson - tsshot))
                 dataIO.save_json(self.auntmai_file, self.auntmai)
         tend = time.time()
-        await self.bot.say('```Timing:'
+        await self.bot.send_message(ctx.message.channel, '```Timing:'
                            '\n\tTotal:         {:.3f}s```'.format(
                                tend - tbegin))
 
@@ -1561,7 +1561,7 @@ class MCOC(ChampionFactory):
                     await menu.menu_start(embeds)
                 except:
                     print('PagesMenu failure')
-                    await self.bot.say(embed=em)
+                    await self.bot.send_message(ctx.message.channel, embed=em)
 
     @champ.command(pass_context=True, name='update', aliases=['add', 'dupe'], hidden=True)
     async def champ_update(self, ctx, *, args):
@@ -1569,7 +1569,7 @@ class MCOC(ChampionFactory):
         msg = '`{0}champ update` does not exist.\n' \
             + '`{0}roster update` is probably what you meant to do'
         prefixes = tuple(self.bot.settings.get_prefixes(ctx.message.server))
-        await self.bot.say(msg.format(prefixes[0]))
+        await self.bot.send_message(ctx.message.channel, msg.format(prefixes[0]))
 
     def set_collectordev_footer(self, pack, author=None):
         try:
@@ -1612,7 +1612,7 @@ class MCOC(ChampionFactory):
             await menu.menu_start(pack)
         else:
             return
-        # await self.bot.say(embed=em)
+        # await self.bot.send_message(ctx.message.channel, embed=em)
 
     async def get_synergies(self, champs, embed=None, author=None):
         '''If Debug is sent, data will refresh'''
@@ -1628,6 +1628,7 @@ class MCOC(ChampionFactory):
         return pack
 
     async def get_single_synergies(self, champ, syn_data, embed=None, pack=None, author=None):
+        '''Return embed package or message package'''
         if embed is None:
             embed = discord.Embed(
                 color=champ.class_color, title='These champions activate {} Synergies'.format(champ.full_name))
@@ -1666,6 +1667,7 @@ class MCOC(ChampionFactory):
         return None
 
     async def get_reverse_synergies(self, champ, syn_data, pack=None, author=None):
+        '''Return embed package or message package'''
         description = ''
         found = []
         for c in syn_data['SynExport'].keys():
@@ -1726,6 +1728,7 @@ class MCOC(ChampionFactory):
         #             inline=False)
 
     async def get_multiple_synergies(self, champs, syn_data, pack=None, embed=None, author=None):
+        '''Return embed package or message package'''
         if embed is None:
             embed = discord.Embed(color=discord.Color.red(),
                                   title='Champion Synergies')
@@ -1823,6 +1826,7 @@ class MCOC(ChampionFactory):
             return pack
 
     async def gs_to_json(self, head_url=None, body_url=None, foldername=None, filename=None, groupby_value=None):
+        ## I don't remember writing or using this, but this looks useful.
         if head_url is not None:
             async with aiohttp.get(head_url) as response:
                 try:
@@ -1867,8 +1871,9 @@ class MCOC(ChampionFactory):
 
         return output_dict
 
+## Flag command for removal
     @commands.command(hidden=True)
-    async def dump_sigs(self):
+    async def dump_sigs(self, ctx):
         # await self.update_local()
         sdata = dataIO.load_json(local_files['signature'])
         dump = {}
@@ -1897,26 +1902,27 @@ class MCOC(ChampionFactory):
             print(champ.full_name)
         with open("sig_data_4star.json", encoding='utf-8', mode="w") as fp:
             json.dump(dump, fp, indent='\t', sort_keys=True)
-        await self.bot.say('Hopefully dumped')
+        await self.bot.send_message(ctx.message.channel, 'Hopefully dumped')
 
-    @commands.command(hidden=True)
-    async def json_sig(self, *, champ: ChampConverterSig):
+    @commands.command(pass_context=True, hidden=True)
+    async def json_sig(self, ctx, *, champ: ChampConverterSig):
         if champ.star != 4 or champ.rank != 5:
-            await self.bot.say('This function only checks 4* rank5 champs')
+            await self.bot.send_message(ctx.message.channel, 'This function only checks 4* rank5 champs')
             return
         jfile = dataIO.load_json("sig_data_4star.json")
-        title, desc, sig_calcs = await champ.process_sig_description(quiet=True)
+        title, desc, sig_calcs = await champ.process_sig_description(ctx, quiet=True)
         jsig = jfile[champ.mattkraftid]
         em = discord.Embed(title='Check for {}'.format(champ.full_name))
         em.add_field(name=jsig['title'],
                      value=jsig['description'].format(d=jsig['sig_data'][champ.sig-1]))
-        await self.bot.say(embed=em)
+        await self.bot.send_message(ctx.message.channel, embed=em)
         assert title == jsig['title']
         assert desc == jsig['description']
         assert sig_calcs == jsig['sig_data'][champ.sig-1]
 
-    @commands.command(hidden=True)
-    async def gs_sig(self):
+## Flag for removal
+    @commands.command(pass_context=True, hidden=True)
+    async def gs_sig(self, ctx):
         await self.update_local()
         gkey = '1kNvLfeWSCim8liXn6t0ksMAy5ArZL5Pzx4hhmLqjukg'
         gc = pygsheets.authorize(
@@ -1935,6 +1941,7 @@ class MCOC(ChampionFactory):
             json.dump(struct, fp, indent='  ', sort_keys=True)
         await self.bot.upload("data/mcoc/gs_json_test.json")
 
+
     @champ.command(pass_context=True, name='use', aliases=('howto',))
     async def champ_use(self, ctx, *, champ: ChampConverter):
         '''How to Fight With videos by MCOC Community'''
@@ -1942,12 +1949,12 @@ class MCOC(ChampionFactory):
         if released:
             em = discord.Embed(color=champ.class_color, title='How-To-Use: ' +
                                champ.full_name, url='https://goo.gl/forms/VXSQ1z40H4Knia0t2')
-            await self.bot.say(embed=em)
+            await self.bot.send_message(ctx.message.channel, embed=em)
             if champ.infovideo != '':
-                await self.bot.say(champ.infovideo)
-                # await self.bot.say(xref['infovideo'])
+                await self.bot.send_message(ctx.message.channel, champ.infovideo)
+                # await self.bot.send_message(ctx.message.channel, xref['infovideo'])
             else:
-                await self.bot.say('I got nothing. Send the CollectorDevTeam a good video.\nClick the blue text for a survey link.')
+                await self.bot.send_message(ctx.message.channel, 'I got nothing. Send the CollectorDevTeam a good video.\nClick the blue text for a survey link.')
 
     @champ.command(pass_context=True, name='info', aliases=('infopage',))
     async def champ_info(self, ctx, *, champ: ChampConverterDebug):
@@ -1977,7 +1984,7 @@ class MCOC(ChampionFactory):
         em.add_field(name='Shortcode', value=champ.short)
         em.set_footer(text='MCOC Website', icon_url=KABAM_ICON)
         em.set_thumbnail(url=champ.get_avatar())
-        await self.bot.say(embed=em)
+        await self.bot.send_message(ctx.message.channel, embed=em)
 
     @champ.command(pass_context=True, name='abilities')
     async def champ_abilities(self, ctx,  *, champ: ChampConverterDebug):
@@ -2007,7 +2014,7 @@ class MCOC(ChampionFactory):
             em.set_footer(text='CollectorDevTeam | Requested by {}'.format(
                 ctx.message.author.display_name), icon_url=COLLECTOR_ICON)
             em.set_thumbnail(url=champ.get_featured())
-            await self.bot.say(embed=em)
+            await self.bot.send_message(ctx.message.channel, embed=em)
         else:
             await self.champ_embargo(ctx, champ)
 
@@ -2026,9 +2033,9 @@ class MCOC(ChampionFactory):
             em.set_thumbnail(url=champ.get_avatar())
             em.add_field(name='Shortcode', value=champ.short)
             em.set_footer(text='MCOC Game Files', icon_url=KABAM_ICON)
-            await self.bot.say(embed=em)
+            await self.bot.send_message(ctx.message.channel, embed=em)
         except:
-            await self.bot.say('Special Attack not found')
+            await self.bot.send_message(ctx.message.channel, 'Special Attack not found')
 
     @champ.command(pass_context=True, name='prestige')
     async def champ_prestige(self, ctx, *, champs: ChampConverterMult):
@@ -2047,7 +2054,7 @@ class MCOC(ChampionFactory):
                                )
             em.set_footer(text='https://auntm.ai | CollectorVerse',
                           icon_url=AUNTMAI)
-            await self.bot.say(embed=em)
+            await self.bot.send_message(ctx.message.channel, embed=em)
         else:
             em = discord.Embed(color=discord.Color.magenta(),
                                title='Not Enough Data',
@@ -2056,7 +2063,7 @@ class MCOC(ChampionFactory):
                                )
             em.set_footer(text='https://auntm.ai | CollectorVerse',
                           icon_url=AUNTMAI)
-            await self.bot.say(embed=em)
+            await self.bot.send_message(ctx.message.channel, embed=em)
 
     @champ.command(pass_context=True, name='aliases', aliases=('names',))
     async def champ_aliases(self, ctx, *args):
@@ -2078,15 +2085,15 @@ class MCOC(ChampionFactory):
                     em.add_field(name=champ.full_name,
                                  value=champ.get_aliases())
                     champs_matched.add(champ.mattkraftid)
-        await self.bot.say(embed=em)
+        await self.bot.send_message(ctx.message.channel, embed=em)
 
-    @commands.command(hidden=True)
-    async def tst(self, key):
+    @commands.command(pass_context=True, hidden=True)
+    async def tst(self, ctx, key):
         files = {'bio': (kabam_bio, 'ID_CHARACTER_BIOS_', 'mcocjson'),
                  'sig': (kabam_bcg_stat_en, 'ID_UI_STAT_', 'mcocsig')}
         ignore_champs = ('DRONE', 'SYMBIOD')
         if key not in files:
-            await self.bot.say('Accepted Key values:\n\t' + '\n\t'.join(files.keys()))
+            await self.bot.send_message(ctx.message.channel, 'Accepted Key values:\n\t' + '\n\t'.join(files.keys()))
             return
         data = load_kabam_json(files[key][0])
         no_mcocjson = []
@@ -2108,17 +2115,17 @@ class MCOC(ChampionFactory):
             else:
                 data_keys -= champ_keys
         if no_mcocjson:
-            await self.bot.say('Could not find mcocjson alias for champs:\n\t' + ', '.join(no_mcocjson))
+            await self.bot.send_message(ctx.message.channel, 'Could not find mcocjson alias for champs:\n\t' + ', '.join(no_mcocjson))
         if no_kabam_key:
-            await self.bot.say('Could not find Kabam key for champs:\n\t' + ', '.join(no_kabam_key))
+            await self.bot.send_message(ctx.message.channel, 'Could not find Kabam key for champs:\n\t' + ', '.join(no_kabam_key))
         if data_keys:
             #print(data_keys, len(data_keys))
             if len(data_keys) > 20:
                 dump = {k for k in data_keys if k.endswith('TITLE')}
             else:
                 dump = data_keys
-            await self.bot.say('Residual keys:\n\t' + '\n\t'.join(dump))
-        await self.bot.say('Done')
+            await self.bot.send_message(ctx.message.channel, 'Residual keys:\n\t' + '\n\t'.join(dump))
+        await self.bot.send_message(ctx.message.channel, 'Done')
 
     # @commands.has_any_role('DataDonors','CollectorDevTeam','CollectorSupportTeam','CollectorPartners')
     @commands.group(pass_context=True, aliases=['donate', ])
@@ -2159,7 +2166,7 @@ class MCOC(ChampionFactory):
                                '[Submit Stats via Google Form](https://goo.gl/forms/ZgJG97KOpeSsQ2092)'
             data.set_image(
                 url='https://cdn.discordapp.com/attachments/278246904620646410/550010804880277554/unknown.png')
-            await self.bot.say(embed=data)
+            await self.bot.send_message(ctx.message.channel, embed=data)
             return
         elif champ is not None:
             data.set_thumbnail(url=champ.get_featured())
@@ -2192,8 +2199,8 @@ class MCOC(ChampionFactory):
                            value='``/submit stats 5*sentry hp 12345 atk 1234 cr 123 cd 123 armor 123 bp 1234``')
             data.add_field(name='Submission Error',
                            value='No information included.\n Try harder next time.')
-            await self.bot.say(embed=data)
-            # await self.bot.say('Submit Stats debug: Did not match stats')
+            await self.bot.send_message(ctx.message.channel, embed=data)
+            # await self.bot.send_message(ctx.message.channel, 'Submit Stats debug: Did not match stats')
             return
         else:
             default = {
@@ -2236,8 +2243,8 @@ class MCOC(ChampionFactory):
                     url='https://cdn.discordapp.com/attachments/278246904620646410/550010804880277554/unknown.png')
                 data.add_field(
                     name='Submission Error', value='Could not decipher submission.\n Try harder next time.')
-                message = await self.bot.say(embed=data)
-                # await self.bot.say('Submit Stats debug: Did not match stats')
+                message = await self.bot.send_message(ctx.message.channel, embed=data)
+                # await self.bot.send_message(ctx.message.channel, 'Submit Stats debug: Did not match stats')
                 return
             elif 'hp' not in matches.keys() and 'atk' not in matches.keys():
                 data.description = 'Minimum stats submissions include Health & Attack.\n' \
@@ -2249,7 +2256,7 @@ class MCOC(ChampionFactory):
                                    'Image attachments will be uploaded to CDT Server.'
                 data.set_image(
                     url='https://cdn.discordapp.com/attachments/278246904620646410/550010804880277554/unknown.png')
-                message = await self.bot.say(embed=data)
+                message = await self.bot.send_message(ctx.message.channel, embed=data)
                 return
             else:
                 for k in matches.keys():
@@ -2272,7 +2279,7 @@ class MCOC(ChampionFactory):
             # data.author(name=ctx.message.author.display_name, icon_url=ctx.message.author.avatar_url)
 
             if answer is False:
-                await self.bot.say('Submission canceled.')
+                await self.bot.send_message(ctx.message.channel, 'Submission canceled.')
                 await self.bot.delete_message(confirmation)
             elif answer is True:
                 if default['hp']['v'] == 0 or default['atk']['v'] == 0:
@@ -2287,11 +2294,11 @@ class MCOC(ChampionFactory):
                         text='Submission Attempted by {} on {} [{}]'.format(
                             author.display_name, server.name, server.id),
                         icon_url=author.avatar_url)
-                    message = await self.bot.say(embed=data)
+                    message = await self.bot.send_message(ctx.message.channel, embed=data)
                     await self.bot.delete_message(confirmation)
                     return
                 GKEY = '1VOqej9o4yLAdMoZwnWbPY-fTFynbDb_Lk8bXDNeonuE'
-                message2 = await self.bot.say(embed=discord.Embed(color=author.color, title='Submission in progress.'))
+                message2 = await self.bot.send_message(ctx.message.channel, embed=discord.Embed(color=author.color, title='Submission in progress.'))
                 level = champ.rank*10
                 if champ.star > 4:
                     level += 15
@@ -2301,8 +2308,8 @@ class MCOC(ChampionFactory):
                             str(default['armorpen']['v']), str(
                                 default['blockpen']['v']), str(default['critresist']['v']),
                             str(default['armor']['v']), str(default['bp']['v']), author.id]]
-                # check = await self.bot.say('Debug - no stats submissions accepted currently.')
-                check = await self._process_submission(package=package, GKEY=GKEY, sheet='submit_stats')
+                # check = await self.bot.send_message(ctx.message.channel, 'Debug - no stats submissions accepted currently.')
+                check = await self._process_submission(ctx=ctx, package=package, GKEY=GKEY, sheet='submit_stats')
                 if check:
                     data.set_footer(
                         text='Submission Registered by {} on {} [{}]'.format(
@@ -2311,7 +2318,7 @@ class MCOC(ChampionFactory):
                     await self.bot.delete_message(message2)
                     if cdt_stats is not None:
                         await self.bot.send_message(cdt_stats, embed=data)
-                        await self.bot.say(embed=data)
+                        await self.bot.send_message(ctx.message.channel, embed=data)
                         if len(ctx.message.attachments) > 0:
                             for a in ctx.message.attachments:
                                 await self.bot.send_message(cdt_stats, a.url)
@@ -2319,7 +2326,7 @@ class MCOC(ChampionFactory):
                     await self.bot.edit_message(message2, 'Submission failed.')
                 await self.bot.delete_message(confirmation)
             else:
-                await self.bot.say('Ambiguous response.  Submission canceled')
+                await self.bot.send_message(ctx.message.channel, 'Ambiguous response.  Submission canceled')
                 await self.bot.delete_message(confirmation)
 
     @submit.command(pass_context=True, name='prestige')
@@ -2397,16 +2404,16 @@ class MCOC(ChampionFactory):
                 data.add_field(
                     name='Status', value='Cancelled by {}'.format(author.display_name))
                 await self.bot.delete_message(confirmation)
-                await self.bot.say(emebed=data)
+                await self.bot.send_message(ctx.message.channel, emebed=data)
                 return
             elif answer is True:
                 await self.bot.delete_message(confirmation)
-                message = await self.bot.say(embed=data)
+                message = await self.bot.send_message(ctx.message.channel, embed=data)
                 GKEY = '1HXMN7PseaWSvWpNJ3igUkV_VT-w4_7-tqNY7kSk0xoc'
-                message2 = await self.bot.say('Submission in progress.')
+                message2 = await self.bot.send_message(ctx.message.channel, 'Submission in progress.')
                 package = [['{}'.format(champ.mattkraftid), champ.sig, observation, champ.star,
                             champ.rank, champ.max_lvl, author.name, author.id, str(ctx.message.timestamp)]]
-                check = await self._process_submission(package=package, GKEY=GKEY, sheet='collector_submit')
+                check = await self._process_submission(ctx=ctx,package=package, GKEY=GKEY, sheet='collector_submit')
                 await self.bot.send_message(cdt_prestige, embed=data)
                 if check:
                     data.add_field(name='Status', value='Submission complete.')
@@ -2432,7 +2439,7 @@ class MCOC(ChampionFactory):
                                'If you are submitting a batch of images, every 5 levels of ' \
                                'signature ability are more than sufficient.\n\n' \
                                'Be sure to specify the champion **rank**.'
-            await self.bot.say(embed=data)
+            await self.bot.send_message(ctx.message.channel, embed=data)
             return
         elif len(ctx.message.attachments) == 1:
             data.set_image(url=ctx.message.attachments[0]['url'])
@@ -2443,7 +2450,7 @@ class MCOC(ChampionFactory):
             champ.verbose_str)
         answer, confirmation = await PagesMenu.confirm(self, ctx, saypackage)
         if answer:
-            await self.bot.say(embed=data)
+            await self.bot.send_message(ctx.message.channel, embed=data)
             await self.bot.delete_message(confirmation)
             await self.bot.send_message(cdt_sigs, embed=data)
             if len(attachements) > 0:
@@ -2458,14 +2465,14 @@ class MCOC(ChampionFactory):
     # #     author = ctx.message.author
     # #     now = str(ctx.message.timestamp)
     # #     if len(champs) > 5:
-    # #         await self.bot.say('Defense Error: No more than 5 Defenders permitted.')
+    # #         await self.bot.send_message(ctx.message.channel, 'Defense Error: No more than 5 Defenders permitted.')
     # #         return
     # #     for champ in champs:
     # #         message_text.append('{0.star_name_str}'.format(champ))
     # #
     # #     print('package built')
     # #     message_text.append('Press OK to confirm.')
-    # #     message = await self.bot.say('\n'.join(message_text))
+    # #     message = await self.bot.send_message(ctx.message.channel, '\n'.join(message_text))
     # #     await self.bot.add_reaction(message, '❌')
     # #     await self.bot.add_reaction(message, '🆗')
     # #     react = await self.bot.wait_for_reaction(message=message, user=ctx.message.author, timeout=30, emoji=['❌', '🆗'])
@@ -2474,15 +2481,15 @@ class MCOC(ChampionFactory):
     #
     #     if react is not None:
     #         if react.reaction.emoji == '❌':
-    #             await self.bot.say('Submission canceled.')
+    #             await self.bot.send_message(ctx.message.channel, 'Submission canceled.')
     #         elif react.reaction.emoji == '🆗':
     #             # GKEY = '1VOqej9o4yLAdMoZwnWbPY-fTFynbDb_Lk8bXDNeonuE'
     #             GKEY = '19yPuvT2Vld81RJlp4XD33kSEM-fsW8co5dN9uJkZ908'
-    #             message2 = await self.bot.say('Submission in progress.')
+    #             message2 = await self.bot.send_message(ctx.message.channel, 'Submission in progress.')
     #
     #             for champ in champs:
     #                 package = [now, author.name, author.id, target_user, champ.unique]
-    #                 check = await self._process_submission(package=package, GKEY=GKEY, sheet='collector_submit')
+    #                 check = await self._process_submission(ctx=ctx,package=package, GKEY=GKEY, sheet='collector_submit')
     #             if check:
     #                 await self.bot.edit_message(message2, 'Submission complete.')
     #                 async with aiohttp.ClientSession() as s:
@@ -2492,7 +2499,7 @@ class MCOC(ChampionFactory):
     #             else:
     #                 await self.bot.edit_message(message2, 'Submission failed.')
     #     else:
-    #         await self.bot.say('Ambiguous response.  Submission canceled')
+    #         await self.bot.send_message(ctx.message.channel, 'Ambiguous response.  Submission canceled')
 
     @submit.command(pass_context=True, name='duel', aliases=['duels', 'target'])
     async def submit_duel_target(self, ctx, champ: ChampConverter, observation, pi: int = 0):
@@ -2507,17 +2514,17 @@ class MCOC(ChampionFactory):
         data.set_footer(text='Submitted by {} on {} [{}]'
                         .format(author.display_name, server.name, server.id),
                         icon_url=author.avatar_url)
-        message = await self.bot.say(embed=data)
+        message = await self.bot.send_message(ctx.message.channel, embed=data)
         await self.bot.add_reaction(message, '❌')
         await self.bot.add_reaction(message, '🆗')
         react = await self.bot.wait_for_reaction(message=message, user=ctx.message.author, timeout=30, emoji=['❌', '🆗'])
         if react is not None:
             if react.reaction.emoji == '❌':
-                await self.bot.say('Submission canceled.')
+                await self.bot.send_message(ctx.message.channel, 'Submission canceled.')
             elif react.reaction.emoji == '🆗':
                 # GKEY = '1VOqej9o4yLAdMoZwnWbPY-fTFynbDb_Lk8bXDNeonuE'
                 GKEY = '1FZdJPB8sayzrXkE3F2z3b1VzFsNDhh-_Ukl10OXRN6Q'
-                message2 = await self.bot.say(embed=discord.Embed(color=author.color, title='Submission in progress.'))
+                message2 = await self.bot.send_message(ctx.message.channel, embed=discord.Embed(color=author.color, title='Submission in progress.'))
                 author = ctx.message.author
                 star = '{0.star}{0.star_char}'.format(champ)
                 if pi == 0:
@@ -2527,7 +2534,7 @@ class MCOC(ChampionFactory):
                 package = [[now, author.name, star, champ.full_name,
                             champ.rank, champ.max_lvl, pi, observation, author.id]]
                 print('package built')
-                check = await self._process_submission(package=package, GKEY=GKEY, sheet='collector_submit')
+                check = await self._process_submission(ctx=ctx,package=package, GKEY=GKEY, sheet='collector_submit')
                 if check:
                     await self.bot.delete_message(message2)
                     data.add_field(name='Status', value='Submission Complete')
@@ -2554,7 +2561,7 @@ class MCOC(ChampionFactory):
     @submit.command(pass_context=True, name='defkill', aliases=['defko', ])
     async def submit_awkill(self, ctx, champ: ChampConverter, node: int, ko: int):
         author = ctx.message.author
-        message = await self.bot.say('Defender Kill registered.\n'
+        message = await self.bot.send_message(ctx.message.channel, 'Defender Kill registered.\n'
                                      'Champion: {0.verbose_str}\n'
                                      'AW Node: {1}\nKills: {2}\n'
                                      'Press OK to confirm.'.format(champ, node, ko))
@@ -2563,16 +2570,16 @@ class MCOC(ChampionFactory):
         react = await self.bot.wait_for_reaction(message=message, user=ctx.message.author, timeout=30, emoji=['❌', '🆗'])
         if react is not None:
             if react.reaction.emoji == '❌':
-                await self.bot.say('Submission canceled.')
+                await self.bot.send_message(ctx.message.channel, 'Submission canceled.')
             elif react.reaction.emoji == '🆗':
                 GKEY = '1VOqej9o4yLAdMoZwnWbPY-fTFynbDb_Lk8bXDNeonuE'  # Collector Submissions
-                message2 = await self.bot.say(embed=discord.Embed(color=author.color, title='Submission in progress.'))
+                message2 = await self.bot.send_message(ctx.message.channel, embed=discord.Embed(color=author.color, title='Submission in progress.'))
                 author = ctx.message.author
                 now = str(ctx.message.timestamp)
                 package = [
                     [now, author.name, author.id, champ.unique, node, ko]]
                 print('package built')
-                check = await self._process_submission(package=package, GKEY=GKEY, sheet='defender_kos')
+                check = await self._process_submission(ctx=ctx,package=package, GKEY=GKEY, sheet='defender_kos')
                 if check:
                     await self.bot.edit_message(message2,
                                                 embed=discord.Embed(color=author.color, title='Submission Status', description='Submission complete'))
@@ -2580,11 +2587,11 @@ class MCOC(ChampionFactory):
                     await self.bot.edit_message(message2,
                                                 embed=discord.Embed(color=author.color, title='Submission Status', description='Submission failed'))
             GKEY = '1VOqej9o4yLAdMoZwnWbPY-fTFynbDb_Lk8bXDNeonuE'  # Collector Submissions
-            message2 = await self.bot.say(embed=discord.Embed(color=author.color, title='Submission Status', description='Ambiguous response.\nSubmission cancelled'))
+            message2 = await self.bot.send_message(ctx.message.channel, embed=discord.Embed(color=author.color, title='Submission Status', description='Ambiguous response.\nSubmission cancelled'))
             now = str(ctx.message.timestamp)
             package = [[now, author.name, author.id, champ.unique, node, ko]]
             print('package built')
-            check = await self._process_submission(package=package, GKEY=GKEY, sheet='defender_kos')
+            check = await self._process_submission(ctx=ctx,package=package, GKEY=GKEY, sheet='defender_kos')
             if check:
                 await self.bot.edit_message(message2,
                                             embed=discord.Embed(color=author.color, title='Submission Status',
@@ -2599,7 +2606,7 @@ class MCOC(ChampionFactory):
     async def submit_100hitchallenge(self, ctx, champ: ChampConverter, hits: int, wintersoldier_hp: int, author: discord.User = None):
         if author is None:
             author = ctx.message.author
-        message = await self.bot.say('100 Hit Challenge registered.\nChampion: {0.verbose_str}\nHits: {1}\nWinter Soldier HP: {2}\nPress OK to confirm.'.format(champ, hits, wintersoldier_hp))
+        message = await self.bot.send_message(ctx.message.channel, '100 Hit Challenge registered.\nChampion: {0.verbose_str}\nHits: {1}\nWinter Soldier HP: {2}\nPress OK to confirm.'.format(champ, hits, wintersoldier_hp))
         await self.bot.add_reaction(message, '❌')
         await self.bot.add_reaction(message, '🆗')
         react = await self.bot.wait_for_reaction(message=message, user=ctx.message.author, timeout=30, emoji=['❌', '🆗'])
@@ -2612,18 +2619,18 @@ class MCOC(ChampionFactory):
         print('package built')
         if react is not None:
             if react.reaction.emoji == '❌':
-                await self.bot.say('Submission canceled.')
+                await self.bot.send_message(ctx.message.channel, 'Submission canceled.')
             elif react.reaction.emoji == '🆗':
-                message2 = await self.bot.say('Submission in progress.')
-                check = await self._process_submission(package=package, GKEY=GKEY, sheet=SHEETKEY)
+                message2 = await self.bot.send_message(ctx.message.channel, 'Submission in progress.')
+                check = await self._process_submission(ctx=ctx,package=package, GKEY=GKEY, sheet=SHEETKEY)
                 if check:
                     await self.bot.edit_message(message2, 'Submission complete.\nWinter Soldier Damage: {}%'.format(pct))
                 else:
                     await self.bot.edit_message(message2, 'Submission failed.')
         else:
-            message2 = await self.bot.say('Ambiguous response: Submission in progress.')
+            message2 = await self.bot.send_message(ctx.message.channel, 'Ambiguous response: Submission in progress.')
             print('package built')
-            check = await self._process_submission(package=package, GKEY=GKEY, sheet=SHEETKEY)
+            check = await self._process_submission(ctx=ctx,package=package, GKEY=GKEY, sheet=SHEETKEY)
             if check:
                 await self.bot.edit_message(message2, 'Submission complete.\nWinter Soldier Damage: {}%'.format(pct))
             else:
@@ -2690,14 +2697,14 @@ class MCOC(ChampionFactory):
         em.add_field(name='Shortcode', value=champ.short, inline=True)
         em.set_thumbnail(url=champ.get_featured())
         em.set_footer(text='CollectorDevTeam Dataset', icon_url=COLLECTOR_ICON)
-        await self.bot.say(embed=em)
+        await self.bot.send_message(ctx.message.channel, embed=em)
 
-    async def _process_submission(self, package, GKEY, sheet):
+    async def _process_submission(self, ctx, package, GKEY, sheet):
         try:
             gc = pygsheets.authorize(
                 service_file=gapi_service_creds, no_cache=True)
         except FileNotFoundError:
-            await self.bot.say('Cannot find credentials file.  Needs to be located:\n'
+            await self.bot.send_message(ctx.message.channel, 'Cannot find credentials file.  Needs to be located:\n'
                                + gapi_service_creds)
             return False
         else:
@@ -2718,7 +2725,7 @@ class MCOC(ChampionFactory):
     #     try:
     #         gc = pygsheets.authorize(service_file=gapi_service_creds, no_cache=True)
     #     except FileNotFoundError:
-    #         await self.bot.say('Cannot find credentials file.  Needs to be located:\n'
+    #         await self.bot.send_message(ctx.message.channel, 'Cannot find credentials file.  Needs to be located:\n'
     #         + gapi_service_creds)
     #         return
     #     sh = gc.open_by_key(key=GKEY,returnas='spreadsheet')
@@ -2731,13 +2738,14 @@ class MCOC(ChampionFactory):
     async def costs(self, ctx):
         guild = await self.check_guild(ctx)
         if not guild:
-            await self.bot.say('This server is unauthorized.')
+            await self.bot.send_message(ctx.message.channel, 'This server is unauthorized.')
             return
         if ctx.invoked_subcommand is None:
             await send_cmd_help(ctx)
 
-    @costs.command(name='rankup', aliases=['rank', ])
+    @costs.command(pass_context=True, name='rankup', aliases=['rank', ])
     async def cost_rankup(self, ctx, champs: ChampConverterMult):
+        '''Champion rankup - unfinished'''
         counter = 0
         for champ in champs:
             counter += 1
@@ -2845,7 +2853,7 @@ class Champion:
         logger.debug(image)
         return image
 
-    async def get_bio(self):
+    async def get_bio(self, ctx):
         # sgd = cogs.mcocTools.StaticGameData()
         sgd = StaticGameData
 
@@ -2858,12 +2866,12 @@ class Champion:
         elif "ID_CHARACTER_BIOS_{}".format(self.mattkraftid) in sgd.cdt_data:
             key = "ID_CHARACTER_BIOS_{}".format(self.mattkraftid)
         else:
-            await self.bot.say('Key not identified.')
+            await self.bot.send_message(ctx.message.channel, 'Key not identified.')
             return
 
         if self.debug:
             dbg_str = "BIO:  " + key
-            await self.bot.say('```{}```'.format(dbg_str))
+            await self.bot.send_message(ctx.message.channel, '```{}```'.format(dbg_str))
         try:
             bio = sgd.cdt_data[key]
         except KeyError:
@@ -3049,14 +3057,17 @@ class Champion:
                 raise
         return row
 
-    async def missing_sig_ad(self):
+    async def missing_sig_ad(self, ctx):
+        '''Flag command for removal'''
         em = discord.Embed(color=self.class_color,
                            title='Signature Data is Missing')
         em.add_field(name=self.full_name,
                      value='Contribute your data at http://discord.gg/BwhgZxk')
-        await self.bot.say(embed=em)
+        await self.bot.send_message(ctx.message.channel, embed=em)
 
-    async def process_sig_description(self, data=None, quiet=False, isbotowner=False):
+
+    async def process_sig_description(self, ctx, data=None, quiet=False, isbotowner=False):
+        '''Flag command for removal'''
         sd = await self.retrieve_sig_data(data, isbotowner)
         try:
             ktxt = sd['kabam_text']
@@ -3070,7 +3081,7 @@ class Champion:
             dbg_str.append('Description Text:  ')
             dbg_str.extend(['  ' + self._sig_header(d)
                             for d in ktxt['desc']['v']])
-            await self.bot.say(chat.box('\n'.join(dbg_str)))
+            await self.bot.send_message(ctx.message.channel, chat.box('\n'.join(dbg_str)))
 
         await self._sig_error_code_handling(sd, raise_error=quiet)
         if self.sig == 0:
@@ -3085,15 +3096,15 @@ class Champion:
         x_arr = self._sig_x_arr(sd)
         for effect, ckey, coeffs in zip(sd['effects'], sd['locations'], sd['sig_coeff']):
             if coeffs is None:
-                await self.bot.say("**Data Processing Error**")
+                await self.bot.send_message(ctx.message.channel, "**Data Processing Error**")
                 if not quiet:
-                    await self.missing_sig_ad()
+                    await self.missing_sig_ad(ctx)
                 return self._get_sig_simple(ktxt)
             y_norm = sumproduct(x_arr, coeffs)
             sig_calcs[ckey] = self._sig_effect_decode(effect, y_norm, stats)
 
         if self.stats_missing:
-            await self.bot.say(('Missing Attack/Health info for '
+            await self.bot.send_message(ctx.message.channel, ('Missing Attack/Health info for '
                                 + '{0.full_name} {0.star_str}').format(self))
 
         brkt_re = re.compile(r'{([0-9])}')
@@ -3102,7 +3113,7 @@ class Champion:
             fdesc.append(brkt_re.sub(r'{{d[{0}-\1]}}'.format(i),
                                      self._sig_header(txt)))
         if self.debug:
-            await self.bot.say(chat.box('\n'.join(fdesc)))
+            await self.bot.send_message(ctx.message.channel, chat.box('\n'.join(fdesc)))
         title, desc, sig_calcs = ktxt['title']['v'], '\n'.join(
             fdesc), sig_calcs
         try:
@@ -3112,7 +3123,7 @@ class Champion:
                 self.full_name, str(e)))
         return title, desc, sig_calcs
 
-    async def retrieve_sig_data(self, data, isbotowner):
+    async def retrieve_sig_data(self, ctx, data, isbotowner):
         if data is None:
             try:
                 sd = dataIO.load_json(local_files['signature'])[self.full_name]
@@ -3120,7 +3131,7 @@ class Champion:
                 sd = self.init_sig_struct()
             except FileNotFoundError:
                 if isbotowner:
-                    await self.bot.say("**DEPRECIATION WARNING**  "
+                    await self.bot.send_message(ctx.message.channel, "**DEPRECIATION WARNING**  "
                                        + "Couldn't load json file.  Loading csv files.")
                 sd = self.get_sig_data_from_csv()
             cfile = 'sig_coeff_4star' if self.star < 5 else 'sig_coeff_5star'
@@ -3133,6 +3144,7 @@ class Champion:
             sd = data[self.full_name] if self.full_name in data else data
         return sd
 
+## Flag for removal - signatures handled by Auntmai
     async def _sig_error_code_handling(self, sd, raise_error=False):
         if 'error_codes' not in sd or sd['error_codes']['undefined_key']:
             if raise_error:
@@ -3429,14 +3441,14 @@ def padd_it(word, max: int, opt='back'):
         logger.warn('Padding would be negative.')
 
 
-async def raw_modok_says(bot, channel, word=None):
+async def raw_modok_says(bot, ctx, word=None):
     if not word or word not in MODOKSAYS:
         word = random.choice(MODOKSAYS)
     modokimage = '{}images/modok/{}.png'.format(remote_data_basepath, word)
     em = discord.Embed(color=CDT_COLORS['Science'],
                        title='M.O.D.O.K. says', description='')
     em.set_image(url=modokimage)
-    await bot.send_message(channel, embed=em)
+    await bot.send_message(ctx.message.channel, embed=em)
 
 
 def override_error_handler(bot):
@@ -3448,7 +3460,7 @@ def override_error_handler(bot):
         if isinstance(error, MODOKError):
             bot.logger.info('<{}> {}'.format(type(error).__name__, error))
             await bot.send_message(ctx.message.channel, "\u26a0 " + str(error))
-            await raw_modok_says(bot, ctx.message.channel)
+            await raw_modok_says(bot, ctx)
         elif isinstance(error, QuietUserError):
             # await bot.send_message(ctx.message.channel, error)
             bot.logger.info('<{}> {}'.format(type(error).__name__, error))
