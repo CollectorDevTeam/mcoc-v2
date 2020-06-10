@@ -2131,6 +2131,7 @@ class Calculator:
 class CDTGAPS:
     def __init__(self, bot):
         self.bot = bot
+        self.robotworkshop = self.bot.get_channel('391330316662341632')
 
     @checks.admin_or_permissions(manage_server=True, manage_roles=True)
     @commands.command(name='gaps', pass_context=True, hidden=False, allow_pm=False)
