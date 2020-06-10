@@ -2348,7 +2348,8 @@ class CDTGAPS:
         # data.add_field(
         #     name="Owner", value="{0.display_name} [{0.id}]".format(server.owner))
         if server in servers:
-            data = CDTEmbed._get_embed(self, ctx, user_id=ctx.message.user.id)
+            data = CDTEmbed._get_embed(
+                self, ctx, user_id=ctx.message.author.id)
             data.title = 'CollectorDevTeam Inspection:sparkles:'
             data.set_author(
                 name='Owner: {0.display_name} [{0.id}]'.format(server.owner))
@@ -2356,6 +2357,7 @@ class CDTGAPS:
                 server)
             data.add_field(name="Installation",
                            value='Collector is installed.')
+            data.set_thumbnail(url=server.icon_url)
             aux += 'Installation: Collector is installed.\n'
             data.add_field(name="Member Count", value=server.member_count)
             aux += 'Member Count: {}\n'.format(server.member_count)
