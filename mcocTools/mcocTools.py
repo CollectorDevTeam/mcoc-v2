@@ -2348,7 +2348,7 @@ class CDTGAPS:
         if server in servers:
             data.add_field(name="Installation",
                            value='Collector is installed.')
-            botmember = server.get_member(self.bot.id)
+            botmember = server.get_member('210480249870352385')
             data.add_field(name="Server Permissions",
                            value=botmember.server_permissions)
         else:
