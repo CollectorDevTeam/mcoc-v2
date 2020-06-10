@@ -2340,9 +2340,11 @@ class CDTGAPS:
         servers = self.bot.servers
         if server_id is None:
             server = ctx.message.server
-        elif server_id in servers:
-            server = self.bot.get_server(server_id)
         else:
+            server = self.bot.get_server(server_id)
+
+        if isinstance(server, discord.Server) is False:
+            await self.bot.send_message("Bad Server ID")
             return
 
         # data.add_field(
