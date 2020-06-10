@@ -2336,7 +2336,7 @@ class CDTGAPS:
             return
 
     @inspect.command(pass_context=True, hidden=True, name='server')
-    async def _inspect_server(self, ctx, server_id: None):
+    async def _inspect_server(self, ctx, server_id=None):
         servers = self.bot.servers
         if server_id is None:
             server = ctx.message.server
