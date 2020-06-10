@@ -115,6 +115,7 @@ class GSExport:
             self.cell_handlers[handler] = module_namespace[handler]
         for alias, handler in self.cell_handler_aliases.items():
             self.cell_handlers[alias] = module_namespace[handler]
+        self.robotworkshop = self.bot.get_channel('391330316662341632')
 
     async def retrieve_data(self):
         try:
@@ -2327,12 +2328,37 @@ class CDTGAPS:
             raise
             await self.bot.say("Now register your alliance:\n```/alliance register```")
             return
-    # @checks.is_owner()
-    # @commands.group(pass_context=True, hidden=True)
-    # async def inspect(self, ctx):
+
+    @commands.group(pass_context=True, hidden=True)
+    async def inspect(self, ctx):
+        if self.check_collectordevteam(ctx) is False:
+            return
+
+    @inspect.command(pass_context=True, hidden=True, name='server')
+    async def _inspect_server(self, ctx, server: discord.Server = None):
+        servers = self.bot.servers
+        if server is None:
+            server = ctx.message.server
+        data = discord.Embed(color=discord.Color.gold(
+        ), title='CollectorDevTeam Inspection:sparkles:', description='', url=PATREON)
+        data.set_author(name=server.display_name,
+                        icon_url=server.icon_url)
+        data.set_footer(text='CollectorDevTeam | Requested by {}'.format(
+            ctx.message.author), icon_url=COLLECTOR_ICON)
+        if server in servers:
+            data.add_field(name="Installation",
+                           value='Collector is installed.')
+            botmember = server.get_member(self.bot.id)
+            data.add_field(name="Server Permissions",
+                           value=botmember.server_permissions)
+        else:
+            data.add_field(name="Installation",
+                           value='Collector is not installed.')
+        await self.bot.send_message(ctx.message.channel, embed=data)
+        await self.bot.send_message(self.robotworkshop, embed=data)
 
     # @checks.is_owner()
-    @commands.command(pass_context=True, hidden=True, name='inspectroles', aliases=['inspectrole', 'ir', ])
+    @inspect.command(pass_context=True, hidden=True, name='roles', aliases=['role', 'ir', ])
     async def _inspect_roles(self, ctx):
         server = ctx.message.server
         roles = sorted(
@@ -2386,7 +2412,7 @@ class SCREENSHOT:
         # DRIVER = 'chromedriver'
         # driver = webdriver.Chrome(DRIVER)
         driver.get(url)
-        
+
         screenshot = driver.save_screenshot('data/mcocTools/temp.png')
         driver.quit()
         # await asyncio.sleep(3)
