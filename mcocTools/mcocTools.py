@@ -2331,7 +2331,7 @@ class CDTGAPS:
 
     @commands.group(pass_context=True, hidden=True)
     async def inspect(self, ctx):
-        if self.check_collectordevteam(ctx) is False:
+        if check_collectordevteam(ctx) is False:
             return
 
     @inspect.command(pass_context=True, hidden=True, name='server')
@@ -2589,6 +2589,23 @@ class CDTReport:
         await self.bot.send_message(reportchannel, embed=embed)
         # Sends report to the channel we specified earlier
         await self.bot.send_message(masterchannel, embed=embed)
+
+
+async def check_collectordevteam(self, ctx):
+    author = ctx.message.author.id
+    collectordevteam = self.bot._get_role('390253643330355200')
+    if author in ('148622879817334784', '124984294035816448', '209339409655398400'):
+        print('{}|{} is CollectorDevTeam'.format(
+            author.display_name, author.id))
+        return True
+    elif collectordevteam in author.roles():
+        print('CollectorDevTeam in {}|{} roles.'.format(
+            author.display_name, author.id))
+        return True
+    else:
+        print('{}|{} is not CollectorDevTeam'.format(
+            author.display_name, author.id))
+        return False
 
 
 def cell_to_list(cell):
