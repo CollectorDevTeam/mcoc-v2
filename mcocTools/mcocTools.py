@@ -2345,12 +2345,16 @@ class CDTGAPS:
                         icon_url=server.icon)
         data.set_footer(text='CollectorDevTeam | Requested by {}'.format(
             ctx.message.author), icon_url=COLLECTOR_ICON)
+        aux = 'Collector Inspection:sparkles: \nServer: {0.name} | {0.id}\nOwner: {0.owner}|{0.owner.id}\n'.format(
+            server)
         data.add_field(
             name="Owner", value="{0.display_name}|{0.id}".format(server.owner))
         if server in servers:
             data.add_field(name="Installation",
                            value='Collector is installed.')
+            aux += 'Installation: Collector is installed.\n'
             data.add_field(name="Member Count", value=server.member_count)
+            aux += 'Member Count: {}\n'.format(server.member_count)
             desc = 'Administrator: {0.administrator}\n ' \
                 'Kick Members: {0.kick_members}\n '\
                 'Ban Members: {0.ban_members}\n ' \
@@ -2363,13 +2367,19 @@ class CDTGAPS:
                 'Add Reactions: {0.add_reactions}\n ' \
                 'External Emoji: {0.external_emojis}\n ' \
                 ''.format(server.me.server_permissions)
+            print(desc)
             data.description = desc
-
+            aux += desc
         else:
             data.add_field(name="Installation",
                            value='Collector is not installed.')
-        await self.bot.send_message(ctx.message.channel, embed=data)
-        await self.bot.send_message(self.robotworkshop, embed=data)
+            aux += 'Installation: Collector is not installed.'
+        try:
+            await self.bot.send_message(ctx.message.channel, embed=data)
+            await self.bot.send_message(self.robotworkshop, embed=data)
+        except:
+            await self.bot.send_message(ctx.message.channel, aux)
+            await self.bot.send_message(self.robotworkshop, aux)
 
     # @checks.is_owner()
     @inspect.command(pass_context=True, hidden=True, name='roles', aliases=['role', 'ir', ])
