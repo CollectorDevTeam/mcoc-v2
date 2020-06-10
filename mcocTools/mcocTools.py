@@ -2352,7 +2352,7 @@ class CDTGAPS:
                            value='Collector is installed.')
             data.add_field(name="Server Permissions",
                            value=server.me.server_permissions)
-            data.add_field(name="Members", value=len(server.member_count))
+            data.add_field(name="Members", value=server.member_count)
 
         else:
             data.add_field(name="Installation",
