@@ -2336,45 +2336,49 @@ class CDTGAPS:
             return
 
     @inspect.command(pass_context=True, hidden=True, name='server')
-    async def _inspect_server(self, ctx, server: discord.Server = None):
+    async def _inspect_server(self, ctx, server_id: None):
         servers = self.bot.servers
-        if server is None:
+        if server_id is None:
             server = ctx.message.server
-        data = discord.Embed(color=discord.Color.gold(
-        ), title='CollectorDevTeam Inspection:sparkles:', description='', url=PATREON)
-        data.set_author(name=server.name,
-                        icon_url=server.icon)
-        data.set_footer(text='CollectorDevTeam | Requested by {}'.format(
-            ctx.message.author), icon_url=COLLECTOR_ICON)
-        aux = 'Collector Inspection:sparkles: \nServer: {0.name} | {0.id}\nOwner: {0.owner}|{0.owner.id}\n'.format(
-            server)
-        data.add_field(
-            name="Owner", value="{0.display_name}|{0.id}".format(server.owner))
+        elif server_id in servers:
+            server = self.bot.get_server(server_id)
+        else:
+            return
+
+        # data.add_field(
+        #     name="Owner", value="{0.display_name} [{0.id}]".format(server.owner))
         if server in servers:
+            data = CDTEmbed._get_embed(self, ctx, user_id=ctx.message.user.id)
+            data.title = 'CollectorDevTeam Inspection:sparkles:'
+            data.set_author(
+                name='Owner: {0.display_name} [{0.id}]'.format(server.owner))
+            aux = 'Collector Inspection:sparkles: \nServer: {0.name} | [{0.id}]\nOwner: {0.owner} [{0.owner.id}]\n'.format(
+                server)
             data.add_field(name="Installation",
                            value='Collector is installed.')
             aux += 'Installation: Collector is installed.\n'
             data.add_field(name="Member Count", value=server.member_count)
             aux += 'Member Count: {}\n'.format(server.member_count)
-            desc = 'Administrator: {0.administrator}\n ' \
-                'Kick Members: {0.kick_members}\n '\
-                'Ban Members: {0.ban_members}\n ' \
-                'Manage Channels: {0.manage_channels} \n ' \
-                'Manage Messages: {0.manage_messages}\n ' \
+            desc = \
+                '```Administrator:    {0.administrator}\n' \
+                'Kick Members:     {0.kick_members}\n'\
+                'Ban Members:      {0.ban_members}\n' \
+                'Manage Channels:  {0.manage_channels}\n' \
+                'Manage Messages:  {0.manage_messages}\n ' \
                 'Manage Nicknames: {0.manage_nicknames}\n' \
-                'Manage Server: {0.manage_server}\n ' \
-                'Manage Roles: {0.manage_roles}\n ' \
-                'Embed Links: {0.embed_links}\n ' \
-                'Add Reactions: {0.add_reactions}\n ' \
-                'External Emoji: {0.external_emojis}\n ' \
-                ''.format(server.me.server_permissions)
+                'Manage Server:    {0.manage_server}\n' \
+                'Manage Roles:     {0.manage_roles}\n' \
+                'Embed Links:      {0.embed_links}\n' \
+                'Add Reactions:    {0.add_reactions}\n' \
+                'External Emoji:  {0.external_emojis}\n' \
+                '```'.format(server.me.server_permissions)
             print(desc)
             data.description = desc
             aux += desc
         else:
             data.add_field(name="Installation",
                            value='Collector is not installed.')
-            aux += 'Installation: Collector is not installed.'
+            aux = 'Installation: Collector is not installed.'
         try:
             await self.bot.send_message(ctx.message.channel, embed=data)
             await self.bot.send_message(self.robotworkshop, embed=data)
@@ -2615,6 +2619,30 @@ class CDTReport:
         await self.bot.send_message(reportchannel, embed=embed)
         # Sends report to the channel we specified earlier
         await self.bot.send_message(masterchannel, embed=embed)
+
+
+class CDTEmbed:
+    def __init__(self, bot):
+        self.bot = bot
+
+    def _get_embed(self, ctx, user_id=None, color=discord.Color.gold()):
+        """Return a color styled embed with no title or description"""
+        if user_id is None:
+            color = discord.Color.gold()
+        elif isinstance(user_id, discord.User):
+            user = user_id
+            member = ctx.message.server.get_member(user.id)
+            color = member.color
+        else:
+            member = self.bot.get_member(user_id)
+            color = member.color
+        data = discord.Embed(color=color, title='',
+                             description='', url=PATREON)
+        data.set_author(name='CollectorVerse:sparkles:',
+                        icon_url=COLLECTOR_ICON)
+        data.set_footer(text='CollectorDevTeam | Requested by {}'.format(
+            ctx.message.author), icon_url=COLLECTOR_ICON)
+        return data
 
 
 async def check_collectordevteam(self, ctx):
