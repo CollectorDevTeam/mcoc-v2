@@ -2331,7 +2331,7 @@ class CDTGAPS:
 
     @commands.group(pass_context=True, hidden=True)
     async def inspect(self, ctx):
-        if check_collectordevteam(ctx) is False:
+        if check_collectordevteam(self, ctx) is False:
             return
 
     @inspect.command(pass_context=True, hidden=True, name='server')
