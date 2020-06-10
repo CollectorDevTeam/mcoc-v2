@@ -2341,16 +2341,19 @@ class CDTGAPS:
             server = ctx.message.server
         data = discord.Embed(color=discord.Color.gold(
         ), title='CollectorDevTeam Inspection:sparkles:', description='', url=PATREON)
-        data.set_author(name=server.display_name,
-                        icon_url=server.icon_url)
+        data.set_author(name=server.name,
+                        icon_url=server.icon)
         data.set_footer(text='CollectorDevTeam | Requested by {}'.format(
             ctx.message.author), icon_url=COLLECTOR_ICON)
+        data.add_field(
+            name="Owner", value="{0.display_name}|{0.id}".format(server.owner))
         if server in servers:
             data.add_field(name="Installation",
                            value='Collector is installed.')
-            botmember = server.get_member('210480249870352385')
             data.add_field(name="Server Permissions",
-                           value=botmember.server_permissions)
+                           value=server.me.server_permissions)
+            data.add_field(name="Members", value=len(server.member_count))
+
         else:
             data.add_field(name="Installation",
                            value='Collector is not installed.')
@@ -2359,8 +2362,9 @@ class CDTGAPS:
 
     # @checks.is_owner()
     @inspect.command(pass_context=True, hidden=True, name='roles', aliases=['role', 'ir', ])
-    async def _inspect_roles(self, ctx):
-        server = ctx.message.server
+    async def _inspect_roles(self, ctx, server: discord.Server = None):
+        if server is None:
+            server = ctx.message.server
         roles = sorted(
             server.roles, key=lambda roles: roles.position, reverse=True)
         positions = []
