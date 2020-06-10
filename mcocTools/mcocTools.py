@@ -2356,7 +2356,7 @@ class CDTGAPS:
                 'Ban Members: {0.ban_members}\n ' \
                 'Manage Channels: {0.manage_channels} \n ' \
                 'Manage Messages: {0.manage_messages}\n ' \
-                'Manage Nicknames: {0.manage_nicnames}\n' \
+                'Manage Nicknames: {0.manage_nicknames}\n' \
                 'Manage Server: {0.manage_server}\n ' \
                 'Manage Roles: {0.manage_roles}\n ' \
                 'Embed Links: {0.embed_links}\n ' \
