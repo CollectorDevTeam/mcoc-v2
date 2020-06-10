@@ -2361,7 +2361,7 @@ class CDTGAPS:
                 'Manage Roles: {0.manage_roles}\n ' \
                 'Embed Links: {0.embed_links}\n ' \
                 'Add Reactions: {0.add_reactions}\n ' \
-                'External Emoji: {0.external_emoji}\n ' \
+                'External Emoji: {0.external_emojis}\n ' \
                 ''.format(server.me.server_permissions)
             data.description = desc
 
