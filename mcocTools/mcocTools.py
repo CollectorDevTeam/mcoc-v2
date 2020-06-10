@@ -2351,8 +2351,6 @@ class CDTGAPS:
             data.add_field(name="Installation",
                            value='Collector is installed.')
             data.add_field(name="Member Count", value=server.member_count)
-            # prm = server.me.server_permissions
-            perm = server.me.server_permissions
             desc = 'Administrator: {0.administrator}\n ' \
                 'Kick Members: {0.kick_members}\n '\
                 'Ban Members: {0.ban_members}\n ' \
@@ -2364,7 +2362,7 @@ class CDTGAPS:
                 'Embed Links: {0.embed_links}\n ' \
                 'Add Reactions: {0.add_reactions}\n ' \
                 'External Emoji: {0.external_emoji}\n ' \
-                ''.format(server.me.permissions)
+                ''.format(server.me.server_permissions)
             data.description = desc
 
         else:
