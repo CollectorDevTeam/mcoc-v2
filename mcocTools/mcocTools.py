@@ -2350,9 +2350,22 @@ class CDTGAPS:
         if server in servers:
             data.add_field(name="Installation",
                            value='Collector is installed.')
-            data.add_field(name="Server Permissions",
-                           value=server.me.server_permissions)
-            data.add_field(name="Members", value=server.member_count)
+            data.add_field(name="Member Count", value=server.member_count)
+            # prm = server.me.server_permissions
+            perm = server.me.server_permissions
+            desc = 'Administrator: {0.administrator}\n ' \
+                'Kick Members: {0.kick_members}\n '\
+                'Ban Members: {0.ban_members}\n ' \
+                'Manage Channels: {0.manage_channels} \n ' \
+                'Manage Messages: {0.manage_messages}\n ' \
+                'Manage Nicknames: {0.manage_nicnames}\n' \
+                'Manage Server: {0.manage_server}\n ' \
+                'Manage Roles: {0.manage_roles}\n ' \
+                'Embed Links: {0.embed_links}\n ' \
+                'Add Reactions: {0.add_reactions}\n ' \
+                'External Emoji: {0.external_emoji}\n ' \
+                ''.format(server.me.permissions)
+            data.description = desc
 
         else:
             data.add_field(name="Installation",
