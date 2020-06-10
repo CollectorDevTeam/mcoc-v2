@@ -2636,7 +2636,8 @@ class CDTEmbed:
             member = ctx.message.server.get_member(user.id)
             color = member.color
         else:
-            member = self.bot.get_member(user_id)
+            # member = self.bot.get_member(user_id)
+            member = discord.utils.get(ctx.message.server.members, id=user_id)
             color = member.color
         data = discord.Embed(color=color, title='',
                              description='', url=PATREON)
