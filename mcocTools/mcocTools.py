@@ -2669,9 +2669,9 @@ class CDTCheck:
         self.cdtserver = self.bot.get_server('215271081517383682')
 
     async def collectordevteam(self, ctx):
-        collectordevteam = self._get_role(
+        collectordevteam = CDTCheck._get_role(
             self.cdtserver, '390253643330355200')
-        collectorsupportteam = self._get_role(
+        collectorsupportteam = CDTCheck._get_role(
             self.cdtserver, '390253719125622807')
         elevation_requests = self.bot.get_channel('720668625815732316')
         '''Verifies if calling user has either the trusted CollectorDevTeam role, or CollectorSupportTeam'''
