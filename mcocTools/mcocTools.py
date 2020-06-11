@@ -2710,10 +2710,16 @@ class CDTCheck:
 
     def _get_role(self, server: discord.Server, role_key: str):
         """Returns discord.Role"""
-        roles = server.roles
-        for role in roles:
-            if role.id == role_key:
-                return role
+        try:
+            tstart = time.time()
+            role = discord.utils.get(server.roles, id=role_key)
+            print('_get_role with utils in: {:.3f}'.format(time.time()-tstart))
+            return role
+        except:
+            roles = server.roles
+            for role in roles:
+                if role.id == role_key:
+                    return role
         return None
 
 
