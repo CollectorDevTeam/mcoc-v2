@@ -2666,19 +2666,28 @@ class CDTEmbed:
 class CDTCheck:
     def __init__(self, ctx):
         self.bot = bot
+        self.cdtserver = self.bot.get_server('215271081517383682')
 
     async def collectordevteam(self, ctx):
-        cdtserver = self.bot.get_server('215271081517383682')
-        collectordevteam = self.bot._get_role('390253643330355200')
-        collectorsupportteam = self.bot._get_role('390253719125622807')
+        collectordevteam = self._get_role(self.cdtserver, '390253643330355200')
+        collectorsupportteam = self._get_role(
+            self.cdtserver, '390253719125622807')
         elevation_requests = self.bot.get_channel('720668625815732316')
         '''Verifies if calling user has either the trusted CollectorDevTeam role, or CollectorSupportTeam'''
         author = ctx.message.author
-        member = cdtserver.get_member(author.id)
+        member = self.cdtserver.get_member(author.id)
         if member is None:
             await self.bot.send_message(elevation_requests, 'CDT Authentication attemp failed:\n'
                                         '{0.display_name} [{0.id}] on {1.name} [{1.id}]'.format(author, ctx.message.server))
             return False
+        elif collectordevteam in member.roles:
+            await self.bot.send_message(elevation_requests, 'ColelctorDevTeam authenticated\n'
+                                        '{0.display_name} [{0.id}] on {1.name} [{1.id}]'
+                                        'role in member.roles'.format(author, ctx.message.server))
+        elif collectorsupportteam in member.roles:
+            await self.bot.send_message(elevation_requests, 'CollectorSupportTeam authenticated\n'
+                                        '{0.display_name} [{0.id}] on {1.name} [{1.id}]\n'
+                                        'role in member.roles'.format(author, ctx.message.server))
         else:
             for role in member.roles:
                 if collectordevteam is role:
@@ -2698,6 +2707,15 @@ class CDTCheck:
             await self.bot.send_message(elevation_requests, 'CDT Authentication attemp failed:\n'
                                         '{0.display_name} [{0.id}] on {1.name} [{1.id}]'.format(author, ctx.message.server))
             return False
+
+    def _get_role(self, server: discord.Server, role_key: str):
+        """Returns discord.Role"""
+        if role_key in self.guilds[server.id].keys() and self.guilds[server.id][role_key] is not None:
+            for role in server.roles:
+                if role.id == self.guilds[server.id][role_key]['id']:
+                    print("_get_role found role")
+                    return role
+        return None
 
 
 def cell_to_list(cell):
