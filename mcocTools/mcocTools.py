@@ -2367,9 +2367,9 @@ class INSPECTOR:
         admin_or_superior = await mod.admin_or_superior(ctx.message)
         cdt = await CDTCheck.collectordevteam(self, ctx)
         if admin_or_superior is True:
-            continue
+            pass
         elif cdt is True:
-            continue
+            pass
         else:
             return
 
