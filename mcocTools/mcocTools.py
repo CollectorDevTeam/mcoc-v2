@@ -2678,20 +2678,24 @@ class CDTCheck:
         elevation_requests = self.bot.get_channel('720668625815732316')
         if ctx.message.author in self.cdtserver.members:
             member = self.cdtserver.get_member(author.id)
-            if collectordevteam in member.roles:
-                # print('ColelctorDevTeam authenticated: '
-                #       '{0.display_name} [{0.id}] on {1.display_name} [{1.id}]')
-                await self.bot.send_message(elevation_requests, 'ColelctorDevTeam authenticated\n'
-                                            '{0.display_name} [{0.id}] on {1.display_name} [{1.id}]'.format(author, ctx.message.server))
-                return True
-            elif collectorsupportteam in member.roles:
-                # print('ColelctorSupportTeam authenticated: '
-                #       '{0.display_name} [{0.id}] on {1.display_name} [{1.id}]')
-                await self.bot.send_message(elevation_requests, 'CollectorSupportTeam authenticated\n'
-                                            '{0.display_name} [{0.id}] on {1.display_name} [{1.id}]'.format(author, ctx.message.server))
-                return True
-            else:
-                return False
+            for role in member.roles:
+                if collectordevteam is role:
+                    # print('ColelctorDevTeam authenticated: '
+                    #       '{0.display_name} [{0.id}] on {1.display_name} [{1.id}]')
+                    await self.bot.send_message(elevation_requests, 'ColelctorDevTeam authenticated\n'
+                                                '{0.display_name} [{0.id}] on {1.display_name} [{1.id}]'.format(author, ctx.message.server))
+                    return True
+                elif collectorsupportteam is role:
+                    # print('ColelctorSupportTeam authenticated: '
+                    #       '{0.display_name} [{0.id}] on {1.display_name} [{1.id}]')
+                    await self.bot.send_message(elevation_requests, 'CollectorSupportTeam authenticated\n'
+                                                '{0.display_name} [{0.id}] on {1.display_name} [{1.id}]'.format(author, ctx.message.server))
+                    return True
+                else:
+                    continue
+            await self.bot.send_message(elevation_requests, 'CollectorDevTeam/CollectorSupportTeam not authenticated\n'
+                                        '{0.display_name} [{0.id}] on {1.display_name} [{1.id}]'.format(author, ctx.message.server))
+            return False
 
 
 def cell_to_list(cell):
