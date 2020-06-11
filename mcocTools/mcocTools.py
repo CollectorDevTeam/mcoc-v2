@@ -2369,8 +2369,6 @@ class INSPECTOR:
         #     pass
         # el
         allowed = await CDTCheck.collectordevteam(self, ctx)
-        if not allowed:
-            return
 
     @inspect.command(pass_context=True, name='check', hidden=True)
     async def _checker(self, ctx):
@@ -2816,3 +2814,4 @@ def setup(bot):
     bot.add_cog(CDTGAPS(bot))
     bot.add_cog(MCOCEvents(bot))
     bot.add_cog(MCOCTools(bot))
+    bot.add_cog(INSPECTOR(bot))
