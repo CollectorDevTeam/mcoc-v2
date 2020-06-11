@@ -2664,14 +2664,14 @@ class CDTEmbed:
 
 
 class CDTCheck:
-    def __init__(self, ctx):
+    def __init__(self, bot):
         self.bot = bot
         self.cdtserver = self.bot.get_server('215271081517383682')
 
     async def collectordevteam(self, ctx):
-        collectordevteam = CDTCheck._get_role(
+        collectordevteam = self._get_role(
             self.cdtserver, '390253643330355200')
-        collectorsupportteam = CDTCheck._get_role(
+        collectorsupportteam = self._get_role(
             self.cdtserver, '390253719125622807')
         elevation_requests = self.bot.get_channel('720668625815732316')
         '''Verifies if calling user has either the trusted CollectorDevTeam role, or CollectorSupportTeam'''
@@ -2709,7 +2709,7 @@ class CDTCheck:
                                         '{0.display_name} [{0.id}] on {1.name} [{1.id}]'.format(author, ctx.message.server))
             return False
 
-    def _get_role(server: discord.Server, role_key: str):
+    def _get_role(self, server: discord.Server, role_key: str):
         """Returns discord.Role"""
         try:
             tstart = time.time()
