@@ -2372,6 +2372,9 @@ class INSPECTOR:
         if not allowed:
             return
 
+    @inspect.command(pass_context=True, name='check', hidden=True)
+    async def _checker(self, ctx, )
+
     @inspect.command(pass_context=True, name='server')
     async def _inspect_server(self, ctx, server_id=None):
         '''Inspect CollectorVerse server for Collector installation compliance'''
