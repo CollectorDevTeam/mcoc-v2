@@ -2373,7 +2373,9 @@ class INSPECTOR:
             return
 
     @inspect.command(pass_context=True, name='check', hidden=True)
-    async def _checker(self, ctx, )
+    async def _checker(self, ctx)
+    test = await CDTCheck.collectordevteam(self, ctx)
+    await self.bot.send_message('CDTCheck is {}'.format(test))
 
     @inspect.command(pass_context=True, name='server')
     async def _inspect_server(self, ctx, server_id=None):
