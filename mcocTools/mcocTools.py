@@ -2709,7 +2709,7 @@ class CDTCheck:
                                         '{0.display_name} [{0.id}] on {1.name} [{1.id}]'.format(author, ctx.message.server))
             return False
 
-    def _get_role(self, server: discord.Server, role_key: str):
+    def _get_role(server: discord.Server, role_key: str):
         """Returns discord.Role"""
         try:
             tstart = time.time()
