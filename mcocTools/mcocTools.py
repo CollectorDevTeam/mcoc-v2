@@ -21,7 +21,6 @@ import modgrammar as md
 import pygsheets
 from __main__ import send_cmd_help
 
-from .core import mod
 from cogs.utils import checks
 from discord.ext import commands
 
@@ -2364,11 +2363,10 @@ class INSPECTOR:
         '''CollectorVerse installation compliance utility
         Only for use by CollectorDevTeam and CollectorSupportTeam
         Or server Admin+'''
-        admin_or_superior = await mod.admin_or_superior(ctx.message)
-        cdt = await CDTCheck.collectordevteam(self, ctx)
-        if admin_or_superior is True:
+        author = ctx.message.author
+        if author.server_permissions.administrator or author is ctx.message.server.owner:
             pass
-        elif cdt is True:
+        elif await CDTCheck.collectordevteam(self, ctx):
             pass
         else:
             return
