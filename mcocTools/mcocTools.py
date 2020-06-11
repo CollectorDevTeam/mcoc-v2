@@ -2815,3 +2815,4 @@ def setup(bot):
     bot.add_cog(MCOCEvents(bot))
     bot.add_cog(MCOCTools(bot))
     bot.add_cog(INSPECTOR(bot))
+    bot.add_cog(CDTCheck(bot))
