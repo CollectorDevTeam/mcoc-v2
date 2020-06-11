@@ -2669,8 +2669,8 @@ class CDTCheck:
         self.cdtserver = self.bot.get_server('215271081517383682')
 
     async def collectordevteam(self, ctx):
-        collectordevteam = self._get_role(self.cdtserver, '390253643330355200')
-        collectorsupportteam = self._get_role(
+        collectordevteam = _get_role(self.cdtserver, '390253643330355200')
+        collectorsupportteam = _get_role(
             self.cdtserver, '390253719125622807')
         elevation_requests = self.bot.get_channel('720668625815732316')
         '''Verifies if calling user has either the trusted CollectorDevTeam role, or CollectorSupportTeam'''
@@ -2710,11 +2710,10 @@ class CDTCheck:
 
     def _get_role(self, server: discord.Server, role_key: str):
         """Returns discord.Role"""
-        if role_key in self.guilds[server.id].keys() and self.guilds[server.id][role_key] is not None:
-            for role in server.roles:
-                if role.id == self.guilds[server.id][role_key]['id']:
-                    print("_get_role found role")
-                    return role
+        roles = server.roles
+        for role in roles:
+            if role.id == role_key:
+                return role
         return None
 
 
