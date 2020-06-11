@@ -2365,8 +2365,10 @@ class INSPECTOR:
         Or server Admin+'''
         author = ctx.message.author
         if author.server_permissions.administrator or author is ctx.message.server.owner:
+            print('server admin+')
             pass
         elif await CDTCheck.collectordevteam(self, ctx):
+            print('cdt or cst')
             pass
         else:
             return
