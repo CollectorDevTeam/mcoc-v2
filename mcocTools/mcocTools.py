@@ -21,7 +21,7 @@ import modgrammar as md
 import pygsheets
 from __main__ import send_cmd_help
 
-from core import mod
+from .core import mod
 from cogs.utils import checks
 from discord.ext import commands
 
