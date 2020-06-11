@@ -21,6 +21,7 @@ import modgrammar as md
 import pygsheets
 from __main__ import send_cmd_help
 
+from redbot.core import mod
 from cogs.utils import checks
 from discord.ext import commands
 
@@ -2358,9 +2359,18 @@ class INSPECTOR:
         self.robotworkshop = self.bot.get_channel('391330316662341632')
         self.cdtserver = self.bot.get_server('215271081517383682')
 
-    @commands.group(pass_context=True, hidden=True)
+    @commands.group(pass_context=True)
     async def inspect(self, ctx):
-        if CDTCheck.collectordevteam(self, ctx) is False:
+        '''CollectorVerse installation compliance utility
+        Only for use by CollectorDevTeam and CollectorSupportTeam
+        Or server Admin+'''
+        admin_or_superior = await mod.admin_or_superior(ctx.message)
+        cdt = await CDTCheck.collectordevteam(self, ctx)
+        if admin_or_superior is True:
+            continue
+        elif cdt is True:
+            continue
+        else:
             return
 
     @inspect.command(pass_context=True, name='server')
