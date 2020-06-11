@@ -2131,7 +2131,6 @@ class Calculator:
 class CDTGAPS:
     def __init__(self, bot):
         self.bot = bot
-        self.robotworkshop = self.bot.get_channel('391330316662341632')
 
     @checks.admin_or_permissions(manage_server=True, manage_roles=True)
     @commands.command(name='gaps', pass_context=True, hidden=False, allow_pm=False)
@@ -2330,70 +2329,7 @@ class CDTGAPS:
             await self.bot.say("Now register your alliance:\n```/alliance register```")
             return
 
-    @commands.group(pass_context=True, hidden=True)
-    async def inspect(self, ctx):
-        if check_collectordevteam(self, ctx) is False:
-            return
-
-    @inspect.command(pass_context=True, hidden=True, name='server')
-    async def _inspect_server(self, ctx, server_id=None):
-        servers = self.bot.servers
-        if server_id is None:
-            server = ctx.message.server
-        else:
-            server = self.bot.get_server(server_id)
-
-        if isinstance(server, discord.Server) is False:
-            await self.bot.send_message("Bad Server ID")
-            return
-
-        # data.add_field(
-        #     name="Owner", value="{0.display_name} [{0.id}]".format(server.owner))
-        data = CDTEmbed._get_embed(
-            self, ctx, user_id=ctx.message.author.id)
-        data.title = 'CollectorDevTeam Inspection:sparkles:'
-        data.set_author(
-            name='Owner: {0.display_name} [{0.id}]'.format(server.owner))
-        data.set_thumbnail(url=server.icon_url)
-        data.add_field(name="Member Count", value=server.member_count)
-        if server in servers:
-            data.add_field(name="Installation",
-                           value='Collector is installed.')
-
-        else:
-            data.add_field(name="Installation",
-                           value='Collector is not installed.')
-        data.description = \
-            '```Administrator:    {0.administrator}\n' \
-            'Kick Members:     {0.kick_members}\n'\
-            'Ban Members:      {0.ban_members}\n' \
-            'Manage Channels:  {0.manage_channels}\n' \
-            'Manage Messages:  {0.manage_messages}\n' \
-            'Manage Nicknames: {0.manage_nicknames}\n' \
-            'Manage Server:    {0.manage_server}\n' \
-            'Manage Roles:     {0.manage_roles}\n' \
-            'Embed Links:      {0.embed_links}\n' \
-            'Add Reactions:    {0.add_reactions}\n' \
-            'External Emoji:   {0.external_emojis}\n' \
-            '```'.format(server.me.server_permissions)
-
-        await self.bot.send_message(ctx.message.channel, embed=data)
-        await self.bot.send_message(self.robotworkshop, embed=data)
-
     # @checks.is_owner()
-    @inspect.command(pass_context=True, hidden=True, name='roles', aliases=['role', 'ir', ])
-    async def _inspect_roles(self, ctx, server: discord.Server = None):
-        if server is None:
-            server = ctx.message.server
-        roles = sorted(
-            server.roles, key=lambda roles: roles.position, reverse=True)
-        positions = []
-        for r in roles:
-            positions.append('{} = {}'.format(r.position, r.name))
-        desc = '\n'.join(positions)
-        em = discord.Embed(color=discord.Color.red(),
-                           title='Collector Inspector: ROLES', description=desc)
-        await self.bot.say(embed=em)
 
     @checks.admin_or_permissions(manage_roles=True)
     @commands.command(name='norole', pass_context=True, hidden=True)
@@ -2412,6 +2348,81 @@ class CDTGAPS:
             pages = chat.pagify('\n'.join(missing))
             for page in pages:
                 await self.bot.say(chat.box(page))
+
+
+class INSPECTOR:
+    '''Guild inspector tool for Support Diagnostics'''
+
+    def __init__(self, bot):
+        self.bot = bot
+        self.robotworkshop = self.bot.get_channel('391330316662341632')
+        self.cdtserver = self.bot.get_server('215271081517383682')
+
+    @commands.group(pass_context=True, hidden=True)
+    async def inspect(self, ctx):
+        if CDTCheck.collectordevteam(self, ctx) is False:
+            return
+
+    @inspect.command(pass_context=True, name='server')
+    async def _inspect_server(self, ctx, server_id=None):
+        '''Inspect CollectorVerse server for Collector installation compliance'''
+        data = CDTEmbed._get_embed(
+            self, ctx, user_id=ctx.message.author.id)
+        data.title = 'CollectorDevTeam Inspection:sparkles:'
+        if server_id is None:
+            server = ctx.message.server
+        else:
+            try:
+                server = self.bot.get_server(server_id)
+            except:
+                server = None
+
+        if server is None:
+            data.description = "Bad server id."
+            data.add_field(name="Installation",
+                           value='Collector is not installed.')
+        else:
+            data.set_author(
+                name='Owner: {0.display_name} [{0.id}]'.format(server.owner))
+            data.set_thumbnail(url=server.icon_url)
+            data.add_field(name="Member Count", value=server.member_count)
+            data.add_field(name="Installation",
+                           value='Collector is installed.')
+            data.add_field(name="Server Name", value=server.name)
+            data.description = \
+                '```Administrator:    {0.administrator}\n' \
+                'Kick Members:     {0.kick_members}\n'\
+                'Ban Members:      {0.ban_members}\n' \
+                'Manage Channels:  {0.manage_channels}\n' \
+                'Manage Messages:  {0.manage_messages}\n' \
+                'Manage Nicknames: {0.manage_nicknames}\n' \
+                'Manage Server:    {0.manage_server}\n' \
+                'Manage Roles:     {0.manage_roles}\n' \
+                'Read Messages:    {0.read_messages}\n' \
+                'Send Messages:    {0.send_messages}\n' \
+                'Add Reactions:    {0.add_reactions}\n' \
+                'Embed Links:      {0.embed_links}\n' \
+                'Attach Files:     {0.attach_files}\n' \
+                'External Emoji:   {0.external_emojis}\n' \
+                '```'.format(server.me.server_permissions)
+
+        await self.bot.send_message(ctx.message.channel, embed=data)
+        await self.bot.send_message(self.robotworkshop, embed=data)
+
+    @inspect.command(pass_context=True, name='roles', aliases=['role', 'ir', ])
+    async def _inspect_roles(self, ctx, server: discord.Server = None):
+        '''Inspect CollectoVerse server for role hierarchy compliance.'''
+        if server is None:
+            server = ctx.message.server
+        roles = sorted(
+            server.roles, key=lambda roles: roles.position, reverse=True)
+        positions = []
+        for r in roles:
+            positions.append('{} = {}'.format(r.position, r.name))
+        desc = '\n'.join(positions)
+        em = discord.Embed(color=discord.Color.red(),
+                           title='Collector Inspector: ROLES', description=desc)
+        await self.bot.say(embed=em)
 
 
 class SCREENSHOT:
@@ -2640,21 +2651,33 @@ class CDTEmbed:
         return data
 
 
-async def check_collectordevteam(self, ctx):
-    author = ctx.message.author.id
-    collectordevteam = self.bot._get_role('390253643330355200')
-    if author in ('148622879817334784', '124984294035816448', '209339409655398400'):
-        print('{}|{} is CollectorDevTeam'.format(
-            author.display_name, author.id))
-        return True
-    elif collectordevteam in author.roles():
-        print('CollectorDevTeam in {}|{} roles.'.format(
-            author.display_name, author.id))
-        return True
-    else:
-        print('{}|{} is not CollectorDevTeam'.format(
-            author.display_name, author.id))
-        return False
+class CDTCheck:
+    def __init__(self, ctx):
+        self.bot = bot
+        self.cdtserver = self.bot.get_server('215271081517383682')
+
+    async def collectordevteam(self, ctx):
+        '''Verifies if calling user has either the trusted CollectorDevTeam role, or CollectorSupportTeam'''
+        author = ctx.message.author
+        collectordevteam = self.bot._get_role('390253643330355200')
+        collectorsupportteam = self.bot._get_role('390253719125622807')
+        elevation_requests = self.bot.get_channel('720668625815732316')
+        if ctx.message.author in self.cdtserver.members:
+            member = self.cdtserver.get_member(author.id)
+            if collectordevteam in member.roles:
+                # print('ColelctorDevTeam authenticated: '
+                #       '{0.display_name} [{0.id}] on {1.display_name} [{1.id}]')
+                await self.bot.send_message(elevation_requests, 'ColelctorDevTeam authenticated\n'
+                                            '{0.display_name} [{0.id}] on {1.display_name} [{1.id}]'.format(author, ctx.message.server))
+                return True
+            elif collectorsupportteam in member.roles:
+                # print('ColelctorSupportTeam authenticated: '
+                #       '{0.display_name} [{0.id}] on {1.display_name} [{1.id}]')
+                await self.bot.send_message(elevation_requests, 'CollectorSupportTeam authenticated\n'
+                                            '{0.display_name} [{0.id}] on {1.display_name} [{1.id}]'.format(author, ctx.message.server))
+                return True
+            else:
+                return False
 
 
 def cell_to_list(cell):
