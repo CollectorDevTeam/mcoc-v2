@@ -2680,6 +2680,7 @@ class CDTCheck:
         if member is None:
             await self.bot.send_message(self.elevation_requests, 'CDT Authentication attemp failed:\n'
                                         '{0.display_name} [{0.id}] on {1.name} [{1.id}]'.format(author, ctx.message.server))
+            return False
         else:
             for role in member.roles:
                 if self.collectordevteam is role:
