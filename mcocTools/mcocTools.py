@@ -2368,10 +2368,8 @@ class INSPECTOR:
         #     print('server admin+')
         #     pass
         # el
-        if await CDTCheck.collectordevteam(self, ctx):
-            print('cdt or cst')
-            pass
-        else:
+        allowed = await CDTCheck.collectordevteam(self, ctx)
+        if not allowed:
             return
 
     @inspect.command(pass_context=True, name='server')
