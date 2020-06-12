@@ -358,14 +358,12 @@ class GSHandler:
 
 class StaticGameData:
     __instance = None
-    check_folders()
-    check_files()
     remote_data_basepath = "https://raw.githubusercontent.com/CollectorDevTeam/assets/master/data/"
-    cdt_data = dataIO.load_json('data/mcocTools/sgd_cdt_data.json')
-    cdt_versions = dataIO.load_json('data/mcocTools/versions.json')
-    cdt_masteries = dataIO.load_json('data/mcocTools/sgd_masteries.json')
+    cdt_data = {}
+    cdt_versions = {}
+    cdt_masteries = {}
     cdt_trials = None
-    cdt_stats = dataIO.load_json('data/mcocTools/sgd_cdt_stats.json')
+    cdt_stats = {}
     gsheets_data = None
     test = 3
     tiercolors = {
@@ -397,6 +395,13 @@ class StaticGameData:
         self.bot = bot
         self.hash_parser = HashParser(bot)
         self.register_gsheets(bot)
+        check_folders()
+        check_files()
+        self.cdt_data = dataIO.load_json('data/mcocTools/sgd_cdt_data.json')
+        self.cdt_versions = dataIO.load_json('data/mcocTools/versions.json')
+        self.cdt_masteries = dataIO.load_json(
+            'data/mcocTools/sgd_masteries.json')
+        self.cdt_stats = dataIO.load_json('data/mcocTools/sgd_cdt_stats.json')
 
     async def parse_with_attr(self, *args, **kwargs):
         return await self.hash_parser.parse_with_attr(*args, **kwargs)
