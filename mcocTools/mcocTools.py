@@ -2,6 +2,7 @@ import asyncio
 import csv
 # from datetime import datetime, timedelta
 import datetime
+import time
 from dateutil.parser import parse as dateParse
 import json
 import logging
@@ -2422,19 +2423,33 @@ class INSPECTOR:
         await self.bot.send_message(self.robotworkshop, embed=data)
 
     @inspect.command(pass_context=True, name='roles', aliases=['role', 'ir', ])
-    async def _inspect_roles(self, ctx, server: discord.Server = None):
+    async def _inspect_roles(self, ctx, server_id=None):
         '''Inspect CollectoVerse server for role hierarchy compliance.'''
-        if server is None:
+        if server_id is None:
             server = ctx.message.server
-        roles = sorted(
-            server.roles, key=lambda roles: roles.position, reverse=True)
-        positions = []
-        for r in roles:
-            positions.append('{} = {}'.format(r.position, r.name))
-        desc = '\n'.join(positions)
-        em = discord.Embed(color=discord.Color.red(),
-                           title='Collector Inspector: ROLES', description=desc)
-        await self.bot.say(embed=em)
+        else:
+            try:
+                server = self.bot.get_server(server_id)
+            except:
+                server = None
+        data = CDTEmbed._get_embed(
+            self, ctx, user_id=ctx.message.author.id)
+        data.title = 'CollectorDevTeam Inspector: ROLES:sparkles:'
+        if server is not None:
+            roles = sorted(
+                server.roles, key=lambda roles: roles.position, reverse=True)
+            positions = []
+            for r in roles:
+                positions.append('{} = {}'.format(r.position, r.name))
+            desc = '\n'.join(positions)
+            data.set_author(
+                name='Owner: {0.display_name} [{0.id}]'.format(server.owner))
+            data.set_thumbnail(url=server.icon_url)
+        else:
+            desc = 'Invalid server id'
+            data.description = desc
+        await self.bot.send_message(ctx.message.channel, embed=data)
+        await self.bot.send_message(self.robotworkshop, embed=data)
 
 
 class SCREENSHOT:
