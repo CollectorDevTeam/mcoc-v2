@@ -940,7 +940,7 @@ class MCOC(ChampionFactory):
     @commands.command(pass_context=True, aliases=['modok', ], hidden=True)
     async def modok_says(self, ctx, *, word: str = None):
         await self.bot.delete_message(ctx.message)
-        await raw_modok_says(self.bot, ctx.message.channel, word)
+        await raw_modok_says(self.bot, ctx, word)
 
     # @checks.admin_or_permissions(manage_server=True)
     @commands.command(pass_context=True, aliases=['nbs', ])
