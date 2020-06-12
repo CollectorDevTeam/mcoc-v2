@@ -2735,23 +2735,19 @@ class MCOC(ChampionFactory):
     #     worksheet.append_table(start='A2',end=None, values=package, dimension='ROWS', overwrite=False)
     #     worksheet.sync()
 
-    @commands.has_any_role('DataDonors', 'CollectorDevTeam', 'CollectorSupportTeam', 'CollectorPartners')
-    @commands.group(pass_context=True, hidden=True)
-    async def costs(self, ctx):
-        guild = await self.check_guild(ctx)
-        if not guild:
-            await self.bot.send_message(ctx.message.channel, 'This server is unauthorized.')
-            return
-        if ctx.invoked_subcommand is None:
-            await send_cmd_help(ctx)
+    # @commands.group(pass_context=True, hidden=True)
+    # async def costs(self, ctx):
 
-    @costs.command(pass_context=True, name='rankup', aliases=['rank', ])
-    async def cost_rankup(self, ctx, champs: ChampConverterMult):
-        '''Champion rankup - unfinished'''
-        counter = 0
-        for champ in champs:
-            counter += 1
-        print('rankup counter: '+str(counter))
+    #     if ctx.invoked_subcommand is None:
+    #         await send_cmd_help(ctx)
+
+    # @costs.command(pass_context=True, name='rankup', aliases=['rank', ])
+    # async def cost_rankup(self, ctx, champs: ChampConverterMult):
+    #     '''Champion rankup - unfinished'''
+    #     counter = 0
+    #     for champ in champs:
+    #         counter += 1
+    #     print('rankup counter: '+str(counter))
 
 
 def validate_attr(*expected_args):
