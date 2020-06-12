@@ -800,7 +800,7 @@ class MCOC(ChampionFactory):
         #print(len(sgd.cdt_data), len(sgd.cdt_masteries), sgd.test)
         cm = sgd.cdt_masteries
         if cm is None:
-            await StaticGameData.load_cdt_data(self)
+            await StaticGameData.load_cdt_data(self.bot)
             cm = StaticGameData.cdt_masteries
         found = False
         page_list = []
