@@ -2441,13 +2441,12 @@ class INSPECTOR:
             positions = []
             for r in roles:
                 positions.append('{} = {}'.format(r.position, r.name))
-            desc = '\n'.join(positions)
+            data.description = '\n'.join(positions)
             data.set_author(
                 name='Owner: {0.display_name} [{0.id}]'.format(server.owner))
             data.set_thumbnail(url=server.icon_url)
         else:
-            desc = 'Invalid server id'
-            data.description = desc
+            data.description = 'Invalid server id'
         await self.bot.send_message(ctx.message.channel, embed=data)
         await self.bot.send_message(self.robotworkshop, embed=data)
 
