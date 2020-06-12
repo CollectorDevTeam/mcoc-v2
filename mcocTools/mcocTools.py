@@ -398,7 +398,8 @@ class StaticGameData:
         check_folders()
         check_files()
         self.cdt_data = dataIO.load_json('data/mcocTools/sgd_cdt_data.json')
-        self.cdt_versions = dataIO.load_json('data/mcocTools/versions.json')
+        self.cdt_versions = dataIO.load_json(
+            'data/mcocTools/sgd_cdt_versions.json')
         self.cdt_masteries = dataIO.load_json(
             'data/mcocTools/sgd_masteries.json')
         self.cdt_stats = dataIO.load_json('data/mcocTools/sgd_cdt_stats.json')
