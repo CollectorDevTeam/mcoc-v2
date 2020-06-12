@@ -480,7 +480,7 @@ class StaticGameData:
             self.cdt_masteries = await self.fetch_json(
                 self.remote_data_basepath + 'json/masteries.json',
                 session)
-            self.cdt_stats = StaticGameData.get_gsheets_data('cdt_stats')
+            self.cdt_stats = await StaticGameData.get_gsheets_data('cdt_stats')
 
     async def cache_gsheets(self):
         print("Attempt gsheet pull")
