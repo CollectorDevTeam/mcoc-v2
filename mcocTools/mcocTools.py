@@ -360,9 +360,11 @@ class StaticGameData:
     __instance = None
 
     remote_data_basepath = "https://raw.githubusercontent.com/CollectorDevTeam/assets/master/data/"
-    cdt_data, cdt_versions, cdt_masteries = None, None, None
+    cdt_data = dataIO.load('data/mcocTools/sgd_cdt_data.json')
+    cdt_versions = dataIO.load('data/mcocTools/versions.json')
+    cdt_masteries = dataIO.load('data/mcocTools/sgd_masteries.json')
     cdt_trials = None
-    cdt_stats = None
+    cdt_stats = dataIO.load('data/mcocTools/sgd_cdt_stats.json')
     gsheets_data = None
     test = 3
     tiercolors = {
@@ -406,14 +408,14 @@ class StaticGameData:
         self.gsheet_handler.register_gsheet(
             name='elemental_trials',
             gkey='1TSmQOTXz0-jIVgyuFRoaPCUZA73t02INTYoXNgrI5y4',
-            local='data/mcoc/elemental_trials.json',
+            local='data/mcocTools/sgd_event_quests.json',
             sheet_name='trials',
             # settings=dict(column_handler='champs: to_list')
         )
         self.gsheet_handler.register_gsheet(
             name='aw_season_rewards',
             gkey='1DZUoQr4eELkjxRo6N6UTtd6Jn15OfpEjiAV8M_v7_LI',
-            local='data/mcoc/aw_season7.json',
+            local='data/mcocTools/sgd_season_rewards.json',
             sheet_name='season7',
             # settings=dict(column_handler='champs: to_list')
         )
@@ -421,7 +423,7 @@ class StaticGameData:
         self.gsheet_handler.register_gsheet(
             name='tldr',
             gkey='1tQdQNjzr8dlSz2A8-G33YoNIU1NF8xqAmIgZtR7DPjM',
-            local='data/mcocTools/tldr.json',
+            local='data/mcocTools/sgd_tldr.json',
             sheet_name='output',
             range_name='tldr_output',
             # settings=dict(column_handler='champs: to_list')
@@ -430,10 +432,17 @@ class StaticGameData:
         self.gsheet_handler.register_gsheet(
             name='variant',
             gkey='1ZnoP_Kz_dC1DuTYmRX0spQLcHjiUZtT-oVTF52MHO3g',
-            local='data/mcoc/variant.json',
+            local='data/mcocTools/sgd_variant.json',
             sheet_name='Collectorfy',
             range_name='variant',
             # settings=dict(column_handler='champs: to_list')
+        )
+        self.gsheet_handler.register_gsheet(
+            name='cdt_stats',
+            gkey='1I3T2G2tRV05vQKpBfmI04VpvP5LjCBPfVICDmuJsjks',
+            local='data/mcocTools/sgd_cdt_stats.json',
+            sheet_name='spotlightJSON',
+            range_name='stats_export',
         )
 
         # Update this list to add Events
@@ -480,6 +489,11 @@ class StaticGameData:
             self.cdt_masteries = await self.fetch_json(
                 self.remote_data_basepath + 'json/masteries.json',
                 session)
+            dataIO.save_json('data/mcocTools/sgd_cdt_data.json', self.cdt_data)
+            dataIO.save_json(
+                'data/mcocTools/sgd_versions.json', self.cdt_versions)
+            dataIO.save_json(
+                'data/mcocTools/sgd_masteries.json', self.cdt_masteries)
             self.cdt_stats = await StaticGameData.get_gsheets_data('cdt_stats')
 
     async def cache_gsheets(self):
@@ -2769,6 +2783,14 @@ def check_files():
         'settings.json': {},
         'mcoctools.json': {'calendar': '', 'cutoffs': '', 'calendar_date': '', 'cutoffs_date': ''},
         'collectormap.json': {},
+        'sgd_cdt_stats.json': {},
+        'sgd_event_quests.json': {},
+        'sgd_season_rewards.json': {},
+        'sgd_tldr.json': {},
+        'sgd_variant.json': {},
+        'sgd_cdt_data.json': {},
+        'sgd_cdt_versions.json': {},
+        'sgd_cdt_masteries.json': {}
     }
 
     for filename, value in files.items():
