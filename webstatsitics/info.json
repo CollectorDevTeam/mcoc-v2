@@ -1,0 +1,14 @@
+{
+    "AUTHOR": "UNKNOWN",
+    "INSTALL_MSG": "No other Cogs required",
+    "NAME": "webstatistics",
+    "SHORT": "Webstatistics    ",
+    "DESCRIPTION": "Webstatistics",
+    "REQUIREMENTS": [
+        "ipgetter2",
+        "aiohttp",
+        "dataIO",
+        "datetime",
+        "os"
+    ]
+}
