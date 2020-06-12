@@ -2717,24 +2717,6 @@ class MCOC(ChampionFactory):
             worksheet.sync()
             return True
 
-    # async def _process_submit_prestige(self, ctx, champ, observation):
-    #     GKEY = '1HXMN7PseaWSvWpNJ3igUkV_VT-w4_7-tqNY7kSk0xoc'
-    #     author = ctx.message.author
-    #     level = int(champ.rank)*10
-    #     if champ.star == 5:
-    #         level += 15
-    #     package = [['{}'.format(champ.mattkraftid), champ.sig, observation, champ.star, champ.rank, level, author.name, author.id]]
-    #     try:
-    #         gc = pygsheets.authorize(service_file=gapi_service_creds, no_cache=True)
-    #     except FileNotFoundError:
-    #         await self.bot.send_message(ctx.message.channel, 'Cannot find credentials file.  Needs to be located:\n'
-    #         + gapi_service_creds)
-    #         return
-    #     sh = gc.open_by_key(key=GKEY,returnas='spreadsheet')
-    #     worksheet = sh.worksheet(property='title',value='collector_submit')
-    #     worksheet.append_table(start='A2',end=None, values=package, dimension='ROWS', overwrite=False)
-    #     worksheet.sync()
-
     # @commands.group(pass_context=True, hidden=True)
     # async def costs(self, ctx):
 

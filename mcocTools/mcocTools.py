@@ -2358,7 +2358,7 @@ class INSPECTOR:
         self.bot = bot
         self.robotworkshop = self.bot.get_channel('391330316662341632')
         self.cdtserver = self.bot.get_server('215271081517383682')
-        self.cdtcheck = CDTCheck
+        self.cdtcheck = CDTCheck(self.bot)
 
     @commands.group(pass_context=True)
     async def inspect(self, ctx):
