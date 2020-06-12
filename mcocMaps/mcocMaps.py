@@ -296,6 +296,8 @@ class MCOCMaps:
                                 icon_url=catmurdock.avatar_url)
                 data.set_footer(text='Requested by {}'.format(
                     author.display_name), icon_url=author.avatar_url)
+                data.add_field(
+                    '[Visit Cat\'s Store](https://www.redbubble.com/people/CatMurdock/explore)')
                 embeds.append(data)
             menu = PagesMenu(self.bot, timeout=120,
                              delete_onX=True, add_pageof=True)
