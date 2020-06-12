@@ -358,7 +358,8 @@ class GSHandler:
 
 class StaticGameData:
     __instance = None
-
+    check_folders()
+    check_files()
     remote_data_basepath = "https://raw.githubusercontent.com/CollectorDevTeam/assets/master/data/"
     cdt_data = dataIO.load_json('data/mcocTools/sgd_cdt_data.json')
     cdt_versions = dataIO.load_json('data/mcocTools/versions.json')
@@ -1665,7 +1666,7 @@ class MCOCEvents:
         self.gsheet_handler.register_gsheet(
             name='event_data',
             gkey='1TSmQOTXz0-jIVgyuFRoaPCUZA73t02INTYoXNgrI5y4',
-            local='data/mcoc/event_data.json',
+            local='data/mcocTools/sgd_event_data.json',
             sheet_name='event_trans',
         )
         self.event_data = None
@@ -2784,13 +2785,14 @@ def check_files():
         'mcoctools.json': {'calendar': '', 'cutoffs': '', 'calendar_date': '', 'cutoffs_date': ''},
         'collectormap.json': {},
         'sgd_cdt_stats.json': {},
-        'sgd_event_quests.json': {},
+        'sgd_event_data.json': {},
         'sgd_season_rewards.json': {},
         'sgd_tldr.json': {},
         'sgd_variant.json': {},
         'sgd_cdt_data.json': {},
         'sgd_cdt_versions.json': {},
-        'sgd_cdt_masteries.json': {}
+        'sgd_cdt_masteries.json': {},
+
     }
 
     for filename, value in files.items():
