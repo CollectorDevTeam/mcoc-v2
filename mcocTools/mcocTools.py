@@ -2369,11 +2369,11 @@ class INSPECTOR:
         #     print('server admin+')
         #     pass
         # el
-        allowed = await CDTCheck.collectordevteam(self, ctx)
+        allowed = await CDTCheck.collectordevteam(ctx)
 
     @inspect.command(pass_context=True, name='check', hidden=True)
     async def _checker(self, ctx):
-        test = await CDTCheck.collectordevteam(self, ctx)
+        test = await CDTCheck.collectordevteam(ctx)
         await self.bot.send_message('CDTCheck is {}'.format(test))
 
     @inspect.command(pass_context=True, name='server')

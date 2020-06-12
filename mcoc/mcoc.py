@@ -799,9 +799,9 @@ class MCOC(ChampionFactory):
         sgd = StaticGameData
         #print(len(sgd.cdt_data), len(sgd.cdt_masteries), sgd.test)
         cm = sgd.cdt_masteries
-        if cm is None:
-            await StaticGameData.load_cdt_data(self.bot)
-            cm = StaticGameData.cdt_masteries
+        # if cm is None:
+        #     await StaticGameData.load_cdt_data()
+        #     cm = StaticGameData.cdt_masteries
         found = False
         page_list = []
         colors = {'offense': discord.Color.red(), 'defense': discord.Color.red(),
