@@ -497,7 +497,7 @@ class StaticGameData:
                 session)
             dataIO.save_json('data/mcocTools/sgd_cdt_data.json', self.cdt_data)
             dataIO.save_json(
-                'data/mcocTools/sgd_versions.json', self.cdt_versions)
+                'data/mcocTools/sgd_cdt_versions.json', self.cdt_versions)
             dataIO.save_json(
                 'data/mcocTools/sgd_masteries.json', self.cdt_masteries)
             self.cdt_stats = await StaticGameData.get_gsheets_data('cdt_stats')
