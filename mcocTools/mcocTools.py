@@ -2358,6 +2358,7 @@ class INSPECTOR:
         self.bot = bot
         self.robotworkshop = self.bot.get_channel('391330316662341632')
         self.cdtserver = self.bot.get_server('215271081517383682')
+        self.cdtcheck = CDTCheck
 
     @commands.group(pass_context=True)
     async def inspect(self, ctx):
@@ -2369,11 +2370,11 @@ class INSPECTOR:
         #     print('server admin+')
         #     pass
         # el
-        allowed = await CDTCheck.collectordevteam(ctx)
+        allowed = await self.cdtcheck.collectordevteam(ctx)
 
     @inspect.command(pass_context=True, name='check', hidden=True)
     async def _checker(self, ctx):
-        test = await CDTCheck.collectordevteam(ctx)
+        test = await self.cdtcheck.collectordevteam(ctx)
         await self.bot.send_message('CDTCheck is {}'.format(test))
 
     @inspect.command(pass_context=True, name='server')
