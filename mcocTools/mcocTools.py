@@ -360,11 +360,11 @@ class StaticGameData:
     __instance = None
 
     remote_data_basepath = "https://raw.githubusercontent.com/CollectorDevTeam/assets/master/data/"
-    cdt_data = dataIO.load('data/mcocTools/sgd_cdt_data.json')
-    cdt_versions = dataIO.load('data/mcocTools/versions.json')
-    cdt_masteries = dataIO.load('data/mcocTools/sgd_masteries.json')
+    cdt_data = dataIO.load_json('data/mcocTools/sgd_cdt_data.json')
+    cdt_versions = dataIO.load_json('data/mcocTools/versions.json')
+    cdt_masteries = dataIO.load_json('data/mcocTools/sgd_masteries.json')
     cdt_trials = None
-    cdt_stats = dataIO.load('data/mcocTools/sgd_cdt_stats.json')
+    cdt_stats = dataIO.load_json('data/mcocTools/sgd_cdt_stats.json')
     gsheets_data = None
     test = 3
     tiercolors = {
