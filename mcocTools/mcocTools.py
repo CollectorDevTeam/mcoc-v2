@@ -401,7 +401,7 @@ class StaticGameData:
         self.cdt_versions = dataIO.load_json(
             'data/mcocTools/sgd_cdt_versions.json')
         self.cdt_masteries = dataIO.load_json(
-            'data/mcocTools/sgd_masteries.json')
+            'data/mcocTools/sgd_cdt_masteries.json')
         self.cdt_stats = dataIO.load_json('data/mcocTools/sgd_cdt_stats.json')
 
     async def parse_with_attr(self, *args, **kwargs):
