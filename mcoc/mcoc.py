@@ -769,7 +769,7 @@ class MCOC(ChampionFactory):
                 await self.cache_remote_file(fname, s, force_cache=True, verbose=True)
         else:
             await self.bot.send_message(ctx.message.channel, 'Valid options for 1st argument are one of (or initial portion of)\n\t'
-                               + '\n\t'.join(data_files.keys()))
+                                        + '\n\t'.join(data_files.keys()))
             return
 
         self.data_struct_init()
@@ -799,6 +799,9 @@ class MCOC(ChampionFactory):
         sgd = StaticGameData
         #print(len(sgd.cdt_data), len(sgd.cdt_masteries), sgd.test)
         cm = sgd.cdt_masteries
+        if cm is None:
+            await StaticGameData.load_cdt_data()
+            cm = StaticGameData.cdt_masteries
         found = False
         page_list = []
         colors = {'offense': discord.Color.red(), 'defense': discord.Color.red(),
@@ -1396,13 +1399,13 @@ class MCOC(ChampionFactory):
             tmsg = time.time()
             if champ.debug:
                 await self.bot.send_message(ctx.message.channel, '```Timing:\n\tScreenshot:    {:.3f}s'
-                                   '\n\tJSON Write:    {:.3f}s'
-                                   '\n\tFinal Message: {:.3f}s'
-                                   '\n\tTotal:         {:.3f}s```'.format(
-                                       tsshot - tstart,
-                                       tjson - tsshot,
-                                       tmsg - tjson,
-                                       tmsg - tstart))
+                                            '\n\tJSON Write:    {:.3f}s'
+                                            '\n\tFinal Message: {:.3f}s'
+                                            '\n\tTotal:         {:.3f}s```'.format(
+                                                tsshot - tstart,
+                                                tjson - tsshot,
+                                                tmsg - tjson,
+                                                tmsg - tstart))
         else:
             data.set_image(url=self.auntmai[champ.auntmai][champ.auntmai_url])
             await self.bot.send_message(ctx.message.channel, embed=data)
@@ -1444,16 +1447,16 @@ class MCOC(ChampionFactory):
                         self.auntmai[champ.auntmai][sigurl] = sigimage_url
                         tjson = time.time()
                         await self.bot.send_message(ctx.message.channel, '```Timing:\n\tPredicate:     {}'
-                                           '\n\tScreenshot:    {:.3f}s'
-                                           '\n\tJSON Store:    {:.3f}s```'.format(
-                                               predicate,
-                                               tsshot - tstart,
-                                               tjson - tsshot))
+                                                    '\n\tScreenshot:    {:.3f}s'
+                                                    '\n\tJSON Store:    {:.3f}s```'.format(
+                                                        predicate,
+                                                        tsshot - tstart,
+                                                        tjson - tsshot))
                 dataIO.save_json(self.auntmai_file, self.auntmai)
         tend = time.time()
         await self.bot.send_message(ctx.message.channel, '```Timing:'
-                           '\n\tTotal:         {:.3f}s```'.format(
-                               tend - tbegin))
+                                    '\n\tTotal:         {:.3f}s```'.format(
+                                        tend - tbegin))
 
     @champ.command(pass_context=True, name='sigreset', aliases=['sigpop', ], hidden=True)
     async def champ_sigpop(self, ctx, *, champ: ChampConverterSig):
@@ -1826,7 +1829,7 @@ class MCOC(ChampionFactory):
             return pack
 
     async def gs_to_json(self, head_url=None, body_url=None, foldername=None, filename=None, groupby_value=None):
-        ## I don't remember writing or using this, but this looks useful.
+        # I don't remember writing or using this, but this looks useful.
         if head_url is not None:
             async with aiohttp.get(head_url) as response:
                 try:
@@ -1871,7 +1874,7 @@ class MCOC(ChampionFactory):
 
         return output_dict
 
-## Flag command for removal
+# Flag command for removal
     @commands.command(hidden=True)
     async def dump_sigs(self, ctx):
         # await self.update_local()
@@ -1920,7 +1923,7 @@ class MCOC(ChampionFactory):
         assert desc == jsig['description']
         assert sig_calcs == jsig['sig_data'][champ.sig-1]
 
-## Flag for removal
+# Flag for removal
     @commands.command(pass_context=True, hidden=True)
     async def gs_sig(self, ctx):
         await self.update_local()
@@ -1940,7 +1943,6 @@ class MCOC(ChampionFactory):
         with open("data/mcoc/gs_json_test.json", encoding='utf-8', mode='w') as fp:
             json.dump(struct, fp, indent='  ', sort_keys=True)
         await self.bot.upload("data/mcoc/gs_json_test.json")
-
 
     @champ.command(pass_context=True, name='use', aliases=('howto',))
     async def champ_use(self, ctx, *, champ: ChampConverter):
@@ -2413,7 +2415,7 @@ class MCOC(ChampionFactory):
                 message2 = await self.bot.send_message(ctx.message.channel, 'Submission in progress.')
                 package = [['{}'.format(champ.mattkraftid), champ.sig, observation, champ.star,
                             champ.rank, champ.max_lvl, author.name, author.id, str(ctx.message.timestamp)]]
-                check = await self._process_submission(ctx=ctx,package=package, GKEY=GKEY, sheet='collector_submit')
+                check = await self._process_submission(ctx=ctx, package=package, GKEY=GKEY, sheet='collector_submit')
                 await self.bot.send_message(cdt_prestige, embed=data)
                 if check:
                     data.add_field(name='Status', value='Submission complete.')
@@ -2534,7 +2536,7 @@ class MCOC(ChampionFactory):
                 package = [[now, author.name, star, champ.full_name,
                             champ.rank, champ.max_lvl, pi, observation, author.id]]
                 print('package built')
-                check = await self._process_submission(ctx=ctx,package=package, GKEY=GKEY, sheet='collector_submit')
+                check = await self._process_submission(ctx=ctx, package=package, GKEY=GKEY, sheet='collector_submit')
                 if check:
                     await self.bot.delete_message(message2)
                     data.add_field(name='Status', value='Submission Complete')
@@ -2562,9 +2564,9 @@ class MCOC(ChampionFactory):
     async def submit_awkill(self, ctx, champ: ChampConverter, node: int, ko: int):
         author = ctx.message.author
         message = await self.bot.send_message(ctx.message.channel, 'Defender Kill registered.\n'
-                                     'Champion: {0.verbose_str}\n'
-                                     'AW Node: {1}\nKills: {2}\n'
-                                     'Press OK to confirm.'.format(champ, node, ko))
+                                              'Champion: {0.verbose_str}\n'
+                                              'AW Node: {1}\nKills: {2}\n'
+                                              'Press OK to confirm.'.format(champ, node, ko))
         await self.bot.add_reaction(message, '❌')
         await self.bot.add_reaction(message, '🆗')
         react = await self.bot.wait_for_reaction(message=message, user=ctx.message.author, timeout=30, emoji=['❌', '🆗'])
@@ -2579,7 +2581,7 @@ class MCOC(ChampionFactory):
                 package = [
                     [now, author.name, author.id, champ.unique, node, ko]]
                 print('package built')
-                check = await self._process_submission(ctx=ctx,package=package, GKEY=GKEY, sheet='defender_kos')
+                check = await self._process_submission(ctx=ctx, package=package, GKEY=GKEY, sheet='defender_kos')
                 if check:
                     await self.bot.edit_message(message2,
                                                 embed=discord.Embed(color=author.color, title='Submission Status', description='Submission complete'))
@@ -2591,7 +2593,7 @@ class MCOC(ChampionFactory):
             now = str(ctx.message.timestamp)
             package = [[now, author.name, author.id, champ.unique, node, ko]]
             print('package built')
-            check = await self._process_submission(ctx=ctx,package=package, GKEY=GKEY, sheet='defender_kos')
+            check = await self._process_submission(ctx=ctx, package=package, GKEY=GKEY, sheet='defender_kos')
             if check:
                 await self.bot.edit_message(message2,
                                             embed=discord.Embed(color=author.color, title='Submission Status',
@@ -2622,7 +2624,7 @@ class MCOC(ChampionFactory):
                 await self.bot.send_message(ctx.message.channel, 'Submission canceled.')
             elif react.reaction.emoji == '🆗':
                 message2 = await self.bot.send_message(ctx.message.channel, 'Submission in progress.')
-                check = await self._process_submission(ctx=ctx,package=package, GKEY=GKEY, sheet=SHEETKEY)
+                check = await self._process_submission(ctx=ctx, package=package, GKEY=GKEY, sheet=SHEETKEY)
                 if check:
                     await self.bot.edit_message(message2, 'Submission complete.\nWinter Soldier Damage: {}%'.format(pct))
                 else:
@@ -2630,7 +2632,7 @@ class MCOC(ChampionFactory):
         else:
             message2 = await self.bot.send_message(ctx.message.channel, 'Ambiguous response: Submission in progress.')
             print('package built')
-            check = await self._process_submission(ctx=ctx,package=package, GKEY=GKEY, sheet=SHEETKEY)
+            check = await self._process_submission(ctx=ctx, package=package, GKEY=GKEY, sheet=SHEETKEY)
             if check:
                 await self.bot.edit_message(message2, 'Submission complete.\nWinter Soldier Damage: {}%'.format(pct))
             else:
@@ -2705,7 +2707,7 @@ class MCOC(ChampionFactory):
                 service_file=gapi_service_creds, no_cache=True)
         except FileNotFoundError:
             await self.bot.send_message(ctx.message.channel, 'Cannot find credentials file.  Needs to be located:\n'
-                               + gapi_service_creds)
+                                        + gapi_service_creds)
             return False
         else:
             sh = gc.open_by_key(key=GKEY, returnas='spreadsheet')
@@ -3065,7 +3067,6 @@ class Champion:
                      value='Contribute your data at http://discord.gg/BwhgZxk')
         await self.bot.send_message(ctx.message.channel, embed=em)
 
-
     async def process_sig_description(self, ctx, data=None, quiet=False, isbotowner=False):
         '''Flag command for removal'''
         sd = await self.retrieve_sig_data(data, isbotowner)
@@ -3105,7 +3106,7 @@ class Champion:
 
         if self.stats_missing:
             await self.bot.send_message(ctx.message.channel, ('Missing Attack/Health info for '
-                                + '{0.full_name} {0.star_str}').format(self))
+                                                              + '{0.full_name} {0.star_str}').format(self))
 
         brkt_re = re.compile(r'{([0-9])}')
         fdesc = []
@@ -3132,7 +3133,7 @@ class Champion:
             except FileNotFoundError:
                 if isbotowner:
                     await self.bot.send_message(ctx.message.channel, "**DEPRECIATION WARNING**  "
-                                       + "Couldn't load json file.  Loading csv files.")
+                                                + "Couldn't load json file.  Loading csv files.")
                 sd = self.get_sig_data_from_csv()
             cfile = 'sig_coeff_4star' if self.star < 5 else 'sig_coeff_5star'
             coeff = dataIO.load_json(local_files[cfile])
@@ -3144,7 +3145,7 @@ class Champion:
             sd = data[self.full_name] if self.full_name in data else data
         return sd
 
-## Flag for removal - signatures handled by Auntmai
+# Flag for removal - signatures handled by Auntmai
     async def _sig_error_code_handling(self, sd, raise_error=False):
         if 'error_codes' not in sd or sd['error_codes']['undefined_key']:
             if raise_error:
