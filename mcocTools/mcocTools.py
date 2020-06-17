@@ -1402,7 +1402,7 @@ class MCOCTools:
             data.add_field(name="Feature 4★ Top 10% = {}".format(
                 self.summarystats["4FNbracket2"]["prize"]), value=feature4bracket2, inline=False)
             data.add_field(name="Basic 4★ Cutoffs = {} + {}".format(
-                prize, self.summarystats["5FRcutoff"]["prize"]), value=basic4cutoff, inline=False)
+                prize, self.summarystats["4BRcutoff"]["prize"]), value=basic4cutoff, inline=False)
             data.add_field(name="Basic 4★ 11-25% = {}".format(
                 self.summarystats["4BRbracket2"]["prize"]), value=basic4bracket2, inline=False)
 
