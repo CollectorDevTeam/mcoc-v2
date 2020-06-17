@@ -18,16 +18,19 @@ class DadJokes:
     async def dadjoke(self, ctx):
         """Gets a random dad joke."""
         api = 'https://icanhazdadjoke.com/slack'
-        jokejson = json.load(requests.get(api))
+        async with aiohttp.request('GET', api, headers={'Accept': 'application/json'}) as r:
+            result = json.loads(r.text())
+            # await self.bot.send_message(self.diagnostics, chat.box(result))
+        # jokejson = json.load(requests.get(api))
         data = discord.Embed(
-            title='DadJokes', color=discord.Color.gold(), description=jokejson['text'])
+            title='DadJokes', color=discord.Color.gold(), description=result['text'])
         data.set_thumbnail(url=COLLECTOR_FEATURED)
         data.footer(text='CollectorDevTeam | Requested by {}'.format(
             ctx.message.author.display_name), url=COLLECTOR_ICON)
-        await self.bot.send_message(ctx.message.channel, embed=data)
-        # async with aiohttp.request('GET', api, headers={'Accept': 'application/json'}) as r:
-        #     result = await r.json
-        #     await self.bot.send_message(self.diagnostics, chat.box(result))
+        try:
+            await self.bot.send_message(ctx.message.channel, embed=data)
+        except:
+            await self.bot.send_message(ctx.message.channel, result)
         # await self.bot.send_message(ctx.message.channel, '`' + result + '`')
 
 
