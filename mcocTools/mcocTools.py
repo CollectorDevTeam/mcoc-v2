@@ -1229,8 +1229,8 @@ class MCOCTools:
 
                 # if calendar[i]['eq'] != '':
                 #     package += 'Event Quest vn: {0}\n``/eq {0}``\n'.format(calendar[i]['eq'])
-                if calendar[i]['notes'] != '':
-                    package += 'Notes: {}\n'.format(calendar[i]['notes'])
+                # if calendar[i]['notes'] != '':
+                #     package += 'Notes: {}\n'.format(calendar[i]['notes'])
                 package += '__Alliance Events__\n1 Day : {}\n3 Day : {}\n'.format(
                     calendar[i]['1day'], calendar[i]['3day'])
                 if calendar[i]['aq'] != 'off':
