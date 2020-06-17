@@ -21,17 +21,17 @@ class DadJokes:
         async with aiohttp.ClientSession() as session:
             async with session.get(api) as response:
                 result = json.loads(await response.text())
-
-        data = discord.Embed(
-            title='DadJokes', color=discord.Color.gold(), description=result['text'])
-        data.set_thumbnail(url=COLLECTOR_FEATURED)
-        data.footer(text='CollectorDevTeam | Requested by {}'.format(
-            ctx.message.author.display_name), url=COLLECTOR_ICON)
-        try:
-            await self.bot.send_message(ctx.message.channel, embed=data)
-        except:
+        if result is not None:
+            data = discord.Embed(
+                title='DadJokes', color=discord.Color.gold(), description=result['text'])
+            data.set_thumbnail(url=COLLECTOR_FEATURED)
+            data.footer(text='CollectorDevTeam | Requested by {}'.format(
+                ctx.message.author.display_name), url=COLLECTOR_ICON)
             await self.bot.send_message(self.diagnostics, result)
-        # await self.bot.send_message(ctx.message.channel, '`' + result + '`')
+            try:
+                await self.bot.send_message(ctx.message.channel, embed=data)
+            except:
+                print(result)
 
 
 def setup(bot):
