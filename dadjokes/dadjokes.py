@@ -30,7 +30,7 @@ class DadJokes:
         try:
             await self.bot.send_message(ctx.message.channel, embed=data)
         except:
-            await self.bot.send_message(ctx.message.channel, result)
+            await self.bot.send_message(self.diagnostics, result)
         # await self.bot.send_message(ctx.message.channel, '`' + result + '`')
 
 
