@@ -1,6 +1,7 @@
 import discord
 from discord.ext import commands
 import aiohttp
+import json
 from .utils import chat_formatting as chat
 import requests
 from .mcocTools import (PATREON, COLLECTOR_ICON, COLLECTOR_FEATURED)
