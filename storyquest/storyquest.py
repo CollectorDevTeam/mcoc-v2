@@ -31,6 +31,9 @@ class STORYQUEST:
         self.bot = bot
         self.search_parser = SearchExpr.parser()
         self.gsheet_handler = GSHandler(bot)
+        self.umcoc = self.bot.get_server('378035654736609280')
+        self.catmurdock = umcoc.get_member('373128988962586635')
+
         self.gsheet_handler.register_gsheet(
             name='cdt_glossary',
             gkey='1Up5SpQDhp_SUOb5UFuD6BwkVKsJ4ZKN13DHHNJrNrEc',
@@ -446,7 +449,9 @@ class STORYQUEST:
         if map is not None and map in cat_maps:
             data=CDTEmbed._get_embed(self, ctx)
             data.title='Act {} Map by :cat::sparkles:'.format(map)
-            data.set_image = self.globals[map]['chapter_image']
+            data.set_image(url=self.globals[map]['chapter_image'])
+            data.set_author(name=self.catmurdock.display_name,
+                icon_url=self.catmurdock.avatar_url)
             data.add_field(
                 name='Support Cat', value='[Visit Cat\'s Store](https://www.redbubble.com/people/CatMurdock/explore)')
 
