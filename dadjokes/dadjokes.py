@@ -21,6 +21,7 @@ class DadJokes:
         async with aiohttp.ClientSession() as session:
             async with session.get(api) as response:
                 result = json.loads(await response)
+                print(response)
         if result is not None:
             data = discord.Embed(
                 title='DadJokes', color=discord.Color.gold(), description=result['text'])
