@@ -458,7 +458,7 @@ class STORYQUEST:
                 data.add_field(
                     name='Support Cat', value='[Visit Cat\'s Store](https://www.redbubble.com/people/CatMurdock/explore)')
                 pages.append(data)
-            menu = PagesMenu(self.bot, timeout=360,
+            menu = PagesMenu(self.bot, timeout=30,
                                 delete_onX=True, add_pageof=True)
             await menu.menu_start(pages)
         if map is not None and map in cat_maps:
