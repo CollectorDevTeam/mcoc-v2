@@ -12,7 +12,7 @@ from collections import defaultdict, ChainMap, namedtuple, OrderedDict
 
 from discord.ext import commands
 from __main__ import send_cmd_help
-from cogs.mcocTools import (StaticGameData, PagesMenu, KABAM_ICON,
+from cogs.mcocTools import (StaticGameData, PagesMenu, KABAM_ICON, CDTEmbed,
                             COLLECTOR_ICON, CDTHelperFunctions, GSHandler, CDT_COLORS)
 from cogs.mcocTools import (SearchExpr, P0Expr, ParenExpr, SearchNumber, SearchPhrase,
                             ExplicitKeyword, SearchNumber, SearchWord, SearchPhrase)  # search stuff
@@ -438,6 +438,19 @@ class STORYQUEST:
                                  delete_onX=True, add_pageof=True)
                 await menu.menu_start(pages)
             return
+
+    @commands.command(pass_context=True, name='map')
+    async def _maps(self, ctx, map=None):
+        cat_maps=('6.1.1', '6.1.2', '6.1.3', '6.1.4', '6.1.5', '6.1.6',
+            '6.4.1', '6.4.2', '6.4.3', '6.4.4', '6.4.5', '6.4.6')
+        if map is not None and map in cat_maps:
+            data=CDTEmbed._get_embed()
+            data.title='Act {} Map by :cat::sparkles:'.format(map)
+            data.set_image = self.globals[map]['chapter_image']
+            data.add_field(
+                name='Support Cat', value='[Visit Cat\'s Store](https://www.redbubble.com/people/CatMurdock/explore)')
+
+            await self.bot.send_message(ctx.message.channel, embed=data)
 
     @commands.command(pass_context=True, name='rttl')
     async def rttl_paths(self, ctx, map=None, path=None, verbose=True):
