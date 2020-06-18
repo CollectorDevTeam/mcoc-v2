@@ -444,7 +444,7 @@ class STORYQUEST:
         cat_maps=('6.1.1', '6.1.2', '6.1.3', '6.1.4', '6.1.5', '6.1.6',
             '6.4.1', '6.4.2', '6.4.3', '6.4.4', '6.4.5', '6.4.6')
         if map is not None and map in cat_maps:
-            data=CDTEmbed._get_embed()
+            data=CDTEmbed._get_embed(self, ctx)
             data.title='Act {} Map by :cat::sparkles:'.format(map)
             data.set_image = self.globals[map]['chapter_image']
             data.add_field(
