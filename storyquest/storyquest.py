@@ -32,7 +32,7 @@ class STORYQUEST:
         self.search_parser = SearchExpr.parser()
         self.gsheet_handler = GSHandler(bot)
         self.umcoc = self.bot.get_server('378035654736609280')
-        self.catmurdock = umcoc.get_member('373128988962586635')
+        self.catmurdock = self.umcoc.get_member('373128988962586635')
 
         self.gsheet_handler.register_gsheet(
             name='cdt_glossary',
