@@ -439,7 +439,7 @@ class STORYQUEST:
                 await menu.menu_start(pages)
             return
 
-    @commands.command(pass_context=True, name='map')
+    @storyquest.command(pass_context=True, name='map')
     async def _maps(self, ctx, map=None):
         cat_maps=('6.1.1', '6.1.2', '6.1.3', '6.1.4', '6.1.5', '6.1.6',
             '6.4.1', '6.4.2', '6.4.3', '6.4.4', '6.4.5', '6.4.6')
