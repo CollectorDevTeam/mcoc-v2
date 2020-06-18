@@ -2482,7 +2482,7 @@ class INSPECTOR:
                 serverlist.append('[{}] {} as {}\n'.format(server.id, server.name, check.display_name))
         
         if len(serverlist) > 0:
-            package = '\n'.join(serverlist)
+            package = ''.join(serverlist)
             await self.bot.send_message(ctx.message.channel, package)
 
 
