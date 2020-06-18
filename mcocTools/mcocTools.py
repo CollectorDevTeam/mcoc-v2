@@ -2472,6 +2472,19 @@ class INSPECTOR:
         await self.bot.send_message(ctx.message.channel, embed=data)
         await self.bot.send_message(self.robotworkshop, embed=data)
 
+    @inspect.command(pass_context=True, name='user')
+    async def inspect_user(self, ctx, user: discord.User):
+        servers = self.bot.servers
+        serverlist = []
+        for server in servers:
+            check = server.get_member(user.id)
+            if check is not None:
+                serverlist.append('[{}] {} as {}\n'.format(server.id, server.name, check.display_name))
+        
+        if len(serverlist) > 0:
+            package = '\n'.join(serverlist)
+            await self.bot.send_message(ctx.message.channel, package)
+
 
 class SCREENSHOT:
     """Save a Screenshot from x website in mcocTools"""
