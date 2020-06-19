@@ -10,8 +10,8 @@ import json
 from .utils.dataIO import dataIO
 from discord.ext import commands
 from __main__ import send_cmd_help
-from cogs.mcocTools import (
-    StaticGameData, PagesMenu, KABAM_ICON, COLLECTOR_ICON, CDTHelperFunctions)
+from cogs.mcocTools import (CDTEmbed,
+                            StaticGameData, PagesMenu, KABAM_ICON, COLLECTOR_ICON, CDTHelperFunctions)
 from cogs.mcoc import ChampConverter, ChampConverterDebug, Champion
 from .utils import chat_formatting as chat
 
@@ -268,6 +268,10 @@ class MCOCMaps:
 
     def __init__(self, bot):
         self.bot = bot
+        self.umcoc = self.bot.get_server('378035654736609280')
+        self.catmurdock = self.umcoc.get_member('373128988962586635')
+        self.catcorner = 'catmurdock/cat_corner.png'
+
         # self.menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
 
     @commands.group(pass_context=True, aliases=['aq', ])
@@ -426,20 +430,76 @@ class MCOCMaps:
                          delete_onX=True, add_pageof=True)
         await menu.menu_start(pages=pages, page_number=team-1)
 
-    @commands.command(pass_context=True)
+    @commands.group(pass_context=True, aliases=('maps'))
+    async def map(self, ctx):
+        if ctx.invoked_subcommand is None:
+            await send_cmd_help(ctx)
+
+    @maps.command(pass_context=True, aliases=('aw', 'war'))
     async def warmap(self, ctx, *, maptype: str = 'expert'):
-        """Alliance War 2.0 Map
+        """Alliance War Maps by Cat Murdock:
+        Challenger
+        Intermediate
+        Hard
+        Expert
         """
         warmaps = {
-            'expert': '_expert'
+            'challenger': '/catmurdock/aw/AW S19 Challenger Map.png',
+            'expert': '/catmurdock/aw/AW S19 Expert Map.png',
+            'hard': '/catmurdock/aw/AW S19 Hard Map.png',
+            'intermediate': '/catmurdock/aw/AW S19 Intermediate Map.png'
         }
-        mapurl = '{}warmap_3_expert.png'.format(self.basepath)
-        mapTitle = 'Alliance War 3.0 Map'
-        em = discord.Embed(color=discord.Color.gold(),
-                           title=mapTitle, url=PATREON)
-        em.set_image(url=mapurl)
-        em.set_footer(text='CollectorDevTeam', icon_url=self.COLLECTOR_ICON)
-        await self.bot.say(embed=em)
+        if maptype.lower() in warmaps:
+            mapurl = '{}{}.png'.format(self.basepath, warmaps[maptype.lower()])
+            mapTitle = 'Alliance War Maps by Cat Murdock :cat::sparkles:'
+            data = discord.Embed(color=discord.Color.gold(),
+                                 title=mapTitle, url=PATREON)
+            data.set_author(name=self.catmurdock.display_name,
+                            icon_url=self.catmurdock.avatar_url)
+            data.add_field(
+                name='Support Cat', value='[Visit Cat\'s Store](https://www.redbubble.com/people/CatMurdock/explore)')
+            data.set_image(url=mapurl)
+            data.set_thumbnail(url='{}{}'.format(
+                self.basepath, self.catcorner))
+            data.set_footer(text='CollectorDevTeam',
+                            icon_url=self.COLLECTOR_ICON)
+            await self.bot.send_message(ctx.message.channel, embed=data)
+
+    @maps.command(pass_context=True, name='sq', aliases=('story',))
+    async def cat_maps(self, ctx, map=None):
+        '''Currently supporting Cat Murdock maps for 6.1 and 6.4'''
+        cat_maps = ('6.1.1', '6.1.2', '6.1.3', '6.1.4', '6.1.5', '6.1.6',
+                    '6.4.1', '6.4.2', '6.4.3', '6.4.4', '6.4.5', '6.4.6')
+        if map is None:
+            pages = []
+            for map in cat_maps:
+                data = CDTEmbed._get_embed(self, ctx)
+                data.title = 'Act {} Map by :cat::sparkles:'.format(map)
+                data.set_image(
+                    url='{}/catmurdock/SQ/{}.png'.format(self.basepath, map))
+                data.set_author(name=self.catmurdock.display_name,
+                                icon_url=self.catmurdock.avatar_url)
+                data.set_thumbnail(url='{}{}'.format(
+                    self.basepath, self.catcorner))
+                data.add_field(
+                    name='Support Cat', value='[Visit Cat\'s Store](https://www.redbubble.com/people/CatMurdock/explore)')
+                pages.append(data)
+            menu = PagesMenu(self.bot, timeout=30,
+                             delete_onX=True, add_pageof=True)
+            await menu.menu_start(pages)
+        if map is not None and map in cat_maps:
+            data = CDTEmbed._get_embed(self, ctx)
+            data.title = 'Act {} Map by :cat::sparkles:'.format(map)
+            data.set_image(
+                url='{}/catmurdock/SQ/{}.png'.format(self.basepath, map))
+            data.set_author(name=self.catmurdock.display_name,
+                            icon_url=self.catmurdock.avatar_url)
+            data.set_thumbnail(url='{}{}'.format(
+                self.basepath, self.catcorner))
+            data.add_field(
+                name='Support Cat', value='[Visit Cat\'s Store](https://www.redbubble.com/people/CatMurdock/explore)')
+
+            await self.bot.send_message(ctx.message.channel, embed=data)
 
 # Beginning of AllianceWar.com integration
 
