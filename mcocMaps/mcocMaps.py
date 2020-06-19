@@ -316,10 +316,8 @@ class MCOCMaps:
                     self.basepath, self.aq_map[maptype]['map'], k)
                 maptitle = 'Alliance Quest {} | Variation {}'.format(
                     self.aq_map[maptype]['maptitle'], seven[k])
-                data = discord.Embed(
-                    color=discord.Color.gold(), title=maptitle, url=PATREON, image=mapurl)
-                data.set_author(name='CollectorDevTeam',
-                                icon_url=self.COLLECTOR_ICON)
+                data = CDTEmbed.get_embed(
+                    self.ctx, title=maptitle, url=PATREON, image=mapurl)
                 embeds.append(data)
             menu = PagesMenu(self.bot, timeout=120,
                              delete_onX=True, add_pageof=True)
@@ -346,7 +344,8 @@ class MCOCMaps:
                     self.basepath, self.aq_map[maptype]['map'])
                 maptitle = 'Alliance Quest {}'.format(
                     self.aq_map[maptype]['maptitle'])
-                em2 = CDTEmbed.get_embed(title=maptitle, image=mapurl)
+                em2 = CDTEmbed.get_embed(
+                    self, ctx, title=maptitle, image=mapurl)
 
                 if self.aq_map_tips[maptype]['required'] != '':
                     em2.add_field(name='Required',
