@@ -267,7 +267,8 @@ class MCOCMaps:
         self.jjw = self.umcoc.get_member('124984294035816448')
         self.catcorner = '{}catmurdock/cat_corner_left.png'.format(
             self.basepath)
-        self.catsupport = 'Visit Cat\'s [Store](https://www.redbubble.com/people/CatMurdock/explore)\n:twitter:[@CatMurdock_art](https://twitter.com/CatMurdock_Art)'
+        self.catsupport = 'Visit Cat\'s [Store](https://www.redbubble.com/people/CatMurdock/explore)\n'\
+            '<:twitter:548637190587154432>[@CatMurdock_art](https://twitter.com/CatMurdock_Art)'
         # self.menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
 
     # @commands.group(pass_context=True, aliases=['aq', ])
