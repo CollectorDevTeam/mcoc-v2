@@ -402,7 +402,7 @@ class MCOCMaps:
                 self.basepath, tier.lower())
             data = CDTEmbed.get_embed(self, ctx,
                                       image='{}catmurdock/AW/{}.png'.format(
-                                          self.basepath, tier),
+                                          self.basepath, tier.lower()),
                                       thumbnail=self.catcorner,
                                       title='Alliane War {} Map :cat::sparkles:'.format(
                                           tier.title()))
@@ -412,7 +412,7 @@ class MCOCMaps:
                 name='Support Cat', value='[Visit Cat\'s Store](https://www.redbubble.com/people/CatMurdock/explore)')
             await self.bot.send_message(ctx.message.channel, embed=data)
         else:
-            desc = 'Currently supporting "Challenger", "Intermediate", "Hard", "Expert"'
+            desc = 'Currently supporting \nChallenger\nIntermediate\nHard\nExpert'
             data = CDTEmbed.get_embed(self, ctx, title='Alliance War Maps :cat::sparkles:'.format(
                 tier.title()), thumbnail=self.catcorner, description=desc)
             data.set_author(name=self.catmurdock.display_name,
