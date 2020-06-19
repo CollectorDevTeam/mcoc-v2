@@ -474,7 +474,7 @@ class MCOCMaps:
 
             await self.bot.send_message(ctx.message.channel, embed=data)
 
-    @maps.command(pass_context=True, aliases=['lol'])
+    @maps.command(pass_context=True, name='lol', aliases=['lab', ])
     async def maps_lol(self, ctx, *, maptype: str = '0'):
         """Labyrinth of Legends Maps
             LOL maps: 0, 1, 2, 3, 4, 5, 6, 7
@@ -506,7 +506,7 @@ class MCOCMaps:
             await menu.menu_start(pages=pages, page_number=int(maptype))
             # await self.bot.say(embed=em)
 
-    @maps.command(pass_context=True, aliases=['lolteam', 'lolteams'])
+    @maps.command(pass_context=True, name='lolteam', aliases=['lolteams', ])
     async def maps_lolteams(self, ctx, *, team: int = 1):
         """Highly Effective LOL Teams"""
         maxkiryu = 5
