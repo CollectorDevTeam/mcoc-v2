@@ -267,11 +267,16 @@ class MCOCMaps:
         self.catcorner = '{}catmurdock/cat_corner.png'.format(self.basepath)
         # self.menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
 
-    @commands.group(pass_context=True, aliases=['aq', ])
-    async def alliancequest(self, ctx):
-        """Alliance Quest Commands [WIP]"""
+    # @commands.group(pass_context=True, aliases=['aq', ])
+    # async def alliancequest(self, ctx):
+    #     """Alliance Quest Commands [WIP]"""
 
-    @alliancequest.command(pass_context=True, name='map')
+    @commands.group(pass_context=True, aliases=('map',))
+    async def maps(self, ctx):
+        if ctx.invoked_subcommand is None:
+            await send_cmd_help(ctx)
+
+    @maps.command(pass_context=True, name='aq')
     async def _aq_map(self, ctx, *, maptype: str):
         """Select a Map
             cheatsheet : cheatsheet
@@ -379,11 +384,6 @@ class MCOCMaps:
             menu = PagesMenu(self.bot, timeout=120,
                              delete_onX=True, add_pageof=True)
             await menu.menu_start(pages=embeds)
-
-    @commands.group(pass_context=True, aliases=('map',))
-    async def maps(self, ctx):
-        if ctx.invoked_subcommand is None:
-            await send_cmd_help(ctx)
 
     @maps.command(pass_context=True, name='aw', aliases=('war'))
     async def maps_alliancewar(self, ctx, tier=None):
