@@ -442,35 +442,35 @@ class STORYQUEST:
                 await menu.menu_start(pages)
             return
 
-    @storyquest.command(pass_context=True, name='map')
-    async def _maps(self, ctx, map=None):
-        '''Currently supporting Cat Murdock maps for 6.1 and 6.4'''
-        cat_maps=('6.1.1', '6.1.2', '6.1.3', '6.1.4', '6.1.5', '6.1.6',
-            '6.4.1', '6.4.2', '6.4.3', '6.4.4', '6.4.5', '6.4.6')
-        if map is None:
-            pages = []
-            for map in cat_maps:
-                data=CDTEmbed._get_embed(self, ctx)
-                data.title='Act {} Map by :cat::sparkles:'.format(map)
-                data.set_image(url=self.globals[map]['chapter_image'])
-                data.set_author(name=self.catmurdock.display_name,
-                    icon_url=self.catmurdock.avatar_url)
-                data.add_field(
-                    name='Support Cat', value='[Visit Cat\'s Store](https://www.redbubble.com/people/CatMurdock/explore)')
-                pages.append(data)
-            menu = PagesMenu(self.bot, timeout=30,
-                                delete_onX=True, add_pageof=True)
-            await menu.menu_start(pages)
-        if map is not None and map in cat_maps:
-            data=CDTEmbed._get_embed(self, ctx)
-            data.title='Act {} Map by :cat::sparkles:'.format(map)
-            data.set_image(url=self.globals[map]['chapter_image'])
-            data.set_author(name=self.catmurdock.display_name,
-                icon_url=self.catmurdock.avatar_url)
-            data.add_field(
-                name='Support Cat', value='[Visit Cat\'s Store](https://www.redbubble.com/people/CatMurdock/explore)')
+    # @storyquest.command(pass_context=True, name='map')
+    # async def _maps(self, ctx, map=None):
+    #     '''Currently supporting Cat Murdock maps for 6.1 and 6.4'''
+    #     cat_maps=('6.1.1', '6.1.2', '6.1.3', '6.1.4', '6.1.5', '6.1.6',
+    #         '6.4.1', '6.4.2', '6.4.3', '6.4.4', '6.4.5', '6.4.6')
+    #     if map is None:
+    #         pages = []
+    #         for map in cat_maps:
+    #             data=CDTEmbed._get_embed(self, ctx)
+    #             data.title='Act {} Map by :cat::sparkles:'.format(map)
+    #             data.set_image(url=self.globals[map]['chapter_image'])
+    #             data.set_author(name=self.catmurdock.display_name,
+    #                 icon_url=self.catmurdock.avatar_url)
+    #             data.add_field(
+    #                 name='Support Cat', value='[Visit Cat\'s Store](https://www.redbubble.com/people/CatMurdock/explore)')
+    #             pages.append(data)
+    #         menu = PagesMenu(self.bot, timeout=30,
+    #                             delete_onX=True, add_pageof=True)
+    #         await menu.menu_start(pages)
+    #     if map is not None and map in cat_maps:
+    #         data=CDTEmbed._get_embed(self, ctx)
+    #         data.title='Act {} Map by :cat::sparkles:'.format(map)
+    #         data.set_image(url=self.globals[map]['chapter_image'])
+    #         data.set_author(name=self.catmurdock.display_name,
+    #             icon_url=self.catmurdock.avatar_url)
+    #         data.add_field(
+    #             name='Support Cat', value='[Visit Cat\'s Store](https://www.redbubble.com/people/CatMurdock/explore)')
 
-            await self.bot.send_message(ctx.message.channel, embed=data)
+    #         await self.bot.send_message(ctx.message.channel, embed=data)
 
     @commands.command(pass_context=True, name='rttl')
     async def rttl_paths(self, ctx, map=None, path=None, verbose=True):
