@@ -264,6 +264,7 @@ class MCOCMaps:
         self.bot = bot
         self.umcoc = self.bot.get_server('378035654736609280')
         self.catmurdock = self.umcoc.get_member('373128988962586635')
+        self.jjw = self.umcoc.get_member('124984294035816448')
         self.catcorner = '{}catmurdock/cat_corner.png'.format(self.basepath)
         # self.menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
 
@@ -317,7 +318,7 @@ class MCOCMaps:
                 maptitle = 'Alliance Quest {} | Variation {}'.format(
                     self.aq_map[maptype]['maptitle'], seven[k])
                 data = CDTEmbed.get_embed(
-                    self.ctx, title=maptitle, url=PATREON, image=mapurl)
+                    self, ctx, title=maptitle, url=PATREON, image=mapurl)
                 embeds.append(data)
             menu = PagesMenu(self.bot, timeout=120,
                              delete_onX=True, add_pageof=True)
