@@ -380,56 +380,6 @@ class MCOCMaps:
                              delete_onX=True, add_pageof=True)
             await menu.menu_start(pages=embeds)
 
-    @commands.command(pass_context=True, aliases=['lol'])
-    async def lolmap(self, ctx, *, maptype: str = '0'):
-        """Select a Map
-            LOL maps: 0, 1, 2, 3, 4, 5, 6, 7
-            /lol 5"""
-        if maptype in self.lolmaps:
-            pages = []
-            for i in range(0, 8):
-                maptitle = 'Labyrinth of Legends: Kiryu\'s {}'.format(
-                    self.lolmaps[str(i)]['maptitle'])
-                # , description = '\n'.join(desclist))
-                em = discord.Embed(color=discord.Color.gold(),
-                                   title=maptitle, url=PATREON)
-                mapurl = '{}lolmap{}v3.png'.format(self.basepath, i)
-                em.set_image(url=mapurl)
-                print(mapurl)
-                lanes = self.lollanes[str(i)[0]]
-                # desclist = []
-                for l in lanes:
-                    enigma = self.enigmatics[l]
-                    print(enigma)
-                    # desclist.append('{}\n{}\n\n'.format(enigma[0], enigma[1]))
-                    em.add_field(name='Enigmatic {}'.format(
-                        enigma[0]), value=enigma[1])
-                em.set_footer(
-                    text='Art: CollectorDevTeam, Plan: LabyrinthTeam',)
-                pages.append(em)
-            menu = PagesMenu(self.bot, timeout=120,
-                             delete_onX=True, add_pageof=True)
-            await menu.menu_start(pages=pages, page_number=int(maptype))
-            # await self.bot.say(embed=em)
-
-    @commands.command(pass_context=True, aliases=['lolteam, kiryu'])
-    async def lolteams(self, ctx, *, team: int = 1):
-        """Highly Effective LOL Teams"""
-        maxkiryu = 5
-        pages = []
-        for i in range(1, maxkiryu+1):
-            imgurl = '{}kiryu{}.png'.format(self.basepath, i)
-            print(imgurl)
-            imgtitle = 'Labyrinth of Legends: Kiryu\'s Teams #{}'.format(i)
-            em = discord.Embed(color=discord.Color.gold(),
-                               title=imgtitle, url=PATREON)
-            em.set_image(url=imgurl)
-            em.set_footer(text='Art: CollectorDevTeam Plan: LabyrinthTeam',)
-            pages.append(em)
-        menu = PagesMenu(self.bot, timeout=120,
-                         delete_onX=True, add_pageof=True)
-        await menu.menu_start(pages=pages, page_number=team-1)
-
     @commands.group(pass_context=True, aliases=('map',))
     async def maps(self, ctx):
         if ctx.invoked_subcommand is None:
@@ -523,6 +473,56 @@ class MCOCMaps:
                 name='Support Cat', value='[Visit Cat\'s Store](https://www.redbubble.com/people/CatMurdock/explore)')
 
             await self.bot.send_message(ctx.message.channel, embed=data)
+
+    @maps.command(pass_context=True, aliases=['lol'])
+    async def maps_lol(self, ctx, *, maptype: str = '0'):
+        """Labyrinth of Legends Maps
+            LOL maps: 0, 1, 2, 3, 4, 5, 6, 7
+            /lol 5"""
+        if maptype in self.lolmaps:
+            pages = []
+            for i in range(0, 8):
+                maptitle = 'Labyrinth of Legends: Kiryu\'s {}'.format(
+                    self.lolmaps[str(i)]['maptitle'])
+                # , description = '\n'.join(desclist))
+                em = discord.Embed(color=discord.Color.gold(),
+                                   title=maptitle, url=PATREON)
+                mapurl = '{}lolmap{}v3.png'.format(self.basepath, i)
+                em.set_image(url=mapurl)
+                print(mapurl)
+                lanes = self.lollanes[str(i)[0]]
+                # desclist = []
+                for l in lanes:
+                    enigma = self.enigmatics[l]
+                    print(enigma)
+                    # desclist.append('{}\n{}\n\n'.format(enigma[0], enigma[1]))
+                    em.add_field(name='Enigmatic {}'.format(
+                        enigma[0]), value=enigma[1])
+                em.set_footer(
+                    text='Art: CollectorDevTeam, Plan: LabyrinthTeam',)
+                pages.append(em)
+            menu = PagesMenu(self.bot, timeout=120,
+                             delete_onX=True, add_pageof=True)
+            await menu.menu_start(pages=pages, page_number=int(maptype))
+            # await self.bot.say(embed=em)
+
+    @maps.command(pass_context=True, aliases=['lolteam', 'lolteams'])
+    async def maps_lolteams(self, ctx, *, team: int = 1):
+        """Highly Effective LOL Teams"""
+        maxkiryu = 5
+        pages = []
+        for i in range(1, maxkiryu+1):
+            imgurl = '{}kiryu{}.png'.format(self.basepath, i)
+            print(imgurl)
+            imgtitle = 'Labyrinth of Legends: Kiryu\'s Teams #{}'.format(i)
+            em = discord.Embed(color=discord.Color.gold(),
+                               title=imgtitle, url=PATREON)
+            em.set_image(url=imgurl)
+            em.set_footer(text='Art: CollectorDevTeam Plan: LabyrinthTeam',)
+            pages.append(em)
+        menu = PagesMenu(self.bot, timeout=120,
+                         delete_onX=True, add_pageof=True)
+        await menu.menu_start(pages=pages, page_number=team-1)
 
 # Beginning of AllianceWar.com integration
 
