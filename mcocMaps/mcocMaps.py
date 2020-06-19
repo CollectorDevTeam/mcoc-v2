@@ -276,11 +276,12 @@ class MCOCMaps:
         if ctx.invoked_subcommand is None:
             await send_cmd_help(ctx)
 
-    @maps.command(pass_context=True, name='aq')
+    @maps.command(pass_context=True, name='aq', aliases=('alliancequest',))
     async def _aq_map(self, ctx, *, maptype: str):
-        """Select a Map
+        """Alliance Quest Maps
             cheatsheet : cheatsheet
-            aq maps : 5, 5.1, 5.2, 5.3, 6, 6.1, 6.2, 6.3
+            aq maps : 5, 5.1, 5.2, 5.3, 7.1, 7.2, 7.3
+            cat maps: 6, 6.1, 6.2, 6.3
             /aq 5"""
         author = ctx.message.author
         embeds = []
@@ -294,7 +295,7 @@ class MCOCMaps:
             catmurdock = umcoc.get_member('373128988962586635')
             for i in (0, 1):
                 mapurl = '{}catmurdock/AQ/{}.png'.format(
-                    basepath, cat_maps[maptype][map])
+                    self.basepath, cat_maps[maptype][map])
                 maptitle = 'Alliance Quest {} :smiley_cat::sparkles:| Variation {}'.format(
                     cat_maps[maptype]['maptitle'], i+1)
                 data = discord.Embed(
@@ -316,7 +317,7 @@ class MCOCMaps:
             seven = {'A': '1', 'B': '2', 'C': '3'}
             for k in seven.keys():
                 mapurl = '{}{}{}.png'.format(
-                    basepath, self.aq_map[maptype]['map'], k)
+                    self.basepath, self.aq_map[maptype]['map'], k)
                 maptitle = 'Alliance Quest {} | Variation {}'.format(
                     self.aq_map[maptype]['maptitle'], seven[k])
                 data = discord.Embed(
@@ -385,7 +386,7 @@ class MCOCMaps:
                              delete_onX=True, add_pageof=True)
             await menu.menu_start(pages=embeds)
 
-    @maps.command(pass_context=True, name='aw', aliases=('war'))
+    @maps.command(pass_context=True, name='aw', aliases=('war', 'alliancewar',))
     async def maps_alliancewar(self, ctx, tier=None):
         """Alliance War Maps by Cat Murdock:
         Challenger
