@@ -265,7 +265,7 @@ class MCOCMaps:
         self.umcoc = self.bot.get_server('378035654736609280')
         self.catmurdock = self.umcoc.get_member('373128988962586635')
         self.catcorner = 'catmurdock/cat_corner.png'
-
+        self.basepath = basepath
         # self.menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
 
     @commands.group(pass_context=True, aliases=['aq', ])
@@ -281,16 +281,16 @@ class MCOCMaps:
         author = ctx.message.author
         embeds = []
         cat_maps = {
-            '6.1': {'map': ['MAP 6 V1 S1', 'MAP 6 V2 S1'], 'maptitle': '6 Tier 1'},
-            '6.2': {'map': ['MAP 6 V1 S2', 'MAP 6 V2 S2'], 'maptitle': '6 Tier 2'},
-            '6.3': {'map': ['MAP 6 V1 S3', 'MAP 6 V2 S3'], 'maptitle': '6 Tier 3'},
+            '6.1': {'map': ['aq_6_v1_s1', 'aq_6_v2_s1'], 'maptitle': '6 Tier 1'},
+            '6.2': {'map': ['aq_6_v1_s2', 'aq_6_v2_s2'], 'maptitle': '6 Tier 2'},
+            '6.3': {'map': ['aq_6_v1_s3', 'aq_6_v2_s3'], 'maptitle': '6 Tier 3'},
         }
         if maptype in cat_maps.keys():
             umcoc = self.bot.get_server('378035654736609280')
             catmurdock = umcoc.get_member('373128988962586635')
             for i in (0, 1):
                 mapurl = '{}catmurdock/AQ/{}.png'.format(
-                    self.basepath, cat_maps[maptype][map])
+                    basepath, cat_maps[maptype][map])
                 maptitle = 'Alliance Quest {} :smiley_cat::sparkles:| Variation {}'.format(
                     cat_maps[maptype]['maptitle'], i+1)
                 data = discord.Embed(
@@ -312,7 +312,7 @@ class MCOCMaps:
             seven = {'A': '1', 'B': '2', 'C': '3'}
             for k in seven.keys():
                 mapurl = '{}{}{}.png'.format(
-                    self.basepath, self.aq_map[maptype]['map'], k)
+                    basepath, self.aq_map[maptype]['map'], k)
                 maptitle = 'Alliance Quest {} | Variation {}'.format(
                     self.aq_map[maptype]['maptitle'], seven[k])
                 data = discord.Embed(
@@ -436,20 +436,15 @@ class MCOCMaps:
         if ctx.invoked_subcommand is None:
             await send_cmd_help(ctx)
 
-    @maps.command(pass_context=True, aliases=('aw', 'war'))
-    async def warmap(self, ctx, *, tier=None):
+    @maps.command(pass_context=True, name='aw', aliases=('war'))
+    async def maps_alliancewar(self, ctx, tier=None):
         """Alliance War Maps by Cat Murdock:
         Challenger
         Intermediate
         Hard
         Expert
         """
-        warmaps = {
-            'challenger': 'catmurdock/aw/AW S19 Challenger Map.png',
-            'expert': 'catmurdock/aw/AW S19 Expert Map.png',
-            'hard': 'catmurdock/aw/AW S19 Hard Map.png',
-            'intermediate': 'catmurdock/aw/AW S19 Intermediate Map.png'
-        }
+        warmaps = ('challenger', 'expert', 'hard', 'intermediate')
         if tier is None:
             pages = []
             for tier in ('challenger', 'intermediate', 'hard', 'expert'):
@@ -461,15 +456,16 @@ class MCOCMaps:
                 data.add_field(
                     name='Support Cat', value='[Visit Cat\'s Store](https://www.redbubble.com/people/CatMurdock/explore)')
                 data.set_image(
-                    url='{}catmurdock/AW/AW S19 {} Map.png'.format(self.basepath, tier.title()))
-                data.set_thumbnail(url='{}{}'.format(
+                    url='{}catmurdock/AW/{}.png'.format(self.basepath, tier))
+                data.set_thumbnail(url='{}catmurdock/{}'.format(
                     self.basepath, self.catcorner))
                 pages.append(data)
             menu = PagesMenu(self.bot, timeout=30,
                              delete_onX=True, add_pageof=True)
             await menu.menu_start(pages)
         elif tier.lower() in warmaps:
-            mapurl = '{}{}.png'.format(self.basepath, warmaps[tier.lower()])
+            mapurl = '{}catmurdock/AW/{}.png'.format(
+                self.basepath, tier.lower())
             data = CDTEmbed._get_embed(self, ctx)
             data.title = 'Alliance War {} Map :cat::sparkles:'.format(
                 tier.title())
@@ -478,7 +474,7 @@ class MCOCMaps:
             data.add_field(
                 name='Support Cat', value='[Visit Cat\'s Store](https://www.redbubble.com/people/CatMurdock/explore)')
             data.set_image(url=mapurl)
-            data.set_thumbnail(url='{}{}'.format(
+            data.set_thumbnail(url='{}catmurdock/{}'.format(
                 self.basepath, self.catcorner))
             data.set_footer(text='CollectorDevTeam',
                             icon_url=self.COLLECTOR_ICON)
@@ -492,14 +488,14 @@ class MCOCMaps:
             data.description = 'Currently supporting "Challenger", "Intermediate", "Hard", "Expert"'
             data.add_field(
                 name='Support Cat', value='[Visit Cat\'s Store](https://www.redbubble.com/people/CatMurdock/explore)')
-            data.set_thumbnail(url='{}{}'.format(
+            data.set_thumbnail(url='{}catmurdock/{}'.format(
                 self.basepath, self.catcorner))
             data.set_footer(text='CollectorDevTeam',
                             icon_url=self.COLLECTOR_ICON)
             await self.bot.send_message(ctx.message.channel, embed=data)
 
     @maps.command(pass_context=True, name='sq', aliases=('story',))
-    async def cat_maps(self, ctx, level=None):
+    async def maps_storyquest(self, ctx, level=None):
         '''Currently supporting Cat Murdock maps for 6.1 and 6.4'''
         cat_maps = ('6.1.1', '6.1.2', '6.1.3', '6.1.4', '6.1.5', '6.1.6',
                     '6.4.1', '6.4.2', '6.4.3', '6.4.4', '6.4.5', '6.4.6')
@@ -512,7 +508,7 @@ class MCOCMaps:
                     url='{}catmurdock/SQ/Act {}.png'.format(self.basepath, map))
                 data.set_author(name=self.catmurdock.display_name,
                                 icon_url=self.catmurdock.avatar_url)
-                data.set_thumbnail(url='{}{}'.format(
+                data.set_thumbnail(url='{}catmurdock/{}'.format(
                     self.basepath, self.catcorner))
                 data.add_field(
                     name='Support Cat', value='[Visit Cat\'s Store](https://www.redbubble.com/people/CatMurdock/explore)')
@@ -527,7 +523,7 @@ class MCOCMaps:
                 url='{}catmurdock/SQ/{}.png'.format(self.basepath, level))
             data.set_author(name=self.catmurdock.display_name,
                             icon_url=self.catmurdock.avatar_url)
-            data.set_thumbnail(url='{}{}'.format(
+            data.set_thumbnail(url='{}catmurdock/{}'.format(
                 self.basepath, self.catcorner))
             data.add_field(
                 name='Support Cat', value='[Visit Cat\'s Store](https://www.redbubble.com/people/CatMurdock/explore)')
@@ -689,12 +685,7 @@ class MCOCMaps:
         Hard
         Expert
         """
-        warmaps = {
-            'challenger': 'catmurdock/aw/AW S19 Challenger Map.png',
-            'expert': 'catmurdock/aw/AW S19 Expert Map.png',
-            'hard': 'catmurdock/aw/AW S19 Hard Map.png',
-            'intermediate': 'catmurdock/aw/AW S19 Intermediate Map.png'
-        }
+        warmaps = ('challenger', 'expert', 'hard', 'intermediate')
         if tier is None:
             pages = []
             for tier in ('challenger', 'intermediate', 'hard', 'expert'):
@@ -706,15 +697,16 @@ class MCOCMaps:
                 data.add_field(
                     name='Support Cat', value='[Visit Cat\'s Store](https://www.redbubble.com/people/CatMurdock/explore)')
                 data.set_image(
-                    url='{}catmurdock/AW/AW S19 {} Map.png'.format(self.basepath, tier.title()))
-                data.set_thumbnail(url='{}{}'.format(
+                    url='{}catmurdock/AW/{}.png'.format(self.basepath, tier.title()))
+                data.set_thumbnail(url='{}catmurdock/{}'.format(
                     self.basepath, self.catcorner))
                 pages.append(data)
             menu = PagesMenu(self.bot, timeout=30,
                              delete_onX=True, add_pageof=True)
             await menu.menu_start(pages)
         elif tier.lower() in warmaps:
-            mapurl = '{}{}.png'.format(self.basepath, warmaps[tier.lower()])
+            mapurl = '{}catmurdock/AW/{}.png'.format(
+                self.basepath, tier.lower())
             data = CDTEmbed._get_embed(self, ctx)
             data.title = 'Alliance War {} Map :cat::sparkles:'.format(
                 tier.title())
