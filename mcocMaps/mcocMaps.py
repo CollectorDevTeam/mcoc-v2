@@ -320,7 +320,7 @@ class MCOCMaps:
                 data = CDTEmbed.get_embed(
                     self, ctx, title=maptitle, image=mapurl)
                 data.set_author(
-                    name='JJW | CollectorDevTeam:sparkles:', icon_url=self.jjw.avatar_url)
+                    name='JJW | CollectorDevTeam', icon_url=self.jjw.avatar_url)
                 embeds.append(data)
             menu = PagesMenu(self.bot, timeout=120,
                              delete_onX=True, add_pageof=True)
@@ -333,7 +333,7 @@ class MCOCMaps:
                 self.aq_map[maptype]['maptitle'])
             data = CDTEmbed.get_embed(self, ctx, title=maptitle, image=mapurl)
             data.set_author(
-                name='JJW | CollectorDevTeam:sparkles:', icon_url=self.jjw.avatar_url)
+                name='JJW | CollectorDevTeam', icon_url=self.jjw.avatar_url)
             if self.aq_map_tips[maptype]['required'] != '':
                 data.add_field(name='Required',
                                value=self.aq_map_tips[maptype]['required'])
