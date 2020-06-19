@@ -277,7 +277,7 @@ class MCOCMaps:
             await send_cmd_help(ctx)
 
     @maps.command(pass_context=True, name='aq', aliases=('alliancequest',))
-    async def _aq_map(self, ctx, maptype: str = None):
+    async def maps_alliancequest(self, ctx, maptype: str = None):
         """Alliance Quest Maps
             cheatsheet : cheatsheet
             aq maps : 5, 5.1, 5.2, 5.3, 7.1, 7.2, 7.3
@@ -295,7 +295,7 @@ class MCOCMaps:
             catmurdock = umcoc.get_member('373128988962586635')
             for i in (0, 1):
                 mapurl = '{}catmurdock/AQ/{}.png'.format(
-                    self.basepath, cat_maps[maptype]['map'])
+                    self.basepath, cat_maps[maptype]['map'][i])
                 maptitle = 'Alliance Quest {} :smiley_cat::sparkles:| Variation {}'.format(
                     cat_maps[maptype]['maptitle'], i+1)
                 data = CDTEmbed.get_embed(
@@ -370,6 +370,11 @@ class MCOCMaps:
             menu = PagesMenu(self.bot, timeout=120,
                              delete_onX=True, add_pageof=True)
             await menu.menu_start(pages=embeds)
+        else:
+            desc = 'Currently supporting AQ maps:\nAQ 5: 5.1, 5.2, 5.3\nAQ 6: 6.1, 6.2, 6.3\nAQ 7: 7.1, 7.2, 7.3'
+            data = CDTEmbed.get_embed(
+                self, ctx, title='Alliance Quest Maps', description=desc)
+            await self.bot.send_message(ctx.message.channel, embed=data)
 
     @maps.command(pass_context=True, name='aw', aliases=('war', 'alliancewar',))
     async def maps_alliancewar(self, ctx, tier=None):
