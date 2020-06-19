@@ -295,7 +295,7 @@ class MCOCMaps:
             catmurdock = umcoc.get_member('373128988962586635')
             for i in (0, 1):
                 mapurl = '{}catmurdock/AQ/{}.png'.format(
-                    self.basepath, cat_maps[maptype][map])
+                    self.basepath, cat_maps[maptype]['map'])
                 maptitle = 'Alliance Quest {} :smiley_cat::sparkles:| Variation {}'.format(
                     cat_maps[maptype]['maptitle'], i+1)
                 data = discord.Embed(
