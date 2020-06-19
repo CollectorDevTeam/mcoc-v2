@@ -362,7 +362,8 @@ class MCOCMaps:
                     self.basepath, self.aq_map[maptype]['map'])
                 maptitle = 'Alliance Quest {}'.format(
                     self.aq_map[maptype]['maptitle'])
-                em3 = CDTEmbed(title=maptitle, image=mapurl)
+                em3 = CDTEmbed.get_embed(
+                    self, ctx, title=maptitle, image=mapurl)
                 for miniboss in self.aq_map_tips[maptype]['miniboss']:
                     em3.add_field(name=miniboss[0], value=miniboss[1])
                 embeds.append(em3)
