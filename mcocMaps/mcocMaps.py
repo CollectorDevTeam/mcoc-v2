@@ -68,12 +68,6 @@ class MCOCMaps:
         '7.2': {'map':  's7aq72', 'maptitle': '7 Tier 2'},
         '7.3': {'map': 's7aq73', 'maptitle': '7 Tier 3'}}
 
-    cat_map = {
-        '6.1': {'map': ['https://pbs.twimg.com/media/EWPmcgWWkAIw6hm?format=jpg&name=large', 'https://pbs.twimg.com/media/EWPmdQMXsAAuTPC?format=jpg&name=large'], 'maptitle': '6 Tier 1'},
-        '6.2': {'map': ['https://pbs.twimg.com/media/EWPmcgYXQAUcQZn?format=jpg&name=large', 'https://pbs.twimg.com/media/EWPmdVlWoAA3q3Q?format=jpg&name=large'], 'maptitle': '6 Tier 1'},
-        '6.3': {'map': ['https://pbs.twimg.com/media/EWPmcnMWoAMjSAs?format=jpg&name=large', 'https://pbs.twimg.com/media/EWPmdaAXgAYmQf9?format=jpg&name=large'], 'maptitle': '6 Tier 1'},
-    }
-
     aq_map_tips = {
         'cheatsheet': {
             'required': '',
@@ -289,10 +283,16 @@ class MCOCMaps:
         if maptype in self.cat_map.keys():
             umcoc = self.bot.get_server('378035654736609280')
             catmurdock = umcoc.get_member('373128988962586635')
+            cat_map = {
+                '6.1': {'map': ['MAP 6 V1 S1', 'MAP 6 V2 S1'], 'maptitle': '6 Tier 1'},
+                '6.2': {'map': ['MAP 6 V1 S2', 'MAP 6 V2 S2'], 'maptitle': '6 Tier 2'},
+                '6.3': {'map': ['MAP 6 V1 S3', 'MAP 6 V2 S3'], 'maptitle': '6 Tier 3'},
+            }
             for i in (0, 1):
-                mapurl = self.cat_map[maptype]['map'][i]
+                mapurl = '{}/catmurdock/AQ/{}.png'.format(
+                    self.basepath, cat_maps[maptype][map])
                 maptitle = 'Alliance Quest {} :smiley_cat::sparkles:| Variation {}'.format(
-                    self.cat_map[maptype]['maptitle'], i+1)
+                    self.cat_maps[maptype]['maptitle'], i+1)
                 data = discord.Embed(
                     color=discord.Color.gold(), title=maptitle, url=PATREON)
                 data.set_image(url=mapurl)
@@ -303,6 +303,7 @@ class MCOCMaps:
                 data.add_field(
                     name='Support Cat', value='[Visit Cat\'s Store](https://www.redbubble.com/people/CatMurdock/explore)')
                 embeds.append(data)
+                data.set_thumbnail(url=self.catcorner)
             menu = PagesMenu(self.bot, timeout=120,
                              delete_onX=True, add_pageof=True)
             await menu.menu_start(pages=embeds)
