@@ -318,7 +318,7 @@ class MCOCMaps:
                 maptitle = 'Alliance Quest {} | Variation {}'.format(
                     self.aq_map[maptype]['maptitle'], seven[k])
                 data = CDTEmbed.get_embed(
-                    self, ctx, title=maptitle, url=PATREON, image=mapurl)
+                    self, ctx, title=maptitle, image=mapurl)
                 data.set_author(
                     name='JJW | CollectorDevTeam:sparkles:', icon_url=self.jjw.avatar_url)
                 embeds.append(data)

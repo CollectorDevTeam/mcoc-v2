@@ -2694,7 +2694,7 @@ class CDTEmbed:
     def __init__(self, bot):
         self.bot = bot
 
-    def get_embed(self, ctx, user_id=None, color=discord.Color.gold(), title='', description='', image=None, thumbnail=None):
+    def get_embed(self, ctx, user_id=None, color=discord.Color.gold(), title='', description='', image=None, thumbnail=None, url=None):
         '''Return a color styled embed with CDT footer, and optional title or description.
         user_id = user id string. If none provided, takes message author.
         color = manual override, otherwise takes gold for private channels, or author color for server.
@@ -2712,7 +2712,9 @@ class CDTEmbed:
             # member = self.bot.get_member(user_id)
             member = discord.utils.get(ctx.message.server.members, id=user_id)
             color = member.color
-        data = discord.Embed(color=color, title=title, url=PATREON)
+        if url is None:
+            url = PATREON
+        data = discord.Embed(color=color, title=title, url=url)
         if description is not None:
             if len(description) < 1500:
                 data.description = description
