@@ -265,7 +265,6 @@ class MCOCMaps:
         self.umcoc = self.bot.get_server('378035654736609280')
         self.catmurdock = self.umcoc.get_member('373128988962586635')
         self.catcorner = 'catmurdock/cat_corner.png'
-        self.basepath = basepath
         # self.menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
 
     @commands.group(pass_context=True, aliases=['aq', ])
