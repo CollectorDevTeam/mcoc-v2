@@ -280,19 +280,19 @@ class MCOCMaps:
             /aq 5"""
         author = ctx.message.author
         embeds = []
-        if maptype in self.cat_map.keys():
+        cat_maps = {
+            '6.1': {'map': ['MAP 6 V1 S1', 'MAP 6 V2 S1'], 'maptitle': '6 Tier 1'},
+            '6.2': {'map': ['MAP 6 V1 S2', 'MAP 6 V2 S2'], 'maptitle': '6 Tier 2'},
+            '6.3': {'map': ['MAP 6 V1 S3', 'MAP 6 V2 S3'], 'maptitle': '6 Tier 3'},
+        }
+        if maptype in cat_maps.keys():
             umcoc = self.bot.get_server('378035654736609280')
             catmurdock = umcoc.get_member('373128988962586635')
-            cat_map = {
-                '6.1': {'map': ['MAP 6 V1 S1', 'MAP 6 V2 S1'], 'maptitle': '6 Tier 1'},
-                '6.2': {'map': ['MAP 6 V1 S2', 'MAP 6 V2 S2'], 'maptitle': '6 Tier 2'},
-                '6.3': {'map': ['MAP 6 V1 S3', 'MAP 6 V2 S3'], 'maptitle': '6 Tier 3'},
-            }
             for i in (0, 1):
-                mapurl = '{}/catmurdock/AQ/{}.png'.format(
+                mapurl = '{}catmurdock/AQ/{}.png'.format(
                     self.basepath, cat_maps[maptype][map])
                 maptitle = 'Alliance Quest {} :smiley_cat::sparkles:| Variation {}'.format(
-                    self.cat_maps[maptype]['maptitle'], i+1)
+                    cat_maps[maptype]['maptitle'], i+1)
                 data = discord.Embed(
                     color=discord.Color.gold(), title=maptitle, url=PATREON)
                 data.set_image(url=mapurl)
@@ -437,7 +437,7 @@ class MCOCMaps:
             await send_cmd_help(ctx)
 
     @maps.command(pass_context=True, aliases=('aw', 'war'))
-    async def warmap(self, ctx, *, map=None):
+    async def warmap(self, ctx, *, tier=None):
         """Alliance War Maps by Cat Murdock:
         Challenger
         Intermediate
@@ -445,34 +445,34 @@ class MCOCMaps:
         Expert
         """
         warmaps = {
-            'challenger': '/catmurdock/aw/AW S19 Challenger Map.png',
-            'expert': '/catmurdock/aw/AW S19 Expert Map.png',
-            'hard': '/catmurdock/aw/AW S19 Hard Map.png',
-            'intermediate': '/catmurdock/aw/AW S19 Intermediate Map.png'
+            'challenger': 'catmurdock/aw/AW S19 Challenger Map.png',
+            'expert': 'catmurdock/aw/AW S19 Expert Map.png',
+            'hard': 'catmurdock/aw/AW S19 Hard Map.png',
+            'intermediate': 'catmurdock/aw/AW S19 Intermediate Map.png'
         }
-        if map is None:
+        if tier is None:
             pages = []
-            for map in ('challenger', 'intermediate', 'hard', 'expert'):
+            for tier in ('challenger', 'intermediate', 'hard', 'expert'):
                 data = CDTEmbed._get_embed(self, ctx)
                 data.title = 'Alliane War {} Map :cat::sparkles:'.format(
-                    map.title())
+                    tier.title())
                 data.set_author(name=self.catmurdock.display_name,
                                 icon_url=self.catmurdock.avatar_url)
                 data.add_field(
                     name='Support Cat', value='[Visit Cat\'s Store](https://www.redbubble.com/people/CatMurdock/explore)')
                 data.set_image(
-                    url='{}/catmurdock/AW/AW S19 {} Map.png'.format(self.basepath, map.title()))
+                    url='{}catmurdock/AW/AW S19 {} Map.png'.format(self.basepath, tier.title()))
                 data.set_thumbnail(url='{}{}'.format(
                     self.basepath, self.catcorner))
                 pages.append(data)
             menu = PagesMenu(self.bot, timeout=30,
                              delete_onX=True, add_pageof=True)
             await menu.menu_start(pages)
-        elif map.lower() in warmaps:
-            mapurl = '{}{}.png'.format(self.basepath, warmaps[map.lower()])
+        elif tier.lower() in warmaps:
+            mapurl = '{}{}.png'.format(self.basepath, warmaps[tier.lower()])
             data = CDTEmbed._get_embed(self, ctx)
             data.title = 'Alliance War {} Map :cat::sparkles:'.format(
-                map.title())
+                tier.title())
             data.set_author(name=self.catmurdock.display_name,
                             icon_url=self.catmurdock.avatar_url)
             data.add_field(
@@ -486,7 +486,7 @@ class MCOCMaps:
         else:
             data = CDTEmbed._get_embed(self, ctx)
             data.title = 'Alliance War Maps :cat::sparkles:'.format(
-                map.title())
+                tier.title())
             data.set_author(name=self.catmurdock.display_name,
                             icon_url=self.catmurdock.avatar_url)
             data.description = 'Currently supporting "Challenger", "Intermediate", "Hard", "Expert"'
@@ -499,17 +499,17 @@ class MCOCMaps:
             await self.bot.send_message(ctx.message.channel, embed=data)
 
     @maps.command(pass_context=True, name='sq', aliases=('story',))
-    async def cat_maps(self, ctx, map=None):
+    async def cat_maps(self, ctx, level=None):
         '''Currently supporting Cat Murdock maps for 6.1 and 6.4'''
         cat_maps = ('6.1.1', '6.1.2', '6.1.3', '6.1.4', '6.1.5', '6.1.6',
                     '6.4.1', '6.4.2', '6.4.3', '6.4.4', '6.4.5', '6.4.6')
-        if map is None:
+        if level is None:
             pages = []
             for map in cat_maps:
                 data = CDTEmbed._get_embed(self, ctx)
                 data.title = 'Act {} Map by :cat::sparkles:'.format(map)
                 data.set_image(
-                    url='{}/catmurdock/SQ/Act {}.png'.format(self.basepath, map))
+                    url='{}catmurdock/SQ/Act {}.png'.format(self.basepath, map))
                 data.set_author(name=self.catmurdock.display_name,
                                 icon_url=self.catmurdock.avatar_url)
                 data.set_thumbnail(url='{}{}'.format(
@@ -520,11 +520,11 @@ class MCOCMaps:
             menu = PagesMenu(self.bot, timeout=30,
                              delete_onX=True, add_pageof=True)
             await menu.menu_start(pages)
-        if map is not None and map in cat_maps:
+        if level is not None and level in cat_maps:
             data = CDTEmbed._get_embed(self, ctx)
-            data.title = 'Act {} Map by :cat::sparkles:'.format(map)
+            data.title = 'Act {} Map by :cat::sparkles:'.format(level)
             data.set_image(
-                url='{}/catmurdock/SQ/{}.png'.format(self.basepath, map))
+                url='{}catmurdock/SQ/{}.png'.format(self.basepath, level))
             data.set_author(name=self.catmurdock.display_name,
                             icon_url=self.catmurdock.avatar_url)
             data.set_thumbnail(url='{}{}'.format(
@@ -683,23 +683,83 @@ class MCOCMaps:
 
     @alliancewar.command(pass_context=True, hidden=False, name="map")
     async def _map(self, ctx, tier='expert'):
-        """Report AW track information."""
-        season = 2
-        # boosts = self.alliancewarboosts
-        # if boosts is not None:
-        # await self.bot.say('DEBUG: boosts.json loaded from alliancewar.com')
-        tiers = {'expert': discord.Color.gold(), 'bosskill': discord.Color.gold(), 'hard': discord.Color.red(), 'challenger': discord.Color.orange(
-        ), 'intermediate': discord.Color.blue(), 'advanced': discord.Color.green(), 'normal': discord.Color.green(), 'easy': discord.Color.green()}
-        if tier.lower() in tiers:
-            mapTitle = 'Alliance War 3.0 {} Map'.format(tier.title())
-            if tier.lower() == 'advanced' or tier.lower() == 'easy':
-                tier = 'normal'
-            mapurl = '{}warmap_3_{}.png'.format(self.basepath, tier.lower())
-            em = discord.Embed(color=tiers[tier], title=mapTitle, url=PATREON)
-            em.set_image(url=mapurl)
-            em.set_footer(text='CollectorDevTeam',
-                          icon_url=self.COLLECTOR_ICON)
-            await self.bot.say(embed=em)
+        """Alliance War Maps by Cat Murdock:
+        Challenger
+        Intermediate
+        Hard
+        Expert
+        """
+        warmaps = {
+            'challenger': 'catmurdock/aw/AW S19 Challenger Map.png',
+            'expert': 'catmurdock/aw/AW S19 Expert Map.png',
+            'hard': 'catmurdock/aw/AW S19 Hard Map.png',
+            'intermediate': 'catmurdock/aw/AW S19 Intermediate Map.png'
+        }
+        if tier is None:
+            pages = []
+            for tier in ('challenger', 'intermediate', 'hard', 'expert'):
+                data = CDTEmbed._get_embed(self, ctx)
+                data.title = 'Alliane War {} Map :cat::sparkles:'.format(
+                    tier.title())
+                data.set_author(name=self.catmurdock.display_name,
+                                icon_url=self.catmurdock.avatar_url)
+                data.add_field(
+                    name='Support Cat', value='[Visit Cat\'s Store](https://www.redbubble.com/people/CatMurdock/explore)')
+                data.set_image(
+                    url='{}catmurdock/AW/AW S19 {} Map.png'.format(self.basepath, tier.title()))
+                data.set_thumbnail(url='{}{}'.format(
+                    self.basepath, self.catcorner))
+                pages.append(data)
+            menu = PagesMenu(self.bot, timeout=30,
+                             delete_onX=True, add_pageof=True)
+            await menu.menu_start(pages)
+        elif tier.lower() in warmaps:
+            mapurl = '{}{}.png'.format(self.basepath, warmaps[tier.lower()])
+            data = CDTEmbed._get_embed(self, ctx)
+            data.title = 'Alliance War {} Map :cat::sparkles:'.format(
+                tier.title())
+            data.set_author(name=self.catmurdock.display_name,
+                            icon_url=self.catmurdock.avatar_url)
+            data.add_field(
+                name='Support Cat', value='[Visit Cat\'s Store](https://www.redbubble.com/people/CatMurdock/explore)')
+            data.set_image(url=mapurl)
+            data.set_thumbnail(url='{}{}'.format(
+                self.basepath, self.catcorner))
+            data.set_footer(text='CollectorDevTeam',
+                            icon_url=self.COLLECTOR_ICON)
+            await self.bot.send_message(ctx.message.channel, embed=data)
+        else:
+            data = CDTEmbed._get_embed(self, ctx)
+            data.title = 'Alliance War Maps :cat::sparkles:'.format(
+                tier.title())
+            data.set_author(name=self.catmurdock.display_name,
+                            icon_url=self.catmurdock.avatar_url)
+            data.description = 'Currently supporting "Challenger", "Intermediate", "Hard", "Expert"'
+            data.add_field(
+                name='Support Cat', value='[Visit Cat\'s Store](https://www.redbubble.com/people/CatMurdock/explore)')
+            data.set_thumbnail(url='{}{}'.format(
+                self.basepath, self.catcorner))
+            data.set_footer(text='CollectorDevTeam',
+                            icon_url=self.COLLECTOR_ICON)
+            await self.bot.send_message(ctx.message.channel, embed=data)
+
+    #     """Report AW track information."""
+    #     season = 2
+    #     # boosts = self.alliancewarboosts
+    #     # if boosts is not None:
+    #     # await self.bot.say('DEBUG: boosts.json loaded from alliancewar.com')
+    #     tiers = {'expert': discord.Color.gold(), 'bosskill': discord.Color.gold(), 'hard': discord.Color.red(), 'challenger': discord.Color.orange(
+    #     ), 'intermediate': discord.Color.blue(), 'advanced': discord.Color.green(), 'normal': discord.Color.green(), 'easy': discord.Color.green()}
+    #     if tier.lower() in tiers:
+    #         mapTitle = 'Alliance War 3.0 {} Map'.format(tier.title())
+    #         if tier.lower() == 'advanced' or tier.lower() == 'easy':
+    #             tier = 'normal'
+    #         mapurl = '{}warmap_3_{}.png'.format(self.basepath, tier.lower())
+    #         em = discord.Embed(color=tiers[tier], title=mapTitle, url=PATREON)
+    #         em.set_image(url=mapurl)
+    #         em.set_footer(text='CollectorDevTeam',
+    #                       icon_url=self.COLLECTOR_ICON)
+    #         await self.bot.say(embed=em)
 
     # @alliancewar.command(pass_context=True, hidden=False, name="path", aliases=('tracks','track','paths'))
     # async def _path_info(self, ctx, track='A', tier = 'expert'):
