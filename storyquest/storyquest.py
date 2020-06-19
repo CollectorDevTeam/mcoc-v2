@@ -450,7 +450,7 @@ class STORYQUEST:
     #     if map is None:
     #         pages = []
     #         for map in cat_maps:
-    #             data=CDTEmbed._get_embed(self, ctx)
+    #             data=CDTEmbed.get_embed(self, ctx)
     #             data.title='Act {} Map by :cat::sparkles:'.format(map)
     #             data.set_image(url=self.globals[map]['chapter_image'])
     #             data.set_author(name=self.catmurdock.display_name,
@@ -462,7 +462,7 @@ class STORYQUEST:
     #                             delete_onX=True, add_pageof=True)
     #         await menu.menu_start(pages)
     #     if map is not None and map in cat_maps:
-    #         data=CDTEmbed._get_embed(self, ctx)
+    #         data=CDTEmbed.get_embed(self, ctx)
     #         data.title='Act {} Map by :cat::sparkles:'.format(map)
     #         data.set_image(url=self.globals[map]['chapter_image'])
     #         data.set_author(name=self.catmurdock.display_name,

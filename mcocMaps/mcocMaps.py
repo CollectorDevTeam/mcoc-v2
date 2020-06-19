@@ -277,7 +277,7 @@ class MCOCMaps:
             await send_cmd_help(ctx)
 
     @maps.command(pass_context=True, name='aq', aliases=('alliancequest',))
-    async def _aq_map(self, ctx, *, maptype: str):
+    async def _aq_map(self, ctx, maptype: str = None):
         """Alliance Quest Maps
             cheatsheet : cheatsheet
             aq maps : 5, 5.1, 5.2, 5.3, 7.1, 7.2, 7.3
@@ -298,17 +298,13 @@ class MCOCMaps:
                     self.basepath, cat_maps[maptype]['map'])
                 maptitle = 'Alliance Quest {} :smiley_cat::sparkles:| Variation {}'.format(
                     cat_maps[maptype]['maptitle'], i+1)
-                data = discord.Embed(
-                    color=discord.Color.gold(), title=maptitle, url=PATREON)
-                data.set_image(url=mapurl)
+                data = CDTEmbed.get_embed(
+                    self, ctx, image=mapurl, thumbnail=self.catcorner, title=maptitle)
                 data.set_author(name=catmurdock.display_name,
                                 icon_url=catmurdock.avatar_url)
-                data.set_footer(text='Requested by {}'.format(
-                    author.display_name), icon_url=author.avatar_url)
                 data.add_field(
                     name='Support Cat', value='[Visit Cat\'s Store](https://www.redbubble.com/people/CatMurdock/explore)')
                 embeds.append(data)
-                data.set_thumbnail(url=self.catcorner)
             menu = PagesMenu(self.bot, timeout=120,
                              delete_onX=True, add_pageof=True)
             await menu.menu_start(pages=embeds)
@@ -321,12 +317,9 @@ class MCOCMaps:
                 maptitle = 'Alliance Quest {} | Variation {}'.format(
                     self.aq_map[maptype]['maptitle'], seven[k])
                 data = discord.Embed(
-                    color=discord.Color.gold(), title=maptitle, url=PATREON)
-                data.set_image(url=mapurl)
+                    color=discord.Color.gold(), title=maptitle, url=PATREON, image=mapurl)
                 data.set_author(name='CollectorDevTeam',
                                 icon_url=self.COLLECTOR_ICON)
-                data.set_footer(text='Requested by {}'.format(
-                    author.display_name), icon_url=author.avatar_url)
                 embeds.append(data)
             menu = PagesMenu(self.bot, timeout=120,
                              delete_onX=True, add_pageof=True)
@@ -337,28 +330,24 @@ class MCOCMaps:
                 self.basepath, self.aq_map[maptype]['map'])
             maptitle = 'Alliance Quest {}'.format(
                 self.aq_map[maptype]['maptitle'])
-            em = discord.Embed(color=discord.Color.gold(),
-                               title=maptitle, url=PATREON)
+            data = CDTEmbed.get_embed(self, ctx, title=maptitle, image=mapurl)
+            # em = discord.Embed(color=discord.Color.gold(),
+            #    title=maptitle, url=PATREON)
             # if 'required' in self.aq_map_tips[maptype]:
             #     em.add_field(name='Required',value=self.aq_map_tips[maptype]['required'])
             if self.aq_map_tips[maptype]['required'] != '':
-                em.add_field(name='Required',
-                             value=self.aq_map_tips[maptype]['required'])
+                data.add_field(name='Required',
+                               value=self.aq_map_tips[maptype]['required'])
             #     em.add_field(name='Suggestions', value=self.aq_map_tips[maptype]['tips'])
-            em.set_image(url=mapurl)
-            em.set_footer(text='CollectorDevTeam',
-                          icon_url=self.COLLECTOR_ICON)
-            embeds.append(em)
+            # em.set_image(url=mapurl)
+            embeds.append(data)
             if 'tips' in self.aq_map_tips[maptype]:
                 mapurl = '{}{}.png'.format(
                     self.basepath, self.aq_map[maptype]['map'])
                 maptitle = 'Alliance Quest {}'.format(
                     self.aq_map[maptype]['maptitle'])
-                em2 = discord.Embed(color=discord.Color.gold(),
-                                    title=maptitle, url=PATREON)
-                em2.set_image(url=mapurl)
-                em2.set_footer(text='CollectorDevTeam',
-                               icon_url=self.COLLECTOR_ICON)
+                em2 = CDTEmbed.get_embed(title=maptitle, image=mapurl)
+
                 if self.aq_map_tips[maptype]['required'] != '':
                     em2.add_field(name='Required',
                                   value=self.aq_map_tips[maptype]['required'])
@@ -398,7 +387,7 @@ class MCOCMaps:
         if tier is None:
             pages = []
             for tier in ('challenger', 'intermediate', 'hard', 'expert'):
-                data = CDTEmbed._get_embed(self, ctx)
+                data = CDTEmbed.get_embed(self, ctx)
                 data.title = 'Alliane War {} Map :cat::sparkles:'.format(
                     tier.title())
                 data.set_author(name=self.catmurdock.display_name,
@@ -415,7 +404,7 @@ class MCOCMaps:
         elif tier.lower() in warmaps:
             mapurl = '{}catmurdock/AW/{}.png'.format(
                 self.basepath, tier.lower())
-            data = CDTEmbed._get_embed(self, ctx)
+            data = CDTEmbed.get_embed(self, ctx)
             data.title = 'Alliance War {} Map :cat::sparkles:'.format(
                 tier.title())
             data.set_author(name=self.catmurdock.display_name,
@@ -428,7 +417,7 @@ class MCOCMaps:
                             icon_url=self.COLLECTOR_ICON)
             await self.bot.send_message(ctx.message.channel, embed=data)
         else:
-            data = CDTEmbed._get_embed(self, ctx)
+            data = CDTEmbed.get_embed(self, ctx)
             data.title = 'Alliance War Maps :cat::sparkles:'.format(
                 tier.title())
             data.set_author(name=self.catmurdock.display_name,
@@ -449,7 +438,7 @@ class MCOCMaps:
         if level is None:
             pages = []
             for map in cat_maps:
-                data = CDTEmbed._get_embed(self, ctx)
+                data = CDTEmbed.get_embed(self, ctx)
                 data.title = 'Act {} Map by :cat::sparkles:'.format(map)
                 data.set_image(
                     url='{}catmurdock/SQ/{}.png'.format(self.basepath, map))
@@ -463,7 +452,7 @@ class MCOCMaps:
                              delete_onX=True, add_pageof=True)
             await menu.menu_start(pages)
         if level is not None and level in cat_maps:
-            data = CDTEmbed._get_embed(self, ctx)
+            data = CDTEmbed.get_embed(self, ctx)
             data.title = 'Act {} Map by :cat::sparkles:'.format(level)
             data.set_image(
                 url='{}catmurdock/SQ/{}.png'.format(self.basepath, level))
@@ -507,23 +496,23 @@ class MCOCMaps:
             await menu.menu_start(pages=pages, page_number=int(maptype))
             # await self.bot.say(embed=em)
 
-    @maps.command(pass_context=True, name='lolteam', aliases=['lolteams', ])
-    async def maps_lolteams(self, ctx, *, team: int = 1):
-        """Highly Effective LOL Teams"""
-        maxkiryu = 5
-        pages = []
-        for i in range(1, maxkiryu+1):
-            imgurl = '{}kiryu{}.png'.format(self.basepath, i)
-            print(imgurl)
-            imgtitle = 'Labyrinth of Legends: Kiryu\'s Teams #{}'.format(i)
-            em = discord.Embed(color=discord.Color.gold(),
-                               title=imgtitle, url=PATREON)
-            em.set_image(url=imgurl)
-            em.set_footer(text='Art: CollectorDevTeam Plan: LabyrinthTeam',)
-            pages.append(em)
-        menu = PagesMenu(self.bot, timeout=120,
-                         delete_onX=True, add_pageof=True)
-        await menu.menu_start(pages=pages, page_number=team-1)
+    # @maps.command(pass_context=True, name='lolteam', aliases=['lolteams', ])
+    # async def maps_lolteams(self, ctx, *, team: int = 1):
+    #     """Highly Effective LOL Teams"""
+    #     maxkiryu = 5
+    #     pages = []
+    #     for i in range(1, maxkiryu+1):
+    #         imgurl = '{}kiryu{}.png'.format(self.basepath, i)
+    #         print(imgurl)
+    #         imgtitle = 'Labyrinth of Legends: Kiryu\'s Teams #{}'.format(i)
+    #         em = discord.Embed(color=discord.Color.gold(),
+    #                            title=imgtitle, url=PATREON)
+    #         em.set_image(url=imgurl)
+    #         em.set_footer(text='Art: CollectorDevTeam Plan: LabyrinthTeam',)
+    #         pages.append(em)
+    #     menu = PagesMenu(self.bot, timeout=120,
+    #                      delete_onX=True, add_pageof=True)
+    #     await menu.menu_start(pages=pages, page_number=team-1)
 
 # Beginning of AllianceWar.com integration
 
@@ -684,7 +673,7 @@ class MCOCMaps:
         if tier is None:
             pages = []
             for tier in ('challenger', 'intermediate', 'hard', 'expert'):
-                data = CDTEmbed._get_embed(self, ctx)
+                data = CDTEmbed.get_embed(self, ctx)
                 data.title = 'Alliane War {} Map :cat::sparkles:'.format(
                     tier.title())
                 data.set_author(name=self.catmurdock.display_name,
@@ -701,7 +690,7 @@ class MCOCMaps:
         elif tier.lower() in warmaps:
             mapurl = '{}catmurdock/AW/{}.png'.format(
                 self.basepath, tier.lower())
-            data = CDTEmbed._get_embed(self, ctx)
+            data = CDTEmbed.get_embed(self, ctx)
             data.title = 'Alliance War {} Map :cat::sparkles:'.format(
                 tier.title())
             data.set_author(name=self.catmurdock.display_name,
@@ -714,7 +703,7 @@ class MCOCMaps:
                             icon_url=self.COLLECTOR_ICON)
             await self.bot.send_message(ctx.message.channel, embed=data)
         else:
-            data = CDTEmbed._get_embed(self, ctx)
+            data = CDTEmbed.get_embed(self, ctx)
             data.title = 'Alliance War Maps :cat::sparkles:'.format(
                 tier.title())
             data.set_author(name=self.catmurdock.display_name,

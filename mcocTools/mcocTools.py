@@ -15,6 +15,8 @@ from selenium.webdriver.common.keys import Keys
 from collections import defaultdict, ChainMap, namedtuple, OrderedDict
 from functools import partial
 from pygsheets.utils import numericise_all, numericise
+from validator_collection import validators, checkers
+import requests
 
 import aiohttp
 import discord
@@ -2401,7 +2403,7 @@ class INSPECTOR:
     @inspect.command(pass_context=True, name='server')
     async def _inspect_server(self, ctx, server_id=None):
         '''Inspect CollectorVerse server for Collector installation compliance'''
-        data = CDTEmbed._get_embed(
+        data = CDTEmbed.get_embed(
             self, ctx, user_id=ctx.message.author.id)
         data.title = 'CollectorDevTeam Inspection:sparkles:'
         if server_id is None:
@@ -2454,7 +2456,7 @@ class INSPECTOR:
                 server = self.bot.get_server(server_id)
             except:
                 server = None
-        data = CDTEmbed._get_embed(
+        data = CDTEmbed.get_embed(
             self, ctx, user_id=ctx.message.author.id)
         data.title = 'CollectorDevTeam Inspector: ROLES:sparkles:'
         if server is not None:
@@ -2479,8 +2481,9 @@ class INSPECTOR:
         for server in servers:
             check = server.get_member(user.id)
             if check is not None:
-                serverlist.append('[{}] {} as {}\n'.format(server.id, server.name, check.display_name))
-        
+                serverlist.append('[{}] {} as {}\n'.format(
+                    server.id, server.name, check.display_name))
+
         if len(serverlist) > 0:
             package = ''.join(serverlist)
             await self.bot.send_message(ctx.message.channel, package)
@@ -2691,8 +2694,14 @@ class CDTEmbed:
     def __init__(self, bot):
         self.bot = bot
 
-    def _get_embed(self, ctx, user_id=None, color=discord.Color.gold()):
-        """Return a color styled embed with no title or description"""
+    def get_embed(self, ctx, user_id=None, color=discord.Color.gold(), title='', description='', image=None, thumbnail=None):
+        '''Return a color styled embed with CDT footer, and optional title or description.
+        user_id = user id string. If none provided, takes message author.
+        color = manual override, otherwise takes gold for private channels, or author color for server.
+        title = String, sets title.
+        description = String, sets description.
+        image = String url.  Validator checks for valid url.
+        thumbnail = String url. Validator checks for valid url.'''
         if user_id is None:
             color = discord.Color.gold()
         elif isinstance(user_id, discord.User):
@@ -2703,10 +2712,22 @@ class CDTEmbed:
             # member = self.bot.get_member(user_id)
             member = discord.utils.get(ctx.message.server.members, id=user_id)
             color = member.color
-        data = discord.Embed(color=color, title='',
-                             description='', url=PATREON)
+        data = discord.Embed(color=color, title=title, url=PATREON)
+        if description is not None:
+            if len(description) < 1500:
+                data.description = description
         data.set_author(name='CollectorVerse:sparkles:',
                         icon_url=COLLECTOR_ICON)
+        if image is not None:
+            validators.url(image)
+            code = requests.get(image).status_code
+            if code == 200:
+                data.set_image(url=image)
+        if thumbnail is not None:
+            validators.url(thumbnail)
+            code = requests.get(thumbnail).status_code
+            if code == 200:
+                data.set_thumbnail(url=thumbnail)
         data.set_footer(text='CollectorDevTeam | Requested by {}'.format(
             ctx.message.author), icon_url=COLLECTOR_ICON)
         return data

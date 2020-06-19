@@ -1378,7 +1378,7 @@ class MCOC(ChampionFactory):
             # self.auntmai.pop(champ.auntmai)
             dataIO.save_json(self.auntmai_file, self.auntmai)
 
-        data = _get_embed(self, ctx, color=champ.class_color)
+        data = get_embed(self, ctx, color=champ.class_color)
         data.title = champ.verbose_str
         data.url = champ.auntmai_url
         data.set_author(name='Signature Ability by Auntm.ai', icon_url=AUNTMAI)
@@ -3279,7 +3279,7 @@ class Champion:
         return '• ' + hex_re.sub(r'**\1**', str_data)
 
 
-def _get_embed(self, ctx, user_id=None, color=discord.Color.gold()):
+def get_embed(self, ctx, user_id=None, color=discord.Color.gold()):
     """Return a color styled embed with no title or description"""
     if user_id is None:
         color = discord.Color.gold()
