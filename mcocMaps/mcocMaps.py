@@ -441,7 +441,7 @@ class MCOCMaps:
             await self.bot.send_message(ctx.message.channel, embed=data)
 
     @maps.command(pass_context=True, name='sq', aliases=('story',))
-    async def maps_storyquest(self, ctx, level=None):
+    async def maps_storyquest(self, ctx, level: str = None):
         '''Currently supporting Cat Murdock maps for 6.1 and 6.4'''
         cat_maps = ('6.1.1', '6.1.2', '6.1.3', '6.1.4', '6.1.5', '6.1.6',
                     '6.4.1', '6.4.2', '6.4.3', '6.4.4', '6.4.5', '6.4.6')
