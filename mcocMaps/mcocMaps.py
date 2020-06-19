@@ -438,7 +438,8 @@ class MCOCMaps:
         if level is None:
             pages = []
             for catmap in cat_maps:
-                mapurl = '{}catmurdock/SQ/{}.png'.format(self.basepath, catmap)
+                mapurl = '{}catmurdock/SQ/sq_{}.png'.format(
+                    self.basepath, catmap)
                 data = CDTEmbed.get_embed(self, ctx, title='Act {} Map :cat::sparkles:'.format(
                     catmap), image=mapurl, thumbnail=self.catcorner)
                 data.set_author(name=self.catmurdock.display_name,
@@ -451,7 +452,7 @@ class MCOCMaps:
             await menu.menu_start(pages)
         elif level is not None and level in cat_maps:
             data = CDTEmbed.get_embed(self, ctx, title='Act {} Map by :cat::sparkles:'.format(
-                level), image='{}catmurdock/SQ/{}.png'.format(self.basepath, level), thumbnail=self.catcorner)
+                level), image='{}catmurdock/SQ/sq_{}.png'.format(self.basepath, level), thumbnail=self.catcorner)
             data.set_author(name=self.catmurdock.display_name,
                             icon_url=self.catmurdock.avatar_url)
             data.add_field(
