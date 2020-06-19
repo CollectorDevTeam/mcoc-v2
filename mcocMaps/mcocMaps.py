@@ -430,13 +430,13 @@ class MCOCMaps:
                          delete_onX=True, add_pageof=True)
         await menu.menu_start(pages=pages, page_number=team-1)
 
-    @commands.group(pass_context=True, aliases=('maps'))
-    async def map(self, ctx):
+    @commands.group(pass_context=True, aliases=('map'))
+    async def maps(self, ctx):
         if ctx.invoked_subcommand is None:
             await send_cmd_help(ctx)
 
     @maps.command(pass_context=True, aliases=('aw', 'war'))
-    async def warmap(self, ctx, *, maptype: str = 'expert'):
+    async def warmap(self, ctx, *, map=None):
         """Alliance War Maps by Cat Murdock:
         Challenger
         Intermediate
@@ -449,16 +449,48 @@ class MCOCMaps:
             'hard': '/catmurdock/aw/AW S19 Hard Map.png',
             'intermediate': '/catmurdock/aw/AW S19 Intermediate Map.png'
         }
-        if maptype.lower() in warmaps:
-            mapurl = '{}{}.png'.format(self.basepath, warmaps[maptype.lower()])
-            mapTitle = 'Alliance War Maps by Cat Murdock :cat::sparkles:'
-            data = discord.Embed(color=discord.Color.gold(),
-                                 title=mapTitle, url=PATREON)
+        if map is None:
+            pages = []
+            for map in ('challenger', 'intermediate', 'hard', 'expert'):
+                data = CDTEmbed._get_embed(self, ctx)
+                data.title = 'Alliane War {} Map :cat::sparkles:'.format(
+                    map.title())
+                data.set_author(name=self.catmurdock.display_name,
+                                icon_url=self.catmurdock.avatar_url)
+                data.add_field(
+                    name='Support Cat', value='[Visit Cat\'s Store](https://www.redbubble.com/people/CatMurdock/explore)')
+                data.set_image(
+                    url='{}/catmurdock/AW/AW S19 {} Map.png'.format(self.basepath, map.title()))
+                data.set_thumbnail(url='{}{}'.format(
+                    self.basepath, self.catcorner))
+                pages.append(data)
+            menu = PagesMenu(self.bot, timeout=30,
+                             delete_onX=True, add_pageof=True)
+            await menu.menu_start(pages)
+        elif map.lower() in warmaps:
+            mapurl = '{}{}.png'.format(self.basepath, warmaps[map.lower()])
+            data = CDTEmbed._get_embed(self, ctx)
+            data.title = 'Alliance War {} Map :cat::sparkles:'.format(
+                map.title())
             data.set_author(name=self.catmurdock.display_name,
                             icon_url=self.catmurdock.avatar_url)
             data.add_field(
                 name='Support Cat', value='[Visit Cat\'s Store](https://www.redbubble.com/people/CatMurdock/explore)')
             data.set_image(url=mapurl)
+            data.set_thumbnail(url='{}{}'.format(
+                self.basepath, self.catcorner))
+            data.set_footer(text='CollectorDevTeam',
+                            icon_url=self.COLLECTOR_ICON)
+            await self.bot.send_message(ctx.message.channel, embed=data)
+        else:
+            data = CDTEmbed._get_embed(self, ctx)
+            data.title = 'Alliance War Maps :cat::sparkles:'.format(
+                map.title())
+            data.set_author(name=self.catmurdock.display_name,
+                            icon_url=self.catmurdock.avatar_url)
+            data.description = 'Currently supporting "Challenger", "Intermediate", "Hard", "Expert"'
+            data.add_field(
+                name='Support Cat', value='[Visit Cat\'s Store](https://www.redbubble.com/people/CatMurdock/explore)')
             data.set_thumbnail(url='{}{}'.format(
                 self.basepath, self.catcorner))
             data.set_footer(text='CollectorDevTeam',
@@ -476,7 +508,7 @@ class MCOCMaps:
                 data = CDTEmbed._get_embed(self, ctx)
                 data.title = 'Act {} Map by :cat::sparkles:'.format(map)
                 data.set_image(
-                    url='{}/catmurdock/SQ/{}.png'.format(self.basepath, map))
+                    url='{}/catmurdock/SQ/Act {}.png'.format(self.basepath, map))
                 data.set_author(name=self.catmurdock.display_name,
                                 icon_url=self.catmurdock.avatar_url)
                 data.set_thumbnail(url='{}{}'.format(
