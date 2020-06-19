@@ -430,7 +430,7 @@ class MCOCMaps:
                          delete_onX=True, add_pageof=True)
         await menu.menu_start(pages=pages, page_number=team-1)
 
-    @commands.group(pass_context=True, aliases=('map'))
+    @commands.group(pass_context=True, aliases=('map',))
     async def maps(self, ctx):
         if ctx.invoked_subcommand is None:
             await send_cmd_help(ctx)
