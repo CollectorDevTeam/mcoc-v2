@@ -2723,11 +2723,17 @@ class CDTEmbed:
             code = requests.get(image).status_code
             if code == 200:
                 data.set_image(url=image)
+            else:
+                print('Image URL Failure, code {}'.format(code))
+                print('Attempted URL:\n{}'.format(image))
         if thumbnail is not None:
             validators.url(thumbnail)
             code = requests.get(thumbnail).status_code
             if code == 200:
                 data.set_thumbnail(url=thumbnail)
+            else:
+                print('Thumbnail URL Failure, code {}'.format(code))
+                print('Attempted URL:\n{}'.format(thumbnail))
         data.set_footer(text='CollectorDevTeam | Requested by {}'.format(
             ctx.message.author), icon_url=COLLECTOR_ICON)
         return data

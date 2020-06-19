@@ -363,11 +363,7 @@ class MCOCMaps:
                     self.basepath, self.aq_map[maptype]['map'])
                 maptitle = 'Alliance Quest {}'.format(
                     self.aq_map[maptype]['maptitle'])
-                em3 = discord.Embed(color=discord.Color.gold(),
-                                    title=maptitle, url=PATREON)
-                em3.set_image(url=mapurl)
-                em3.set_footer(text='CollectorDevTeam',
-                               icon_url=self.COLLECTOR_ICON)
+                em3 = CDTEmbed(title=maptitle, image=mapurl)
                 for miniboss in self.aq_map_tips[maptype]['miniboss']:
                     em3.add_field(name=miniboss[0], value=miniboss[1])
                 embeds.append(em3)
@@ -387,16 +383,16 @@ class MCOCMaps:
         if tier is None:
             pages = []
             for tier in ('challenger', 'intermediate', 'hard', 'expert'):
-                data = CDTEmbed.get_embed(self, ctx)
-                data.title = 'Alliane War {} Map :cat::sparkles:'.format(
-                    tier.title())
+                data = CDTEmbed.get_embed(self, ctx,
+                                          image='{}catmurdock/AW/{}.png'.format(
+                                              self.basepath, tier),
+                                          thumbnail=self.catcorner,
+                                          title='Alliane War {} Map :cat::sparkles:'.format(
+                                              tier.title()))
                 data.set_author(name=self.catmurdock.display_name,
                                 icon_url=self.catmurdock.avatar_url)
                 data.add_field(
                     name='Support Cat', value='[Visit Cat\'s Store](https://www.redbubble.com/people/CatMurdock/explore)')
-                data.set_image(
-                    url='{}catmurdock/AW/{}.png'.format(self.basepath, tier))
-                data.set_thumbnail(url=self.catcorner)
                 pages.append(data)
             menu = PagesMenu(self.bot, timeout=30,
                              delete_onX=True, add_pageof=True)
@@ -404,30 +400,25 @@ class MCOCMaps:
         elif tier.lower() in warmaps:
             mapurl = '{}catmurdock/AW/{}.png'.format(
                 self.basepath, tier.lower())
-            data = CDTEmbed.get_embed(self, ctx)
-            data.title = 'Alliance War {} Map :cat::sparkles:'.format(
-                tier.title())
+            data = CDTEmbed.get_embed(self, ctx,
+                                      image='{}catmurdock/AW/{}.png'.format(
+                                          self.basepath, tier),
+                                      thumbnail=self.catcorner,
+                                      title='Alliane War {} Map :cat::sparkles:'.format(
+                                          tier.title()))
             data.set_author(name=self.catmurdock.display_name,
                             icon_url=self.catmurdock.avatar_url)
             data.add_field(
                 name='Support Cat', value='[Visit Cat\'s Store](https://www.redbubble.com/people/CatMurdock/explore)')
-            data.set_image(url=mapurl)
-            data.set_thumbnail(url=self.catcorner)
-            data.set_footer(text='CollectorDevTeam',
-                            icon_url=self.COLLECTOR_ICON)
             await self.bot.send_message(ctx.message.channel, embed=data)
         else:
-            data = CDTEmbed.get_embed(self, ctx)
-            data.title = 'Alliance War Maps :cat::sparkles:'.format(
-                tier.title())
+            desc = 'Currently supporting "Challenger", "Intermediate", "Hard", "Expert"'
+            data = CDTEmbed.get_embed(self, ctx, title='Alliance War Maps :cat::sparkles:'.format(
+                tier.title()), thumbnail=self.catcorner, description=desc)
             data.set_author(name=self.catmurdock.display_name,
                             icon_url=self.catmurdock.avatar_url)
-            data.description = 'Currently supporting "Challenger", "Intermediate", "Hard", "Expert"'
             data.add_field(
                 name='Support Cat', value='[Visit Cat\'s Store](https://www.redbubble.com/people/CatMurdock/explore)')
-            data.set_thumbnail(url=self.catcorner)
-            data.set_footer(text='CollectorDevTeam',
-                            icon_url=self.COLLECTOR_ICON)
             await self.bot.send_message(ctx.message.channel, embed=data)
 
     @maps.command(pass_context=True, name='sq', aliases=('story',))
@@ -438,13 +429,10 @@ class MCOCMaps:
         if level is None:
             pages = []
             for map in cat_maps:
-                data = CDTEmbed.get_embed(self, ctx)
-                data.title = 'Act {} Map by :cat::sparkles:'.format(map)
-                data.set_image(
-                    url='{}catmurdock/SQ/{}.png'.format(self.basepath, map))
+                data = CDTEmbed.get_embed(self, ctx, title='Act {} Map by :cat::sparkles:'.format(
+                    map), image='{}catmurdock/SQ/{}.png'.format(self.basepath, map), thumbnail=self.catcorner)
                 data.set_author(name=self.catmurdock.display_name,
                                 icon_url=self.catmurdock.avatar_url)
-                data.set_thumbnail(url=self.catcorner)
                 data.add_field(
                     name='Support Cat', value='[Visit Cat\'s Store](https://www.redbubble.com/people/CatMurdock/explore)')
                 pages.append(data)
@@ -452,13 +440,10 @@ class MCOCMaps:
                              delete_onX=True, add_pageof=True)
             await menu.menu_start(pages)
         if level is not None and level in cat_maps:
-            data = CDTEmbed.get_embed(self, ctx)
-            data.title = 'Act {} Map by :cat::sparkles:'.format(level)
-            data.set_image(
-                url='{}catmurdock/SQ/{}.png'.format(self.basepath, level))
+            data = CDTEmbed.get_embed(self, ctx, title='Act {} Map by :cat::sparkles:'.format(
+                map), image='{}catmurdock/SQ/{}.png'.format(self.basepath, map), thumbnail=self.catcorner)
             data.set_author(name=self.catmurdock.display_name,
                             icon_url=self.catmurdock.avatar_url)
-            data.set_thumbnail(url=self.catcorner)
             data.add_field(
                 name='Support Cat', value='[Visit Cat\'s Store](https://www.redbubble.com/people/CatMurdock/explore)')
 
@@ -472,25 +457,20 @@ class MCOCMaps:
         if maptype in self.lolmaps:
             pages = []
             for i in range(0, 8):
-                maptitle = 'Labyrinth of Legends: Kiryu\'s {}'.format(
+                maptitle = 'Labyrinth of Legends: {}'.format(
                     self.lolmaps[str(i)]['maptitle'])
                 # , description = '\n'.join(desclist))
-                em = discord.Embed(color=discord.Color.gold(),
-                                   title=maptitle, url=PATREON)
-                mapurl = '{}lolmap{}v3.png'.format(self.basepath, i)
-                em.set_image(url=mapurl)
-                print(mapurl)
+                data = CDTEmbed.get_embed(
+                    self, ctx, title=maptitle, image=mapurl)
                 lanes = self.lollanes[str(i)[0]]
                 # desclist = []
                 for l in lanes:
                     enigma = self.enigmatics[l]
                     print(enigma)
                     # desclist.append('{}\n{}\n\n'.format(enigma[0], enigma[1]))
-                    em.add_field(name='Enigmatic {}'.format(
+                    data.add_field(name='Enigmatic {}'.format(
                         enigma[0]), value=enigma[1])
-                em.set_footer(
-                    text='Art: CollectorDevTeam, Plan: LabyrinthTeam',)
-                pages.append(em)
+                pages.append(data)
             menu = PagesMenu(self.bot, timeout=120,
                              delete_onX=True, add_pageof=True)
             await menu.menu_start(pages=pages, page_number=int(maptype))
