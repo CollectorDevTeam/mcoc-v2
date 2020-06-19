@@ -437,9 +437,10 @@ class MCOCMaps:
                     '6.4.1', '6.4.2', '6.4.3', '6.4.4', '6.4.5', '6.4.6')
         if level is None:
             pages = []
-            for level in cat_maps:
-                data = CDTEmbed.get_embed(self, ctx, title='Act {} Map by :cat::sparkles:'.format(
-                    level), image='{}catmurdock/SQ/{}.png'.format(self.basepath, level), thumbnail=self.catcorner)
+            for catmap in cat_maps:
+                mapurl = '{}catmurdock/SQ/{}.png'.format(self.basepath, catmap)
+                data = CDTEmbed.get_embed(self, ctx, title='Act {} Map :cat::sparkles:'.format(
+                    catmap), image=mapurl, thumbnail=self.catcorner)
                 data.set_author(name=self.catmurdock.display_name,
                                 icon_url=self.catmurdock.avatar_url)
                 data.add_field(
@@ -459,8 +460,8 @@ class MCOCMaps:
             await self.bot.send_message(ctx.message.channel, embed=data)
         else:
             data = CDTEmbed.get_embed(self, ctx, title='Available Story Quest Maps :cat::sparkles:',
-                                      description='6.1: 6.1.1, 6.1.2, 6.1.3, 6.1.4, 6.1.5, 6.1.6\n'
-                                      '6.4: 6.4.1, 6.4.1, 6.4.3, 6.4.4, 6.4.5, 6.4.6',
+                                      description='Act 6.1:\n6.1.1, 6.1.2, 6.1.3, 6.1.4, 6.1.5, 6.1.6\n'
+                                      'Act 6.4:\n6.4: 6.4.1, 6.4.1, 6.4.3, 6.4.4, 6.4.5, 6.4.6',
                                       thumbnail=self.catcorner)
             data.set_author(name=self.catmurdock.display_name,
                             icon_url=self.catmurdock.avatar_url)
