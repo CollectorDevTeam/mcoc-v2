@@ -322,7 +322,7 @@ class MCOCMaps:
                 data.set_author(
                     name='JJW | CollectorDevTeam', icon_url=self.jjw.avatar_url)
                 embeds.append(data)
-            menu = PagesMenu(self.bot, timeout=120,
+            menu = PagesMenu(self.bot, timeout=30,
                              delete_onX=True, add_pageof=True)
             await menu.menu_start(pages=embeds)
             return
@@ -368,7 +368,7 @@ class MCOCMaps:
                 for miniboss in self.aq_map_tips[maptype]['miniboss']:
                     em3.add_field(name=miniboss[0], value=miniboss[1])
                 embeds.append(em3)
-            menu = PagesMenu(self.bot, timeout=120,
+            menu = PagesMenu(self.bot, timeout=30,
                              delete_onX=True, add_pageof=True)
             await menu.menu_start(pages=embeds)
         else:
@@ -476,7 +476,7 @@ class MCOCMaps:
                     data.add_field(name='Enigmatic {}'.format(
                         enigma[0]), value=enigma[1])
                 pages.append(data)
-            menu = PagesMenu(self.bot, timeout=120,
+            menu = PagesMenu(self.bot, timeout=30,
                              delete_onX=True, add_pageof=True)
             await menu.menu_start(pages=pages, page_number=int(maptype))
             # await self.bot.say(embed=em)
@@ -577,7 +577,7 @@ class MCOCMaps:
                 pages.append(em)
                 # await self.bot.say(embed=em)
             if len(pages) > 0:
-                menu = PagesMenu(self.bot, timeout=120,
+                menu = PagesMenu(self.bot, timeout=30,
                                  delete_onX=True, add_pageof=True)
                 await menu.menu_start(pages=pages, page_number=0)
         else:
@@ -967,7 +967,7 @@ class MCOCMaps:
             pages = []
             pages.append(em)
             pages.append(em2)
-            menu = PagesMenu(self.bot, timeout=120,
+            menu = PagesMenu(self.bot, timeout=30,
                              delete_onX=True, add_pageof=True)
             await menu.menu_start(pages=pages)
 
