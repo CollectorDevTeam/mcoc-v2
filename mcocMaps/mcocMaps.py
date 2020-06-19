@@ -459,9 +459,8 @@ class MCOCMaps:
             for i in range(0, 8):
                 maptitle = 'Labyrinth of Legends: {}'.format(
                     self.lolmaps[str(i)]['maptitle'])
-                # , description = '\n'.join(desclist))
                 data = CDTEmbed.get_embed(
-                    self, ctx, title=maptitle, image=mapurl)
+                    self, ctx, title=maptitle, image='{}lolmap{}v3.png'.format(self.basepath, i))
                 lanes = self.lollanes[str(i)[0]]
                 # desclist = []
                 for l in lanes:
