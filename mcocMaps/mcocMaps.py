@@ -264,7 +264,7 @@ class MCOCMaps:
         self.bot = bot
         self.umcoc = self.bot.get_server('378035654736609280')
         self.catmurdock = self.umcoc.get_member('373128988962586635')
-        self.catcorner = 'catmurdock/cat_corner.png'
+        self.catcorner = '{}catmurdock/cat_corner.png'.format(self.basepath)
         # self.menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
 
     @commands.group(pass_context=True, aliases=['aq', ])
@@ -456,8 +456,7 @@ class MCOCMaps:
                     name='Support Cat', value='[Visit Cat\'s Store](https://www.redbubble.com/people/CatMurdock/explore)')
                 data.set_image(
                     url='{}catmurdock/AW/{}.png'.format(self.basepath, tier))
-                data.set_thumbnail(url='{}catmurdock/{}'.format(
-                    self.basepath, self.catcorner))
+                data.set_thumbnail(url=self.catcorner)
                 pages.append(data)
             menu = PagesMenu(self.bot, timeout=30,
                              delete_onX=True, add_pageof=True)
@@ -473,8 +472,7 @@ class MCOCMaps:
             data.add_field(
                 name='Support Cat', value='[Visit Cat\'s Store](https://www.redbubble.com/people/CatMurdock/explore)')
             data.set_image(url=mapurl)
-            data.set_thumbnail(url='{}catmurdock/{}'.format(
-                self.basepath, self.catcorner))
+            data.set_thumbnail(url=self.catcorner)
             data.set_footer(text='CollectorDevTeam',
                             icon_url=self.COLLECTOR_ICON)
             await self.bot.send_message(ctx.message.channel, embed=data)
@@ -487,8 +485,7 @@ class MCOCMaps:
             data.description = 'Currently supporting "Challenger", "Intermediate", "Hard", "Expert"'
             data.add_field(
                 name='Support Cat', value='[Visit Cat\'s Store](https://www.redbubble.com/people/CatMurdock/explore)')
-            data.set_thumbnail(url='{}catmurdock/{}'.format(
-                self.basepath, self.catcorner))
+            data.set_thumbnail(url=self.catcorner)
             data.set_footer(text='CollectorDevTeam',
                             icon_url=self.COLLECTOR_ICON)
             await self.bot.send_message(ctx.message.channel, embed=data)
@@ -504,11 +501,10 @@ class MCOCMaps:
                 data = CDTEmbed._get_embed(self, ctx)
                 data.title = 'Act {} Map by :cat::sparkles:'.format(map)
                 data.set_image(
-                    url='{}catmurdock/SQ/Act {}.png'.format(self.basepath, map))
+                    url='{}catmurdock/SQ/{}.png'.format(self.basepath, map))
                 data.set_author(name=self.catmurdock.display_name,
                                 icon_url=self.catmurdock.avatar_url)
-                data.set_thumbnail(url='{}catmurdock/{}'.format(
-                    self.basepath, self.catcorner))
+                data.set_thumbnail(url=self.catcorner)
                 data.add_field(
                     name='Support Cat', value='[Visit Cat\'s Store](https://www.redbubble.com/people/CatMurdock/explore)')
                 pages.append(data)
@@ -522,8 +518,7 @@ class MCOCMaps:
                 url='{}catmurdock/SQ/{}.png'.format(self.basepath, level))
             data.set_author(name=self.catmurdock.display_name,
                             icon_url=self.catmurdock.avatar_url)
-            data.set_thumbnail(url='{}catmurdock/{}'.format(
-                self.basepath, self.catcorner))
+            data.set_thumbnail(url=self.catcorner)
             data.add_field(
                 name='Support Cat', value='[Visit Cat\'s Store](https://www.redbubble.com/people/CatMurdock/explore)')
 
@@ -697,8 +692,7 @@ class MCOCMaps:
                     name='Support Cat', value='[Visit Cat\'s Store](https://www.redbubble.com/people/CatMurdock/explore)')
                 data.set_image(
                     url='{}catmurdock/AW/{}.png'.format(self.basepath, tier.title()))
-                data.set_thumbnail(url='{}catmurdock/{}'.format(
-                    self.basepath, self.catcorner))
+                data.set_thumbnail(url=self.catcorner)
                 pages.append(data)
             menu = PagesMenu(self.bot, timeout=30,
                              delete_onX=True, add_pageof=True)
@@ -714,8 +708,7 @@ class MCOCMaps:
             data.add_field(
                 name='Support Cat', value='[Visit Cat\'s Store](https://www.redbubble.com/people/CatMurdock/explore)')
             data.set_image(url=mapurl)
-            data.set_thumbnail(url='{}{}'.format(
-                self.basepath, self.catcorner))
+            data.set_thumbnail(url=self.catcorner)
             data.set_footer(text='CollectorDevTeam',
                             icon_url=self.COLLECTOR_ICON)
             await self.bot.send_message(ctx.message.channel, embed=data)
@@ -728,8 +721,7 @@ class MCOCMaps:
             data.description = 'Currently supporting "Challenger", "Intermediate", "Hard", "Expert"'
             data.add_field(
                 name='Support Cat', value='[Visit Cat\'s Store](https://www.redbubble.com/people/CatMurdock/explore)')
-            data.set_thumbnail(url='{}{}'.format(
-                self.basepath, self.catcorner))
+            data.set_thumbnail(url=self.catcorner)
             data.set_footer(text='CollectorDevTeam',
                             icon_url=self.COLLECTOR_ICON)
             await self.bot.send_message(ctx.message.channel, embed=data)
@@ -813,7 +805,7 @@ class MCOCMaps:
 
         """
         sgd = StaticGameData()
-        #print(len(sgd.cdt_data), len(sgd.cdt_masteries), sgd.test)
+        # print(len(sgd.cdt_data), len(sgd.cdt_masteries), sgd.test)
         cm = sgd.cdt_masteries
 
         default = self.NodeParser(scoutargs)
