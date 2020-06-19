@@ -265,7 +265,9 @@ class MCOCMaps:
         self.umcoc = self.bot.get_server('378035654736609280')
         self.catmurdock = self.umcoc.get_member('373128988962586635')
         self.jjw = self.umcoc.get_member('124984294035816448')
-        self.catcorner = '{}catmurdock/cat_corner.png'.format(self.basepath)
+        self.catcorner = '{}catmurdock/cat_corner2.png'.format(self.basepath)
+        self.catsupport(
+            '[Visit Cat\'s Store](https: // www.redbubble.com/people/CatMurdock/explore)\nTwitter [@CatMurdock_art](https://twitter.com/CatMurdock_Art)')
         # self.menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
 
     # @commands.group(pass_context=True, aliases=['aq', ])
@@ -304,7 +306,7 @@ class MCOCMaps:
                 data.set_author(name=catmurdock.display_name,
                                 icon_url=catmurdock.avatar_url)
                 data.add_field(
-                    name='Support Cat', value='[Visit Cat\'s Store](https://www.redbubble.com/people/CatMurdock/explore)')
+                    name='Support Cat', value=self.catsupport)
                 embeds.append(data)
             menu = PagesMenu(self.bot, timeout=120,
                              delete_onX=True, add_pageof=True)
@@ -398,7 +400,7 @@ class MCOCMaps:
                 data.set_author(name=self.catmurdock.display_name,
                                 icon_url=self.catmurdock.avatar_url)
                 data.add_field(
-                    name='Support Cat', value='[Visit Cat\'s Store](https://www.redbubble.com/people/CatMurdock/explore)')
+                    name='Support Cat', value=self.catsupport)
                 pages.append(data)
             menu = PagesMenu(self.bot, timeout=30,
                              delete_onX=True, add_pageof=True)
@@ -415,7 +417,7 @@ class MCOCMaps:
             data.set_author(name=self.catmurdock.display_name,
                             icon_url=self.catmurdock.avatar_url)
             data.add_field(
-                name='Support Cat', value='[Visit Cat\'s Store](https://www.redbubble.com/people/CatMurdock/explore)')
+                name='Support Cat', value=self.catsupport)
             await self.bot.send_message(ctx.message.channel, embed=data)
         else:
             desc = 'Currently supporting \nChallenger\nIntermediate\nHard\nExpert'
@@ -424,7 +426,7 @@ class MCOCMaps:
             data.set_author(name=self.catmurdock.display_name,
                             icon_url=self.catmurdock.avatar_url)
             data.add_field(
-                name='Support Cat', value='[Visit Cat\'s Store](https://www.redbubble.com/people/CatMurdock/explore)')
+                name='Support Cat', value=self.catsupport)
             await self.bot.send_message(ctx.message.channel, embed=data)
 
     @maps.command(pass_context=True, name='sq', aliases=('story',))
@@ -440,7 +442,7 @@ class MCOCMaps:
                 data.set_author(name=self.catmurdock.display_name,
                                 icon_url=self.catmurdock.avatar_url)
                 data.add_field(
-                    name='Support Cat', value='[Visit Cat\'s Store](https://www.redbubble.com/people/CatMurdock/explore)')
+                    name='Support Cat', value=self.catsupport)
                 pages.append(data)
             menu = PagesMenu(self.bot, timeout=30,
                              delete_onX=True, add_pageof=True)
@@ -451,7 +453,7 @@ class MCOCMaps:
             data.set_author(name=self.catmurdock.display_name,
                             icon_url=self.catmurdock.avatar_url)
             data.add_field(
-                name='Support Cat', value='[Visit Cat\'s Store](https://www.redbubble.com/people/CatMurdock/explore)')
+                name='Support Cat', value=self.catsupport)
 
             await self.bot.send_message(ctx.message.channel, embed=data)
 
@@ -664,7 +666,7 @@ class MCOCMaps:
                 data.set_author(name=self.catmurdock.display_name,
                                 icon_url=self.catmurdock.avatar_url)
                 data.add_field(
-                    name='Support Cat', value='[Visit Cat\'s Store](https://www.redbubble.com/people/CatMurdock/explore)')
+                    name='Support Cat', value=self.catsupport)
                 data.set_image(
                     url='{}catmurdock/AW/{}.png'.format(self.basepath, tier.title()))
                 data.set_thumbnail(url=self.catcorner)
@@ -681,7 +683,7 @@ class MCOCMaps:
             data.set_author(name=self.catmurdock.display_name,
                             icon_url=self.catmurdock.avatar_url)
             data.add_field(
-                name='Support Cat', value='[Visit Cat\'s Store](https://www.redbubble.com/people/CatMurdock/explore)')
+                name='Support Cat', value=self.catsupport)
             data.set_image(url=mapurl)
             data.set_thumbnail(url=self.catcorner)
             data.set_footer(text='CollectorDevTeam',
@@ -695,7 +697,7 @@ class MCOCMaps:
                             icon_url=self.catmurdock.avatar_url)
             data.description = 'Currently supporting "Challenger", "Intermediate", "Hard", "Expert"'
             data.add_field(
-                name='Support Cat', value='[Visit Cat\'s Store](https://www.redbubble.com/people/CatMurdock/explore)')
+                name='Support Cat', value=self.catsupport)
             data.set_thumbnail(url=self.catcorner)
             data.set_footer(text='CollectorDevTeam',
                             icon_url=self.COLLECTOR_ICON)
