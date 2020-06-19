@@ -437,9 +437,9 @@ class MCOCMaps:
                     '6.4.1', '6.4.2', '6.4.3', '6.4.4', '6.4.5', '6.4.6')
         if level is None:
             pages = []
-            for map in cat_maps:
+            for level in cat_maps:
                 data = CDTEmbed.get_embed(self, ctx, title='Act {} Map by :cat::sparkles:'.format(
-                    map), image='{}catmurdock/SQ/{}.png'.format(self.basepath, map), thumbnail=self.catcorner)
+                    level), image='{}catmurdock/SQ/{}.png'.format(self.basepath, level), thumbnail=self.catcorner)
                 data.set_author(name=self.catmurdock.display_name,
                                 icon_url=self.catmurdock.avatar_url)
                 data.add_field(
@@ -448,14 +448,23 @@ class MCOCMaps:
             menu = PagesMenu(self.bot, timeout=30,
                              delete_onX=True, add_pageof=True)
             await menu.menu_start(pages)
-        if level is not None and level in cat_maps:
+        elif level is not None and level in cat_maps:
             data = CDTEmbed.get_embed(self, ctx, title='Act {} Map by :cat::sparkles:'.format(
-                map), image='{}catmurdock/SQ/{}.png'.format(self.basepath, map), thumbnail=self.catcorner)
+                level), image='{}catmurdock/SQ/{}.png'.format(self.basepath, level), thumbnail=self.catcorner)
             data.set_author(name=self.catmurdock.display_name,
                             icon_url=self.catmurdock.avatar_url)
             data.add_field(
                 name='Support Cat', value=self.catsupport)
 
+            await self.bot.send_message(ctx.message.channel, embed=data)
+        else:
+            data = CDTEmbed.get_embed(self, ctx, title='Available Story Quest Maps :cat::sparkles:',
+                                      description='6.1: 6.1.1, 6.1.2, 6.1.3, 6.1.4, 6.1.5, 6.1.6\n'
+                                      '6.4: 6.4.1, 6.4.1, 6.4.3, 6.4.4, 6.4.5, 6.4.6',
+                                      thumbnail=self.catcorner)
+            data.set_author(name=self.catmurdock.display_name,
+                            icon_url=self.catmurdock.avatar_url)
+            data.add_field(name="Want more?", value=self.catsupport)
             await self.bot.send_message(ctx.message.channel, embed=data)
 
     @maps.command(pass_context=True, name='lol', aliases=['lab', ])
