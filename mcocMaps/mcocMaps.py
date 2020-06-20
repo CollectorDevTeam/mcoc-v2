@@ -7,7 +7,7 @@ import os
 import requests
 import re
 import json
-from .utils.dataIO import dataIO
+# from .utils.dataIO import dataIO
 from discord.ext import commands
 from __main__ import send_cmd_help
 from cogs.mcocTools import (CDTEmbed,
@@ -59,10 +59,6 @@ class MCOCMaps:
         '5.1': {'map': 's5aq51', 'maptitle': '5 Tier 1'},
         '5.2': {'map':  's5aq52', 'maptitle': '5 Tier 2'},
         '5.3': {'map': 's5aq53', 'maptitle': '5 Tier 3'},
-        # '6': {'map': 's7aq6v4', 'maptitle': '6'},
-        # '6.1': {'map': 's7aq61v2', 'maptitle': '6 Tier 1'},
-        # '6.2': {'map':  's7aq62v2', 'maptitle': '6 Tier 2'},
-        # '6.3': {'map': 's7aq63v2', 'maptitle': '6 Tier 3'},
         '7': {'map': 's7aq7', 'maptitle': '7'},
         '7.1': {'map': 's7aq71', 'maptitle': '7 Tier 1'},
         '7.2': {'map':  's7aq72', 'maptitle': '7 Tier 2'},
@@ -269,11 +265,6 @@ class MCOCMaps:
             self.basepath)
         self.catsupport = 'Visit Cat\'s [Store](https://www.redbubble.com/people/CatMurdock/explore)\n'\
             '<:twitter:548637190587154432>[@CatMurdock_art](https://twitter.com/CatMurdock_Art)'
-        # self.menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
-
-    # @commands.group(pass_context=True, aliases=['aq', ])
-    # async def alliancequest(self, ctx):
-    #     """Alliance Quest Commands [WIP]"""
 
     @commands.group(pass_context=True, aliases=('map',))
     async def maps(self, ctx):
@@ -493,27 +484,14 @@ class MCOCMaps:
             menu = PagesMenu(self.bot, timeout=30,
                              delete_onX=True, add_pageof=True)
             await menu.menu_start(pages=pages, page_number=int(maptype))
-            # await self.bot.say(embed=em)
-
-    # @maps.command(pass_context=True, name='lolteam', aliases=['lolteams', ])
-    # async def maps_lolteams(self, ctx, *, team: int = 1):
-    #     """Highly Effective LOL Teams"""
-    #     maxkiryu = 5
-    #     pages = []
-    #     for i in range(1, maxkiryu+1):
-    #         imgurl = '{}kiryu{}.png'.format(self.basepath, i)
-    #         print(imgurl)
-    #         imgtitle = 'Labyrinth of Legends: Kiryu\'s Teams #{}'.format(i)
-    #         em = discord.Embed(color=discord.Color.gold(),
-    #                            title=imgtitle, url=PATREON)
-    #         em.set_image(url=imgurl)
-    #         em.set_footer(text='Art: CollectorDevTeam Plan: LabyrinthTeam',)
-    #         pages.append(em)
-    #     menu = PagesMenu(self.bot, timeout=120,
-    #                      delete_onX=True, add_pageof=True)
-    #     await menu.menu_start(pages=pages, page_number=team-1)
+            # await self.bot.send_message(ctx.message.channel, embed=em)
 
 # Beginning of AllianceWar.com integration
+
+class AWScout:
+    
+    def __init__(self, bot):
+        self.bot = bot
 
     @commands.command(pass_context=True, hidden=True)
     async def boost_info(self, ctx, boost):
@@ -521,7 +499,7 @@ class MCOCMaps:
         # boosts = alliancewarboosts
         keys = boosts.keys()
         if boost not in keys:
-            await self.bot.say('Available boosts:\n'+'\n'.join(k for k in keys))
+            await self.bot.send_message(ctx.message.channel, 'Available boosts:\n'+'\n'.join(k for k in keys))
         else:
             info = boosts[boost]
             # img = '{}/global/ui/images/booster/{}.png'.format(JPAGS, info['img'])
@@ -535,7 +513,7 @@ class MCOCMaps:
             em.add_field(name=title, value=text)
             em.set_footer(icon_url=JPAGS+'/aw/images/app_icon.jpg',
                           text='AllianceWar.com')
-            await self.bot.say(embed=em)
+            await self.bot.send_message(ctx.message.channel, embed=em)
 
     @commands.group(pass_context=True, aliases=['aw', ])
     async def alliancewar(self, ctx):
@@ -559,7 +537,7 @@ class MCOCMaps:
                         tier.title(), rank), description=cdt_sr['{}{}'.format(tier, r)]['rewards'])
 
         else:
-            await self.bot.say('Valid tiers: Master\nPlatinum\nGold\nSilver\nBronze\nStone\nParticipation')
+            await self.bot.send_message(ctx.message.channel, 'Valid tiers: Master\nPlatinum\nGold\nSilver\nBronze\nStone\nParticipation')
 
     @alliancewar.command(pass_context=True, hidden=False, name="node")
     async def _node_info(self, ctx, node, tier='expert'):
@@ -569,9 +547,9 @@ class MCOCMaps:
         if tier in self.aw_maps.keys():
             print('aw_node req: {} {}'.format(node, tier))
             em = await self.get_awnode_details(ctx=ctx, nodeNumber=int(node), tier=tier)
-            await self.bot.say(embed=em)
+            await self.bot.send_message(ctx.message.channel, embed=em)
         else:
-            await self.bot.say('Valid tiers include: {}'.format(', '.join(self.aw_maps.keys())))
+            await self.bot.send_message(ctx.message.channel, 'Valid tiers include: {}'.format(', '.join(self.aw_maps.keys())))
 
     @alliancewar.command(pass_context=True, hidden=False, name="nodes")
     async def _nodes_info(self, ctx, tier: str, *, nodes):
@@ -589,13 +567,13 @@ class MCOCMaps:
                     self.basepath, tier.lower())
                 em.set_image(url=mapurl)
                 pages.append(em)
-                # await self.bot.say(embed=em)
+                # await self.bot.send_message(ctx.message.channel, embed=em)
             if len(pages) > 0:
                 menu = PagesMenu(self.bot, timeout=30,
                                  delete_onX=True, add_pageof=True)
                 await menu.menu_start(pages=pages, page_number=0)
         else:
-            await self.bot.say('Valid tiers include: {}'.format(', '.join(self.aw_maps.keys())))
+            await self.bot.send_message(ctx.message.channel, 'Valid tiers include: {}'.format(', '.join(self.aw_maps.keys())))
 
     async def get_awnode_details(self, ctx, nodeNumber, tier, em: discord.Embed = None):
         # boosts = self.alliancewarboosts
@@ -610,7 +588,7 @@ class MCOCMaps:
             tier = 'advanced'
         pathdata = self.aw_maps[tier]
         # if paths is not None:
-        # await self.bot.say('DEBUG: 9path.json loaded from alliancewar.com')
+        # await self.bot.send_message(ctx.message.channel, 'DEBUG: 9path.json loaded from alliancewar.com')
         if int(nodeNumber) in tiers[tier]['minis']:
             title = '{} MINIBOSS Node {} Boosts'.format(
                 tier.title(), nodeNumber)
@@ -715,50 +693,8 @@ class MCOCMaps:
                             icon_url=self.COLLECTOR_ICON)
             await self.bot.send_message(ctx.message.channel, embed=data)
 
-    #     """Report AW track information."""
-    #     season = 2
-    #     # boosts = self.alliancewarboosts
-    #     # if boosts is not None:
-    #     # await self.bot.say('DEBUG: boosts.json loaded from alliancewar.com')
-    #     tiers = {'expert': discord.Color.gold(), 'bosskill': discord.Color.gold(), 'hard': discord.Color.red(), 'challenger': discord.Color.orange(
-    #     ), 'intermediate': discord.Color.blue(), 'advanced': discord.Color.green(), 'normal': discord.Color.green(), 'easy': discord.Color.green()}
-    #     if tier.lower() in tiers:
-    #         mapTitle = 'Alliance War 3.0 {} Map'.format(tier.title())
-    #         if tier.lower() == 'advanced' or tier.lower() == 'easy':
-    #             tier = 'normal'
-    #         mapurl = '{}warmap_3_{}.png'.format(self.basepath, tier.lower())
-    #         em = discord.Embed(color=tiers[tier], title=mapTitle, url=PATREON)
-    #         em.set_image(url=mapurl)
-    #         em.set_footer(text='CollectorDevTeam',
-    #                       icon_url=self.COLLECTOR_ICON)
-    #         await self.bot.say(embed=em)
-
-    # @alliancewar.command(pass_context=True, hidden=False, name="path", aliases=('tracks','track','paths'))
-    # async def _path_info(self, ctx, track='A', tier = 'expert'):
-    #     """Report AW track information."""
-    #     season = 2
-    #     tiers = {'expert':discord.Color.gold(),'hard':discord.Color.red(),'challenger':discord.Color.orange(),'intermediate':discord.Color.blue(),'advanced':discord.Color.green()}
-    #     tracks = {'A':1,'B':2,'C':3,'D':4,'E':5,'F':6,'G':7,'H':8,'I':9}
-    #
-    #     if tier not in tiers:
-    #         tier = 'advanced'
-    #     pathdata= self.aw_maps[tier]
-    #     pages = []
-    #     for t in tracks:
-    #         em = discord.Embed(color=tiers[tier], title='{} Alliance War Path {}'.format(tier.title(), track), descritpion='', url=JPAGS)
-    #         em.add_field(name='node placeholder',value='boosts placeholders')
-    #         em.add_field(name='node placeholder',value='boosts placeholders')
-    #         em.add_field(name='node placeholder',value='boosts placeholders')
-    #         mapurl = '{}warmap_3_{}.png'.format(self.basepath,tier.lower())
-    #         em.set_image(url=mapurl)
-    #         em.set_footer(icon_url=JPAGS+'/aw/images/app_icon.jpg',text='AllianceWar.com')
-    #         pages.append(em)
-    #
-    #     menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
-        # await menu.menu_start(ctx=ctx, pages=pages, timeout=60, page_number=tracks[track]-1)
-
-    @alliancewar.command(pass_context=False, hidden=False, name="tiers", aliases=['tier'])
-    async def _tiers(self):
+    @alliancewar.command(pass_context=True, hidden=False, name="tiers", aliases=['tier'])
+    async def _tiers(self, ctx):
         """List Alliance War Tiers"""
         aw_tiers = self.aw_tiers
         # name = '\u200b'
@@ -776,7 +712,7 @@ class MCOCMaps:
         em.add_field(name=name, value='```{}```'.format(v))
         # em.add_field(name=name, value=chat.box(v), inline=False)
         em.set_footer(text='CollectorDevTeam', icon_url=self.COLLECTOR_ICON)
-        await self.bot.say(embed=em)
+        await self.bot.send_message(ctx.message.channel, embed=em)
 
     @alliancewar.command(pass_context=True, hidden=False, name="scout")
     async def _scout(self, ctx, *, scoutargs):
@@ -824,9 +760,9 @@ class MCOCMaps:
         em2.set_footer(
             text='CollectorDevTeam + JM\'s Scouter Lens Bot', icon_url=self.COLLECTOR_ICON)
         if len(package) > 0:
-            # await self.bot.say('scoutlens testing')
+            # await self.bot.send_message(ctx.message.channel, 'scoutlens testing')
             em.description = '\n'.join(package)
-            await self.bot.say(embed=em)
+            await self.bot.send_message(ctx.message.channel, embed=em)
             return
         else:
             # response = [{'champ':'4-electro-5','class':'science','masteries':{'v':1, 'gv':1,'s':1, 'gs':1, 'gc':1, 'lcde':0}},{'champ':'4-diablo-5','class':'mystic','masteries':{'v':1, 'gv':1,'s':1, 'gs':1, 'gc':1, 'lcde':0}}]
@@ -884,7 +820,7 @@ class MCOCMaps:
                 em.add_field(name='Transmitting:', value=json.dumps(data))
                 em.add_field(name='Scout API Error & Debug',
                              value=str(response['error']))
-                await self.bot.say(embed=em)
+                await self.bot.send_message(ctx.message.channel, embed=em)
                 return
             elif default['debug'] == 1:
                 if fringe is not None:
@@ -897,7 +833,7 @@ class MCOCMaps:
                 if fringe is not None:
                     em.add_field(name='Fringe check', value=fringe)
                 em.add_field(name='Scout API Error', value='unknown error')
-                await self.bot.say(embed=em)
+                await self.bot.send_message(ctx.message.channel, embed=em)
                 return
             else:
                 desc1 = []
@@ -985,7 +921,7 @@ class MCOCMaps:
                              delete_onX=True, add_pageof=True)
             await menu.menu_start(pages=pages)
 
-            # await self.bot.say(embed=em)
+            # await self.bot.send_message(ctx.message.channel, embed=em)
 
     def NodeParser(self, nargs):
         # bounderies around all matches (N34T4 not allowed)
@@ -1073,22 +1009,8 @@ class MCOCMaps:
         attrs['rank'] = int(champ[-1])
         champion = await ChampConverter.get_champion(self, self.bot, token, attrs)
 
-        # token = '{0}★{1}r{2}'.format(
-        #     # self.class_emoji[champ_class], // don't need this
-        #     champ[0], #star
-        #     champ[2:-2], #name
-        #     champ[-1] # rank
-        # )
-        # champion = await ChampConverter.convert(self, token)
-
         print('champ: '+champion.verbose_str)
         return champion
-
-    # async def jm_parse_champ_filter(self, champ_filter):
-    #     star_filter = ''.join(ch for ch in champ_filter if ch.isdigit())
-    #     champ_filter = ''.join(ch for ch in champ_filter if ch.isalpha())
-    #     return star_filter, champ_filter
-
 
 def setup(bot):
     bot.add_cog(MCOCMaps(bot))
