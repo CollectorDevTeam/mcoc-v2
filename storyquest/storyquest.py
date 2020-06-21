@@ -12,11 +12,11 @@ from collections import defaultdict, ChainMap, namedtuple, OrderedDict
 
 from discord.ext import commands
 from __main__ import send_cmd_help
-from mcocTools import (StaticGameData, PagesMenu, KABAM_ICON, CDTEmbed,
+from .mcocTools import (StaticGameData, PagesMenu, KABAM_ICON, CDTEmbed,
                             COLLECTOR_ICON, CDTHelperFunctions, GSHandler, CDT_COLORS)
-from mcocTools import (SearchExpr, P0Expr, ParenExpr, SearchNumber, SearchPhrase,
+from .mcocTools import (SearchExpr, P0Expr, ParenExpr, SearchNumber, SearchPhrase,
                             ExplicitKeyword, SearchNumber, SearchWord, SearchPhrase)  # search stuff
-from mcoc import ChampConverter, ChampConverterDebug, Champion
+from .mcoc import ChampConverter, ChampConverterDebug, Champion
 
 GSHEET_ICON = 'https://d2jixqqjqj5d23.cloudfront.net/assets/developer/imgs/icons/google-spreadsheet-icon.png'
 ACT6_SHEET = 'https://docs.google.com/spreadsheets/d/1xTw37M_fwYClNfgvi7-09M6MLIcgMziTfM5_MGbAs0Q/view'
