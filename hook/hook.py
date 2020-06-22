@@ -2,7 +2,7 @@ import discord
 from datetime import datetime, timedelta
 from discord.ext import commands
 from cogs.mcoc import (ChampConverter, ChampConverterMult,
-                  QuietUserError, override_error_handler)
+                       QuietUserError, override_error_handler)
 from .utils.dataIO import dataIO
 from .utils.dataIO import fileIO
 from .utils import checks
@@ -22,40 +22,45 @@ import csv
 import aiohttp
 import re
 import asyncio
-### Monkey Patch of JSONEncoder
+# Monkey Patch of JSONEncoder
 from json import JSONEncoder, dump, dumps
 from cogs.mcocTools import (StaticGameData, PagesMenu,
-            KABAM_ICON, COLLECTOR_ICON, COLLECTOR_FEATURED, CDTHelperFunctions,
-            GSHandler, GSExport, CDT_COLORS)
+                            KABAM_ICON, COLLECTOR_ICON, COLLECTOR_FEATURED, CDTHelperFunctions,
+                            GSHandler, GSExport, CDT_COLORS)
 
 
 logger = logging.getLogger('red.roster')
 logger.setLevel(logging.INFO)
 
+
 def _default(self, obj):
     return getattr(obj.__class__, "to_json", _default.default)(obj)
 
-PRESTIGE_SURVEY='https://docs.google.com/forms/d/e/1FAIpQLSeo3YhZ70PQ4t_I4i14jX292CfBM8DMb5Kn2API7O8NAsVpRw/viewform?usp=sf_link'
-GITHUB_ICON='http://www.smallbutdigital.com/static/media/twitter.png'
-HOOK_URL='http://hook.github.io/champions/#/roster'
-COLLECTOR_ICON='https://raw.githubusercontent.com/CollectorDevTeam/assets/master/data/images/portraits/collector.png'
-GSHEET_ICON='https://d2jixqqjqj5d23.cloudfront.net/assets/developer/imgs/icons/google-spreadsheet-icon.png'
+
+PRESTIGE_SURVEY = 'https://docs.google.com/forms/d/e/1FAIpQLSeo3YhZ70PQ4t_I4i14jX292CfBM8DMb5Kn2API7O8NAsVpRw/viewform?usp=sf_link'
+GITHUB_ICON = 'http://www.smallbutdigital.com/static/media/twitter.png'
+HOOK_URL = 'http://hook.github.io/champions/#/roster'
+COLLECTOR_ICON = 'https://raw.githubusercontent.com/CollectorDevTeam/assets/master/data/images/portraits/collector.png'
+GSHEET_ICON = 'https://d2jixqqjqj5d23.cloudfront.net/assets/developer/imgs/icons/google-spreadsheet-icon.png'
 PATREON = 'https://patreon.com/collectorbot'
 AUNTMAI = 'https://raw.githubusercontent.com/CollectorDevTeam/assets/master/data/images/AuntMai_Tile_Center.png'
 
 
 _default.default = JSONEncoder().default  # Save unmodified default.
-JSONEncoder.default = _default # replacemente
-### Done with patch
-#class CustomEncoder(JSONEncoder):
+JSONEncoder.default = _default  # replacemente
+# Done with patch
+# class CustomEncoder(JSONEncoder):
 #    def default(self, obj):
 #        return getattr(obj.__class__, "to_json", JSONEncoder.default)(obj)
+
 
 class MissingRosterError(QuietUserError):
     pass
 
+
 class MisorderedArgumentError(QuietUserError):
     pass
+
 
 class HashtagRosterConverter(commands.Converter):
     async def convert(self):
@@ -75,20 +80,24 @@ class HashtagRosterConverter(commands.Converter):
         chmp_rstr = ChampionRoster(self.ctx.bot, user)
         await chmp_rstr.load_champions()
         if not chmp_rstr:
-            menu = PagesMenu(self.ctx.bot, timeout=120, delete_onX=True, add_pageof=True)
+            menu = PagesMenu(self.ctx.bot, timeout=120,
+                             delete_onX=True, add_pageof=True)
             #hook = Hook(self.ctx.bot)
             try:
-                color=user.color
+                color = user.color
             except:
                 color = discord.Color.gold()
             embeds = await Hook.roster_kickback(color)
             await menu.menu_start(pages=embeds)
 
-            raise MissingRosterError('No Roster found for {}'.format(user.name))
+            raise MissingRosterError(
+                'No Roster found for {}'.format(user.name))
         return types.SimpleNamespace(tags=tags, roster=chmp_rstr)
+
 
 class HashtagRankConverter(commands.Converter):
     parse_re = ChampConverter.parse_re
+
     async def convert(self):
         tags = set()
         attrs = {}
@@ -122,6 +131,7 @@ class RosterUserConverter(commands.Converter):
         await chmp_rstr.load_champions()
         return chmp_rstr
 
+
 class RosterConverter(commands.Converter):
     async def convert(self):
         chmp_rstr = ChampionRoster(self.ctx.bot, self.ctx.message.author)
@@ -134,7 +144,8 @@ class ChampionRoster:
     _data_dir = 'data/hook/users/{}/'
     _champs_file = _data_dir + 'champs.json'
     #champ_str = '{0.star}{0.star_char} {0.full_name} r{0.rank} s{0.sig:<2} [ {0.prestige} ]'
-    attr_map = {'Rank': 'rank', 'Awakened': 'sig', 'Stars': 'star', 'Role': 'quest_role'}
+    attr_map = {'Rank': 'rank', 'Awakened': 'sig',
+                'Stars': 'star', 'Role': 'quest_role'}
     alliance_map = {'alliance-war-defense': 'awd',
                     'alliance-war-attack': 'awo',
                     'alliance-quest': 'aq'}
@@ -149,7 +160,7 @@ class ChampionRoster:
         self.previous_hargs = None
         self._create_user()
         self._cache = {}
-        #self.load_champions()
+        # self.load_champions()
         if self.is_bot and not is_filtered:
             self.autofill_bot_user(attrs)
 
@@ -167,7 +178,8 @@ class ChampionRoster:
         elif isinstance(other, set):
             return self.ids_set(), other
         else:
-            raise TypeError("Roster operations can't handle type {}".format(type(other)))
+            raise TypeError(
+                "Roster operations can't handle type {}".format(type(other)))
 
     def __sub__(self, other):
         s_ids, o_ids = self._normalize_ids(other)
@@ -191,15 +203,15 @@ class ChampionRoster:
         self.from_list(rlist)
         #self.display_override = 'Prestige Listing: {0.attrs_str}'.format(rlist[0])
 
-
     # handles user creation, adding new server, blocking
+
     def _create_user(self):
         if not os.path.exists(self.champs_file):
             if not os.path.exists(self.data_dir):
                 os.makedirs(self.data_dir)
             champ_data = {
-                #"clan": None,
-                #"battlegroup": None,
+                # "clan": None,
+                # "battlegroup": None,
                 "fieldnames": ["Id", "Stars", "Rank", "Level", "Awakened", "Pi", "Role"],
                 "roster": [],
                 "prestige": 0,
@@ -210,11 +222,10 @@ class ChampionRoster:
                 "max5": [],
             }
             dataIO.save_json(self.champs_file, champ_data)
-            #self.save_champ_data(champ_data)
+            # self.save_champ_data(champ_data)
 
-    #handles user deletion
+    # handles user deletion
     # def _delete_user(self):
-        
 
     async def load_champions(self, silent=False):
         data = self.load_champ_data()
@@ -236,8 +247,8 @@ class ChampionRoster:
 
     def save_champ_data(self):
         #print(dumps(self, cls=CustomEncoder))
-        #with open(self.champs_file.format(self.user.id), 'w') as fp:
-            #dump(self, fp, indent=2, cls=CustomEncoder)
+        # with open(self.champs_file.format(self.user.id), 'w') as fp:
+        #dump(self, fp, indent=2, cls=CustomEncoder)
         dataIO.save_json(self.champs_file, self)
 
     def to_json(self):
@@ -246,7 +257,7 @@ class ChampionRoster:
         pack = {i: getattr(self, i) for i in translate}
         pack['roster'] = list(self.roster.values())
         return pack
-        #return {i: getattr(self, i) for i in translate}
+        # return {i: getattr(self, i) for i in translate}
 
     @property
     def data_dir(self):
@@ -259,7 +270,7 @@ class ChampionRoster:
     @property
     def embed_display(self):
         if self.user is self.bot.user:
-            #should be safe to just grab the first one since bot rosters are uniform
+            # should be safe to just grab the first one since bot rosters are uniform
             champ = list(self.roster.values())[0]
             return 'Listing ({} champs): {}'.format(len(self), champ.attrs_str)
         else:
@@ -267,7 +278,7 @@ class ChampionRoster:
 
     async def get_champion(self, cdict):
         mcoc = self.bot.get_cog('MCOC')
-        champ_attr = {v: cdict[k] for k,v in self.attr_map.items()}
+        champ_attr = {v: cdict[k] for k, v in self.attr_map.items()}
         return await mcoc.get_champion(cdict['Id'], champ_attr)
 
     async def filter_champs(self, tags):
@@ -275,7 +286,8 @@ class ChampionRoster:
             return self
         residual_tags = tags - self.all_tags
         if residual_tags:
-            em = discord.Embed(title='Unused tags', description=' '.join(residual_tags))
+            em = discord.Embed(title='Unused tags',
+                               description=' '.join(residual_tags))
             await self.bot.say(embed=em)
         filtered = self.raw_filtered_ids(tags)
         return self.filtered_roster_from_ids(filtered)
@@ -291,7 +303,7 @@ class ChampionRoster:
     def filtered_roster_from_ids(self, filtered, hargs=None):
         hargs = hargs if hargs else self.previous_hargs
         filt_roster = ChampionRoster(self.bot, self.user, is_filtered=True,
-                            hargs=hargs)
+                                     hargs=hargs)
         filt_roster.roster = {iid: self.roster[iid] for iid in filtered}
         return filt_roster
 
@@ -320,7 +332,7 @@ class ChampionRoster:
     def _get_five(self, key):
         if self._cache.get(key, None) is None:
             champs = sorted(self.roster.values(), key=attrgetter(key),
-                        reverse=True)
+                            reverse=True)
             if len(champs) > 0 and len(champs) <= 5:
                 denom = len(champs)
             else:
@@ -335,8 +347,8 @@ class ChampionRoster:
             async with session.get(attachment['url']) as response:
                 file_txt = await response.text()
         #dialect = csv.Sniffer().sniff(file_txt[:1024])
-        cr = csv.DictReader(file_txt.split('\n'), #dialect,
-                quoting=csv.QUOTE_NONE)
+        cr = csv.DictReader(file_txt.split('\n'),  # dialect,
+                            quoting=csv.QUOTE_NONE)
         missing = []
         dupes = []
         for row in cr:
@@ -354,30 +366,32 @@ class ChampionRoster:
 
         if missing:
             await self.bot.send_message(channel, 'Missing hookid for champs: '
-                    + ', '.join(missing))
+                                        + ', '.join(missing))
         if dupes:
             await self.bot.send_message(channel,
-                    'WARNING: Multiple instances of champs in file.  '
-                    + 'Overloading:\n\t'.format(
-                    ', '.join([c.star_name_str for c in dupes])))
+                                        'WARNING: Multiple instances of champs in file.  '
+                                        + 'Overloading:\n\t'.format(
+                                            ', '.join([c.star_name_str for c in dupes])))
 
         em = discord.Embed(title="Updated Champions")
         em.add_field(name='Prestige', value=self.prestige)
         em.add_field(name='Max Prestige', value=self.max_prestige, inline=True)
-        em.add_field(name='Top Champs', value='\n'.join(self.top5), inline=False)
-        em.add_field(name='Max PI Champs', value='\n'.join(self.max5), inline=True)
+        em.add_field(name='Top Champs', value='\n'.join(
+            self.top5), inline=False)
+        em.add_field(name='Max PI Champs',
+                     value='\n'.join(self.max5), inline=True)
 
         self.fieldnames = cr.fieldnames
 
         #champ_data.update({v: [] for v in self.alliance_map.values()})
-        #for champ in champ_data['champs']:
+        # for champ in champ_data['champs']:
         #    if champ['Role'] in self.alliance_map:
         #        champ_data[self.alliance_map[champ['Role']]].append(champ['Id'])
 
         self.save_champ_data()
-        #if mcoc:
+        # if mcoc:
         await self.bot.send_message(channel, embed=em)
-        #else:
+        # else:
         #    await self.bot.send_message(channel, 'Updated Champion Information')
 
     def set_defaults_of(self, champs):
@@ -387,7 +401,7 @@ class ChampionRoster:
                 champ.update_default({'rank': 1, 'sig': 0})
             else:
                 champ.update_default({'rank': self.roster[iid].rank,
-                        'sig': self.roster[iid].sig})
+                                      'sig': self.roster[iid].sig})
 
     def update(self, champs, skip_save=False):
         self.set_defaults_of(champs)
@@ -402,7 +416,7 @@ class ChampionRoster:
                     track['unchanged'].add(champ.verbose_prestige_str)
                 else:
                     track['modified'].add(self.update_str.format(champ,
-                            self.roster[iid].rank_sig_str))
+                                                                 self.roster[iid].rank_sig_str))
             self.roster[iid] = champ
         if not skip_save:
             self.save_champ_data()
@@ -417,7 +431,8 @@ class ChampionRoster:
             if iid in self.roster:
                 old_str = self.roster[iid].rank_sig_str
                 self.roster[iid].inc_dupe()
-                track['modified'].add(self.update_str.format(self.roster[iid], old_str))
+                track['modified'].add(
+                    self.update_str.format(self.roster[iid], old_str))
             else:
                 track['missing'].add(champ.star_name_str)
         self.save_champ_data()
@@ -437,14 +452,16 @@ class ChampionRoster:
         return track
 
     async def warn_missing_roster(self):
-        menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
+        menu = PagesMenu(self.bot, timeout=120,
+                         delete_onX=True, add_pageof=True)
         try:
             color = self.user.color
         except:
             color = discord.Color.gold()
         embeds = await Hook.roster_kickback(color)
         await menu.menu_start(pages=embeds)
-        raise MissingRosterError('No Roster found for {}'.format(self.user.name))
+        raise MissingRosterError(
+            'No Roster found for {}'.format(self.user.name))
 
     async def warn_empty_roster(self, tags=None):
         tags = tags if tags else self.hargs
@@ -453,23 +470,23 @@ class ChampionRoster:
         elif not isinstance(tags, str):
             tags = ' '.join(tags)
         em = discord.Embed(title='User', description=self.user.name,
-                color=discord.Color.gold(), url=PRESTIGE_SURVEY)
+                           color=discord.Color.gold(), url=PRESTIGE_SURVEY)
         em.add_field(name='Tags used filtered to an empty roster',
-                value=tags)
+                     value=tags)
         await self.bot.say(embed=em)
 
     async def display_prestige(self, tags=None):
         em = discord.Embed(title=self.user.display_name+':sparkles:',
-                description=self.embed_display,
-                color=discord.Color.gold(), url=PATREON)
+                           description=self.embed_display,
+                           color=discord.Color.gold(), url=PATREON)
         await self.bot.say(embed=em)
 
     async def display_prestige_delta(self, orig_prestige, tags=None):
         outstr = 'Potential Prestige: {:.0f} -> {:.0f} ({:+.0f} delta)'.format(
-                    orig_prestige, self.prestige, self.prestige - orig_prestige)
+            orig_prestige, self.prestige, self.prestige - orig_prestige)
         em = discord.Embed(title=self.user.display_name+':no_entry:',
-                description=outstr,
-                color=discord.Color.gold(), url=PATREON)
+                           description=outstr,
+                           color=discord.Color.gold(), url=PATREON)
         await self.bot.say(embed=em)
 
     async def display(self, tags=None):
@@ -485,26 +502,29 @@ class ChampionRoster:
             return
 
         strs = [champ.verbose_prestige_str for champ in sorted(filtered, reverse=True,
-                    key=attrgetter('prestige', 'chlgr_rating', 'star', 'klass', 'full_name'))]
+                                                               key=attrgetter('prestige', 'chlgr_rating', 'star', 'klass', 'full_name'))]
         champs_per_page = 15
         for i in range(0, len(strs)+1, champs_per_page):
-            em = discord.Embed(title=user.display_name+':sparkles:', color=discord.Color.gold(), url=PATREON)
+            em = discord.Embed(title=user.display_name+':sparkles:',
+                               color=discord.Color.gold(), url=PATREON)
             # em.set_thumbnail(user.avatar_url)
             em.set_author(name='CollectorDevTeam', icon_url=COLLECTOR_ICON)
             em.set_footer(text='https://auntm.ai | CollectorVerse',
-                    icon_url=AUNTMAI)
+                          icon_url=AUNTMAI)
             page = strs[i:min(i+champs_per_page, len(strs))]
             if not page:
                 break
             em.add_field(name=self.embed_display, inline=False,
-                    value='\n'.join(page))
+                         value='\n'.join(page))
             embeds.append(em)
 
         if len(embeds) == 1:
             await self.bot.say(embed=embeds[0])
         else:
-            menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
+            menu = PagesMenu(self.bot, timeout=120,
+                             delete_onX=True, add_pageof=True)
             await menu.menu_start(pages=embeds)
+
 
 class Hook:
 
@@ -525,48 +545,54 @@ class Hook:
         #self.champ_str = '{0[Stars]}★ R{0[Rank]} S{0[Awakened]:<2} {0[Id]}'
 
     @staticmethod
-    async def roster_kickback(ucolor = discord.Color.gold()):
-        embeds=[]
-        em0=discord.Embed(color=ucolor, title='No Roster detected!',
-                description='There are several methods available to you to create your roster.'
-                    '\nPlease note the paging buttons below to select your instruction set.')
+    async def roster_kickback(ucolor=discord.Color.gold()):
+        embeds = []
+        em0 = discord.Embed(color=ucolor, title='No Roster detected!',
+                            description='There are several methods available to you to create your roster.'
+                            '\nPlease note the paging buttons below to select your instruction set.')
         em0.set_footer(text='CollectorVerse Roster', icon_url=COLLECTOR_ICON)
         embeds.append(em0)
-        em01=discord.Embed(color=ucolor, title='Manual Entry',
-                description='Use the ```/roster add <champs>``` command to submit Champions directly to Collector.\nThis is the most common method to add to your roster, and the method you will use to maintain your roster.\n```/roster del <champs>``` allows you to remove a Champion.\n\nYouTube demo: https://youtu.be/O9Wqn1l2DEg', url='https://youtu.be/O9Wqn1l2DEg')
+        em01 = discord.Embed(color=ucolor, title='Manual Entry',
+                             description='Use the ```/roster add <champs>``` command to submit Champions directly to Collector.\nThis is the most common method to add to your roster, and the method you will use to maintain your roster.\n```/roster del <champs>``` allows you to remove a Champion.\n\nYouTube demo: https://youtu.be/O9Wqn1l2DEg', url='https://youtu.be/O9Wqn1l2DEg')
         em01.set_footer(text='CollectorVerse Roster', icon_url=COLLECTOR_ICON)
         embeds.append(em01)
-        em=discord.Embed(color=ucolor, title='Champion CSV template', url='https://goo.gl/LaFrg7')
-        em.add_field(name='Google Sheet Instructions',value='Save a copy of the template (blue text):\n1. Add 5★ champions you do have.\n2. Delete 4★ champion rows you do not have.\n3. Set Rank = champion rank (1 to 5).\n4. Set Awakened = signature ability level.\n``[4★: 0 to 99 | 5★: 0 to 200]``\n5. Export file as \'champions.csv\'.\n6. Upload to Collector.\n7. Select OK to confirm')
-        em.add_field(name='Prerequisite', value='Google Sheets\n(there is an app for iOS|Android)',inline=False)
+        em = discord.Embed(
+            color=ucolor, title='Champion CSV template', url='https://goo.gl/LaFrg7')
+        em.add_field(name='Google Sheet Instructions',
+                     value='Save a copy of the template (blue text):\n1. Add 5★ champions you do have.\n2. Delete 4★ champion rows you do not have.\n3. Set Rank = champion rank (1 to 5).\n4. Set Awakened = signature ability level.\n``[4★: 0 to 99 | 5★: 0 to 200]``\n5. Export file as \'champions.csv\'.\n6. Upload to Collector.\n7. Select OK to confirm')
+        em.add_field(name='Prerequisite',
+                     value='Google Sheets\n(there is an app for iOS|Android)', inline=False)
         em.set_footer(text='CSV import', icon_url=GSHEET_ICON)
         embeds.append(em)
-        em2=discord.Embed(color=ucolor, title='Import from Hook',url=HOOK_URL)
-        em2.add_field(name='Hook instructions',value='1. Go to Hook/Champions webapp (blue text)\n2. Add Champions.\n3. Set Rank & Signature Ability level\n4. From the Menu > Export CSV as \'champions.csv\'\n5. Upload to Collector.\n6. Select OK to confirm')
+        em2 = discord.Embed(
+            color=ucolor, title='Import from Hook', url=HOOK_URL)
+        em2.add_field(name='Hook instructions', value='1. Go to Hook/Champions webapp (blue text)\n2. Add Champions.\n3. Set Rank & Signature Ability level\n4. From the Menu > Export CSV as \'champions.csv\'\n5. Upload to Collector.\n6. Select OK to confirm')
         em2.set_footer(text='https://auntm.ai | CollectorVerse',
-                      icon_url=AUNTMAI)
+                       icon_url=AUNTMAI)
         embeds.append(em2)
-        em3=discord.Embed(color=ucolor, title='Import from Hook',url=HOOK_URL)
-        em3.add_field(name='iOS + Hook instructions',value='1. Go to Hook/Champions webapp (blue text)\n2. Add Champions.\n3. Set Rank & Signature Ability level\n4. From the Menu > Export CSV > Copy Text from Safari\n5. In Google Sheets App > paste\n6. Download as \'champions.csv\'\n5. Upload to Collector.\n6. Select OK to confirm')
-        em3.add_field(name='Prerequisite', value='Google Sheets\n(there is an app for iOS|Android)',inline=False)
+        em3 = discord.Embed(
+            color=ucolor, title='Import from Hook', url=HOOK_URL)
+        em3.add_field(name='iOS + Hook instructions', value='1. Go to Hook/Champions webapp (blue text)\n2. Add Champions.\n3. Set Rank & Signature Ability level\n4. From the Menu > Export CSV > Copy Text from Safari\n5. In Google Sheets App > paste\n6. Download as \'champions.csv\'\n5. Upload to Collector.\n6. Select OK to confirm')
+        em3.add_field(name='Prerequisite',
+                      value='Google Sheets\n(there is an app for iOS|Android)', inline=False)
         em2.set_footer(text='https://auntm.ai | CollectorVerse',
-                      icon_url=AUNTMAI)
+                       icon_url=AUNTMAI)
         embeds.append(em3)
         return embeds
 
     @commands.command(pass_context=True, aliases=('th',))
     async def test_hash(self, ctx, *, hargs=''):
-        #hargs = await hook.HashtagRankConverter(ctx, hargs).convert() #imported from hook
+        # hargs = await hook.HashtagRankConverter(ctx, hargs).convert() #imported from hook
         #roster = partial(ChampionRoster, self.bot, self.bot.user)
         sgd = StaticGameData()
-        aliases = {'#var2': '(#5star | #6star) & #size:xl', '#poisoni': '#poisonimmunity'}
-        #await sgd.filter_and_display(hargs, roster, aliases=aliases)
+        aliases = {'#var2': '(#5star | #6star) & #size:xl',
+                   '#poisoni': '#poisonimmunity'}
+        # await sgd.filter_and_display(hargs, roster, aliases=aliases)
         roster = await sgd.parse_with_attr(ctx, hargs, ChampionRoster, aliases=aliases)
         if roster is not None:
             await roster.display()
 
-
-    @commands.command(pass_context=True, aliases=('list_members','role_roster','list_users'))
+    @commands.command(pass_context=True, aliases=('list_members', 'role_roster', 'list_users'))
     async def users_by_role(self, ctx, role: discord.Role, use_alias=True):
         '''Embed a list of server users by Role'''
         server = ctx.message.server
@@ -586,10 +612,12 @@ class Hook:
             pages = []
             for page in pagified:
                 em = discord.Embed(title='{0.name} Role - {1} member(s)'.format(role, len(members)),
-                        description=page, color=role.color)
-                em.set_footer(text="Requested by {}".format(user.display_name), icon_url=user.avatar_url)
+                                   description=page, color=role.color)
+                em.set_footer(text="Requested by {}".format(
+                    user.display_name), icon_url=user.avatar_url)
                 pages.append(em)
-            menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
+            menu = PagesMenu(self.bot, timeout=120,
+                             delete_onX=True, add_pageof=True)
             await menu.menu_start(pages=pages)
 
         # await self.bot.say(embed=em)
@@ -613,19 +641,20 @@ class Hook:
 
     @commands.group(pass_context=True, invoke_without_command=True)
     async def roster(self, ctx, *, hargs=''):
-    #async def roster(self, ctx, *, hargs: HashtagRosterConverter):
+        # async def roster(self, ctx, *, hargs: HashtagRosterConverter):
         """Displays a user roster with tag filtering
 
         example:
         /roster [user] [#mutant #bleed]"""
         sgd = StaticGameData()
-        aliases = {'#var2': '(#5star | #6star) & #size:xl', '#poisoni': '#poisonimmunity'}
-        #await sgd.filter_and_display(hargs, roster, aliases=aliases)
+        aliases = {'#var2': '(#5star | #6star) & #size:xl',
+                   '#poisoni': '#poisonimmunity'}
+        # await sgd.filter_and_display(hargs, roster, aliases=aliases)
         roster = await sgd.parse_with_user(ctx, hargs, ChampionRoster, aliases=aliases)
         if roster is not None:
             await roster.display()
-        #hargs = await HashtagRosterConverter(ctx, hargs).convert()
-        #await hargs.roster.display(hargs.tags)
+        # hargs = await HashtagRosterConverter(ctx, hargs).convert()
+        # await hargs.roster.display(hargs.tags)
 
     @roster.command(pass_context=True, name='add', aliases=('update',))
     async def _roster_update(self, ctx, *, champs: ChampConverterMult):
@@ -667,13 +696,13 @@ class Hook:
         /roster missing 5* #science  (missing 5* science champs)
         '''
         sgd = StaticGameData()
-        aliases = {'#var2': '(#5star | #6star) & #size:xl', '#poisoni': '#poisonimmunity'}
+        aliases = {'#var2': '(#5star | #6star) & #size:xl',
+                   '#poisoni': '#poisonimmunity'}
         bot_roster = await sgd.parse_with_attr(ctx, hargs, ChampionRoster, aliases=aliases)
         roster = ChampionRoster(ctx.bot, ctx.message.author)
         await roster.load_champions(silent=True)
         missing = bot_roster - roster
         await missing.display()
-
 
     @roster.command(pass_context=True, name='stats', hidden=True)
     async def _roster_stats(self, ctx, user: discord.User = None):
@@ -682,7 +711,8 @@ class Hook:
         now = datetime.now().date()
         if os.path.exists('data/mcoc/collection.json'):
             # filetime = datetime.datetime.fromtimestamp(os.path.getctime('data/mcoc/tldr.json'))
-            filetime = datetime.fromtimestamp(os.path.getctime('data/mcoc/collection.json'))
+            filetime = datetime.fromtimestamp(
+                os.path.getctime('data/mcoc/collection.json'))
             if filetime.date() != now:
                 await self.gsheet_handler.cache_gsheets('collection')
                 self.collection = dataIO.load_json('data/mcoc/collection.json')
@@ -759,7 +789,8 @@ class Hook:
             stats['top'][star]['sum'] += champ.prestige
             stats[klass][star]['ranks'][champ.rank] += 1
             # export master count list from XREF
-        data = discord.Embed(color=ucolor, title='CollectorVerse Roster Stats', url=PATREON)
+        data = discord.Embed(
+            color=ucolor, title='CollectorVerse Roster Stats', url=PATREON)
         data.set_author(name='CollectorDevTeam', icon_url=COLLECTOR_ICON)
         data.set_thumbnail(url=user.avatar_url)
         data.set_footer(text='{} Roster Stats'.format(user.display_name))
@@ -775,7 +806,8 @@ class Hook:
                            .format(collected, stats['top'][star]['sum']))
         pages.append(data)
         for star in (6, 5, 4, 3, 2, 1):
-            data = discord.Embed(color=CDT_COLORS[star], title='CollectorVerse {}★ Roster Stats'.format(star), url=PATREON)
+            data = discord.Embed(
+                color=CDT_COLORS[star], title='CollectorVerse {}★ Roster Stats'.format(star), url=PATREON)
             data.set_author(name='CollectorDevTeam', icon_url=COLLECTOR_ICON)
             data.set_thumbnail(url=user.avatar_url)
             data.set_footer(text='{} Roster Stats'.format(user.display_name))
@@ -791,14 +823,16 @@ class Hook:
                     ranks = min(star+1, 5)+1
                     for r in range(1, ranks):
                         if stats[klass][star]['ranks'][r] > 0:
-                            list.append('{}★ Rank {} x {}'.format(star, r, stats[klass][star]['ranks'][r]))
+                            list.append('{}★ Rank {} x {}'.format(
+                                star, r, stats[klass][star]['ranks'][r]))
                     if len(list) > 0:
-                        data.add_field(name='{}★ {} : {} / {}'.format(star, klass, count, available), value='\n'.join(list))
+                        data.add_field(name='{}★ {} : {} / {}'.format(star,
+                                                                      klass, count, available), value='\n'.join(list))
             if stats['top'][star]['count'] > 0:
                 pages.append(data)
-        menu = PagesMenu(self.bot, timeout=120, delete_onX=True, add_pageof=True)
+        menu = PagesMenu(self.bot, timeout=120,
+                         delete_onX=True, add_pageof=True)
         await menu.menu_start(pages=pages)
-
 
     async def _update(self, roster, champs, skip_save=False):
         orig_prestige = roster.prestige
@@ -811,7 +845,8 @@ class Hook:
     async def _display_tracked_changes(self, track, skip_save):
         tracked = ''
         for k in ('new', 'modified', 'unchanged'):
-            tracked += '{} Champions : {}\n'.format(k.capitalize(), len(track[k]))
+            tracked += '{} Champions : {}\n'.format(
+                k.capitalize(), len(track[k]))
         for k in ('new', 'modified', 'unchanged'):
             tracked += '\n{} Champions\n'.format(k.capitalize())
             tracked += '\n'.join(sorted(track[k]))
@@ -823,13 +858,16 @@ class Hook:
 
         for page in pagified:
             data = discord.Embed(title=title,
-                            color=discord.Color.gold(),
-                            description=page, url=PATREON)
-            data.set_author(name='CollectorDevTeam Roster Update', icon_url=COLLECTOR_ICON)
-            data.set_footer(text='``/roster update <champions>``', icon_url=COLLECTOR_ICON)
+                                 color=discord.Color.gold(),
+                                 description=page, url=PATREON)
+            data.set_author(name='CollectorDevTeam Roster Update',
+                            icon_url=COLLECTOR_ICON)
+            data.set_footer(text='``/roster update <champions>``',
+                            icon_url=COLLECTOR_ICON)
             data.set_thumbnail(url=COLLECTOR_FEATURED)
             pages.append(data)
-        menu = PagesMenu(self.bot, timeout=240, delete_onX=True, add_pageof=True)
+        menu = PagesMenu(self.bot, timeout=240,
+                         delete_onX=True, add_pageof=True)
         await menu.menu_start(pages=pages)
 
     @roster.command(pass_context=True, name='dupe')
@@ -844,14 +882,14 @@ class Hook:
         await roster.load_champions()
         track = roster.inc_dupe(champs)
         em = discord.Embed(title='Champion Dupe Update for {}'.format(roster.user.name),
-                color=discord.Color.gold())
+                           color=discord.Color.gold())
         for k in ('modified', 'missing'):
             if track[k]:
                 em.add_field(name='{} Champions'.format(k.capitalize()),
-                        value='\n'.join(sorted(track[k])), inline=False)
+                             value='\n'.join(sorted(track[k])), inline=False)
         await self.bot.say(embed=em)
 
-    @roster.command(pass_context=True, name='delete', aliases=('del','remove',))
+    @roster.command(pass_context=True, name='delete', aliases=('del', 'remove',))
     async def _roster_del(self, ctx, *, champs: ChampConverterMult):
         '''Delete champion(s)
 
@@ -862,11 +900,11 @@ class Hook:
         await roster.load_champions()
         track = roster.delete(champs)
         em = discord.Embed(title='Champion Deletion for {}'.format(roster.user.name),
-                color=discord.Color.gold())
+                           color=discord.Color.gold())
         for k in ('deleted', 'non-existant'):
             if track[k]:
                 em.add_field(name='{} Champions'.format(k.capitalize()),
-                        value='\n'.join(sorted(track[k])), inline=False)
+                             value='\n'.join(sorted(track[k])), inline=False)
         await self.bot.say(embed=em)
 
     @roster.command(pass_context=True, name='import', hidden=True)
@@ -881,7 +919,7 @@ class Hook:
                 await roster.parse_champions_csv(ctx.message.channel, atch)
             else:
                 await self.bot.say("Cannot import '{}'.".format(atch)
-                        + "  File must end in .csv and come from a Hook export")
+                                   + "  File must end in .csv and come from a Hook export")
 
     @roster.command(pass_context=True, name='export')
     async def _roster_export(self, ctx):
@@ -896,7 +934,7 @@ class Hook:
         # with open(tmp_file, 'w') as fp:
         with open(tmp_file, 'w', encoding='utf-8') as fp:
             writer = csv.DictWriter(fp, fieldnames=roster.fieldnames,
-                    extrasaction='ignore', lineterminator='\n')
+                                    extrasaction='ignore', lineterminator='\n')
             writer.writeheader()
             for champ in roster.roster.values():
                 writer.writerow(champ.to_json())
@@ -906,7 +944,7 @@ class Hook:
         os.remove(filename)
 
     @roster.command(pass_context=True, name='template')
-    async def _roster_template(self, ctx, *, user : discord.User = None):
+    async def _roster_template(self, ctx, *, user: discord.User = None):
         '''Google Sheet Template
 
         Blank CSV template for champion importself.
@@ -921,12 +959,13 @@ class Hook:
         7. Press OK'''
 
         if user is None:
-            user=ctx.message.author
+            user = ctx.message.author
         message = 'Save a copy of the template (blue text):\n\n1. Add 5★ champions you do have.\n2. Delete 4★ champions you do not have.\n3. Set Rank = champion rank (1 to 5).\n4. Set Awakened = signature ability level.\n``[4★: 0 to 99 | 5★: 0 to 200]``\n5. Export file as \'champions.csv\'.\n6. Upload to Collector.\n7. Press OK\n\nPrerequisite: Google Sheets\n(there is an app for iOS|Android)\n'
 
-        em =discord.Embed(color=user.color, title='Champion CSV template',description=message, url='https://goo.gl/LaFrg7')
+        em = discord.Embed(color=user.color, title='Champion CSV template',
+                           description=message, url='https://goo.gl/LaFrg7')
         em.set_author(name=user.name, icon_url=user.avatar_url)
-        em.set_footer(text='Kelldor | CollectorDevTeam',icon_url=AUNTMAI)
+        em.set_footer(text='Kelldor | CollectorDevTeam', icon_url=AUNTMAI)
         await self.bot.send_message(ctx.message.channel, embed=em)
         # await self.bot.send_message(ctx.message.channel,'iOS dumblink: https://goo.gl/LaFrg7')
 
@@ -941,7 +980,8 @@ class Hook:
         tmp_file = '{}-{}.tmp'.format(path, rand)
         # with open(tmp_file, 'w') as fp:
         with open(tmp_file, 'w', encoding='utf-8') as fp:
-            writer = csv.DictWriter(fp, fieldnames=['member_mention', 'member_name', *(roster.fieldnames),'bg'], extrasaction='ignore', lineterminator='\n')
+            writer = csv.DictWriter(fp, fieldnames=['member_mention', 'member_name', *(
+                roster.fieldnames), 'bg'], extrasaction='ignore', lineterminator='\n')
             writer.writeheader()
             for member in server.members:
                 for roles in member.roles:
@@ -978,7 +1018,6 @@ class Hook:
         roster = ChampionRoster(self.bot, self.bot.user, attrs=hargs.attrs)
         await roster.display(hargs.tags)
 
-
     @commands.command(pass_context=True, no_pm=True, aliases=('cp',))
     async def clan_prestige(self, ctx, role: discord.Role, verbose=0):
         '''Report Clan Prestige.
@@ -1012,14 +1051,15 @@ class Hook:
                     prestige += roster.prestige
                     cnt += 1
                 if verbose != 0:
-                    bundle.append((roster.prestige, member.name, member.display_name))
+                    bundle.append(
+                        (roster.prestige, member.name, member.display_name))
         if verbose != 0:
             index = min(abs(verbose) - 1, 2)
             if index == 0:
-                getter = lambda e: e[index]
+                def getter(e): return e[index]
                 rvs = True if verbose > 0 else False
             else:
-                getter = lambda e: e[index].lower()
+                def getter(e): return e[index].lower()
                 rvs = False if verbose > 0 else True
             for member in sorted(bundle, key=getter, reverse=rvs):
                 name = member[1] if index < 2 else member[2]
@@ -1027,11 +1067,10 @@ class Hook:
             line_out.append('_' * (width + 11))
         if cnt > 0:
             line_out.append('{0:{width}} p = {1}  from {2} members'.format(
-                    role.name, round(prestige/cnt,0), cnt, width=width))
+                role.name, round(prestige/cnt, 0), cnt, width=width))
             await self.bot.say('```{}```'.format('\n'.join(line_out)))
         else:
             await self.bot.say('You cannot divide by zero.')
-
 
     async def _on_attachment(self, msg):
         channel = msg.channel
@@ -1041,25 +1080,27 @@ class Hook:
         for attachment in msg.attachments:
             if self.champ_re.match(attachment['filename']):
                 message = await self.bot.send_message(channel,
-                        "Found a CSV file to import.  \nLoad new champions? \nSelect OK to continue or X to cancel.")
+                                                      "Found a CSV file to import.  \nLoad new champions? \nSelect OK to continue or X to cancel.")
                 await self.bot.add_reaction(message, '❌')
                 await self.bot.add_reaction(message, '🆗')
                 react = await self.bot.wait_for_reaction(message=message, user=msg.author, timeout=30, emoji=['❌', '🆗'])
                 if react is not None:
                     # await self.bot.send_message(channel, 'Reaction detected.')
                     if react.reaction.emoji == '🆗':
-                        await self.bot.send_message(channel,'OK detected')
+                        await self.bot.send_message(channel, 'OK detected')
                         roster = ChampionRoster(self.bot, msg.author)
                         await roster.parse_champions_csv(msg.channel, attachment)
                     elif react.reaction.emoji == '❌':
-                        await self.bot.send_message(channel,'X detected')
+                        await self.bot.send_message(channel, 'X detected')
                         await self.bot.delete_message(message)
                         await self.bot.send_message(channel, 'Import canceled by user.')
                 elif react is None:
                     await self.bot.send_message(channel, 'No reaction detected.')
                     try:
-                        await self.bot.remove_reaction(message, '❌', self.bot.user) # Cancel
-                        await self.bot.remove_reaction(message,'🆗',self.bot.user) #choose
+                        # Cancel
+                        await self.bot.remove_reaction(message, '❌', self.bot.user)
+                        # choose
+                        await self.bot.remove_reaction(message, '🆗', self.bot.user)
                     except:
                         self.bot.delete_message(message)
                     await self.bot.send_message(channel, "Did not import")
@@ -1069,13 +1110,28 @@ class Hook:
         if ChampionRoster is not None:
             sgd = StaticGameData()
             aliases = {'#var2': '(#5star | #6star) & #size:xl',
-                       '#poisoni': '#poisonimmunity'}
+                       '#poisoni': '#poisonimmunity',
+                       '#bleedi': '#bleedimmunity'}
             roster = await sgd.parse_with_attr(ctx, hargs, ChampionRoster, aliases=aliases)
             if roster is not None:
                 await roster.display()
         else:
             return
 
+    async def get_counter_list(self, ctx, hargs=''):
+        if ChampionRoster is not None:
+            sgd = StaticGameData()
+            aliases = {'#var2': '(#5star | #6star) & #size:xl',
+                       '#poisoni': '#poisonimmunity',
+                       '#bleedi': '#bleedimmunity',
+                       '#regen': '#regeneration'}
+            counterhargs = []
+
+            roster = await sgd.parse_with_attr(ctx, hargs, ChampionRoster, aliases=aliases)
+            if roster is not None:
+                await roster.display()
+        else:
+            return
 
 
 def parse_value(value):
@@ -1085,22 +1141,23 @@ def parse_value(value):
         return value
 
 
-#-------------- setup -------------
+# -------------- setup -------------
 def check_folders():
-    #if not os.path.exists("data/hook"):
-        #print("Creating data/hook folder...")
-        #os.makedirs("data/hook")
+    # if not os.path.exists("data/hook"):
+    #print("Creating data/hook folder...")
+    # os.makedirs("data/hook")
 
     if not os.path.exists("data/hook/users"):
         print("Creating data/hook/users folder...")
         os.makedirs("data/hook/users")
-        #transfer_info()
+        # transfer_info()
+
 
 def setup(bot):
     check_folders()
     override_error_handler(bot)
     n = Hook(bot)
     sgd = StaticGameData(bot)
-    #sgd.register_gsheets(bot)
+    # sgd.register_gsheets(bot)
     bot.add_cog(n)
     bot.add_listener(n._on_attachment, name='on_message')

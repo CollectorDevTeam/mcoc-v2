@@ -405,6 +405,7 @@ class StaticGameData:
         self.cdt_masteries = dataIO.load_json(
             'data/mcocTools/sgd_cdt_masteries.json')
         self.cdt_stats = dataIO.load_json('data/mcocTools/sgd_cdt_stats.json')
+        self.ability_counters = ('data/mcocTools/ability_counters.json')
 
     async def parse_with_attr(self, *args, **kwargs):
         return await self.hash_parser.parse_with_attr(*args, **kwargs)
@@ -451,6 +452,14 @@ class StaticGameData:
             gkey='1I3T2G2tRV05vQKpBfmI04VpvP5LjCBPfVICDmuJsjks',
             local='data/mcocTools/sgd_cdt_stats.json',
             sheet_name='spotlightJSON',
+            range_name='stats_export',
+        )
+
+        self.gsheet_handler.register_gsheet(
+            name='ability_counters',
+            gkey='1JSiGo-oGbPdmlegmGTH7hcurd_HYtkpTnZGY1mN_XCE',
+            local='data/mcocTools/sgd_ability_counters.json',
+            sheet_name='counters',
             range_name='stats_export',
         )
 
@@ -504,6 +513,11 @@ class StaticGameData:
             dataIO.save_json(
                 'data/mcocTools/sgd_masteries.json', self.cdt_masteries)
             self.cdt_stats = await StaticGameData.get_gsheets_data('cdt_stats')
+            self.ability_counters = await StaticGameData.get_gsheets_data('ability_counters')
+            dataIO.save_json(
+                'data/mcocTools/sgd_ability_counters.json', self.ability_counters)
+            print("Ability Counters GoogleSheets\n" +
+                  {}.format(self.ability_counters))
 
     async def cache_gsheets(self):
         print("Attempt gsheet pull")
@@ -2840,6 +2854,7 @@ def check_files():
         'sgd_cdt_data.json': {},
         'sgd_cdt_versions.json': {},
         'sgd_cdt_masteries.json': {},
+        'ability_counters.json': {}
 
     }
 
