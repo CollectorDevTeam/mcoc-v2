@@ -445,8 +445,8 @@ class ChampionFactory():
                 kwargs['class_tags'].add(newtag.split(':')[0])
         for a in kwargs['extended_abilities'].split(','):
             kwargs['class_tags'].add('#' + ''.join(a.lower().split(' ')))
-        for a in kwargs['counters'].split(','):
-            kwargs['class_tags'].add('#!' + ''.join(a.lower().split(' ')))
+        # for a in kwargs['counters'].split(','):
+        #     kwargs['class_tags'].add('#!' + ''.join(a.lower().split(' ')))
         if kwargs['class_tags']:
             kwargs['class_tags'].difference_update({'#', '#!'})
 
@@ -2007,9 +2007,9 @@ class MCOC(ChampionFactory):
             if champ.extended_abilities is not None:
                 em.add_field(name='Extended Abilities',
                              value=champ.extended_abilities.title())
-            if champ.counters is not None:
-                em.add_field(name='{} can counter these abilities'.format(
-                    champ.full_name), value=champ.counters.title())
+            # if champ.counters is not None:
+            #     em.add_field(name='{} can counter these abilities'.format(
+            #         champ.full_name), value=champ.counters.title())
             if champ.hashtags is not None:
                 em.add_field(name='Hashtags', value=champ.hashtags)
             em.add_field(name='Shortcode', value=champ.short)
