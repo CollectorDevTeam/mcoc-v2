@@ -480,6 +480,7 @@ class StaticGameData:
     async def load_cdt_data(self):
         cdt_data, cdt_versions = ChainMap(), ChainMap()
         cdt_stats = None
+        robotworkshop = self.bot.get_channel('391330316662341632')
         files = (
             'https://raw.githubusercontent.com/CollectorDevTeam/assets/master/data/json/snapshots/en/bcg_en.json',
             'https://raw.githubusercontent.com/CollectorDevTeam/assets/master/data/json/snapshots/en/bcg_stat_en.json',
@@ -491,6 +492,7 @@ class StaticGameData:
             # 'https://raw.githubusercontent.com/CollectorDevTeam/assets/master/data/json/snapshots/en/initial_en.json',
             # 'https://raw.githubusercontent.com/CollectorDevTeam/assets/master/data/json/snapshots/en/alliances_en.json'
         )
+        m1 = await self.bot.send_message(robotworkshop, 'Saving CDT Data')
         async with aiohttp.ClientSession() as session:
             for url in files:
                 print("pulling "+url)
@@ -504,20 +506,27 @@ class StaticGameData:
                 cdt_versions.maps.append(ver)
         self.cdt_data = cdt_data
         self.cdt_versions = cdt_versions
-        self.cdt_masteries = await self.fetch_json(
-            self.remote_data_basepath + 'json/masteries.json',
-            session)
         dataIO.save_json('data/mcocTools/sgd_cdt_data.json', self.cdt_data)
         dataIO.save_json(
             'data/mcocTools/sgd_cdt_versions.json', self.cdt_versions)
+        await self.bot.edit_message(m1, 'CDT Data saved')
+        m2 = await self.bot.send_message(robotworkshop, 'Saving Masteries data')
+        async with aiohttp.ClientSession() as session:
+            self.cdt_masteries = await self.fetch_json(
+                self.remote_data_basepath + 'json/masteries.json',
+                session)
         dataIO.save_json(
             'data/mcocTools/sgd_masteries.json', self.cdt_masteries)
+        await self.bot.edit_message(m2, 'Masteries data saved')
+        m3 = await self.bot.send_message(robotworkshop, 'Saving CDT stats data')
         self.cdt_stats = await StaticGameData.get_gsheets_data('cdt_stats')
+        dataIO.save_json('data/mcocTools/sgd_cdt_stats.json')
+        await self.bot.edit_message(m3, 'CDT Stats saved')
+        m4 = await self.bot.send_message(robotworkshop, 'Saving Ability counters')
         self.ability_counters = await StaticGameData.get_gsheets_data('ability_counters')
         dataIO.save_json(
             'data/mcocTools/sgd_ability_counters.json', self.ability_counters)
-        print("Ability Counters GoogleSheets\n" +
-              {}.format(self.ability_counters))
+        await self.bot.edit_message(m4, 'Ability Counters saved')
 
     async def cache_gsheets(self):
         print("Attempt gsheet pull")
