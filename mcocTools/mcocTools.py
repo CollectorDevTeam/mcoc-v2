@@ -502,22 +502,22 @@ class StaticGameData:
                         ver[dlist['k']] = dlist['vn']
                 cdt_data.maps.append(val)
                 cdt_versions.maps.append(ver)
-            self.cdt_data = cdt_data
-            self.cdt_versions = cdt_versions
-            self.cdt_masteries = await self.fetch_json(
-                self.remote_data_basepath + 'json/masteries.json',
-                session)
-            dataIO.save_json('data/mcocTools/sgd_cdt_data.json', self.cdt_data)
-            dataIO.save_json(
-                'data/mcocTools/sgd_cdt_versions.json', self.cdt_versions)
-            dataIO.save_json(
-                'data/mcocTools/sgd_masteries.json', self.cdt_masteries)
-            self.cdt_stats = await StaticGameData.get_gsheets_data('cdt_stats')
-            self.ability_counters = await StaticGameData.get_gsheets_data('ability_counters')
-            dataIO.save_json(
-                'data/mcocTools/sgd_ability_counters.json', self.ability_counters)
-            print("Ability Counters GoogleSheets\n" +
-                  {}.format(self.ability_counters))
+        self.cdt_data = cdt_data
+        self.cdt_versions = cdt_versions
+        self.cdt_masteries = await self.fetch_json(
+            self.remote_data_basepath + 'json/masteries.json',
+            session)
+        dataIO.save_json('data/mcocTools/sgd_cdt_data.json', self.cdt_data)
+        dataIO.save_json(
+            'data/mcocTools/sgd_cdt_versions.json', self.cdt_versions)
+        dataIO.save_json(
+            'data/mcocTools/sgd_masteries.json', self.cdt_masteries)
+        self.cdt_stats = await StaticGameData.get_gsheets_data('cdt_stats')
+        self.ability_counters = await StaticGameData.get_gsheets_data('ability_counters')
+        dataIO.save_json(
+            'data/mcocTools/sgd_ability_counters.json', self.ability_counters)
+        print("Ability Counters GoogleSheets\n" +
+              {}.format(self.ability_counters))
 
     async def cache_gsheets(self):
         print("Attempt gsheet pull")
