@@ -493,23 +493,35 @@ class StaticGameData:
             # 'https://raw.githubusercontent.com/CollectorDevTeam/assets/master/data/json/snapshots/en/alliances_en.json'
         )
         m1 = await self.bot.send_message(robotworkshop, 'Saving CDT Data')
+        filelist = 0
         async with aiohttp.ClientSession() as session:
             for url in files:
-                print("pulling "+url)
-                raw_data = await self.fetch_json(url, session)
-                val, ver = {}, {}
-                for dlist in raw_data['strings']:
-                    val[dlist['k']] = dlist['v']
-                    if 'vn' in dlist:
-                        ver[dlist['k']] = dlist['vn']
-                cdt_data.maps.append(val)
-                cdt_versions.maps.append(ver)
+                validators.url(url)
+                code = requests.get(url).status_code
+                if code == 200:
+                    print("pulling "+url)
+                    try:
+                        raw_data = await self.fetch_json(url, session)
+                        val, ver = {}, {}
+                        for dlist in raw_data['strings']:
+                            val[dlist['k']] = dlist['v']
+                            if 'vn' in dlist:
+                                ver[dlist['k']] = dlist['vn']
+                        cdt_data.maps.append(val)
+                        cdt_versions.maps.append(ver)
+                        filelist += 1
+                    except:
+                        print('{} failed to download')
+                else:
+                    print('CDT DATA URL Failure, code {}'.format(code))
+                    print('Attempted URL:\n{}'.format(image))
+
         self.cdt_data = cdt_data
         self.cdt_versions = cdt_versions
         dataIO.save_json('data/mcocTools/sgd_cdt_data.json', self.cdt_data)
         dataIO.save_json(
             'data/mcocTools/sgd_cdt_versions.json', self.cdt_versions)
-        await self.bot.edit_message(m1, 'CDT Data saved')
+        await self.bot.edit_message(m1, 'CDT Data saved {} files'.format(filelist))
         m2 = await self.bot.send_message(robotworkshop, 'Saving Masteries data')
         async with aiohttp.ClientSession() as session:
             self.cdt_masteries = await self.fetch_json(

@@ -1118,20 +1118,20 @@ class Hook:
         else:
             return
 
-    async def get_counter_list(self, ctx, hargs=''):
-        if ChampionRoster is not None:
-            sgd = StaticGameData()
-            aliases = {'#var2': '(#5star | #6star) & #size:xl',
-                       '#poisoni': '#poisonimmunity',
-                       '#bleedi': '#bleedimmunity',
-                       '#regen': '#regeneration'}
-            counterhargs = []
+    # async def get_counter_list(self, ctx, hargs=''):
+    #     if ChampionRoster is not None:
+    #         sgd = StaticGameData()
+    #         aliases = {'#var2': '(#5star | #6star) & #size:xl',
+    #                    '#poisoni': '#poisonimmunity',
+    #                    '#bleedi': '#bleedimmunity',
+    #                    '#regen': '#regeneration'}
+    #         counterhargs = []
 
-            roster = await sgd.parse_with_attr(ctx, hargs, ChampionRoster, aliases=aliases)
-            if roster is not None:
-                await roster.display()
-        else:
-            return
+    #         roster = await sgd.parse_with_attr(ctx, hargs, ChampionRoster, aliases=aliases)
+    #         if roster is not None:
+    #             await roster.display()
+    #     else:
+    #         return
 
 
 def parse_value(value):
