@@ -80,8 +80,8 @@ data_files = {
                        'local': 'data/mcoc/crossreference.csv', 'update_delta': 1},
     'prestigeCSV': {'remote': 'https://docs.google.com/spreadsheets/d/1I3T2G2tRV05vQKpBfmI04VpvP5LjCBPfVICDmuJsjks/pub?gid=1346864636&single=true&output=csv',
                     'local': 'data/mcoc/prestige.csv', 'update_delta': 60},
-    'duelist': {'remote': 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTsPSNaY6WbNF1fY49jqjRm9hJZ60Sa6fU6Yd_t7nOrIxikVj-Y7JW_YSPwHoJfix9MA4YgWSenIwfl/pub?gid=694495962&single=true&output=csv',
-                'local': 'data/mcoc/duelist.csv', 'update_delta': 1},
+    # 'duelist': {'remote': 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTsPSNaY6WbNF1fY49jqjRm9hJZ60Sa6fU6Yd_t7nOrIxikVj-Y7JW_YSPwHoJfix9MA4YgWSenIwfl/pub?gid=694495962&single=true&output=csv',
+    #             'local': 'data/mcoc/duelist.csv', 'update_delta': 1},
     # 'masteries' : {'remote':'https://docs.google.com/spreadsheets/d/1mEnMrBI5c8Tbszr0Zne6qHkW6WxZMXBOuZGe9XmrZm8/pub?gid=0&single=true&output=csv',
     # 'local': 'data/mcoc/masteries.csv', 'update_delta': 1},
 }
@@ -2530,61 +2530,61 @@ class MCOC(ChampionFactory):
     #     else:
     #         await self.bot.send_message(ctx.message.channel, 'Ambiguous response.  Submission canceled')
 
-    @submit.command(pass_context=True, name='duel', aliases=['duels', 'target'])
-    async def submit_duel_target(self, ctx, champ: ChampConverter, observation, pi: int = 0):
-        # guild = await self.check_guild(ctx)
-        cdt_duels = self.bot.get_channel('404046914057797652')
-        server = ctx.message.server
-        author = ctx.message.author
-        data = discord.Embed(color=author.color, title='Submit Duel Targets')
-        data.set_thumbnail(url=champ.get_featured())
-        data.description = 'Duel Target registered.\nChampion: {0.star_name_str}\nTarget: {1}\nPress OK to confirm.'.format(
-            champ, observation)
-        data.set_footer(text='Submitted by {} on {} [{}]'
-                        .format(author.display_name, server.name, server.id),
-                        icon_url=author.avatar_url)
-        message = await self.bot.send_message(ctx.message.channel, embed=data)
-        await self.bot.add_reaction(message, '❌')
-        await self.bot.add_reaction(message, '🆗')
-        react = await self.bot.wait_for_reaction(message=message, user=ctx.message.author, timeout=30, emoji=['❌', '🆗'])
-        if react is not None:
-            if react.reaction.emoji == '❌':
-                await self.bot.send_message(ctx.message.channel, 'Submission canceled.')
-            elif react.reaction.emoji == '🆗':
-                # GKEY = '1VOqej9o4yLAdMoZwnWbPY-fTFynbDb_Lk8bXDNeonuE'
-                GKEY = '1FZdJPB8sayzrXkE3F2z3b1VzFsNDhh-_Ukl10OXRN6Q'
-                message2 = await self.bot.send_message(ctx.message.channel, embed=discord.Embed(color=author.color, title='Submission in progress.'))
-                author = ctx.message.author
-                star = '{0.star}{0.star_char}'.format(champ)
-                if pi == 0:
-                    if champ.has_prestige:
-                        pi = champ.prestige
-                now = str(ctx.message.timestamp)
-                package = [[now, author.name, star, champ.full_name,
-                            champ.rank, champ.max_lvl, pi, observation, author.id]]
-                print('package built')
-                check = await self._process_submission(ctx=ctx, package=package, GKEY=GKEY, sheet='collector_submit')
-                if check:
-                    await self.bot.delete_message(message2)
-                    data.add_field(name='Status', value='Submission Complete')
-                    await self.bot.edit_message(message, embed=data)
-                    data.add_field(name='Duel Target System',
-                                   value='Refreshed')
-                    async with aiohttp.ClientSession() as s:
-                        await asyncio.sleep(20)
-                        await self.cache_remote_file('duelist', s, force_cache=True, verbose=True)
-                        await self.bot.edit_message(message, embed=data)
-                        await self.bot.send_message(cdt_duels, embed=data)
-                else:
-                    await self.bot.delete_message(message2)
-                    data.add_field(name='Status', value='Submission failed')
-                    await self.bot.edit_message(message, embed=data)
-                    await self.bot.send_message(cdt_duels, embed=data)
+    # @submit.command(pass_context=True, name='duel', aliases=['duels', 'target'])
+    # async def submit_duel_target(self, ctx, champ: ChampConverter, observation, pi: int = 0):
+    #     # guild = await self.check_guild(ctx)
+    #     cdt_duels = self.bot.get_channel('404046914057797652')
+    #     server = ctx.message.server
+    #     author = ctx.message.author
+    #     data = discord.Embed(color=author.color, title='Submit Duel Targets')
+    #     data.set_thumbnail(url=champ.get_featured())
+    #     data.description = 'Duel Target registered.\nChampion: {0.star_name_str}\nTarget: {1}\nPress OK to confirm.'.format(
+    #         champ, observation)
+    #     data.set_footer(text='Submitted by {} on {} [{}]'
+    #                     .format(author.display_name, server.name, server.id),
+    #                     icon_url=author.avatar_url)
+    #     message = await self.bot.send_message(ctx.message.channel, embed=data)
+    #     await self.bot.add_reaction(message, '❌')
+    #     await self.bot.add_reaction(message, '🆗')
+    #     react = await self.bot.wait_for_reaction(message=message, user=ctx.message.author, timeout=30, emoji=['❌', '🆗'])
+    #     if react is not None:
+    #         if react.reaction.emoji == '❌':
+    #             await self.bot.send_message(ctx.message.channel, 'Submission canceled.')
+    #         elif react.reaction.emoji == '🆗':
+    #             # GKEY = '1VOqej9o4yLAdMoZwnWbPY-fTFynbDb_Lk8bXDNeonuE'
+    #             GKEY = '1FZdJPB8sayzrXkE3F2z3b1VzFsNDhh-_Ukl10OXRN6Q'
+    #             message2 = await self.bot.send_message(ctx.message.channel, embed=discord.Embed(color=author.color, title='Submission in progress.'))
+    #             author = ctx.message.author
+    #             star = '{0.star}{0.star_char}'.format(champ)
+    #             if pi == 0:
+    #                 if champ.has_prestige:
+    #                     pi = champ.prestige
+    #             now = str(ctx.message.timestamp)
+    #             package = [[now, author.name, star, champ.full_name,
+    #                         champ.rank, champ.max_lvl, pi, observation, author.id]]
+    #             print('package built')
+    #             check = await self._process_submission(ctx=ctx, package=package, GKEY=GKEY, sheet='collector_submit')
+    #             if check:
+    #                 await self.bot.delete_message(message2)
+    #                 data.add_field(name='Status', value='Submission Complete')
+    #                 await self.bot.edit_message(message, embed=data)
+    #                 data.add_field(name='Duel Target System',
+    #                                value='Refreshed')
+    #                 async with aiohttp.ClientSession() as s:
+    #                     await asyncio.sleep(20)
+    #                     await self.cache_remote_file('duelist', s, force_cache=True, verbose=True)
+    #                     await self.bot.edit_message(message, embed=data)
+    #                     await self.bot.send_message(cdt_duels, embed=data)
+    #             else:
+    #                 await self.bot.delete_message(message2)
+    #                 data.add_field(name='Status', value='Submission failed')
+    #                 await self.bot.edit_message(message, embed=data)
+    #                 await self.bot.send_message(cdt_duels, embed=data)
 
-        else:
-            data.add_field(name='Ambiguous response',
-                           value='Submission cancelled')
-            await self.bot.edit_message(message, embed=data)
+    #     else:
+    #         data.add_field(name='Ambiguous response',
+    #                        value='Submission cancelled')
+    #         await self.bot.edit_message(message, embed=data)
 
     # @commands.has_any_role('DataDonors','CollectorDevTeam','CollectorSupportTeam','CollectorPartners')
     @submit.command(pass_context=True, name='defkill', aliases=['defko', ])
