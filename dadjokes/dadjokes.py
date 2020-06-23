@@ -2,8 +2,6 @@ import discord
 from discord.ext import commands
 import aiohttp
 import json
-from .utils import chat_formatting as chat
-import requests
 from .mcocTools import (PATREON, COLLECTOR_ICON, CDTEmbed)
 import random
 
@@ -29,10 +27,10 @@ class DadJokes:
                                   description=joke)
         data.set_author
         data.set_image(url=random.choice(self.dadjoke_images))
-        await self.bot.send_message(self.dadjoke_diagnostics, embed=data)
         try:
             await self.bot.send_message(ctx.message.channel, embed=data)
         except:
+            await self.bot.send_message(self.dadjoke_diagnostics, embed=data)
             self.bot.send_message(self.dadjoke_diagnostics,
                                   'dadjoke debug response.json: \n{}'.format(joke))
 
