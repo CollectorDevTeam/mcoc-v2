@@ -636,13 +636,14 @@ class MCOC(ChampionFactory):
             'sig_inc_zero': False,
         }
         self.tldr = dataIO.load_json('data/mcoc/tldr.json')
+        self.ability_counters = dataIO.load_json(
+            'data/mcoc/ability_counters.json')
         self.auntmai_file = 'data/mcoc/auntmai.json'
         self.auntmai = dataIO.load_json(self.auntmai_file)
         self.data_dir = "data/mcoc/{}/"
         self.shell_json = self.data_dir + "{}.json"
         self.split_re = re.compile(', (?=\w+:)')
         self.gsheet_handler = GSHandler(bot, gapi_service_creds)
-        self.ability_counters = {}
         # disabling some old signature stuff
         # self.gsheet_handler.register_gsheet(
         #     name='signature',
@@ -683,7 +684,7 @@ class MCOC(ChampionFactory):
         self.gsheet_handler.register_gsheet(
             name='ability_counters',
             gkey='1JSiGo-oGbPdmlegmGTH7hcurd_HYtkpTnZGY1mN_XCE',
-            local='data/mcocTools/sgd_ability_counters.json',
+            local='data/mcoc/ability_counters.json',
             sheet_name='counters',
             range_name='ability_counters',
         )
@@ -1172,8 +1173,9 @@ class MCOC(ChampionFactory):
             if filetime.date() != now:
                 await self.gsheet_handler.cache_gsheets(key)
                 self.tldr = dataIO.load_json('data/mcoc/tldr.json')
-        # else:
-        #     await self.gsheet_handler.cache_gsheets(key)
+        else:
+            await self.gsheet_handler.cache_gsheets(key)
+            self.tldr = dataIO.load_json('data/mcoc/tldr.json')
 
         if ctx.message.channel.is_private:
             ucolor = discord.Color.gold()
@@ -1271,7 +1273,13 @@ class MCOC(ChampionFactory):
     async def champ_counter(self, ctx, *, hargs=''):
         hook = self.bot.get_cog('Hook')
         robotworkshop = self.bot.get_channel('391330316662341632')
-
+        if self.ability_counters == {} or self.ability_counters == "{}":
+            await self.bot.send_message(robotworkshop, 'Pulling ability_counters.json')
+            await self.gsheet_handler.cache_gsheets('ability_counters')
+            self.tldr = dataIO.load_json('data/mcoc/ability_counters.json')
+            await self.bot.file_upload(robotworkshop, 'data/mcoc/ability_counters.json')
+        h_args = hargs.split(' ')
+        hargs = ' | '.join(self.ability_counters[h] for h in h_args)
         if hook is None:
             await self.bot.send_message(ctx.message.channel, 'Sorry, the Hook cog is not currently loaded.')
         else:
@@ -3464,7 +3472,8 @@ def check_folder():
 
 def check_file():
     data = {}
-    f = ['data/mcoc/auntmai.json']  # list of needed files in /mcoc
+    # list of needed files in /mcoc
+    f = ['data/mcoc/auntmai.json', 'data/mcoc/ability_counters.json']
     for i in f:
         if not dataIO.is_valid_json(i):
             print("I'm creating the file, so relax bruh.")
