@@ -4,7 +4,7 @@ import aiohttp
 import json
 from .utils import chat_formatting as chat
 import requests
-from .mcocTools import (PATREON, COLLECTOR_ICON, COLLECTOR_CRYSTAL, CDTEmbed)
+from .mcocTools import (PATREON, COLLECTOR_ICON, CDTEmbed)
 
 
 class DadJokes:
@@ -27,10 +27,11 @@ class DadJokes:
                 print(result)
                 print(attachments)
         if joke is not None:
-            data = CDTEmbed.get_embed(self, ctx, title='Dadjokes:sparkles:',
+            data = CDTEmbed.get_embed(self, ctx, title='Dad Jokes:sparkles:',
                                       description=joke)
             data.set_author
-
+            data.set_image(
+                url='https://cdn.discordapp.com/attachments/391330316662341632/725045045794832424/collector_dadjokes.png')
             # data = discord.Embed(
             #     title='DadJokes', color=discord.Color.gold(), description=joke)
             # data.set_thumbnail(url=COLLECTOR_FEATURED)
