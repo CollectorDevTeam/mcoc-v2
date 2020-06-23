@@ -1273,13 +1273,13 @@ class MCOC(ChampionFactory):
     async def champ_counter(self, ctx, *, hargs=''):
         hook = self.bot.get_cog('Hook')
         robotworkshop = self.bot.get_channel('391330316662341632')
-        if self.ability_counters == {} or self.ability_counters == "{}":
+        if self.ability_counters is {}:
             await self.bot.send_message(robotworkshop, 'Pulling ability_counters.json')
             await self.gsheet_handler.cache_gsheets('ability_counters')
             self.tldr = dataIO.load_json('data/mcoc/ability_counters.json')
-            await self.bot.file_upload(robotworkshop, 'data/mcoc/ability_counters.json')
+            # await self.bot.send_file(robotworkshop, 'data/mcoc/ability_counters.json')
         h_args = hargs.split(' ')
-        hargs = ' | '.join(self.ability_counters[h]['value'] for h in h_args)
+        hargs = ' | '.join(self.ability_counters[h] for h in h_args)
         if hook is None:
             await self.bot.send_message(ctx.message.channel, 'Sorry, the Hook cog is not currently loaded.')
         else:
