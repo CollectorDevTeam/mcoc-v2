@@ -1281,8 +1281,16 @@ class MCOC(ChampionFactory):
             # await self.bot.send_file(robotworkshop, 'data/mcoc/ability_counters.json')
         h_args = hargs.split(' ')
         if len(h_args) > 1:
-            hargs = ' | '.join(
-                self.ability_counters[h]['value'] for h in h_args)
+            package = []
+            for h in h_args:
+                if h in self.ability_counters.keys():
+                    package.append(self.ability_counters[h]['value'])
+                else:
+                    package.append(h)
+            await self.bot.send_message(robotworkshop, 'Recontextualizing ``{}`` as ``{}``'.format(hargs, ' '.join(package)))
+            hargs = ' '.join(package)
+            # hargs = ' | '.join(
+            #     self.ability_counters[h]['value'] for h in h_args)
             await self.bot.send_message(robotworkshop, 'Multiple #hashtags detected')
         if hook is None:
             await self.bot.send_message(ctx.message.channel, 'Sorry, the Hook cog is not currently loaded.')
