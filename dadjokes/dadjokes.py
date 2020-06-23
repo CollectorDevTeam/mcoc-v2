@@ -14,7 +14,7 @@ class DadJokes:
         self.bot = bot
         self.diagnostics = self.bot.get_channel('391330316662341632')
 
-    @commands.command(pass_context=True)
+    @commands.command(pass_context=True, aliases=('joke', 'dadjokes', 'jokes',))
     async def dadjoke(self, ctx):
         """Gets a random dad joke."""
         api = 'https://icanhazdadjoke.com/slack'
