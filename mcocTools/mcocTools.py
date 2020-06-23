@@ -38,6 +38,7 @@ logger.setLevel(logging.INFO)
 
 COLLECTOR_ICON = 'https://raw.githubusercontent.com/CollectorDevTeam/assets/master/data/cdt_icon.png'
 COLLECTOR_FEATURED = 'https://raw.githubusercontent.com/CollectorDevTeam/assets/master/data/images/featured/collector.png'
+COLLECTOR_CRYSTAL = 'https://media.discordapp.net/attachments/391330316662341632/725036637939171378/D1F5DE64D72C52880F61DBD6B2142BC6C096520D.png?width=461&height=461'
 PATREON = 'https://patreon.com/collectorbot'
 
 KABAM_ICON = 'https://imgur.com/UniRf5f.png'
