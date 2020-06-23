@@ -1,5 +1,5 @@
 {
-    "AUTHOR": "UltimatePancake",
+    "AUTHOR": "JJW",
     "INSTALL_MSG": "Gets a random dad joke from icanhazdadjoke.com",
     "NAME": "DadJokes",
     "SHORT": "Random dad jokes",
@@ -9,6 +9,9 @@
         "dad",
         "dadjokes"
     ],
-    "REQUIREMENTS": ['aiohttp', 'random', 'json'
+    "REQUIREMENTS": [
+        "aiohttp",
+        "random",
+        "json"
     ]
 }
