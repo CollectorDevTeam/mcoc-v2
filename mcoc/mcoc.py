@@ -1271,6 +1271,7 @@ class MCOC(ChampionFactory):
 
     @champ.command(pass_context=True, name='counters', aliases=('counter',))
     async def champ_counter(self, ctx, *, hargs=''):
+        '''Produce a list of champions that counter an ability'''
         hook = self.bot.get_cog('Hook')
         robotworkshop = self.bot.get_channel('391330316662341632')
         if self.ability_counters is {}:
