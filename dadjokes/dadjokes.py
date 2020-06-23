@@ -20,7 +20,7 @@ class DadJokes:
         api = 'https://icanhazdadjoke.com/slack'
         async with aiohttp.ClientSession() as session:
             async with session.get(api) as response:
-                result = json.loads(response.json)
+                result = response.json()
                 print(result)
         if result is not None:
             data = discord.Embed(
