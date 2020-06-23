@@ -405,7 +405,7 @@ class StaticGameData:
         self.cdt_masteries = dataIO.load_json(
             'data/mcocTools/sgd_cdt_masteries.json')
         self.cdt_stats = dataIO.load_json('data/mcocTools/sgd_cdt_stats.json')
-        self.ability_counters = ('data/mcocTools/ability_counters.json')
+        # self.ability_counters = ('data/mcocTools/ability_counters.json')
 
     async def parse_with_attr(self, *args, **kwargs):
         return await self.hash_parser.parse_with_attr(*args, **kwargs)
@@ -455,13 +455,13 @@ class StaticGameData:
             range_name='stats_export',
         )
 
-        self.gsheet_handler.register_gsheet(
-            name='ability_counters',
-            gkey='1JSiGo-oGbPdmlegmGTH7hcurd_HYtkpTnZGY1mN_XCE',
-            local='data/mcocTools/sgd_ability_counters.json',
-            sheet_name='counters',
-            range_name='stats_export',
-        )
+        # self.gsheet_handler.register_gsheet(
+        #     name='ability_counters',
+        #     gkey='1JSiGo-oGbPdmlegmGTH7hcurd_HYtkpTnZGY1mN_XCE',
+        #     local='data/mcocTools/sgd_ability_counters.json',
+        #     sheet_name='counters',
+        #     range_name='awahapo_counters',
+        # )
 
         # Update this list to add Events
         # events = ['13', '13.1', '14', '14.1', '15', '15.1', '16', '16.1', '17', '17.1', '17.2', '18', '18.1', '19',
@@ -523,10 +523,10 @@ class StaticGameData:
         dataIO.save_json('data/mcocTools/sgd_cdt_stats.json')
         await self.bot.edit_message(m3, 'CDT Stats saved')
         m4 = await self.bot.send_message(robotworkshop, 'Saving Ability counters')
-        self.ability_counters = await StaticGameData.get_gsheets_data('ability_counters')
-        dataIO.save_json(
-            'data/mcocTools/sgd_ability_counters.json', self.ability_counters)
-        await self.bot.edit_message(m4, 'Ability Counters saved')
+        # self.ability_counters = await StaticGameData.get_gsheets_data('ability_counters')
+        # dataIO.save_json(
+        #     'data/mcocTools/sgd_ability_counters.json', self.ability_counters)
+        # await self.bot.edit_message(m4, 'Ability Counters saved')
 
     async def cache_gsheets(self):
         print("Attempt gsheet pull")
@@ -1673,6 +1673,9 @@ class MCOCTools:
             return
         elif dataIO.is_valid_json('data/hook/{}/champs.json'.format(filename)) is True:
             await self.bot.send_file(ctx.message.channel, 'data/hook/{}/champs.json'.format(filename))
+            return
+        elif dataIO.is_valid_json('data/account/{}.json'.format(filename)) is True:
+            await self.bot.send_file(ctx.message.channel, 'data/account/{}.json'.format(filename))
             return
         elif dataIO.is_valid_json(filename) is True:
             await self.bot.send_file(ctx.message.channel, filename)

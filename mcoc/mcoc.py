@@ -635,28 +635,31 @@ class MCOC(ChampionFactory):
             'table_width': 9,
             'sig_inc_zero': False,
         }
+        self.tldr = dataIO.load_json('data/mcoc/tldr.json')
         self.auntmai_file = 'data/mcoc/auntmai.json'
         self.auntmai = dataIO.load_json(self.auntmai_file)
         self.data_dir = "data/mcoc/{}/"
         self.shell_json = self.data_dir + "{}.json"
         self.split_re = re.compile(', (?=\w+:)')
         self.gsheet_handler = GSHandler(bot, gapi_service_creds)
-        self.gsheet_handler.register_gsheet(
-            name='signature',
-            gkey='1kNvLfeWSCim8liXn6t0ksMAy5ArZL5Pzx4hhmLqjukg',
-            local=local_files['signature'],
-            postprocess=postprocess_sig_data,
-        )
-        self.gsheet_handler.register_gsheet(
-            name='sig_coeff_4star',
-            gkey='1WrAj9c41C4amzP8-jY-QhyKurO8mIeclk9C1pSvmWsk',
-            local=local_files['sig_coeff_4star'],
-        )
-        self.gsheet_handler.register_gsheet(
-            name='sig_coeff_5star',
-            gkey='1VHi9MioEGAsLoZneYQm37gPkmbD8mx7HHa-zuMiwWns',
-            local=local_files['sig_coeff_5star'],
-        )
+        self.ability_counters = {}
+        # disabling some old signature stuff
+        # self.gsheet_handler.register_gsheet(
+        #     name='signature',
+        #     gkey='1kNvLfeWSCim8liXn6t0ksMAy5ArZL5Pzx4hhmLqjukg',
+        #     local=local_files['signature'],
+        #     postprocess=postprocess_sig_data,
+        # )
+        # self.gsheet_handler.register_gsheet(
+        #     name='sig_coeff_4star',
+        #     gkey='1WrAj9c41C4amzP8-jY-QhyKurO8mIeclk9C1pSvmWsk',
+        #     local=local_files['sig_coeff_4star'],
+        # )
+        # self.gsheet_handler.register_gsheet(
+        #     name='sig_coeff_5star',
+        #     gkey='1VHi9MioEGAsLoZneYQm37gPkmbD8mx7HHa-zuMiwWns',
+        #     local=local_files['sig_coeff_5star'],
+        # )
         self.gsheet_handler.register_gsheet(
             name='synergy',
             gkey='1Apun0aUcr8HcrGmIODGJYhr-ZXBCE_lAR7EaFg_ZJDY',
@@ -676,6 +679,13 @@ class MCOC(ChampionFactory):
             sheet_name='output',
             range_name='tldr_output',
             # settings=dict(column_handler='champs: to_list')
+        )
+        self.gsheet_handler.register_gsheet(
+            name='ability_counters',
+            gkey='1JSiGo-oGbPdmlegmGTH7hcurd_HYtkpTnZGY1mN_XCE',
+            local='data/mcocTools/sgd_ability_counters.json',
+            sheet_name='counters',
+            range_name='ability_counters',
         )
 
     # 'spotlight': {'gkey': '1I3T2G2tRV05vQKpBfmI04VpvP5LjCBPfVICDmuJsjks',
@@ -1161,9 +1171,9 @@ class MCOC(ChampionFactory):
                 os.path.getctime('data/mcoc/tldr.json'))
             if filetime.date() != now:
                 await self.gsheet_handler.cache_gsheets(key)
-        else:
-            await self.gsheet_handler.cache_gsheets(key)
-        tldr = dataIO.load_json('data/mcoc/tldr.json')
+                self.tldr = dataIO.load_json('data/mcoc/tldr.json')
+        # else:
+        #     await self.gsheet_handler.cache_gsheets(key)
 
         if ctx.message.channel.is_private:
             ucolor = discord.Color.gold()
@@ -1173,20 +1183,20 @@ class MCOC(ChampionFactory):
             color=ucolor, title='Abilities are Too Long; Didn\'t Read', url=PATREON)
         k = champ.full_name
         package = ''
-        if k in tldr.keys():
-            if 'sig' in tldr[k].keys():
+        if k in self.tldr.keys():
+            if 'sig' in self.tldr[k].keys():
                 package += 'Signature Ability Required?\n'
-                package += tldr[k]['sig']+'\n\n'
+                package += self.tldr[k]['sig']+'\n\n'
                 # data.add_field(name="Signature Ability needed?", value=tldr[k]['sig'], inline=False)
             for i in range(1, 4):
                 uid = 'user{}'.format(i)
                 tid = 'tldr{}'.format(i)
-                if uid in tldr[k] and tldr[k][uid] != "":
-                    package += '**{}** says:\n'.format(tldr[k][uid])
+                if uid in self.tldr[k] and self.tldr[k][uid] != "":
+                    package += '**{}** says:\n'.format(self.tldr[k][uid])
                     package += '{}\n------------------------------\n'.format(
-                        tldr[k][tid])
+                        self.tldr[k][tid])
                     # data.add_field(name='{} says:'.format(tldr[k][uid]), value=tldr[k][tid], inline=False)
-            if 'user4' not in tldr[k].items():
+            if 'user4' not in self.tldr[k].items():
                 package += 'Don\'t like that advice? \n\n[Click here to add a TLDR!](https://forms.gle/EuhWXyE5kxydzFGK8)'
                 # data.description = 'Don\'t like that advice? \n\n[Click here to add a TLDR!](https://forms.gle/EuhWXyE5kxydzFGK8)'
         else:
@@ -1256,19 +1266,16 @@ class MCOC(ChampionFactory):
             await self.bot.send_message(ctx.message.channel, 'Sorry, the Hook cog is not currently loaded.')
         else:
             await hook.get_champ_list(ctx, hargs)
-    #     # hargs = await hook.HashtagRankConverter(ctx, hargs).convert() #imported from hook
-    #     #roster = hook.ChampionRoster(self.bot, self.bot.user, attrs=hargs.attrs)
-    #     # await roster.display(hargs.tags)
 
-    #     if ChampionRoster is not None:
-    #         sgd = StaticGameData()
-    #         aliases = {'#var2': '(#5star | #6star) & #size:xl',
-    #                    '#poisoni': '#poisonimmunity'}
-    #         roster = await sgd.parse_with_attr(ctx, hargs, ChampionRoster, aliases=aliases)
-    #         if roster is not None:
-    #             await roster.display()
-    #     else:
-    #         await self.bot.send_message(ctx.message.channel, 'Sorry, the Hook cog is not loaded right now.')
+    @champ.command(pass_context=True, name='counters', aliases=('counter',))
+    async def champ_counter(self, ctx, *, hargs=''):
+        hook = self.bot.get_cog('Hook')
+        robotworkshop = self.bot.get_channel('391330316662341632')
+
+        if hook is None:
+            await self.bot.send_message(ctx.message.channel, 'Sorry, the Hook cog is not currently loaded.')
+        else:
+            await hook.get_champ_list(ctx, hargs)
 
     @champ.command(pass_context=True, name='released', aliases=['odds', 'chances', ])
     async def champ_released(self, ctx, champ: ChampConverter = None):
