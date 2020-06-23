@@ -21,10 +21,11 @@ class DadJokes:
         async with aiohttp.ClientSession() as session:
             async with session.get(api) as response:
                 result = await response.json()
+                attachments = result['attachments'][0]
                 print(result)
         if result is not None:
             data = discord.Embed(
-                title='DadJokes', color=discord.Color.gold(), description=result['text'])
+                title='DadJokes', color=discord.Color.gold(), description=attachments['text'])
             data.set_thumbnail(url=COLLECTOR_FEATURED)
             data.footer(text='CollectorDevTeam | Requested by {}'.format(
                 ctx.message.author.display_name), url=COLLECTOR_ICON)
