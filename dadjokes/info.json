@@ -8,5 +8,7 @@
         "jokes",
         "dad",
         "dadjokes"
+    ],
+    "REQUIREMENTS": ['aiohttp', 'random', 'json'
     ]
 }
