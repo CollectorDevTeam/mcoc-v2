@@ -13,7 +13,7 @@ class DadJokes:
 
     def __init__(self, bot):
         self.bot = bot
-        self.diagnostics = self.bot.get_channel('391330316662341632')
+        self.dadjoke_diagnostics = self.bot.get_channel('725065939460030575')
         self.dadjoke_images = [
             'https://cdn.discordapp.com/attachments/391330316662341632/725045045794832424/collector_dadjokes.png',
             'https://cdn.discordapp.com/attachments/391330316662341632/725054700457689210/dadjokes2.png',
@@ -25,18 +25,16 @@ class DadJokes:
         """Gets a random dad joke."""
         author = ctx.message.author
         joke = await self.get_joke()
-        if joke is not None:
-            data = CDTEmbed.get_embed(self, ctx, title='CollectorVerse Dad Jokes:sparkles:',
-                                      description=joke)
-            data.set_author
-            data.set_image(url=random.choice(self.dadjoke_images))
-            await self.bot.send_message(self.diagnostics, embed=data)
-            try:
-                await self.bot.send_message(ctx.message.channel, embed=data)
-            except:
-                self.bot.send_message(self.diagnostics,
-                                      'dadjoke debug response.json: \n{}'.format(result))
-                print(joke)
+        data = CDTEmbed.get_embed(self, ctx, title='CollectorVerse Dad Jokes:sparkles:',
+                                  description=joke)
+        data.set_author
+        data.set_image(url=random.choice(self.dadjoke_images))
+        await self.bot.send_message(self.dadjoke_diagnostics, embed=data)
+        try:
+            await self.bot.send_message(ctx.message.channel, embed=data)
+        except:
+            self.bot.send_message(self.dadjoke_diagnostics,
+                                  'dadjoke debug response.json: \n{}'.format(joke))
 
     async def get_joke(self):
         api = 'https://icanhazdadjoke.com/slack'
