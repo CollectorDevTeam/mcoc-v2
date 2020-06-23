@@ -27,8 +27,9 @@ class DadJokes:
                 print(result)
                 print(attachments)
         if joke is not None:
-            data = CDTEmbed.get_embed(self, ctx, title='Dadjokes',
+            data = CDTEmbed.get_embed(self, ctx, title='Dadjokes:sparkles:',
                                       description=joke)
+            data.set_author
 
             # data = discord.Embed(
             #     title='DadJokes', color=discord.Color.gold(), description=joke)

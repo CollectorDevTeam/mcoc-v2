@@ -2757,7 +2757,7 @@ class CDTEmbed:
         if description is not None:
             if len(description) < 1500:
                 data.description = description
-        data.set_author(name='CollectorVerse:sparkles:',
+        data.set_author(name='CollectorVerse',
                         icon_url=COLLECTOR_ICON)
         if image is not None:
             validators.url(image)
