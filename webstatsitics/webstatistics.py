@@ -22,7 +22,7 @@ class WebStatistics:
         self.handler = None
         self.dispatcher = {}
         self.settings = dataIO.load_json('data/webstatistics/settings.json')
-        self.ip = ipgetter2.get()['v4']
+        self.ip = ipgetter2.get().v4
         self.port = self.settings['server_port']
         self.bot.loop.create_task(self.make_webserver())
 
@@ -31,6 +31,16 @@ class WebStatistics:
 
     async def get_bot(self):
         return self.bot.user
+
+    async def set_ip(self):
+        ip = None
+        while ip is None:
+            v4 = ipgetter.get().v4
+            if v4 != '':
+                ip = v4
+        if ip is not None:
+            self.ip = ip
+            return
 
     async def _get_servers_html(self, data):
         template = """
@@ -112,6 +122,8 @@ class WebStatistics:
         async def page(request):
             body = await self.generate_body()
             return web.Response(text=body, content_type='text/html')
+        if self.ip is None:
+            await self.set_ip()
 
         await asyncio.sleep(10)
 
@@ -149,7 +161,7 @@ def check_file():
 def setup(bot):
     if not has_ipgetter:
         raise RuntimeError(
-            'ipgetter is not installed. Run `pip3 install ipgetter2 --upgrade` to use this cog.')
+            'ipgetter2 is not installed. Run `pip3 install ipgetter2 --upgrade` to use this cog.')
     elif not bot.get_cog('Statistics'):
         raise RuntimeError('To run this cog, you need the Statistics cog')
     else:
