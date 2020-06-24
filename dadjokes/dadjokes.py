@@ -11,8 +11,7 @@ class DadJokes:
 
     def __init__(self, bot):
         self.bot = bot
-        self.diagnostics = DIAGNOSTICS(self, self.bot)
-        self.diagnostics.log_channel(
+        self.diagnostics = DIAGNOSTICS(self.bot).log_channel(
             channel=self.bot.get_channel('725065939460030575'))
         self.dadjoke_images = [
             'https://cdn.discordapp.com/attachments/391330316662341632/725045045794832424/collector_dadjokes.png',
