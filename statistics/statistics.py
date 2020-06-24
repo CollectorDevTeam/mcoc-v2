@@ -29,10 +29,12 @@ class Statistics:
             x['discord_version'] = str(discord.__version__)
             x['id'] = self.bot.user.id
             x['discriminator'] = self.bot.user.discriminator
-            x['created_at'] = self.bot.user.created_at.strftime('%B %d, %Y at %H:%M:%S')
+            x['created_at'] = self.bot.user.created_at.strftime(
+                '%B %d, %Y at %H:%M:%S')
             x['loaded_cogs'] = [cog for cog in self.bot.cogs]
             x['prefixes'] = self.bot.settings.prefixes
-            x['servers'] = [{'name': server.name, 'members': len(server.members), 'icon_url': server.icon_url} for server in self.bot.servers]
+            x['servers'] = [{'name': server.name, 'members': len(
+                server.members), 'icon_url': server.icon_url} for server in self.bot.servers]
             x['cogs'] = len(self.bot.cogs)
             return x
         else:
@@ -47,7 +49,7 @@ class Statistics:
         await self.bot.say(embed=message)
 
     @commands.command(pass_context=True)
-    async def statsrefresh(self, context, seconds: int=0):
+    async def statsrefresh(self, context, seconds: int = 0):
         """
         Set the refresh rate by which the statistics are updated
 
@@ -76,18 +78,24 @@ class Statistics:
         stats = self.retrieve_statistics()
         em = discord.Embed(description=u'\u2063\n', color=discord.Color.red())
         avatar = self.bot.user.avatar_url if self.bot.user.avatar else self.bot.user.default_avatar_url
-        em.set_author(name='Statistics of {}'.format(stats['name']), icon_url=avatar)
+        em.set_author(name='Statistics of {}'.format(
+            stats['name']), icon_url=avatar)
 
-        em.add_field(name='**Uptime**', value='{}'.format(self.get_bot_uptime(brief=True)))
+        em.add_field(name='**Uptime**',
+                     value='{}'.format(self.get_bot_uptime(brief=True)))
 
-        em.add_field(name='**Users**', value=stats['users'])
-        em.add_field(name='**Servers**', value=stats['total_servers'])
+        em.add_field(name='**Unique Users**', value=stats['users'])
+        em.add_field(name='**Guild Servers**', value=stats['total_servers'])
+        em.add_field(name='**Guild Members**', value=stats['members'])
 
         em.add_field(name='**Channels**', value=str(stats['channels']))
-        em.add_field(name='**Text channels**', value=str(stats['text_channels']))
-        em.add_field(name='**Voice channels**', value=str(stats['voice_channels']))
+        em.add_field(name='**Text channels**',
+                     value=str(stats['text_channels']))
+        em.add_field(name='**Voice channels**',
+                     value=str(stats['voice_channels']))
 
-        em.add_field(name='**Messages received**', value=str(stats['read_messages']))
+        em.add_field(name='**Messages received**',
+                     value=str(stats['read_messages']))
         em.add_field(name='**Commands run**', value=str(stats['commands_run']))
         em.add_field(name=u'\u2063', value=u'\u2063')
 
@@ -96,15 +104,19 @@ class Statistics:
         em.add_field(name=u'\u2063', value=u'\u2063')
 
         em.add_field(name=u'\u2063', value=u'\u2063', inline=False)
-        em.add_field(name='**CPU**', value='{0:.1f}%'.format(stats['cpu_usage']))
-        em.add_field(name='**Memory**', value='{0:.0f} MB ({1:.2f}%)'.format(stats['mem_v_mb'] / 1024 / 1024, stats['mem_v']))
+        em.add_field(name='**CPU**',
+                     value='{0:.1f}%'.format(stats['cpu_usage']))
+        em.add_field(name='**Memory**', value='{0:.0f} MB ({1:.2f}%)'.format(
+            stats['mem_v_mb'] / 1024 / 1024, stats['mem_v']))
         em.add_field(name='**Threads**', value='{}'.format(stats['threads']))
         em.set_footer(text='API version {}'.format(discord.__version__))
         return em
 
     def retrieve_statistics(self):
         name = self.bot.user.name
-        users = str(len(set(self.bot.get_all_members())))
+        # users = str(len(set(self.bot.get_all_members())))
+        users = str(len(self._get_all_users()))
+        members = str(len(set(self.bot.get_all_members)))
         servers = str(len(self.bot.servers))
         commands_run = self.bot.counter['processed_commands']
         read_messages = self.bot.counter['messages_read']
@@ -130,7 +142,7 @@ class Statistics:
         channels = text_channels + voice_channels
 
         stats = {
-            'name': name, 'users': users, 'total_servers': servers, 'commands_run': commands_run,
+            'name': name, 'users': users, 'members': members, 'total_servers': servers, 'commands_run': commands_run,
             'read_messages': read_messages, 'text_channels': text_channels,
             'voice_channels': voice_channels, 'channels': channels,
             'cpu_usage': cpu_usage, 'mem_v': mem_v, 'mem_v_mb': mem_v_mb, 'threads': threads,
@@ -157,6 +169,15 @@ class Statistics:
 
         return fmt.format(d=days, h=hours, m=minutes, s=seconds)
 
+    def _get_all_users(self):
+        '''counts unique member ids'''
+        users = []
+        members = self.bot.get_all_members
+        for member in members:
+            if member.id not in users:
+                users.append(member.id)
+        return users
+
 
 def check_folder():
     if not os.path.exists('data/statistics'):
@@ -176,7 +197,8 @@ def check_file():
 
 def setup(bot):
     if psutil is False:
-        raise RuntimeError('psutil is not installed. Run `pip3 install psutil --upgrade` to use this cog.')
+        raise RuntimeError(
+            'psutil is not installed. Run `pip3 install psutil --upgrade` to use this cog.')
     else:
         check_folder()
         check_file()
