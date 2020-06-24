@@ -2534,7 +2534,7 @@ class DIAGNOSTICS:
         self.bot = bot
         self.channel = None
 
-    def logger(self, channel)
+    def logger(self, channel):
         self.channel = channel)
 
     async def log(self, ctx, msg = None)
