@@ -2532,32 +2532,30 @@ class DIAGNOSTICS:
 
     def __init__(self, bot):
         self.bot = bot
-        self.channel = None
+        self.channel = self.bot.get_channel('391330316662341632')
 
-    def log_channel(self, channel):
-        self.channel = channel
-
-    async def log(self, ctx, msg=None):
-        if self.channel is not None:
-            message = 'CollectorDevTeam diagnostics:\n```'
-            if ctx.message.channel.is_private is True:
-                message += 'Private Channel: [{}]\n'.format(
-                    ctx.message.channel.id)
-            elif ctx.message.channel.is_private is False:
-                message += 'Server: {0.message.server.name} [{0.message.server.id}]\n'
-                'Channel: {0.message.channel.name} [{0.message.channel.id}]\n'.format(
-                    ctx)
-            message += 'User: {0.message.author.display_name} [{0.message.author.id}]\n'.format(
+    async def log(self, ctx, msg=None, channel=None):
+        if channel is None:
+            channel = self.channel
+        message = 'CollectorDevTeam diagnostics:\n```'
+        if ctx.message.channel.is_private is True:
+            message += 'Private Channel: [{}]\n'.format(
+                ctx.message.channel.id)
+        elif ctx.message.channel.is_private is False:
+            message += 'Server: {0.message.server.name} [{0.message.server.id}]\n'
+            'Channel: {0.message.channel.name} [{0.message.channel.id}]\n'.format(
                 ctx)
-            if ctx.invoked_subcommand is not None:
-                message += 'Command Invoked: {}\Subcommand Invoked: {}'.format(
-                    ctx)
-            elif ctx.invoked is not None:
-                message += 'Invoked command: {0.invoked}'.format(ctx)
-            if msg is not None:
-                message += 'Comment: {}\n'.format(msg)
-            message += '```'
-            await self.bot.send_message(self.channel, message)
+        message += 'User: {0.message.author.display_name} [{0.message.author.id}]\n'.format(
+            ctx)
+        if ctx.invoked_subcommand is not None:
+            message += 'Command Invoked: {}\Subcommand Invoked: {}'.format(
+                ctx)
+        elif ctx.invoked is not None:
+            message += 'Invoked command: {0.invoked}'.format(ctx)
+        if msg is not None:
+            message += 'Comment: {}\n'.format(msg)
+        message += '```'
+        await self.bot.send_message(channel, message)
 
 
 class SCREENSHOT:
