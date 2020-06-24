@@ -500,6 +500,7 @@ class StaticGameData:
             raw_data = await self.fetch_json(url=files[f], filepath=f)
             if raw_data is not None:
                 m1msg += '{} saved.\n'.format(f)
+                val, ver = {}, {}
                 for dlist in raw_data['strings']:
                     val[dlist['k']] = dlist['v']
                     if 'vn' in dlist:
