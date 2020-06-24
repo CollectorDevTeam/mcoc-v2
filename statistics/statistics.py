@@ -116,7 +116,7 @@ class Statistics:
         name = self.bot.user.name
         # users = str(len(set(self.bot.get_all_members())))
         users = str(len(self._get_all_users()))
-        members = str(len(set(self.bot.get_all_members)))
+        members = str(len(set(self.bot.get_all_members())))
         servers = str(len(self.bot.servers))
         commands_run = self.bot.counter['processed_commands']
         read_messages = self.bot.counter['messages_read']
@@ -172,7 +172,7 @@ class Statistics:
     def _get_all_users(self):
         '''counts unique member ids'''
         users = []
-        members = self.bot.get_all_members
+        members = self.bot.get_all_members()
         for member in members:
             if member.id not in users:
                 users.append(member.id)
