@@ -2584,7 +2584,7 @@ class DIAGNOSTICS:
             message += 'Private Channel: [{}]\n'.format(
                 ctx.message.channel.id)
         elif ctx.message.channel.is_private is False:
-            message += 'Server: {0.message.server.name} [{0.message.server.id}]\n' \
+            message += 'Server: {0.message.server.name} [{0.message.server.id}]\n'.format(ctx) \
                 'Channel: {0.message.channel.name} [{0.message.channel.id}]\n'.format(
                     ctx)
         message += 'User: {0.message.author.display_name} [{0.message.author.id}]\n'.format(
