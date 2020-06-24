@@ -170,6 +170,7 @@ class MCOCMaps:
 
     def __init__(self, bot):
         self.bot = bot
+        self.diagnostics = self.bog.get_channel('725397961072181349')
         self.umcoc = self.bot.get_server('378035654736609280')
         self.catmurdock = self.umcoc.get_member('373128988962586635')
         self.jjw = self.umcoc.get_member('124984294035816448')
