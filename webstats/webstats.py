@@ -3,7 +3,7 @@ from aiohttp import web
 import datetime
 import asyncio
 import os
-import ipgetter2
+from ipgetter2 import IPGetter
 
 # try:
 #     import ipgetter2
@@ -22,7 +22,7 @@ class WebStats:
         self.handler = None
         self.dispatcher = {}
         self.settings = dataIO.load_json('data/webstatistics/settings.json')
-        self.ip = ipgetter2.get().v4
+        self.ip = IPGetter.get().v4
         self.port = self.settings['server_port']
         self.bot.loop.create_task(self.make_webserver())
 
