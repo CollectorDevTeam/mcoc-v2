@@ -2535,18 +2535,18 @@ class DIAGNOSTICS:
         self.channel = None
 
     def logger(self, channel):
-        self.channel = channel)
+        self.channel = channel
 
-    async def log(self, ctx, msg = None)
-        if self.channel is not None:
-            message='CollectorDevTeam diagnostics:\n```'
-            if ctx.message.channel.is_private() is True:
-                    message += 'Private Channel: [{}]\n'.format(
-                        ctx.message.channel.id)
+    async def log(self, ctx, msg=None)
+     if self.channel is not None:
+          message = 'CollectorDevTeam diagnostics:\n```'
+           if ctx.message.channel.is_private() is True:
+                message += 'Private Channel: [{}]\n'.format(
+                    ctx.message.channel.id)
             elif ctx.message.channel.is_private() is False:
                 message += 'Server: {0.message.server.name} [{0.message.server.id}]\n'
-                    'Channel: {0.message.channel.name} [{0.message.channel.id}]\n'.format(
-                        ctx)
+                 'Channel: {0.message.channel.name} [{0.message.channel.id}]\n'.format(
+                      ctx)
             message += 'User: {0.message.author.display_name} [{0.message.author.id}]\n'.format(
                 ctx)
             if ctx.invoked_subcommand is not None:
@@ -2564,29 +2564,29 @@ class SCREENSHOT:
     """Save a Screenshot from x website in mcocTools"""
 
     def __init__(self, bot):
-        self.bot= bot
-        self.settings= dataIO.load_json('data/mcocTools/settings.json')
+        self.bot = bot
+        self.settings = dataIO.load_json('data/mcocTools/settings.json')
         if 'calendar' not in self.settings.keys():
-            self.settings['calendar']= {'screenshot': '', 'time': 0}
+            self.settings['calendar'] = {'screenshot': '', 'time': 0}
             dataIO.save_json('data/mcocTools/settings.json', self.settings)
 
-    async def get_screenshot(self, url, w =1920, h=1080):
-        chrome_options= Options()
+    async def get_screenshot(self, url, w=1920, h=1080):
+        chrome_options = Options()
         chrome_options.add_argument("--headless")
         chrome_options.add_argument("--window-size={}, {}".format(w, h))
         chrome_options.add_argument("allow-running-insecure-content")
         # chrome_options.binary_location = '/Applications/Google Chrome   Canary.app/Contents/MacOS/Google Chrome Canary'
-        driver= webdriver.Chrome(
-            executable_path ="C:\webdrivers\chromedriver_win32\chromedriver",   chrome_options=chrome_options)
-        channel= self.bot.get_channel('391330316662341632')
+        driver = webdriver.Chrome(
+            executable_path="C:\webdrivers\chromedriver_win32\chromedriver",   chrome_options=chrome_options)
+        channel = self.bot.get_channel('391330316662341632')
         # DRIVER = 'chromedriver'
         # driver = webdriver.Chrome(DRIVER)
         driver.get(url)
 
-        screenshot= driver.save_screenshot('data/mcocTools/temp.png')
+        screenshot = driver.save_screenshot('data/mcocTools/temp.png')
         driver.quit()
         # await asyncio.sleep(3)
-        message= await self.bot.send_file(channel, 'data/mcocTools/temp.png')
+        message = await self.bot.send_file(channel, 'data/mcocTools/temp.png')
         await asyncio.sleep(5)
         if len(message.attachments) > 0:
             return message.attachments[0]['url']
@@ -2597,16 +2597,16 @@ class SCREENSHOT:
 class CDTHelperFunctions:
     """Helper Functions"""
 
-    def tabulate(table_data, width, rotate =True, header_sep=True, align_out=True):
-        rows= []
-        cells_in_row= None
+    def tabulate(table_data, width, rotate=True, header_sep=True, align_out=True):
+        rows = []
+        cells_in_row = None
         for i in iter_rows(table_data, rotate):
             if cells_in_row is None:
-                cells_in_row= len(i)
+                cells_in_row = len(i)
             elif cells_in_row != len(i):
                 raise IndexError("Array is not uniform")
             if align_out:
-                fstr= '{:<{width}}'
+                fstr = '{:<{width}}'
                 if len(i) > 1:
                     fstr += '|' + '|'.join(['{:>{width}}'] * (len(i) - 1))
                 rows.append(fstr.format(*i, width=width))
@@ -2617,22 +2617,22 @@ class CDTHelperFunctions:
             rows.insert(1, '|'.join(['-' * width] * cells_in_row))
         return chat.box('\n'.join(rows))
 
-    def tabulate_data(table_data, width =None, align=None, rotate=False, separate_header=True):
+    def tabulate_data(table_data, width=None, align=None, rotate=False, separate_header=True):
         """Turn a list of lists into a tabular string"""
-        align_opts= {'center': '^', 'left': '<', 'right': '>'}
-        default_align= 'center'
-        default_width= 5
+        align_opts = {'center': '^', 'left': '<', 'right': '>'}
+        default_align = 'center'
+        default_width = 5
 
-        rows= []
+        rows = []
         if table_data:
-            tbl_cols= len(table_data[0])
+            tbl_cols = len(table_data[0])
             if any(len(x) != tbl_cols for x in table_data):
                 raise IndexError('Array is not uniform')
 
-            width= CDTHelperFunctions.pad_list(width, tbl_cols, default_width)
-            align= CDTHelperFunctions.pad_list(align, tbl_cols, default_align)
+            width = CDTHelperFunctions.pad_list(width, tbl_cols, default_width)
+            align = CDTHelperFunctions.pad_list(align, tbl_cols, default_align)
             for i in CDTHelperFunctions.iter_rows(table_data, rotate):
-                fstr= '{:{}{}}'.format(i[0], align_opts[align[0]], width[0])
+                fstr = '{:{}{}}'.format(i[0], align_opts[align[0]], width[0])
                 if tbl_cols > 1:
                     for n in range(1, tbl_cols):
                         fstr += '|{:{}{}}'.format(i[n],
@@ -2645,8 +2645,8 @@ class CDTHelperFunctions:
     def pad_list(lst, new_length, pad_value):
         """Pad out a list to a desired length"""
         if lst is None:
-            lst= []
-        pad= [pad_value] * (new_length - len(lst))
+            lst = []
+        pad = [pad_value] * (new_length - len(lst))
         for x in pad:
             lst.append(x)
         return lst
@@ -2657,7 +2657,7 @@ class CDTHelperFunctions:
                 yield i
         else:
             for j in range(len(array[0])):
-                row= []
+                row = []
                 for i in range(len(array)):
                     row.append(array[i][j])
                 yield row
@@ -2667,11 +2667,11 @@ class CDTReport:
     """Report Users"""
 
     def __init__(self, bot):
-        self.bot= bot
-        self.settings= dataIO.load_json('data/mcocTools/settings.json')
+        self.bot = bot
+        self.settings = dataIO.load_json('data/mcocTools/settings.json')
 
     async def init(self, server):
-        self.settings[server.id]= {
+        self.settings[server.id] = {
             'report-channel': '0'
         }
 
@@ -2697,7 +2697,7 @@ class CDTReport:
 
     @commands.group(pass_context=True)
     @checks.admin()
-    async def reportchannel(self, ctx, *, channel: discord.Channel= None):
+    async def reportchannel(self, ctx, *, channel: discord.Channel = None):
         """Sets a channel as log"""
 
         if not channel:
@@ -2713,7 +2713,7 @@ class CDTReport:
 
     @commands.group(pass_context=True, hidden=True)
     @checks.admin()
-    async def masterchannel(self, ctx, *, channel: discord.Channel= None):
+    async def masterchannel(self, ctx, *, channel: discord.Channel = None):
         """Sets a global channel as log"""
         if ctx.message.author.id in ('148622879817334784', '124984294035816448', '209339409655398400'):
             if not channel:
@@ -2738,14 +2738,14 @@ class CDTReport:
         try:
             reportchannel = self.bot.get_channel(
                 self.settings[server.id]['report-channel'])
-            masterchannel= self.bot.get_channel(
+            masterchannel = self.bot.get_channel(
                 self.settings['cdt-master-channel'])
         except:
             KeyError
             await self.bot.send_message(ctx.message.author,
                                         "Uh Oh! Your report was not sent D: Please let an admin know that they need to set the default report channel")
             return
-        embed= discord.Embed(
+        embed = discord.Embed(
             title="Report:", description="A Report has been filed against somebody!")
         embed.set_author(name="CollectorVerse Report System")
         embed.add_field(name="User:", value=person, inline=False)
