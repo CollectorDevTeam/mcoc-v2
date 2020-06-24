@@ -1,7 +1,7 @@
 {
     "AUTHOR": "JJW",
     "INSTALL_MSG": "CDT Statistics Cog required",
-    "NAME": "webstatistics",
+    "NAME": "WebStatistics",
     "SHORT": "Webstatistics",
     "DESCRIPTION": "CollectorBot Web Statistics",
     "REQUIREMENTS": [
