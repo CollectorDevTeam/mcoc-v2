@@ -2545,9 +2545,8 @@ class DIAGNOSTICS:
 
     def __init__(self, bot):
         self.bot = bot
-        self.channel = self.bot.get_channel('391330316662341632')
 
-    async def log(self, ctx, msg=None, channel=None):
+    def log(self, ctx, msg=None):
         if channel is None:
             channel = self.channel
         message = 'CollectorDevTeam diagnostics:\n```'
@@ -2568,7 +2567,7 @@ class DIAGNOSTICS:
         if msg is not None:
             message += 'Comment: {}\n'.format(msg)
         message += '```'
-        await self.bot.send_message(channel, message)
+        return message
 
 
 class SCREENSHOT:

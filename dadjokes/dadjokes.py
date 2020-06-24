@@ -11,7 +11,7 @@ class DadJokes:
 
     def __init__(self, bot):
         self.bot = bot
-        self.diagnostics = DIAGNOSTICS(self)
+        self.diagnostics = DIAGNOSTICS(self.bot)
         self.channel = self.bot.get_channel('725065939460030575')
         self.dadjoke_images = [
             'https://cdn.discordapp.com/attachments/391330316662341632/725045045794832424/collector_dadjokes.png',
@@ -30,9 +30,9 @@ class DadJokes:
         data.set_image(url=random.choice(self.dadjoke_images))
         try:
             await self.bot.send_message(ctx.message.channel, embed=data)
-            await self.diagnostics.log(ctx, msg=joke, channel=self.channel)
+            await self.bot.send_message(channel=self.channel, self.diagnostics.log(ctx, msg=joke))
         except:
-            await self.diagnostics.log(ctx, channel=self.channel)
+            await self.bot.send_message(channel=self.channel, self.diagnostics.log(ctx, msg=joke))
 
     async def get_joke(self):
         api = 'https://icanhazdadjoke.com/slack'
