@@ -3,6 +3,7 @@ from discord.ext import commands
 import aiohttp
 import json
 from .mcocTools import (PATREON, COLLECTOR_ICON, CDTEmbed)
+from redbot.core.utils import mod
 import random
 
 

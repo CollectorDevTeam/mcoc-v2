@@ -1,18 +1,9 @@
 import discord
-# import asyncio
-# import aiohttp
 import urllib
-# import json  # For fetching JSON from alliancewar.com
-# import os
-# import requests
-# import re
-# import json
-# from .utils.dataIO import dataIO
 from discord.ext import commands
 from __main__ import send_cmd_help
 from .mcocTools import (CDTEmbed,
                         StaticGameData, PagesMenu, KABAM_ICON, COLLECTOR_ICON, CDTHelperFunctions)
-# from .mcoc import ChampConverter, ChampConverterDebug, Champion
 
 PATREON = 'https://patreon.com/collectorbot'
 JOINCDT = 'https://discord.gg/BwhgZxk'
@@ -23,15 +14,10 @@ class MCOCMaps:
     """Maps for Marvel Contest of Champions"""
     basepath = 'https://raw.githubusercontent.com/CollectorDevTeam/assets/master/data/images/maps/'
     icon_sdf = 'https://raw.githubusercontent.com/CollectorDevTeam/assets/master/data/sdf_icon.png'
-
-    # aw_maps = {'advanced': aw_advanced,
-    #            'challenger': aw_challenger,
-    #            'expert': aw_expert,
-    #            'hard': aw_hard,
-    #            'intermediate': aw_intermediate,
-    #            'easy': aw_advanced,
-    #            'normal': aw_advanced
-    #            }
+    catcorner = '{}catmurdock/cat_corner_left.png'.format(
+        basepath)
+    catsupport = 'Visit Cat\'s [Store](https://www.redbubble.com/people/CatMurdock/explore)\n'\
+        '<:twitter:548637190587154432>[@CatMurdock_art](https://twitter.com/CatMurdock_Art)'
 
     aq_map = {
         'cheatsheet': {'map': 'cheatsheetv2', 'maptitle': 'Season 5 Cheat Sheet'},
@@ -146,56 +132,6 @@ class MCOCMaps:
                 '7': ['colossus', 'x23', 'maestro']
                 }
 
-    # aw_map_paths = {
-    #     'bosskill': {
-    #         'A': [1, 2, 19, 25, 46, 49, 50, 53],
-    #         'B': [],
-    #         'C': [3, 21, 27, 41, 45, 47, 51],
-    #         'D': [11, 17, 22, 28, 34, 36, 48],
-    #         'E': [],
-    #         'F': [12, 18, 24, 30, 35, 37, 48],
-    #         'G': [4, 7, 13, 14, 31, 38, 42, 52],
-    #         'H': [],
-    #         'I': [6, 9, 15, 14, 33, 40, 44, 55]
-    #     },
-    #     'expert': {
-    #         'A': [1, 19, 25, 46, 49, 50, 53],
-    #         'B': [1, 2, 19, 20, 26, 41, 45, 47],
-    #         'C': [3, 21, 27, 41, 45, 47, 51],
-    #         'D': [11, 17, 22, 28, 34, 36, 48],
-    #         'E': [10, 16, 23, 29, 48],
-    #         'F': [12, 18, 24, 30, 35, 37, 48],
-    #         'G': [4, 7, 13, 14, 31, 38, 42, 52],
-    #         'H': [5, 8, 14, 32, 39, 43, 55],
-    #         'I': [6, 9, 15, 14, 33, 40, 44, 55]
-    #     },
-
-    # }
-
-    # aw_tiers = {1: {'mult': 8.0, 'diff': 'Expert', 'color': discord.Color.gold()},
-    #             2: {'mult': 7.0, 'diff': 'Expert', 'color': discord.Color.gold()},
-    #             3: {'mult': 6.0, 'diff': 'Expert', 'color': discord.Color.gold()},
-    #             4: {'mult': 4.5, 'diff': 'Challenger', 'color': discord.Color.red()},
-    #             5: {'mult': 4.0, 'diff': 'Challenger', 'color': discord.Color.red()},
-    #             6: {'mult': 3.4, 'diff': 'Hard', 'color': discord.Color.orange()},
-    #             7: {'mult': 3.2, 'diff': 'Hard', 'color': discord.Color.orange()},
-    #             8: {'mult': 3.0, 'diff': 'Hard', 'color': discord.Color.orange()},
-    #             9: {'mult': 2.8, 'diff': 'Hard', 'color': discord.Color.orange()},
-    #             10: {'mult': 2.4, 'diff': 'Intermediate', 'color': discord.Color.blue()},
-    #             11: {'mult': 2.3, 'diff': 'Intermediate', 'color': discord.Color.blue()},
-    #             12: {'mult': 2.2, 'diff': 'Intermediate', 'color': discord.Color.blue()},
-    #             13: {'mult': 2.0, 'diff': 'Normal', 'color': discord.Color.green()},
-    #             14: {'mult': 1.9, 'diff': 'Normal', 'color': discord.Color.green()},
-    #             15: {'mult': 1.8, 'diff': 'Normal', 'color': discord.Color.green()},
-    #             16: {'mult': 1.6, 'diff': 'Easy', 'color': discord.Color.green()},
-    #             17: {'mult': 1.5, 'diff': 'Easy', 'color': discord.Color.green()},
-    #             18: {'mult': 1.4, 'diff': 'Easy', 'color': discord.Color.green()},
-    #             19: {'mult': 1.3, 'diff': 'Easy', 'color': discord.Color.green()},
-    #             20: {'mult': 1.2, 'diff': 'Easy', 'color': discord.Color.green()},
-    #             21: {'mult': 1.1, 'diff': 'Easy', 'color': discord.Color.green()},
-    #             22: {'mult': 1.0, 'diff': 'Easy', 'color': discord.Color.green()},
-                }
-
     enigmatics = {
         'maestro': ['Maestro', 'At the start of the fight, Maestro changes his class abilities depending on his Opponent.'
                     '\n**vs. MYSTIC** Applies different Debuffs depending on specific actions taken by Maestro and his Opponents'
@@ -237,10 +173,6 @@ class MCOCMaps:
         self.umcoc = self.bot.get_server('378035654736609280')
         self.catmurdock = self.umcoc.get_member('373128988962586635')
         self.jjw = self.umcoc.get_member('124984294035816448')
-        self.catcorner = '{}catmurdock/cat_corner_left.png'.format(
-            self.basepath)
-        self.catsupport = 'Visit Cat\'s [Store](https://www.redbubble.com/people/CatMurdock/explore)\n'\
-            '<:twitter:548637190587154432>[@CatMurdock_art](https://twitter.com/CatMurdock_Art)'
 
     @commands.group(pass_context=True, aliases=('map',))
     async def maps(self, ctx):
