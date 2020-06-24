@@ -30,9 +30,11 @@ class DadJokes:
         data.set_image(url=random.choice(self.dadjoke_images))
         try:
             await self.bot.send_message(ctx.message.channel, embed=data)
-            await self.bot.send_message(channel=self.channel, self.diagnostics.log(ctx, msg=joke))
+            msg = self.diagnostics.log(ctx)
+            await self.bot.send_message(channel=self.channel, msg)
         except:
-            await self.bot.send_message(channel=self.channel, self.diagnostics.log(ctx, msg=joke))
+            msg = self.diagnostics.log(ctx, msg=joke)
+            await self.bot.send_message(channel=self.channel, msg)
 
     async def get_joke(self):
         api = 'https://icanhazdadjoke.com/slack'

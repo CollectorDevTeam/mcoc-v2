@@ -2547,8 +2547,6 @@ class DIAGNOSTICS:
         self.bot = bot
 
     def log(self, ctx, msg=None):
-        if channel is None:
-            channel = self.channel
         message = 'CollectorDevTeam diagnostics:\n```'
         if ctx.message.channel.is_private is True:
             message += 'Private Channel: [{}]\n'.format(
