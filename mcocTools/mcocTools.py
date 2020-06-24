@@ -2540,10 +2540,10 @@ class DIAGNOSTICS:
     async def log(self, ctx, msg=None):
         if self.channel is not None:
             message = 'CollectorDevTeam diagnostics:\n```'
-            if ctx.message.channel.is_private() is True:
+            if ctx.message.channel.is_private is True:
                 message += 'Private Channel: [{}]\n'.format(
                     ctx.message.channel.id)
-            elif ctx.message.channel.is_private() is False:
+            elif ctx.message.channel.is_private is False:
                 message += 'Server: {0.message.server.name} [{0.message.server.id}]\n'
                 'Channel: {0.message.channel.name} [{0.message.channel.id}]\n'.format(
                     ctx)
