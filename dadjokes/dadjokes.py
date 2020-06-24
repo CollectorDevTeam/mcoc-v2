@@ -31,7 +31,7 @@ class DadJokes:
         try:
             await self.bot.send_message(ctx.message.channel, embed=data)
             msg = self.diagnostics.log(ctx)
-            await self.bot.send_message(channel=self.channel, msg)
+            await self.bot.send_message(self.channel, msg)
         except:
             msg = self.diagnostics.log(ctx, msg=joke)
             await self.bot.send_message(self.channel, msg)
