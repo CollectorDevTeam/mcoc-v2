@@ -34,7 +34,7 @@ class DadJokes:
             await self.bot.send_message(channel=self.channel, msg)
         except:
             msg = self.diagnostics.log(ctx, msg=joke)
-            await self.bot.send_message(channel=self.channel, msg)
+            await self.bot.send_message(self.channel, msg)
 
     async def get_joke(self):
         api = 'https://icanhazdadjoke.com/slack'
