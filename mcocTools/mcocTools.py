@@ -548,7 +548,7 @@ class StaticGameData:
         # dataIO.save_json('data/mcocTools/sgd_cdt_data.json', self.cdt_data)
         if cdt_versions is not None:
             self.cdt_versions.update(cdt_versions)
-            with open('data/mcocTools/sgd_cdt_versions.json') as f:
+            with open('data/mcocTools/sgd_cdt_versions.json', 'w') as f:
                 json.dump(self.cdt_versions, f)
         # dataIO.save_json(
             # 'data/mcocTools/sgd_cdt_versions.json', self.cdt_versions)
