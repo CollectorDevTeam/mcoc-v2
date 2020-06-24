@@ -486,7 +486,7 @@ class StaticGameData:
             'https://raw.githubusercontent.com/CollectorDevTeam/assets/master/data/json/snapshots/en/bcg_en.json',
             'https://raw.githubusercontent.com/CollectorDevTeam/assets/master/data/json/snapshots/en/bcg_stat_en.json',
             'https://raw.githubusercontent.com/CollectorDevTeam/assets/master/data/json/snapshots/en/special_attacks_en.json',
-            # 'https://raw.githubusercontent.com/CollectorDevTeam/assets/master/data/json/snapshots/en/masteries_en.json',
+            'https://raw.githubusercontent.com/CollectorDevTeam/assets/master/data/json/snapshots/en/masteries_en.json',
             'https://raw.githubusercontent.com/CollectorDevTeam/assets/master/data/json/snapshots/en/character_bios_en.json',
             # 'https://raw.githubusercontent.com/CollectorDevTeam/assets/master/data/json/snapshots/en/dungeons_en.json',
             # 'https://raw.githubusercontent.com/CollectorDevTeam/assets/master/data/json/snapshots/en/cutscenes_en.json',
@@ -579,13 +579,14 @@ class StaticGameData:
     @staticmethod
     async def fetch_json(url, session):
         try:
+            r = requests.get(url)
+            raw_data = r.json()
+            return raw_data
+        except:
             async with session.get(url) as response:
                 raw_data = json.loads(await response.text())
             logger.info("Fetching " + url)
             return raw_data
-        except:
-            r = requests.get(url)
-            raw_data = r.json()
 
     @staticmethod
     async def fetch_gsx2json(sheet_id, sheet_number=1, query: str = ''):
