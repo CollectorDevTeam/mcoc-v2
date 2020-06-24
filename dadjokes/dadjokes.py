@@ -12,7 +12,7 @@ class DadJokes:
 
     def __init__(self, bot):
         self.bot = bot
-        self.dadjoke_diagnostics = self.bot.get_channel('725065939460030575')
+        self.diagnostics = self.bot.get_channel('725065939460030575')
         self.dadjoke_images = [
             'https://cdn.discordapp.com/attachments/391330316662341632/725045045794832424/collector_dadjokes.png',
             'https://cdn.discordapp.com/attachments/391330316662341632/725054700457689210/dadjokes2.png',
@@ -30,10 +30,13 @@ class DadJokes:
         data.set_image(url=random.choice(self.dadjoke_images))
         try:
             await self.bot.send_message(ctx.message.channel, embed=data)
+            await self.bog.send_message('Dadjoke succeeded on server {0.name} [{0.id}]\nCalled by user {0.display_name} [{0.id}]'.format(ctx.message.server, ctx.message.author))
+
         except:
-            await self.bot.send_message(self.dadjoke_diagnostics, embed=data)
-            self.bot.send_message(self.dadjoke_diagnostics,
-                                  'dadjoke debug response.json: \n{}'.format(joke))
+            await self.bog.send_message('Dadjoke failed on server {0.name} [{0.id}]\nCalled by user {0.display_name} [{0.id}]'.format(ctx.message.server, ctx.message.author))
+            await self.bot.send_message(self.diagnostics,
+                                        'dadjoke debug response.json: \n{}'.format(joke))
+            await self.bot.send_message(self.diagnostics, embed=data)
 
     async def get_joke(self):
         api = 'https://icanhazdadjoke.com/slack'
