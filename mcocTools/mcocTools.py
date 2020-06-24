@@ -2534,10 +2534,10 @@ class DIAGNOSTICS:
         self.bot = bot
         self.channel = None
 
-    def logger(self, channel):
+    def log_channel(self, channel):
         self.channel = channel
 
-    async def log(self, ctx, msg=None)
+    async def log(self, ctx, msg=None):
      if self.channel is not None:
           message = 'CollectorDevTeam diagnostics:\n```'
            if ctx.message.channel.is_private() is True:
