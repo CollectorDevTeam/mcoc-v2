@@ -2,7 +2,7 @@ import discord
 from discord.ext import commands
 import aiohttp
 import json
-from .mcocTools import (PATREON, COLLECTOR_ICON, CDTEmbed)
+from .mcocTools import (CDTEmbed, DIAGNOSTICS)
 import random
 
 
@@ -11,7 +11,8 @@ class DadJokes:
 
     def __init__(self, bot):
         self.bot = bot
-        self.diagnostics = self.bot.get_channel('725065939460030575')
+        self.diagnostics = DIAGNOSTICS(
+            channel=self.bot.get_channel('725065939460030575'))
         self.dadjoke_images = [
             'https://cdn.discordapp.com/attachments/391330316662341632/725045045794832424/collector_dadjokes.png',
             'https://cdn.discordapp.com/attachments/391330316662341632/725054700457689210/dadjokes2.png',
@@ -29,13 +30,9 @@ class DadJokes:
         data.set_image(url=random.choice(self.dadjoke_images))
         try:
             await self.bot.send_message(ctx.message.channel, embed=data)
-            await self.bot.send_message(self.diagnostics, 'Dadjoke succeeded on server {0.name} [{0.id}]\nCalled by user {1.display_name} [{1.id}]'.format(ctx.message.server, ctx.message.author))
-
+            await self.diagnostics.log(ctx, joke)
         except:
-            await self.bot.send_message(self.diagnostics, 'Dadjoke failed on server {0.name} [{0.id}]\nCalled by user {1.display_name} [{1.id}]'.format(ctx.message.server, ctx.message.author))
-            await self.bot.send_message(self.diagnostics,
-                                        'dadjoke debug response.json: \n{}'.format(joke))
-            await self.bot.send_message(self.diagnostics, embed=data)
+            await self.diagnostics.log(ctx)
 
     async def get_joke(self):
         api = 'https://icanhazdadjoke.com/slack'

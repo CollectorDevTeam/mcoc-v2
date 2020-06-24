@@ -936,7 +936,7 @@ class HashParser:
             attrs, expl_hargs = await self.parse_1st_pass(ctx,
                                                           self.attr_parser, hargs, aliases)
         except (HashtagPlusError, md.ParseError) as e:
-            #logger.info('SyntaxError caught ', str(e))
+            # logger.info('SyntaxError caught ', str(e))
             return
         roster = roster_cls(self.bot, self.bot.user, attrs=attrs)
         return await self.parse_2nd_pass(roster, expl_hargs)
@@ -948,7 +948,7 @@ class HashParser:
             user, expl_hargs = await self.parse_1st_pass(ctx, self.user_parser,
                                                          hargs, aliases)
         except (HashtagPlusError, md.ParseError) as e:
-            #logger.info('SyntaxError caught ', str(e))
+            # logger.info('SyntaxError caught ', str(e))
             return
         roster = roster_cls(self.bot, user)
         await roster.load_champions()
@@ -2526,6 +2526,28 @@ class INSPECTOR:
         if len(serverlist) > 0:
             package = ''.join(serverlist)
             await self.bot.send_message(ctx.message.channel, package)
+
+
+class DIAGNOSTICS:
+    def __init__(self, channel):
+        self.channel = channel
+
+    async def log(self, ctx, msg=None)
+        message = 'CollectorDevTeam diagnostics:\n```'
+       if ctx.message.channel.is_private() is True:
+                message += 'Private Channel: [{}]\n'.format(ctx.message.channel.id)
+        elif ctx.message.channel.is_private() is False:
+            message += 'Server: {0.message.server.name} [{0.message.server.id}]\n' \
+                'Channel: {0.message.channel.name} [{0.message.channel.id}]\n'.format(ctx)
+        message += 'User: {0.message.author.display_name} [{0.message.author.id}]\n'.format(ctx)
+        if ctx.invoked_subcommand is not None:
+            message += 'Command Invoked: {}\Subcommand Invoked: {}'.format(ctx)
+        elif ctx.invoked is not None:
+            message += 'Invoked command: {0.invoked}'.format(ctx)
+        if msg is not None:
+            message += 'Comment: {}\n'.format(msg)
+        message += '```'
+        await self.bot.send_message(self.channel, message)
 
 
 class SCREENSHOT:
