@@ -482,19 +482,6 @@ class StaticGameData:
         cdt_data, cdt_versions = ChainMap(), ChainMap()
         cdt_stats = None
         robotworkshop = self.bot.get_channel('391330316662341632')
-        m2 = await self.bot.send_message(robotworkshop, 'Saving Masteries data')
-        async with aiohttp.ClientSession() as session:
-            self.cdt_masteries = await self.fetch_json(
-                self.remote_data_basepath + 'json/masteries.json',
-                session)
-        dataIO.save_json(
-            'data/mcocTools/sgd_masteries.json', self.cdt_masteries)
-        await self.bot.edit_message(m2, 'Masteries data saved')
-        m3 = await self.bot.send_message(robotworkshop, 'Saving CDT stats data')
-        self.cdt_stats = await StaticGameData.get_gsheets_data('cdt_stats')
-        dataIO.save_json('data/mcocTools/sgd_cdt_stats.json')
-        await self.bot.edit_message(m3, 'CDT Stats saved')
-        m4 = await self.bot.send_message(robotworkshop, 'Saving Ability counters')
         files = (
             'https://raw.githubusercontent.com/CollectorDevTeam/assets/master/data/json/snapshots/en/bcg_en.json',
             'https://raw.githubusercontent.com/CollectorDevTeam/assets/master/data/json/snapshots/en/bcg_stat_en.json',
@@ -506,37 +493,58 @@ class StaticGameData:
             # 'https://raw.githubusercontent.com/CollectorDevTeam/assets/master/data/json/snapshots/en/initial_en.json',
             # 'https://raw.githubusercontent.com/CollectorDevTeam/assets/master/data/json/snapshots/en/alliances_en.json'
         )
-        m1 = await self.bot.send_message(robotworkshop, 'Saving CDT Data')
+        m1 = await self.bot.send_message(robotworkshop, '1. Saving CDT Data + Versions')
         filelist = 0
-        async with aiohttp.ClientSession() as session:
-            for url in files:
-                validators.url(url)
-                code = requests.get(url).status_code
-                if code == 200:
-                    print("pulling "+url)
-                    try:
-                        raw_data = await self.fetch_json(url, session)
-                        val, ver = {}, {}
-                        for dlist in raw_data['strings']:
-                            val[dlist['k']] = dlist['v']
-                            if 'vn' in dlist:
-                                ver[dlist['k']] = dlist['vn']
-                        cdt_data.maps.append(val)
-                        cdt_versions.maps.append(ver)
-                        filelist += 1
-                    except:
-                        print('{} failed to download')
-                else:
-                    print('CDT DATA URL Failure, code {}'.format(code))
-                    print('Attempted URL:\n{}'.format(image))
+        try:
+            async with aiohttp.ClientSession() as session:
+                for url in files:
+                    validators.url(url)
+                    code = requests.get(url).status_code
+                    if code == 200:
+                        print("pulling "+url)
+                        try:
+                            raw_data = await self.fetch_json(url, session)
+                            val, ver = {}, {}
+                            for dlist in raw_data['strings']:
+                                val[dlist['k']] = dlist['v']
+                                if 'vn' in dlist:
+                                    ver[dlist['k']] = dlist['vn']
+                            cdt_data.maps.append(val)
+                            cdt_versions.maps.append(ver)
+                            filelist += 1
+                        except:
+                            print('{} failed to download')
+                    else:
+                        print('CDT DATA URL Failure, code {}'.format(code))
+                        print('Attempted URL:\n{}'.format(image))
 
-        self.cdt_data = cdt_data
-        self.cdt_versions = cdt_versions
-        dataIO.save_json('data/mcocTools/sgd_cdt_data.json', self.cdt_data)
-        dataIO.save_json(
-            'data/mcocTools/sgd_cdt_versions.json', self.cdt_versions)
-        await self.bot.edit_message(m1, 'CDT Data saved {} files'.format(filelist))
-
+            self.cdt_data = cdt_data
+            self.cdt_versions = cdt_versions
+            dataIO.save_json('data/mcocTools/sgd_cdt_data.json', self.cdt_data)
+            dataIO.save_json(
+                'data/mcocTools/sgd_cdt_versions.json', self.cdt_versions)
+            await self.bot.edit_message(m1, '1. CDT Data + Versions saved {} files'.format(filelist))
+        except:
+            await self.bot.edit_message(m1, '1. CDT Data + Versions failed to save')
+        m2 = await self.bot.send_message(robotworkshop, '2. Saving Masteries data')
+        try:
+            async with aiohttp.ClientSession() as session:
+                self.cdt_masteries = await self.fetch_json(
+                    self.remote_data_basepath + 'json/masteries.json',
+                    session)
+            dataIO.save_json(
+                'data/mcocTools/sgd_masteries.json', self.cdt_masteries)
+            await self.bot.edit_message(m2, '2. Masteries data saved')
+        except:
+            await self.bot.edit_message(m2, '2. Masteries data failed to save')
+        m3 = await self.bot.send_message(robotworkshop, '3. Saving CDT Champion Stats data.')
+        try:
+            self.cdt_stats = await StaticGameData.get_gsheets_data('cdt_stats')
+            dataIO.save_json('data/mcocTools/sgd_cdt_stats.json')
+            await self.bot.edit_message(m3, '3. CDT Champion Stats saved.')
+        except:
+            await self.bot.edit_message(m3, '3. CDT Champion Stats failed to save.')
+        # m4 = await self.bot.send_message(robotworkshop, 'Saving Ability counters')
         # self.ability_counters = await StaticGameData.get_gsheets_data('ability_counters')
         # dataIO.save_json(
         #     'data/mcocTools/sgd_ability_counters.json', self.ability_counters)
@@ -570,10 +578,14 @@ class StaticGameData:
 
     @staticmethod
     async def fetch_json(url, session):
-        async with session.get(url) as response:
-            raw_data = json.loads(await response.text())
-        logger.info("Fetching " + url)
-        return raw_data
+        try:
+            async with session.get(url) as response:
+                raw_data = json.loads(await response.text())
+            logger.info("Fetching " + url)
+            return raw_data
+        except:
+            r = requests.get(url)
+            raw_data = r.json()
 
     @staticmethod
     async def fetch_gsx2json(sheet_id, sheet_number=1, query: str = ''):
