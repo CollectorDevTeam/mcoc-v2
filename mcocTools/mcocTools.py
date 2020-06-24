@@ -543,12 +543,13 @@ class StaticGameData:
         #         await self.bot.edit_message(m1, '1. CDT Data + Versions failed to save')
         if cdt_data is not None:
             self.cdt_data.update(cdt_data)
-            json.dump(self.cdt_data, 'data/mcocTools/sgd_cdt_data.json')
+            with open('data/mcocTools/sgd_cdt_data.json', 'w') as f:
+                json.dump(self.cdt_data, f)
         # dataIO.save_json('data/mcocTools/sgd_cdt_data.json', self.cdt_data)
         if cdt_versions is not None:
             self.cdt_versions.update(cdt_versions)
-            json.dump(self.cdt_versions,
-                      'data/mcocTools/sgd_cdt_versions.json')
+            with open('data/mcocTools/sgd_cdt_versions.json') as f:
+                json.dump(self.cdt_versions, f)
         # dataIO.save_json(
             # 'data/mcocTools/sgd_cdt_versions.json', self.cdt_versions)
         m2 = await self.bot.send_message(diagnostics, '2. Saving Masteries data')
