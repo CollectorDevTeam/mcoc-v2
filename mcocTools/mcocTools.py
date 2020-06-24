@@ -481,7 +481,7 @@ class StaticGameData:
     async def load_cdt_data(self):
         cdt_data, cdt_versions = ChainMap(), ChainMap()
         cdt_stats = None
-        robotworkshop = self.bot.get_channel('391330316662341632')
+        diagnostics = self.bot.get_channel('725478527969001483')
         files = (
             'https://raw.githubusercontent.com/CollectorDevTeam/assets/master/data/json/snapshots/en/bcg_en.json',
             'https://raw.githubusercontent.com/CollectorDevTeam/assets/master/data/json/snapshots/en/bcg_stat_en.json',
@@ -493,7 +493,7 @@ class StaticGameData:
             # 'https://raw.githubusercontent.com/CollectorDevTeam/assets/master/data/json/snapshots/en/initial_en.json',
             # 'https://raw.githubusercontent.com/CollectorDevTeam/assets/master/data/json/snapshots/en/alliances_en.json'
         )
-        m1 = await self.bot.send_message(robotworkshop, '1. Saving CDT Data + Versions')
+        m1 = await self.bot.send_message(diagnostics, '1. Saving CDT Data + Versions')
         filelist = 0
         try:
             async with aiohttp.ClientSession() as session:
@@ -504,16 +504,17 @@ class StaticGameData:
                         print("pulling "+url)
                         try:
                             raw_data = await self.fetch_json(url, session)
-                            val, ver = {}, {}
-                            for dlist in raw_data['strings']:
-                                val[dlist['k']] = dlist['v']
-                                if 'vn' in dlist:
-                                    ver[dlist['k']] = dlist['vn']
-                            cdt_data.maps.append(val)
-                            cdt_versions.maps.append(ver)
-                            filelist += 1
+                            if raw_data is not None:
+                                val, ver = {}, {}
+                                for dlist in raw_data['strings']:
+                                    val[dlist['k']] = dlist['v']
+                                    if 'vn' in dlist:
+                                        ver[dlist['k']] = dlist['vn']
+                                cdt_data.maps.append(val)
+                                cdt_versions.maps.append(ver)
+                                filelist += 1
                         except:
-                            print('{} failed to download')
+                            await self.bot.send_message(diagnostics, 'Downloads failure: \n{}'.format(url))
                     else:
                         print('CDT DATA URL Failure, code {}'.format(code))
                         print('Attempted URL:\n{}'.format(image))
@@ -526,7 +527,7 @@ class StaticGameData:
             await self.bot.edit_message(m1, '1. CDT Data + Versions saved {} files'.format(filelist))
         except:
             await self.bot.edit_message(m1, '1. CDT Data + Versions failed to save')
-        m2 = await self.bot.send_message(robotworkshop, '2. Saving Masteries data')
+        m2 = await self.bot.send_message(diagnostics, '2. Saving Masteries data')
         try:
             async with aiohttp.ClientSession() as session:
                 self.cdt_masteries = await self.fetch_json(
@@ -537,7 +538,7 @@ class StaticGameData:
             await self.bot.edit_message(m2, '2. Masteries data saved')
         except:
             await self.bot.edit_message(m2, '2. Masteries data failed to save')
-        m3 = await self.bot.send_message(robotworkshop, '3. Saving CDT Champion Stats data.')
+        m3 = await self.bot.send_message(diagnostics, '3. Saving CDT Champion Stats data.')
         try:
             self.cdt_stats = await StaticGameData.get_gsheets_data('cdt_stats')
             dataIO.save_json('data/mcocTools/sgd_cdt_stats.json')
@@ -580,16 +581,16 @@ class StaticGameData:
     async def fetch_json(url, session):
         try:
             r = requests.get(url)
-            try:
-                raw_data = r.json()
-            except:
-                raw_data = await r.json()
-            return raw_data
+            raw_data = r.json()
         except:
+            print('fecth_json requests.get(url) failed')
             async with session.get(url) as response:
                 raw_data = json.loads(await response.text())
             logger.info("Fetching " + url)
+        if raw_data is not None:
             return raw_data
+        else:
+            return
 
     @staticmethod
     async def fetch_gsx2json(sheet_id, sheet_number=1, query: str = ''):
@@ -2435,8 +2436,7 @@ class INSPECTOR:
 
     def __init__(self, bot):
         self.bot = bot
-        self.robotworkshop = self.bot.get_channel('391330316662341632')
-        self.cdtserver = self.bot.get_server('215271081517383682')
+        self.diagnostics = self.bot.get_channel('725478527969001483')
         self.cdtcheck = CDTCheck(self.bot)
 
     @commands.group(pass_context=True)
@@ -2500,7 +2500,7 @@ class INSPECTOR:
                 '```'.format(server.me.server_permissions)
 
         await self.bot.send_message(ctx.message.channel, embed=data)
-        await self.bot.send_message(self.robotworkshop, embed=data)
+        await self.bot.send_message(self.diagnostics, embed=data)
 
     @inspect.command(pass_context=True, name='roles', aliases=['role', 'ir', ])
     async def _inspect_roles(self, ctx, server_id=None):
@@ -2528,7 +2528,7 @@ class INSPECTOR:
         else:
             data.description = 'Invalid server id'
         await self.bot.send_message(ctx.message.channel, embed=data)
-        await self.bot.send_message(self.robotworkshop, embed=data)
+        await self.bot.send_message(self.diagnostics, embed=data)
 
     @inspect.command(pass_context=True, name='user')
     async def inspect_user(self, ctx, user: discord.User):
