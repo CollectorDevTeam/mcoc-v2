@@ -169,9 +169,8 @@ class MCOCMaps:
     def __init__(self, bot):
         self.bot = bot
         self.diagnostics = self.bot.get_channel('725397961072181349')
-        self.umcoc = self.bot.get_server('378035654736609280')
-        self.catmurdock = self.umcoc.get_member('373128988962586635')
-        self.jjw = self.umcoc.get_member('124984294035816448')
+        self.catmurdock = self.bot.get_member('373128988962586635')
+        self.jjw = self.bot.get_member('124984294035816448')
 
     @commands.group(pass_context=True, aliases=('map',))
     async def maps(self, ctx):
@@ -193,8 +192,6 @@ class MCOCMaps:
             '6.3': {'map': ['aq_6_v1_s3', 'aq_6_v2_s3'], 'maptitle': '6 Tier 3'},
         }
         if maptype in cat_maps.keys():
-            umcoc = self.bot.get_server('378035654736609280')
-            catmurdock = umcoc.get_member('373128988962586635')
             for i in (0, 1):
                 mapurl = '{}catmurdock/AQ/{}.png'.format(
                     basepath, cat_maps[maptype]['map'][i])
@@ -202,8 +199,8 @@ class MCOCMaps:
                     cat_maps[maptype]['maptitle'], i+1)
                 data = CDTEmbed.get_embed(
                     self, ctx, image=mapurl, thumbnail=catcorner, title=maptitle)
-                data.set_author(name=catmurdock.display_name,
-                                icon_url=catmurdock.avatar_url)
+                data.set_author(name=self.catmurdock.display_name,
+                                icon_url=self.catmurdock.avatar_url)
                 data.add_field(
                     name='Support Cat', value=catsupport)
                 embeds.append(data)
