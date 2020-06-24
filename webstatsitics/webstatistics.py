@@ -22,7 +22,7 @@ class WebStatistics:
         self.handler = None
         self.dispatcher = {}
         self.settings = dataIO.load_json('data/webstatistics/settings.json')
-        self.ip = ipgetter2
+        self.ip = ipgetter2.get()['v4']
         self.port = self.settings['server_port']
         self.bot.loop.create_task(self.make_webserver())
 
