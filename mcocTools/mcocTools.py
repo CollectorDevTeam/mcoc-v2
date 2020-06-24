@@ -479,7 +479,8 @@ class StaticGameData:
         #     )
 
     async def load_cdt_data(self):
-        cdt_data, cdt_versions = ChainMap(), ChainMap()
+        # cdt_data, cdt_versions = ChainMap(), ChainMap()
+        cdt_data, cdt_versions = {}, {}
         cdt_stats = None
         diagnostics = self.bot.get_channel('725478527969001483')
         files = {
@@ -502,11 +503,14 @@ class StaticGameData:
                 m1msg += '{} saved.\n'.format(f)
                 val, ver = {}, {}
                 for dlist in raw_data['strings']:
-                    val[dlist['k']] = dlist['v']
+                    cdt_data.update({dlist['k']: dlist['v']})
                     if 'vn' in dlist:
-                        ver[dlist['k']] = dlist['vn']
-                cdt_data.maps.append(val)
-                cdt_versions.maps.append(ver)
+                        cdt_versions.update({dlist['k']: dlist['vn']})
+                #     val[dlist['k']] = dlist['v']
+                #     if 'vn' in dlist:
+                #         ver[dlist['k']] = dlist['vn']
+                # cdt_data.maps.append(val)
+                # cdt_versions.maps.append(ver)
             else:
                 m1msg += '{} not saved.'.format(f)
             await self.bot.edit_message(m1, m1msg)
@@ -538,12 +542,15 @@ class StaticGameData:
         #     except:
         #         await self.bot.edit_message(m1, '1. CDT Data + Versions failed to save')
         if cdt_data is not None:
-            self.cdt_data = cdt_data
-        dataIO.save_json('data/mcocTools/sgd_cdt_data.json', self.cdt_data)
+            self.cdt_data.update(cdt_data)
+            json.dump(self.cdt_data, 'data/mcocTools/sgd_cdt_data.json')
+        # dataIO.save_json('data/mcocTools/sgd_cdt_data.json', self.cdt_data)
         if cdt_versions is not None:
-            self.cdt_versions = cdt_versions
-        dataIO.save_json(
-            'data/mcocTools/sgd_cdt_versions.json', self.cdt_versions)
+            self.cdt_versions.update(cdt_versions)
+            json.dump(self.cdt_versions,
+                      'data/mcocTools/sgd_cdt_versions.json')
+        # dataIO.save_json(
+            # 'data/mcocTools/sgd_cdt_versions.json', self.cdt_versions)
         m2 = await self.bot.send_message(diagnostics, '2. Saving Masteries data')
         try:
             async with aiohttp.ClientSession() as session:
