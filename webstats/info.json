@@ -1,9 +1,9 @@
 {
     "AUTHOR": "JJW",
     "INSTALL_MSG": "CDT Statistics Cog required",
-    "NAME": "WebStatistics",
-    "SHORT": "Webstatistics",
-    "DESCRIPTION": "CollectorBot Web Statistics",
+    "NAME": "WebStats",
+    "SHORT": "Webstats",
+    "DESCRIPTION": "CollectorBot Web Stats",
     "REQUIREMENTS": [
         "ipgetter2",
         "aiohttp",

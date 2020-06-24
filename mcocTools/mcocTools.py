@@ -3007,6 +3007,6 @@ def setup(bot):
     bot.add_cog(Calculator(bot))
     bot.add_cog(CDTGAPS(bot))
     bot.add_cog(MCOCEvents(bot))
-    bot.add_cog(MCOCTools(bot))
     bot.add_cog(INSPECTOR(bot))
     bot.add_cog(CDTCheck(bot))
+    bot.add_cog(MCOCTools(bot))
