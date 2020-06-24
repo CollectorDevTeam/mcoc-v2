@@ -594,10 +594,10 @@ class StaticGameData:
             return self.gsheets_data
 
     @staticmethod
-    async def fetch_json(url, session=None, filepath=None)):
+    async def fetch_json(url, session=None, filepath=None):
         try:
-            r=requests.get(url)
-            raw_data=r.json()
+            r = requests.get(url)
+            raw_data = r.json()
             if filepath is not None:
                 with open(filepath, 'w') as f:
                     json.dump(raw_data, f)
@@ -605,7 +605,7 @@ class StaticGameData:
             print('fecth_json requests.get(url) failed')
             if session is not None:
                 async with session.get(url) as response:
-                    raw_data=json.loads(await response.text())
+                    raw_data = json.loads(await response.text())
                 logger.info("Fetching " + url)
         if raw_data is not None:
             return raw_data
@@ -613,27 +613,27 @@ class StaticGameData:
             return
 
     @staticmethod
-    async def fetch_gsx2json(sheet_id, sheet_number = 1, query: str = ''):
-        url=GSX2JSON.format(sheet_id, sheet_number)
+    async def fetch_gsx2json(sheet_id, sheet_number=1, query: str = ''):
+        url = GSX2JSON.format(sheet_id, sheet_number)
         if query != '':
-            url=url + '&q' + query
+            url = url + '&q' + query
         async with aiohttp.ClientSession() as session:
-            json_data=await fetch_json(url = url, session = session)
+            json_data = await fetch_json(url=url, session=session)
             return json_data
 
 
 ##################################################
 #  Grammar definitions
 ##################################################
-md.grammar_whitespace_mode='optional'
+md.grammar_whitespace_mode = 'optional'
 
 
 class SearchNumber(md.Grammar):
-    grammar=md.WORD('.0-9')
+    grammar = md.WORD('.0-9')
 
     def match(self, data, ver_data):
-        matches=set()
-        ver=self.string
+        matches = set()
+        ver = self.string
         for key, val in ver_data.items():
             if ver == val:
                 matches.add(key)
@@ -641,15 +641,15 @@ class SearchNumber(md.Grammar):
 
 
 class SearchWord(md.Grammar):
-    grammar=md.WORD('-.,0-9A-Za-z_%')
+    grammar = md.WORD('-.,0-9A-Za-z_%')
 
 
 class SearchPhrase(md.Grammar):
-    grammar=md.ONE_OR_MORE(SearchWord)
+    grammar = md.ONE_OR_MORE(SearchWord)
 
     def match(self, data, ver_data):
-        matches=set()
-        up, low=self.string.upper(), self.string.lower()
+        matches = set()
+        up, low = self.string.upper(), self.string.lower()
         for key, val in data.items():
             if up == key:
                 matches.add(key)
@@ -659,11 +659,11 @@ class SearchPhrase(md.Grammar):
 
 
 class ExplicitKeyword(md.Grammar):
-    grammar=(md.L('k:') | md.L('K:'), SearchWord)
+    grammar = (md.L('k:') | md.L('K:'), SearchWord)
 
     def match(self, data, ver_data):
-        matches=set()
-        up=self[1].string.upper()
+        matches = set()
+        up = self[1].string.upper()
         for key in data.keys():
             if up in key:
                 matches.add(key)
@@ -671,14 +671,14 @@ class ExplicitKeyword(md.Grammar):
 
 
 class ParenExpr(md.Grammar):
-    grammar=(md.L('('), md.REF("SearchExpr"), md.L(")"))
+    grammar = (md.L('('), md.REF("SearchExpr"), md.L(")"))
 
     def match(self, data, ver_data):
         return self[1].match(data, ver_data)
 
 
 class Operator(md.Grammar):
-    grammar=md.L('&') | md.L('|')
+    grammar = md.L('&') | md.L('|')
 
     def op(self):
         if self.string == '&':
@@ -688,24 +688,24 @@ class Operator(md.Grammar):
 
 
 class P0Term(md.Grammar):
-    grammar=(ParenExpr | SearchNumber | SearchPhrase | ExplicitKeyword)
+    grammar = (ParenExpr | SearchNumber | SearchPhrase | ExplicitKeyword)
 
     def match(self, data, ver_data):
         return self[0].match(data, ver_data)
 
 
 class P0Expr(md.Grammar):
-    grammar=(P0Term, md.ONE_OR_MORE(Operator, P0Term))
+    grammar = (P0Term, md.ONE_OR_MORE(Operator, P0Term))
 
     def match(self, data, ver_data):
-        matches=self[0].match(data, ver_data)
+        matches = self[0].match(data, ver_data)
         for e in self[1]:
-            matches=e[0].op()(matches, e[1].match(data, ver_data))
+            matches = e[0].op()(matches, e[1].match(data, ver_data))
         return matches
 
 
 class SearchExpr(md.Grammar):
-    grammar=(P0Expr | ParenExpr | SearchNumber |
+    grammar = (P0Expr | ParenExpr | SearchNumber |
                SearchPhrase | ExplicitKeyword)
 
     def match(self, data, ver_data):
@@ -716,63 +716,63 @@ class SearchExpr(md.Grammar):
 #  Champ Attr grammar
 
 class AttrSigToken(md.Grammar):
-    grammar=md.WORD('s', '0-9', min = 2, max = 4)
+    grammar = md.WORD('s', '0-9', min=2, max=4)
 
     def get_attrs(self, attrs):
-        attrs['sig']=int(self.string[1:])
+        attrs['sig'] = int(self.string[1:])
 
 
 class AttrRankToken(md.Grammar):
-    grammar=md.WORD('r', '0-9', count = 2)
+    grammar = md.WORD('r', '0-9', count=2)
 
     def get_attrs(self, attrs):
-        attrs['rank']=int(self.string[1])
+        attrs['rank'] = int(self.string[1])
 
 
 class AttrDebugToken(md.Grammar):
-    grammar=md.WORD('d', '0-9', count = 2)
+    grammar = md.WORD('d', '0-9', count=2)
 
     def get_attrs(self, attrs):
-        attrs['debug']=int(self.string[1])
+        attrs['debug'] = int(self.string[1])
 
 
 class AttrStarToken(md.Grammar):
-    grammar=(md.WORD('0-9', count=1),
+    grammar = (md.WORD('0-9', count=1),
                md.OPTIONAL(md.L('\\')),
                md.WORD('*★☆', count=1))
 
     def get_attrs(self, attrs):
-        attrs['star']=int(self.string[0])
+        attrs['star'] = int(self.string[0])
 
 
 class AttrExpr(md.Grammar):
-    grammar=md.ONE_OR_MORE(AttrSigToken | AttrRankToken |
-                             AttrDebugToken | AttrStarToken, collapse = True)
+    grammar = md.ONE_OR_MORE(AttrSigToken | AttrRankToken |
+                             AttrDebugToken | AttrStarToken, collapse=True)
 
-    def get_attrs(self, attrs = None):
-        attrs=attrs if attrs is not None else {}
+    def get_attrs(self, attrs=None):
+        attrs = attrs if attrs is not None else {}
         {e.get_attrs(attrs) for e in self}
         return attrs
 
 
 class UserSnowflake(md.Grammar):
-    grammar=md.L('<@'), md.OPTIONAL(md.L('!')), md.WORD('0-9'), md.L('>')
-    grammar_whitespace_mode='explicit'
+    grammar = md.L('<@'), md.OPTIONAL(md.L('!')), md.WORD('0-9'), md.L('>')
+    grammar_whitespace_mode = 'explicit'
 
 
 class UserDiscriminator(md.Grammar):
-    grammar=md.L('#'), md.WORD('0-9', count = 4)
-    grammar_whitespace_mode='explicit'
+    grammar = md.L('#'), md.WORD('0-9', count=4)
+    grammar_whitespace_mode = 'explicit'
 
 
 class UserString(md.Grammar):
-    grammar=(md.OPTIONAL(md.L('@')), md.ANY_EXCEPT('@!#()&|'),
+    grammar = (md.OPTIONAL(md.L('@')), md.ANY_EXCEPT('@!#()&|'),
                md.OPTIONAL(UserDiscriminator))
-    grammar_whitespace_mode='explicit'
+    grammar_whitespace_mode = 'explicit'
 
 
 class UserExpr(md.Grammar):
-    grammar=UserString | UserSnowflake
+    grammar = UserString | UserSnowflake
 
     def get_user(self, ctx):
         return commands.UserConverter(ctx, self.string).convert()
@@ -786,7 +786,7 @@ class HashtagPlusError(TypeError):
 
 
 class HashtagToken(md.Grammar):
-    grammar=md.WORD('#', "_a-zA-Z:*'0-9-"), md.WORD('_a-zA-Z:*0-9')
+    grammar = md.WORD('#', "_a-zA-Z:*'0-9-"), md.WORD('_a-zA-Z:*0-9')
 
     def match_set(self, roster):
         return roster.raw_filtered_ids(set([self.string]))
@@ -799,7 +799,7 @@ class HashtagToken(md.Grammar):
 
 
 class HashParenExpr(md.Grammar):
-    grammar=(md.L('('), md.REF("HashExplicitSearchExpr"), md.L(")"))
+    grammar = (md.L('('), md.REF("HashExplicitSearchExpr"), md.L(")"))
 
     def match_set(self, roster):
         return self[1].match_set(roster)
@@ -809,14 +809,14 @@ class HashParenExpr(md.Grammar):
 
 
 class HashUnaryOperator(md.Grammar):
-    grammar=md.L('!')
+    grammar = md.L('!')
 
     def op(self, roster):
         return roster.ids_set().difference
 
 
 class HashBinaryOperator(md.Grammar):
-    grammar=md.L('&') | md.L('|') | md.L('-') | md.L('+')
+    grammar = md.L('&') | md.L('|') | md.L('-') | md.L('+')
 
     def op(self, roster):
         if self.string == '&':
@@ -838,7 +838,7 @@ class HashBinaryOperator(md.Grammar):
 
 
 class HashP0Term(md.Grammar):
-    grammar=(HashParenExpr | HashtagToken)
+    grammar = (HashParenExpr | HashtagToken)
 
     def match_set(self, roster):
         return self[0].match_set(roster)
@@ -848,7 +848,7 @@ class HashP0Term(md.Grammar):
 
 
 class HashP0Expr(md.Grammar):
-    grammar=(HashUnaryOperator, HashP0Term)
+    grammar = (HashUnaryOperator, HashP0Term)
 
     def match_set(self, roster):
         return self[0].op(roster)(self[1].match_set(roster))
@@ -858,7 +858,7 @@ class HashP0Expr(md.Grammar):
 
 
 class HashP1Term(md.Grammar):
-    grammar=(HashP0Expr | HashParenExpr | HashtagToken)
+    grammar = (HashP0Expr | HashParenExpr | HashtagToken)
 
     def match_set(self, roster):
         return self[0].match_set(roster)
@@ -868,23 +868,23 @@ class HashP1Term(md.Grammar):
 
 
 class HashP1Expr(md.Grammar):
-    grammar=(HashP1Term, md.ONE_OR_MORE(HashBinaryOperator, HashP1Term))
+    grammar = (HashP1Term, md.ONE_OR_MORE(HashBinaryOperator, HashP1Term))
 
     def match_set(self, roster):
-        matches=self[0].match_set(roster)
+        matches = self[0].match_set(roster)
         for e in self[1]:
-            matches=e[0].op(roster)(matches, e[1].match_set(roster))
+            matches = e[0].op(roster)(matches, e[1].match_set(roster))
         return matches
 
     def sub_aliases(self, aliases):
-        ret=self[0].sub_aliases(aliases)
+        ret = self[0].sub_aliases(aliases)
         for e in self[1]:
             ret += e[0].sub_aliases(aliases) + e[1].sub_aliases(aliases)
         return ret
 
 
 class HashExplicitSearchExpr(md.Grammar):
-    grammar=(HashP1Expr | HashP0Expr | HashParenExpr | HashtagToken)
+    grammar = (HashP1Expr | HashP0Expr | HashParenExpr | HashtagToken)
 
     def match_set(self, roster):
         return self[0].match_set(roster)
@@ -893,56 +893,56 @@ class HashExplicitSearchExpr(md.Grammar):
         return self[0].sub_aliases(aliases)
 
     def filter_roster(self, roster):
-        filt_ids=self.match_set(roster)
-        filt_roster=roster.filtered_roster_from_ids(filt_ids)
+        filt_ids = self.match_set(roster)
+        filt_roster = roster.filtered_roster_from_ids(filt_ids)
         return filt_roster
 
 
 class HashImplicitSearchExpr(md.Grammar):
-    grammar=md.ONE_OR_MORE(HashtagToken, collapse = True)
+    grammar = md.ONE_OR_MORE(HashtagToken, collapse=True)
 
     def match_set(self, roster):
-        filt_ids=roster.ids_set()
+        filt_ids = roster.ids_set()
         for token in self:
-            filt_ids=filt_ids.intersection(token.match_set(roster))
+            filt_ids = filt_ids.intersection(token.match_set(roster))
         return filt_ids
 
     def sub_aliases(self, aliases):
-        ret=[token.sub_aliases(aliases) for token in self]
+        ret = [token.sub_aliases(aliases) for token in self]
         return ' & '.join(ret)
 
 
 class HashAttrSearchExpr(md.Grammar):
-    grammar=(md.OPTIONAL(AttrExpr),
+    grammar = (md.OPTIONAL(AttrExpr),
                md.OPTIONAL(HashImplicitSearchExpr | HashExplicitSearchExpr),
                md.OPTIONAL(AttrExpr))
 
     def sub_aliases(self, ctx, aliases):
-        attrs=self[0].get_attrs() if self[0] else {}
-        attrs=self[2].get_attrs(attrs) if self[2] else attrs
+        attrs = self[0].get_attrs() if self[0] else {}
+        attrs = self[2].get_attrs(attrs) if self[2] else attrs
         return (attrs, self[1].sub_aliases(aliases)) if self[1] else (attrs, '')
 
 
 class HashUserSearchExpr(md.Grammar):
-    grammar=(md.OPTIONAL(UserExpr),
+    grammar = (md.OPTIONAL(UserExpr),
                md.OPTIONAL(HashImplicitSearchExpr | HashExplicitSearchExpr))
 
     def sub_aliases(self, ctx, aliases):
-        user=self[0].get_user(ctx) if self[0] else ctx.message.author
+        user = self[0].get_user(ctx) if self[0] else ctx.message.author
         return (user, self[1].sub_aliases(aliases)) if self[1] else (user, '')
 
 
 class HashParser:
 
     def __init__(self, bot):
-        self.bot=bot
-        self.attr_parser=HashAttrSearchExpr.parser()
-        self.user_parser=HashUserSearchExpr.parser()
-        self.explicit_parser=HashExplicitSearchExpr.parser()
+        self.bot = bot
+        self.attr_parser = HashAttrSearchExpr.parser()
+        self.user_parser = HashUserSearchExpr.parser()
+        self.explicit_parser = HashExplicitSearchExpr.parser()
 
-    async def parse_1st_pass(self, ctx, parser, hargs, aliases = None):
+    async def parse_1st_pass(self, ctx, parser, hargs, aliases=None):
         try:
-            result1=parser.parse_string(hargs)
+            result1 = parser.parse_string(hargs)
         except md.ParseError as e:
             await self.generic_syntax_error_msg(hargs, e)
             raise
@@ -955,7 +955,7 @@ class HashParser:
     async def parse_2nd_pass(self, roster, expl_hargs):
         if expl_hargs:
             try:
-                result2=self.explicit_parser.parse_string(expl_hargs)
+                result2 = self.explicit_parser.parse_string(expl_hargs)
             except md.ParseError as e:
                 await self.generic_syntax_error_msg(hargs, e)
                 return
@@ -967,23 +967,23 @@ class HashParser:
         else:
             return roster
 
-    async def parse_with_attr(self, ctx, hargs, roster_cls, aliases = None):
+    async def parse_with_attr(self, ctx, hargs, roster_cls, aliases=None):
         '''Parser implies no user roster so use bot.  Parse attrs to pass to roster creation.'''
-        aliases=aliases if aliases else {}
+        aliases = aliases if aliases else {}
         try:
-            attrs, expl_hargs=await self.parse_1st_pass(ctx,
+            attrs, expl_hargs = await self.parse_1st_pass(ctx,
                                                           self.attr_parser, hargs, aliases)
         except (HashtagPlusError, md.ParseError) as e:
             # logger.info('SyntaxError caught ', str(e))
             return
-        roster=roster_cls(self.bot, self.bot.user, attrs = attrs)
+        roster = roster_cls(self.bot, self.bot.user, attrs=attrs)
         return await self.parse_2nd_pass(roster, expl_hargs)
 
-    async def parse_with_user(self, ctx, hargs, roster_cls, aliases = None):
+    async def parse_with_user(self, ctx, hargs, roster_cls, aliases=None):
         '''Parser implies user roster.'''
-        aliases=aliases if aliases else {}
+        aliases = aliases if aliases else {}
         try:
-            user, expl_hargs=await self.parse_1st_pass(ctx, self.user_parser,
+            user, expl_hargs = await self.parse_1st_pass(ctx, self.user_parser,
                                                          hargs, aliases)
         except (HashtagPlusError, md.ParseError) as e:
             # logger.info('SyntaxError caught ', str(e))
