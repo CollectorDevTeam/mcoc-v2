@@ -86,7 +86,6 @@ class Statistics:
 
         em.add_field(name='**Unique Users**', value=stats['users'])
         em.add_field(name='**Guild Servers**', value=stats['total_servers'])
-        em.add_field(name='**Guild Members**', value=stats['members'])
 
         em.add_field(name='**Channels**', value=str(stats['channels']))
         em.add_field(name='**Text channels**',
@@ -114,9 +113,7 @@ class Statistics:
 
     def retrieve_statistics(self):
         name = self.bot.user.name
-        # users = str(len(set(self.bot.get_all_members())))
-        users = str(len(self._get_all_users()))
-        members = str(len(set(self.bot.get_all_members())))
+        users = str(len(set(self.bot.get_all_members())))
         servers = str(len(self.bot.servers))
         commands_run = self.bot.counter['processed_commands']
         read_messages = self.bot.counter['messages_read']
@@ -142,7 +139,7 @@ class Statistics:
         channels = text_channels + voice_channels
 
         stats = {
-            'name': name, 'users': users, 'members': members, 'total_servers': servers, 'commands_run': commands_run,
+            'name': name, 'users': users, 'total_servers': servers, 'commands_run': commands_run,
             'read_messages': read_messages, 'text_channels': text_channels,
             'voice_channels': voice_channels, 'channels': channels,
             'cpu_usage': cpu_usage, 'mem_v': mem_v, 'mem_v_mb': mem_v_mb, 'threads': threads,
@@ -168,15 +165,6 @@ class Statistics:
                 fmt = '{d} D - ' + fmt
 
         return fmt.format(d=days, h=hours, m=minutes, s=seconds)
-
-    def _get_all_users(self):
-        '''counts unique member ids'''
-        users = []
-        members = self.bot.get_all_members()
-        for member in members:
-            if member.id not in users:
-                users.append(member.id)
-        return users
 
 
 def check_folder():
