@@ -2557,11 +2557,11 @@ class DIAGNOSTICS:
                 ctx)
         message += 'User: {0.message.author.display_name} [{0.message.author.id}]\n'.format(
             ctx)
-        if ctx.invoked_subcommand is not None:
-            message += 'Command Invoked: {}\Subcommand Invoked: {}'.format(
-                ctx)
-        elif ctx.invoked is not None:
-            message += 'Invoked command: {0.invoked}'.format(ctx)
+        # if ctx.invoked_subcommand is not None:
+        #     message += 'Command Invoked: {}\Subcommand Invoked: {}'.format(
+        #         ctx)
+        # elif ctx.invoked is not None:
+        #     message += 'Invoked command: {0.invoked}'.format(ctx)
         if msg is not None:
             message += 'Comment: {}\n'.format(msg)
         message += '```'
