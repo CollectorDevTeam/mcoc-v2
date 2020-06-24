@@ -580,7 +580,10 @@ class StaticGameData:
     async def fetch_json(url, session):
         try:
             r = requests.get(url)
-            raw_data = r.json()
+            try:
+                raw_data = r.json()
+            except:
+                raw_data = await r.json()
             return raw_data
         except:
             async with session.get(url) as response:
