@@ -3,7 +3,6 @@ from discord.ext import commands
 import aiohttp
 import json
 from .mcocTools import (PATREON, COLLECTOR_ICON, CDTEmbed)
-# from redbot.core.utils import mod
 import random
 
 
@@ -30,10 +29,10 @@ class DadJokes:
         data.set_image(url=random.choice(self.dadjoke_images))
         try:
             await self.bot.send_message(ctx.message.channel, embed=data)
-            await self.bot.send_message('Dadjoke succeeded on server {0.name} [{0.id}]\nCalled by user {1.display_name} [{1.id}]'.format(ctx.message.server, ctx.message.author))
+            await self.bot.send_message(self.diagnostics, 'Dadjoke succeeded on server {0.name} [{0.id}]\nCalled by user {1.display_name} [{1.id}]'.format(ctx.message.server, ctx.message.author))
 
         except:
-            await self.bot.send_message('Dadjoke failed on server {0.name} [{0.id}]\nCalled by user {1.display_name} [{1.id}]'.format(ctx.message.server, ctx.message.author))
+            await self.bot.send_message(self.diagnostics, 'Dadjoke failed on server {0.name} [{0.id}]\nCalled by user {1.display_name} [{1.id}]'.format(ctx.message.server, ctx.message.author))
             await self.bot.send_message(self.diagnostics,
                                         'dadjoke debug response.json: \n{}'.format(joke))
             await self.bot.send_message(self.diagnostics, embed=data)
