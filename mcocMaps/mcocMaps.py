@@ -252,19 +252,11 @@ class MCOCMaps:
         # if self.settings["diagnostics"] != daig:
         #     # self.settings.update({"diagnostics": diag})
         #     changes = True
-        if self.catmurdock is None:
-            self.catmurdock = self.bot.get_member("373128988962586635")
-        # if self.settings["catmurdock"] != catmurdock:
-        #     self.settings.update({"catmurdock": catmurdock})
-        #     changes = True
-        if self.jjw is None:
-            self.jjw = self.bot.get_member("124984294035816448")
-        # if self.settings["jjw"] != jjw:
-        #     self.settings.update({"jjw": jjw})
-        #     changes = True
-        # if changes:
-        #     with open(filepath, "w") as f:
-        #         json.dump(self.settings, f)
+        if self.catmurdock is None or self.jjw is None:
+            umcoc = self.bot.get_server('378035654736609280')
+            self.catmurdock = umcoc.get_member("373128988962586635")
+            self.jjw = umcoc.get_member("124984294035816448")
+
         return
 
 
