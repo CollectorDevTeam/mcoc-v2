@@ -4,9 +4,6 @@ import json
 from __main__ import send_cmd_help
 from .mcocTools import (CDTEmbed, PagesMenu, DIAGNOSTICS)
 
-PATREON = "https://patreon.com/collectorbot"
-JOINCDT = "https://discord.gg/BwhgZxk"
-# remote_data_basepath = "https://raw.githubusercontent.com/CollectorDevTeam/assets/master/data/"
 basepath = "https://raw.githubusercontent.com/CollectorDevTeam/assets/master/data/images/maps/"
 catcorner = "{}catmurdock/cat_corner_left.png".format(
     basepath)
@@ -259,7 +256,4 @@ class MCOCMaps:
 
 
 def setup(bot):
-    if not bot.get_cog('mcocTools'):
-        raise RuntimeError('To run this cog, you need the mcocTools cog.')
-    else:
-        bot.add_cog(MCOCMaps(bot))
+    bot.add_cog(MCOCMaps(bot))
