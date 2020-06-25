@@ -1,9 +1,8 @@
 import discord
-import urllib
 from discord.ext import commands
-from __main__ import send_cmd_help
-from .mcocTools import (CDTEmbed, PagesMenu)
 import json
+from __main__ import send_cmd_help
+from .mcocTools import (CDTEmbed, PagesMenu, DIAGNOSTICS)
 
 PATREON = "https://patreon.com/collectorbot"
 JOINCDT = "https://discord.gg/BwhgZxk"
@@ -20,17 +19,20 @@ class MCOCMaps:
 
     def __init__(self, bot):
         self.bot = bot
+        self.diagnostics = DIAGNOSTICS(self.bot)
         with open("data/mcocTools/settings.json") as f:
             self.settings = json.load(f)
         self.jjw = None
         self.catmurdock = None
-        self.diagnostics = None
+        self.channel = None
         self.get_stuffs()
 
     @commands.group(pass_context=True, aliases=("map",))
     async def maps(self, ctx):
         if ctx.invoked_subcommand is None:
             await send_cmd_help(ctx)
+        msg = self.diagnostics.log(ctx)
+        await self.bot.send_message(self.channel, msg)
 
     @maps.command(pass_context=True, name="aq", aliases=("alliancequest",))
     async def maps_alliancequest(self, ctx, maptype: str = None):
@@ -247,18 +249,17 @@ class MCOCMaps:
 
     def get_stuffs(self):
         """Check for settings changes. If changes, dump to settings.json"""
-        if self.diagnostics is None:
-            self.diagnostics = self.bot.get_channel("725397961072181349")
-        # if self.settings["diagnostics"] != daig:
-        #     # self.settings.update({"diagnostics": diag})
-        #     changes = True
+        if self.channel is None:
+            self.channel = self.bot.get_channel("725397961072181349")
         if self.catmurdock is None or self.jjw is None:
             umcoc = self.bot.get_server('378035654736609280')
             self.catmurdock = umcoc.get_member("373128988962586635")
             self.jjw = umcoc.get_member("124984294035816448")
-
         return
 
 
 def setup(bot):
-    bot.add_cog(MCOCMaps(bot))
+    if not bot.get_cog('mcocTools'):
+        raise RuntimeError('To run this cog, you need the mcocTools cog.')
+    else:
+        bot.add_cog(MCOCMaps(bot))
