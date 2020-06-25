@@ -22,6 +22,10 @@ class MCOCMaps:
         self.bot = bot
         with open("data/mcocTools/settings.json") as f:
             self.settings = json.load(f)
+        self.jjw = None
+        self.catmurdock = None
+        self.daignostics = None
+        self.get_stuffs()
 
     @commands.group(pass_context=True, aliases=("map",))
     async def maps(self, ctx):
@@ -241,34 +245,28 @@ class MCOCMaps:
             await menu.menu_start(pages=pages, page_number=int(maptype))
             # await self.bot.send_message(ctx.message.channel, embed=em)
 
-
-def get_stuffs(bot):
-    """Check for settings changes. If changes, dump to settings.json"""
-    filepath = "data/mcocTools/settings.json"
-    with open(filepath) as f:
-        settings = json.load(f)
-    changes = False
-    diag = bot.get_channel("725397961072181349")
-    if settings["diagnostics"] != daig:
-        settings.update({"diagnostics": diag})
-        changes = True
-    umcoc = bot.get_server("378035654736609280")
-    if settings["umcoc"] != umcoc:
-        settings.update({"umcoc": umcoc})
-        changes = True
-    catmurdock = umcoc.get_member("373128988962586635")
-    if settings["catmurdock"] != catmurdock:
-        settings.update({"catmurdock": catmurdock})
-        changes = True
-    jjw = umcoc.get_member("124984294035816448")
-    if settings["jjw"] != jjw:
-        settings.update({"jjw": jjw})
-        changes = True
-    if changes:
-        with open(filepath, "w") as f:
-            json.dump(settings, f)
+    def get_stuffs(self):
+        """Check for settings changes. If changes, dump to settings.json"""
+        if self.diagnostics is None:
+            self.diagnostics = self.bot.get_channel("725397961072181349")
+        # if self.settings["diagnostics"] != daig:
+        #     # self.settings.update({"diagnostics": diag})
+        #     changes = True
+        if self.catmurdock is None:
+            self.catmurdock = self.bot.get_member("373128988962586635")
+        # if self.settings["catmurdock"] != catmurdock:
+        #     self.settings.update({"catmurdock": catmurdock})
+        #     changes = True
+        if self.jjw is None:
+            self.jjw = self.bot.get_member("124984294035816448")
+        # if self.settings["jjw"] != jjw:
+        #     self.settings.update({"jjw": jjw})
+        #     changes = True
+        # if changes:
+        #     with open(filepath, "w") as f:
+        #         json.dump(self.settings, f)
+        return
 
 
 def setup(bot):
-    get_stuffs(bot)
     bot.add_cog(MCOCMaps(bot))
