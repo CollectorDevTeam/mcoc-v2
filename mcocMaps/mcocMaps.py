@@ -82,7 +82,7 @@ class MCOCMaps:
             data = CDTEmbed.get_embed(self, ctx, title=maptitle, image=mapurl)
             data.set_author(
                 name='JJW | CollectorDevTeam', icon_url=self.jjw.avatar_url)
-            if self.settings["aq_map"]_tips[maptype]['required'] != '':
+            if self.settings["aq_map_tips"][maptype]['required'] != '':
                 data.add_field(name='Required',
                                value=self.settings["aq_map_tips"][maptype]['required'])
             #     em.add_field(name='Suggestions', value=self.settings["aq_map_tips"][maptype]['tips'])
