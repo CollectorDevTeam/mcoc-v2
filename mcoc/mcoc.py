@@ -3308,11 +3308,14 @@ class Champion:
 
 def get_embed(self, ctx, user_id=None, color=discord.Color.gold()):
     """Return a color styled embed with no title or description"""
-    if user_id is None:
+    if user_id is None or ctx.message.channel.is_private:
         color = discord.Color.gold()
     else:
         member = self.bot.get_member(user_id)
-        color = member.color
+        if member is not None:
+            color = member.color
+        else:
+            color = ctx.message.author.color
     data = discord.Embed(color=color, title='', description='', url=PATREON)
     data.set_author(name='CollectorVerse:sparkles:',
                     icon_url=COLLECTOR_ICON)
