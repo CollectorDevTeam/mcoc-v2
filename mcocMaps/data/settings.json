@@ -281,14 +281,14 @@
         "maestro": [
             "Maestro",
             "At the start of the fight, Maestro changes his class abilities depending on his Opponent."
-                    "\n**vs. MYSTIC** Applies different Debuffs depending on specific actions taken by Maestro and his Opponents"
-                    "\n**vs. TECH** Receives random buffs throughout the fight."
-                    "\n**vs. MUTANT** Powerdrain when Blocked & receives Armor Up when activating a Special 1 or 2."
-                    "\n**vs. SKILL** Reduces Opponent Effect Accuracy when attacked."
-                    "\n**vs. SCIENCE** Shrugs off Debuffs"
+            "\n**vs. MYSTIC** Applies different Debuffs depending on specific actions taken by Maestro and his Opponents"
+            "\n**vs. TECH** Receives random buffs throughout the fight."
+            "\n**vs. MUTANT** Powerdrain when Blocked & receives Armor Up when activating a Special 1 or 2."
+            "\n**vs. SKILL** Reduces Opponent Effect Accuracy when attacked."
+            "\n**vs. SCIENCE** Shrugs off Debuffs"
         ],
         "colossus": [
-            "Colossus", "When Blocking a Special 1 or 2, Colossus reflects his opponent\"s Attack damage back. Heavy attacks do damage equal to 1000\% of the opponent\"s max health."
+            "Colossus", "When Blocking a Special 1 or 2, Colossus reflects his opponent\'s Attack damage back. Heavy attacks do damage equal to 1000\% of the opponent\'s max health."
         ],
         "spiderman": [
             "Spider-Man", "Spider-Man starts with 100\% chance to Evade passive, this is removed when he becomes Stunned. The Evade passive returns when Spider-Man activates his Special 2."
@@ -304,7 +304,7 @@
             "Abomination", "At the beginning of the fight, Abomination excretes poison that has 100\% chance to permanently Poison the opponent for 25\% of his Attack every second."
         ],
         "guillotine": [
-            "Guillotine", "At the beginning of the fight, Guillotine\"s ancestors slice the opponent with ghostly blades that have 100\% chance to permanently Bleed the opponent for 25\% of her Attack every second"
+            "Guillotine", "At the beginning of the fight, Guillotine\'s ancestors slice the opponent with ghostly blades that have 100\% chance to permanently Bleed the opponent for 25\% of her Attack every second"
         ],
         "venompool": [
             "Venompool",
@@ -340,7 +340,7 @@
         ],
         "groot": [
             "Groot",
-            "Groot begins Regeneration upon eneimes activation of their Regeneration Buffs. Groot\"s Regeneration lasts for 3 seconds and increases in strength the lower he is."
+            "Groot begins Regeneration upon eneimes activation of their Regeneration Buffs. Groot\'s Regeneration lasts for 3 seconds and increases in strength the lower he is."
         ],
         "vision": [
             "Vision", "Opponents of Vision lose 5\% of their Power every time they Dash backwards. If they dash backwards with 0 Power, they become Stunned for 1 second. Vision has Unblockable Special 2."
@@ -351,7 +351,7 @@
         ],
         "electro": [
             "Electro",
-            "Every 15 seconds, Electro\"s Static Shock is enhanced for 5 seconds."
+            "Every 15 seconds, Electro\'s Static Shock is enhanced for 5 seconds."
         ],
         "hulkbuster": [
             "Hulkbuster",
@@ -370,7 +370,7 @@
         ],
         "juggernaut": [
             "Juggernaut",
-            "Juggernaut\"s Unstoppable lasts until he is attacked with a Heavy Attack."
+            "Juggernaut\'s Unstoppable lasts until he is attacked with a Heavy Attack."
         ],
         "agentvenom": [
             "Agent Venom",
