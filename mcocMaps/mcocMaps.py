@@ -1,5 +1,6 @@
 import discord
 import urllib
+import dataIO
 from discord.ext import commands
 from __main__ import send_cmd_help
 from .mcocTools import (CDTEmbed, PagesMenu)
@@ -20,7 +21,7 @@ class MCOCMaps:
 
     def __init__(self, bot):
         self.bot = bot
-        self.settings = json.load('data/mcocTools/settings.json')
+        self.settings = dataIO.loads_json('data/mcocTools/settings.json')
 
     @commands.group(pass_context=True, aliases=('map',))
     async def maps(self, ctx):
@@ -242,8 +243,8 @@ class MCOCMaps:
 
 
 def get_stuffs(bot):
-    settings = json.load('data/mcocTools/settings.json')
     """Check for settings changes. If changes, dump to settings.json"""
+    settings = dataIO.loads_json('data/mcocTools/settings.json')
     changes = False
     diag = bot.get_channel('725397961072181349')
     if settings['diagnostics'] != daig:
