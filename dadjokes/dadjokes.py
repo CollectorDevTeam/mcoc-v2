@@ -2,7 +2,6 @@ import discord
 from discord.ext import commands
 import aiohttp
 import json
-import dataIO
 from .mcocTools import (CDTEmbed, DIAGNOSTICS)
 import random
 
@@ -12,7 +11,6 @@ class DadJokes:
 
     def __init__(self, bot):
         self.bot = bot
-        # self.settings = dataIO.loads_json('data/DadJokes/settings.json')
         self.diagnostics = DIAGNOSTICS(self.bot)
         self.channel = None
         self.dadjoke_images = [
