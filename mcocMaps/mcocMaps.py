@@ -78,7 +78,7 @@ class MCOCMaps:
                              delete_onX=True, add_pageof=True)
             await menu.menu_start(pages=embeds)
             return
-        elif maptype in self.settings["aq_map"]:
+        elif maptype in self.settings["aq_map"].keys():
             mapurl = "{}{}.png".format(
                 basepath, self.settings["aq_map"][maptype]["map"])
             maptitle = "Alliance Quest {}".format(
@@ -92,7 +92,7 @@ class MCOCMaps:
             #     em.add_field(name="Suggestions", value=self.settings["aq_map_tips"][maptype]["tips"])
             # em.set_image(url=mapurl)
             embeds.append(data)
-            if "tips" in self.settings["aq_map_tips"][maptype]:
+            if "tips" in self.settings["aq_map_tips"][maptype].keys():
                 mapurl = "{}{}.png".format(
                     basepath, self.settings["aq_map"][maptype]["map"])
                 maptitle = "Alliance Quest {}".format(
@@ -110,7 +110,7 @@ class MCOCMaps:
                     em2.add_field(name="Suggestions",
                                   value=self.settings["aq_map_tips"][maptype]["tips"])
                 embeds.append(em2)
-            if "miniboss" in self.settings["aq_map_tips"][maptype]:
+            if "miniboss" in self.settings["aq_map_tips"][maptype].keys():
                 mapurl = "{}{}.png".format(
                     basepath, self.settings["aq_map"][maptype]["map"])
                 maptitle = "Alliance Quest {}".format(
@@ -223,7 +223,7 @@ class MCOCMaps:
         """Labyrinth of Legends Maps
             LOL maps: 0, 1, 2, 3, 4, 5, 6, 7
             /lol 5"""
-        if maptype in self.settings["lolmaps"]:
+        if maptype in self.settings["lolmaps"].keys():
             pages = []
             for i in range(0, 8):
                 maptitle = "Labyrinth of Legends: {}".format(
