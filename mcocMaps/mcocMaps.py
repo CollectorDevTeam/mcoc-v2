@@ -261,7 +261,7 @@ class MCOCMaps:
             self.catmurdock = umcoc.get_member("373128988962586635")
             self.jjw = umcoc.get_member("124984294035816448")
         if self.settings == {}:
-            with open("data/mcocTools/settings.json") as f:
+            with open("data/mcocTools/settings.json", 'r') as f:
                 settings = json.load(f)
             self.settings = settings
             # self.settings.update(settings)
