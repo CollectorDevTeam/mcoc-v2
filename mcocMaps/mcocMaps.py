@@ -31,7 +31,7 @@ class MCOCMaps:
         msg = self.diagnostics.log(ctx)
         await self.bot.send_message(self.channel, msg)
 
-    @maps.command(passy_context=True, name='settings', hidden=True)
+    @maps.command(pass_context=True, name='settings', hidden=True)
     async def maps_settings(self, ctx):
         paged = chat.pagify(self.settings)
         boxed = []
