@@ -263,8 +263,9 @@ class MCOCMaps:
         if self.settings == {}:
             with open("data/mcocTools/settings.json") as f:
                 settings = json.load(f)
-            self.settings.update(settings)
-            print('settings keys: {}'.format(self.settings))
+            self.settings = settings
+            # self.settings.update(settings)
+            print('settings keys: {}'.format(settings))
         return
 
 
