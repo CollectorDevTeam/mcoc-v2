@@ -263,8 +263,8 @@ class MCOCMaps:
         if self.settings is None:
             with open("data/mcocTools/settings.json") as f:
                 settings = json.load(f)
-                self.settings.update(settings)
-                print(self.settings['lolmaps'].keys())
+            self.settings.update(settings)
+            print(self.settings['lolmaps'].keys())
         return
 
 
