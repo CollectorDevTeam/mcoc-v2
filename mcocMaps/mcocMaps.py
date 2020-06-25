@@ -21,7 +21,7 @@ class MCOCMaps:
 
     def __init__(self, bot):
         self.bot = bot
-        self.settings = dataIO.loads_json('data/mcocTools/settings.json')
+        self.settings = dataIO.load_json('data/mcocTools/settings.json')
 
     @commands.group(pass_context=True, aliases=('map',))
     async def maps(self, ctx):
@@ -244,7 +244,7 @@ class MCOCMaps:
 
 def get_stuffs(bot):
     """Check for settings changes. If changes, dump to settings.json"""
-    settings = dataIO.loads_json('data/mcocTools/settings.json')
+    settings = dataIO.load_json('data/mcocTools/settings.json')
     changes = False
     diag = bot.get_channel('725397961072181349')
     if settings['diagnostics'] != daig:
