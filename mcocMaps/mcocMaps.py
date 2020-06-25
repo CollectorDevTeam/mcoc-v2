@@ -24,7 +24,7 @@ class MCOCMaps:
             self.settings = json.load(f)
         self.jjw = None
         self.catmurdock = None
-        self.daignostics = None
+        self.diagnostics = None
         self.get_stuffs()
 
     @commands.group(pass_context=True, aliases=("map",))
