@@ -1,9 +1,11 @@
 import discord
 from discord.ext import commands
-import json
+# import json
 from __main__ import send_cmd_help
 from .mcocTools import (CDTEmbed, PagesMenu, DIAGNOSTICS)
 from .utils import chat_formatting as chat
+from .utils.dataIO import dataIO
+
 
 basepath = "https://raw.githubusercontent.com/CollectorDevTeam/assets/master/data/images/maps/"
 catcorner = "{}catmurdock/cat_corner_left.png".format(
@@ -18,7 +20,7 @@ class MCOCMaps:
     def __init__(self, bot):
         self.bot = bot
         self.diagnostics = DIAGNOSTICS(self.bot)
-        self.settings = {}
+        self.map_settings = dataIO.loads_json('data/mcocTools/settings.json')
         self.jjw = None
         self.catmurdock = None
         self.channel = None
@@ -33,7 +35,7 @@ class MCOCMaps:
 
     @maps.command(pass_context=True, name='settings', hidden=True)
     async def maps_settings(self, ctx):
-        paged = chat.pagify(self.settings.items())
+        paged = chat.pagify(self.map_settings.items())
         boxed = []
         boxed.append(chat.box(p) for p in paged)
         for b in boxed:
@@ -74,9 +76,9 @@ class MCOCMaps:
             seven = {"A": "1", "B": "2", "C": "3"}
             for k in seven.keys():
                 mapurl = "{}{}{}.png".format(
-                    basepath, self.settings["aq_map"][maptype]["map"], k)
+                    basepath, self.map_settings["aq_map"][maptype]["map"], k)
                 maptitle = "Alliance Quest {} | Variation {}".format(
-                    self.settings["aq_map"][maptype]["maptitle"], seven[k])
+                    self.map_settings["aq_map"][maptype]["maptitle"], seven[k])
                 data = CDTEmbed.get_embed(
                     self, ctx, title=maptitle, image=mapurl)
                 data.set_author(
@@ -86,46 +88,46 @@ class MCOCMaps:
                              delete_onX=True, add_pageof=True)
             await menu.menu_start(pages=embeds)
             return
-        elif maptype in self.settings["aq_map"].keys():
+        elif maptype in self.map_settings["aq_map"].keys():
             mapurl = "{}{}.png".format(
-                basepath, self.settings["aq_map"][maptype]["map"])
+                basepath, self.map_settings["aq_map"][maptype]["map"])
             maptitle = "Alliance Quest {}".format(
-                self.settings["aq_map"][maptype]["maptitle"])
+                self.map_settings["aq_map"][maptype]["maptitle"])
             data = CDTEmbed.get_embed(self, ctx, title=maptitle, image=mapurl)
             data.set_author(
                 name="JJW | CollectorDevTeam", icon_url=self.jjw.avatar_url)
-            if self.settings["aq_map_tips"][maptype]["required"] != "":
+            if self.map_settings["aq_map_tips"][maptype]["required"] != "":
                 data.add_field(name="Required",
-                               value=self.settings["aq_map_tips"][maptype]["required"])
-            #     em.add_field(name="Suggestions", value=self.settings["aq_map_tips"][maptype]["tips"])
+                               value=self.map_settings["aq_map_tips"][maptype]["required"])
+            #     em.add_field(name="Suggestions", value=self.map_settings["aq_map_tips"][maptype]["tips"])
             # em.set_image(url=mapurl)
             embeds.append(data)
-            if "tips" in self.settings["aq_map_tips"][maptype].keys():
+            if "tips" in self.map_settings["aq_map_tips"][maptype].keys():
                 mapurl = "{}{}.png".format(
-                    basepath, self.settings["aq_map"][maptype]["map"])
+                    basepath, self.map_settings["aq_map"][maptype]["map"])
                 maptitle = "Alliance Quest {}".format(
-                    self.settings["aq_map"][maptype]["maptitle"])
+                    self.map_settings["aq_map"][maptype]["maptitle"])
                 em2 = CDTEmbed.get_embed(
                     self, ctx, title=maptitle, image=mapurl)
 
-                if self.settings["aq_map_tips"][maptype]["required"] != "":
+                if self.map_settings["aq_map_tips"][maptype]["required"] != "":
                     em2.add_field(name="Required",
-                                  value=self.settings["aq_map_tips"][maptype]["required"])
-                if self.settings["aq_map_tips"][maptype]["energy"] != "":
+                                  value=self.map_settings["aq_map_tips"][maptype]["required"])
+                if self.map_settings["aq_map_tips"][maptype]["energy"] != "":
                     em2.add_field(
-                        name="Energy", value=self.settings["aq_map_tips"][maptype]["energy"])
-                if self.settings["aq_map_tips"][maptype]["tips"] != "":
+                        name="Energy", value=self.map_settings["aq_map_tips"][maptype]["energy"])
+                if self.map_settings["aq_map_tips"][maptype]["tips"] != "":
                     em2.add_field(name="Suggestions",
-                                  value=self.settings["aq_map_tips"][maptype]["tips"])
+                                  value=self.map_settings["aq_map_tips"][maptype]["tips"])
                 embeds.append(em2)
-            if "miniboss" in self.settings["aq_map_tips"][maptype].keys():
+            if "miniboss" in self.map_settings["aq_map_tips"][maptype].keys():
                 mapurl = "{}{}.png".format(
-                    basepath, self.settings["aq_map"][maptype]["map"])
+                    basepath, self.map_settings["aq_map"][maptype]["map"])
                 maptitle = "Alliance Quest {}".format(
-                    self.settings["aq_map"][maptype]["maptitle"])
+                    self.map_settings["aq_map"][maptype]["maptitle"])
                 em3 = CDTEmbed.get_embed(
                     self, ctx, title=maptitle, image=mapurl)
-                for miniboss in self.settings["aq_map_tips"][maptype]["miniboss"]:
+                for miniboss in self.map_settings["aq_map_tips"][maptype]["miniboss"]:
                     em3.add_field(name=miniboss[0], value=miniboss[1])
                 embeds.append(em3)
             menu = PagesMenu(self.bot, timeout=30,
@@ -231,17 +233,17 @@ class MCOCMaps:
         """Labyrinth of Legends Maps
             LOL maps: 0, 1, 2, 3, 4, 5, 6, 7
             /lol 5"""
-        if maptype in self.settings["lolmaps"].keys():
+        if maptype in self.map_settings["lolmaps"].keys():
             pages = []
             for i in range(0, 8):
                 maptitle = "Labyrinth of Legends: {}".format(
-                    self.settings["lolmaps"][str(i)]["maptitle"])
+                    self.map_settings["lolmaps"][str(i)]["maptitle"])
                 data = CDTEmbed.get_embed(
                     self, ctx, title=maptitle, image="{}lolmap{}v3.png".format(basepath, i))
-                lanes = self.settings["lolanes"][str(i)[0]]
+                lanes = self.map_settings["lolanes"][str(i)[0]]
                 # desclist = []
                 for l in lanes:
-                    enigma = self.settings["enigmatics"][l]
+                    enigma = self.map_settings["enigmatics"][l]
                     print(enigma)
                     # desclist.append("{}\n{}\n\n".format(enigma[0], enigma[1]))
                     data.add_field(name="Enigmatic {}".format(
@@ -260,12 +262,6 @@ class MCOCMaps:
             umcoc = self.bot.get_server('378035654736609280')
             self.catmurdock = umcoc.get_member("373128988962586635")
             self.jjw = umcoc.get_member("124984294035816448")
-        if self.settings == {}:
-            with open("data/mcocTools/settings.json", 'r') as f:
-                settings = json.load(f)
-            self.settings = settings
-            # self.settings.update(settings)
-            print('settings keys: {}'.format(settings))
         return
 
 
