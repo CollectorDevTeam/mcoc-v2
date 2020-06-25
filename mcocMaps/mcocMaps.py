@@ -17,8 +17,7 @@ class MCOCMaps:
     def __init__(self, bot):
         self.bot = bot
         self.diagnostics = DIAGNOSTICS(self.bot)
-        with open("data/mcocTools/settings.json") as f:
-            self.settings = json.load(f)
+        self.settings = None
         self.jjw = None
         self.catmurdock = None
         self.channel = None
@@ -246,6 +245,9 @@ class MCOCMaps:
 
     def get_stuffs(self):
         """Check for settings changes. If changes, dump to settings.json"""
+        if self.settings is None:
+            with open("data/mcocTools/settings.json") as f:
+                self.settings = json.load(f)
         if self.channel is None:
             self.channel = self.bot.get_channel("725397961072181349")
         if self.catmurdock is None or self.jjw is None:
