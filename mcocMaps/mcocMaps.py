@@ -2,8 +2,8 @@ import discord
 import urllib
 from discord.ext import commands
 from __main__ import send_cmd_help
-from .mcocTools import (CDTEmbed,
-                        StaticGameData, PagesMenu, COLLECTOR_ICON)
+from .mcocTools import (CDTEmbed, PagesMenu)
+import json
 
 PATREON = 'https://patreon.com/collectorbot'
 JOINCDT = 'https://discord.gg/BwhgZxk'
@@ -13,154 +13,6 @@ catcorner = '{}catmurdock/cat_corner_left.png'.format(
     basepath)
 catsupport = 'Visit Cat\'s [Store](https://www.redbubble.com/people/CatMurdock/explore)\n'\
     '<:twitter:548637190587154432>[@CatMurdock_art](https://twitter.com/CatMurdock_Art)'
-aq_map = {
-    'cheatsheet': {'map': 'cheatsheetv2', 'maptitle': 'Season 5 Cheat Sheet'},
-    '5': {'map': 's5aq5', 'maptitle': '5'},
-    '5.1': {'map': 's5aq51', 'maptitle': '5 Tier 1'},
-    '5.2': {'map':  's5aq52', 'maptitle': '5 Tier 2'},
-    '5.3': {'map': 's5aq53', 'maptitle': '5 Tier 3'},
-    '7': {'map': 's7aq7', 'maptitle': '7'},
-    '7.1': {'map': 's7aq71', 'maptitle': '7 Tier 1'},
-    '7.2': {'map':  's7aq72', 'maptitle': '7 Tier 2'},
-    '7.3': {'map': 's7aq73', 'maptitle': '7 Tier 3'}}
-
-aq_map_tips = {
-    'cheatsheet': {
-        'required': '',
-        'energy': '',
-        'tips': 'Sentinel gains 1 Adaptation charge(s) when an Opponent performs the same action consecutively. Actions include Light Attacks, Medium Attacks, Heavy Attacks, Dashing, Dodging, and Blocking an Attack. Max: 50 charges.\n\nMM combo = 2 Analysis Charges\nMLLM = 2 Analysis Charges\nMLLLL = 3 Analysis Charges\nLMLM = 0 Analysis Charges\n\n~ RobShiBob'},
-    '5': {'required': '',
-          'energy': '',
-          'tips': '', },
-    '5.1': {'required': '',
-            'energy': '',
-            'tips': '',
-            'miniboss': [['Morningstar 1', '+250% Champion Boost\n+200% Health\nEnhanced Bleed\nOppressive Curse'],
-                         ['Green Goblin 1', '+250% Champion Boost\n+200% Health\nEnhanced Abilities\nRecovery 100%'],
-                         ['Nightcrawler 1', '+250% Champion Boost\n+200% Health\nLimber (10%)\nDefensive'], ]},
-    '5.2': {'required': 'Path A\n- Bleed Immune\nPath H\n- Poison Immune',
-            'energy': '',
-            'tips': '',
-            'miniboss': [['Morningstar 2', '+250% Champion Boost\n+300% Health\nEnhanced Bleed\nOppressive Curse\nPower Gain 100%'],
-                         ['Green Goblin 2', '+250% Champion Boost\n+300% Health\nEnhanced Abilities\nRecovery 150%\nEnhanced Special 1'],
-                         ['Nightcrawler 2', '+250% Champion Boost\n+300% Health\nLimber (10%)\nDefensive\nSpecial 1 Bias'], ]},
-    '5.3': {'required': '',
-            'energy': '',
-            'tips': '',
-            'miniboss': [['Kingpin', '+525% Champion Boost\n+100% Health\nDimensional Anchor\nHeal Block\nLimber (0.10s)\n+50% Power Gain\nUnblockable'], ]},
-    '6': {'required': '',
-          'energy': '',
-          'tips': '', },
-    '6.1': {'required': 'A - 2 players\nB - 2 players\nF - Power Control\nG - 2 players',
-            'energy': 'D & E move first\nB, C, F, G move next\nA moves last.',
-            'tips': 'A - Defense Ability Reduction for tile 22.\nD  - Thorns, Degeneration\nE - Thorns, Starburst\nF - All or Nothing 9\nG - Enhanced Raged Specials',
-            'miniboss': [['Void 1',
-                          'Champion Boost: 300% Attack & Health\n'
-                          'Health: 200% Health\n'
-                          'Limber: Each time the Defender receives a Stun Debuff, '
-                          'they reduce the Duration of further Stun Debuffs by 0.10 seconds.\n'
-                          'Unblockable Finale: Attacks are unblockable as long as Health remains below 25%.'],
-                         ['Yondu 1',
-                             'Champion Boost: 300% Attack & Health '
-                             'Health: 200% Health\n'
-                             'Enhanced Bleed: Bleed abilities are 40% more effective.\n'
-                             'Collar Tech V: Gives Tech Champions a field that inhibits enemy Power Gain by 18%\n'
-                             'Special 2 Bias: This defender is more likely to activate Special Attack 2'],
-                         ['Mephisto 1',
-                             'Champion Boost: 300% Attack & Health\n '
-                             'Health: 200% Health\n ']]},
-    '6.2': {'required': 'A - 2 players, Poison Immune\nB - Poison Immune\nG - Power control\nH - Bleed Immune\nI - 2 players, Bleed Immune',
-            'energy': 'A, B, E, H, & I move first\nD, F, G move next\nC moves last',
-            'tips': 'A - Poison\nB - Poison\nC - Immunity, Stun Immunity\nE - Power Gain, Stun Immunity\nA, B, C, D, & E - Daredevil for Enhanced range special tiles 73, 63\nF - Degeneration\nG - Power Gain, All or Nothing\nH - Bleed Immune\nI -Bleed Immune',
-            'miniboss': [['Void 1',
-                          'Champion Boost: 300% Attack & Health\n'
-                          'Health: 300% Health\n'
-                          'Limber: Each time the Defender receives a Stun Debuff, '
-                          'they reduce the Duration of further Stun Debuffs by 0.10 seconds.\n'
-                          'Unblockable Finale: Attacks are unblockable as long as Health remains below 25%.'],
-                         ['Mephisto 2',
-                             'Champion Boost: 300% Attack & Health\n'
-                             'Health: 300% Health\n'
-                             '\n'],
-                         ['Yondu 2',
-                             'Champion Boost: 300% Attack & Health\n'
-                             'Health: 300% Health\n'
-                             'Enhanced Bleed: Bleed abilities are 40% more effective.\n'
-                             'Collar Tech V: Gives Tech Champions a field that inhibits enemy Power Gain by 18%\n'
-                             'Enhanced Special 2: Special 2 deals 20% more damage and cannot be Blocked\n'
-                             'Special 2 Bias: This defender is more likely to activate Special Attack 2']]},
-    '6.3': {'required': 'A - Poison Immune\nB - Bleed Immune\nC - Bleed Immune\nD - Regeneration\nE - Regeneration\nF - Power Control, Regeneration\nG - Power Control\nI - Power control\nJ - Regeneration',
-            'energy': 'D & E move first\nC & F move second\nA, B, G & I move third\nH & J move last',
-            'tips': 'A - Poison\nB - Caltrops\nC - Caltrops\nA, B & C - All or Nothing tile 118\nD - Degeneration\nE - Degeneration & Starburst\nF - Starburst & Power Gain\nG - Power Gain\nH \nI - Power Gain\nJ - Starburst',
-            'miniboss': [['Kingpin', '+575% Champion Boost\n+200% Health\nDimensional Anchor\nHeal Block\nLimber (20%)\n+50% Power Gain\nUnblockable'], ]},
-    '7': {'required': '',
-          'energy': '',
-          'tips': '', },
-    '7.1': {'required': '',
-            'energy': '',
-            'tips': '', },
-    '7.2': {'required': '',
-            'energy': '',
-            'tips': '', },
-    '7.3': {'required': '',
-            'energy': '',
-            'tips': '', },
-}
-
-lolmaps = {'0': {'map': '0', 'maptitle': 'Completion Path 0'},
-           '1': {'map': '1', 'maptitle': 'Exploration Path 1'},
-           '2': {'map': '2', 'maptitle': 'Exploration Path 2'},
-           '3': {'map': '3', 'maptitle': 'Exploration Path 3'},
-           '4': {'map': '4', 'maptitle': 'Exploration Path 4'},
-           '5': {'map': '5', 'maptitle': 'Exploration Path 5'},
-           '6': {'map': '6', 'maptitle': 'Exploration Path 6'},
-           '7': {'map': '7', 'maptitle': 'Exploration Path 7'}, }
-
-lollanes = {'0': ['colossus', 'maestro'],
-            '1': ['spiderman', 'maestro'],
-            '2': ['starlord', 'thorjanefoster', 'abomination', 'guillotine', 'venompool', 'drstrange', 'kamalakhan', 'rocket', 'maestro'],
-            '3': ['colossus', 'magneto', 'daredevilnetflix', 'spidermanmorales', 'blackwidow', 'drstrange', 'moonknight', 'rocket', 'maestro'],
-            '4': ['groot', 'vision', 'thor', 'electro', 'hulkbuster', 'blackwidow', 'cyclops90s', 'rhino', 'maestro'],
-            '5': ['blackpanthercivilwar', 'vision', 'juggernaut', 'hulkbuster', 'drstrange', 'blackwidow', 'kamalakhan', 'rocket', 'maestro'],
-            '6': ['starlord', 'agentvenom', 'daredevilnetflix', 'venompool', 'cyclops90s', 'ultronprime', 'maestro'],
-            '7': ['colossus', 'x23', 'maestro']
-            }
-
-enigmatics = {
-    'maestro': ['Maestro', 'At the start of the fight, Maestro changes his class abilities depending on his Opponent.'
-                '\n**vs. MYSTIC** Applies different Debuffs depending on specific actions taken by Maestro and his Opponents'
-                '\n**vs. TECH** Receives random buffs throughout the fight.'
-                '\n**vs. MUTANT** Powerdrain when Blocked & receives Armor Up when activating a Special 1 or 2.'
-                '\n**vs. SKILL** Reduces Opponent Effect Accuracy when attacked.'
-                '\n**vs. SCIENCE** Shrugs off Debuffs'],
-    'colossus': ['Colossus', 'When Blocking a Special 1 or 2, Colossus reflects his opponent\'s Attack damage back. Heavy attacks do damage equal to 1000\% of the opponent\'s max health.'],
-    'spiderman': ['Spider-Man', 'Spider-Man starts with 100\% chance to Evade passive, this is removed when he becomes Stunned. The Evade passive returns when Spider-Man activates his Special 2.'],
-    'starlord': ['Star-Lord', 'Every 15 Blocked attacks, Star-Lord receives a permanent Fury Stack, increasing his Attack by 100%'],
-    'thorjanefoster': ['Thor (Jane Foster)', 'While Blocking an attack, Thor Shocks her opponent for 100\% of her attack over 3 seconds.'],
-    'abomination': ['Abomination', 'At the beginning of the fight, Abomination excretes poison that has 100\% chance to permanently Poison the opponent for 25\% of his Attack every second.'],
-    'guillotine': ['Guillotine', 'At the beginning of the fight, Guillotine\'s ancestors slice the opponent with ghostly blades that have 100\% chance to permanently Bleed the opponent for 25\% of her Attack every second'],
-    'venompool': ['Venompool', 'When enemies activate a Buff effect, Venompool copies that Buff. Any Debuff applied to Venompool is immediately removed.'],
-    'drstrange': ['Dr. Strange', 'When Blocked, Dr. Strange steals 5\% Power from his opponents. Buff duration is increased by 100\%.'],
-    'kamalakhan': ['Ms. Marvel Kamala Khan', 'Ms. Marvel has 100\% chance to convert a Debuff to a Fury stack, increasing her Attack by 10\%. A fury stack is removed when attacked with a Special.'],
-    'rocket': ['Rocket Raccoon', 'Upon reaching 2 bars of Power, Rocket becomes Unblockable until he attacks his opponent or is attacked with a Heavy Attack.'],
-    'magneto': ['magneto', 'Magneto begins the fight with 1 bar of Power. Enemies reliant on metal suffer 100\% reduced Ability Accuracy and ar Stunned for 5 seconds when magnetized.'],
-    'daredevilnetflix': ['Daredevil', 'While opponents of Daredevil ar Blocking, they take Degeneration damage every second equal to the percentage of their health lost.'],
-    'spidermanmorales': ['Spider-Man Mile Morales', 'When Miles loses all his charges of Evasion, he gains Fury, Cruelty, Precision, and Resistances. These Enhancements are removed when his opponent activates a Special 1 or 2.'],
-    'blackwidow': ['Black Widow', 'When Black Widow activatesa Special 1 or 2, she receives an Electric Barrier for 3 seconds. If she receives an attack with the Electric Barrier active, the opponent is Stunned for 2 seconds.'],
-    'moonknight': ['Moon Knight', 'When Moon Knight activates his Special, each attack that makes contact with his opponent, a Degeneration stack is applied that deals 0.1\% direct damage every second, stacks go up to 4. These stacks are removed when Moon Knight is attacked with a Special.'],
-    'groot': ['Groot', 'Groot begins Regeneration upon eneimes activation of their Regeneration Buffs. Groot\'s Regeneration lasts for 3 seconds and increases in strength the lower he is.'],
-    'vision': ['Vision', 'Opponents of Vision lose 5\% of their Power every time they Dash backwards. If they dash backwards with 0 Power, they become Stunned for 1 second. Vision has Unblockable Special 2.'],
-    'thor': ['Thor', 'When attacked, Thor has a 5% chance to apply a Stun timer stack, up to 3, to his opponent, lasting 30 seconds. These stacks are removed when attacked with a Heavy Attack. If the timer ends, the opponent is Stunned for 2 seconds.'],
-    'electro': ['Electro', 'Every 15 seconds, Electro\'s Static Shock is enhanced for 5 seconds.'],
-    'hulkbuster': ['Hulkbuster', 'While Blocking, Hulkbuster reflects direct damage that increases exponentially in power with every attack Blocked.'],
-    'cyclops90s': ['Cyclops Blue Team', 'Upon reaching 1 bar of Power, Cyclops becomes Unblockable until he attacks his opponent or reaches 2 bars of power.'],
-    'rhino': ['Rhino', 'Rhino has 90\% Physical Resistance and takes no Damage from Physical-based Special 1 & 2 attacks.'],
-    'blackpanthercivilwar': ['Black Panther Civil War', 'At the beginning of the fight, Black Panther recieves Physical and Energy Resistance Buffs. Every 10 attacks on Black Panther, the Resistance Buffs are removed for 10 seconds.'],
-    'juggernaut': ['Juggernaut', 'Juggernaut\'s Unstoppable lasts until he is attacked with a Heavy Attack.'],
-    'agentvenom': ['Agent Venom', 'Throughout the fight, when combatants strike their opponent, they apply a timer that lasts for 3 seconds. The only way to remove the timer is to strike back and transfer it to the attacked combatant. If the timer runs out the combatant with the timer receives a Debuff that Incinerates 25% of the opponent Health as direct damage over 3 seconds.'],
-    'ultronprime': ['Ultron Prime', 'Ultron has 90\% Energy Resistance and takes no damage from Energy-Based Special 1 & 2 attacks.'],
-    'x23': ['Wolverine (X-23)', 'Every 15 seconds, Wolverine Regenerates 5\% of her Health over 3 seconds.']
-}
 
 
 class MCOCMaps:
@@ -168,10 +20,7 @@ class MCOCMaps:
 
     def __init__(self, bot):
         self.bot = bot
-        self.diagnostics = self.bot.get_channel('725397961072181349')
-        self.umcoc = self.bot.get_server('378035654736609280')
-        self.catmurdock = self.umcoc.get_member('373128988962586635')
-        self.jjw = self.umcoc.get_member('124984294035816448')
+        self.settings = json.load('data/mcocTools/settings.json')
 
     @commands.group(pass_context=True, aliases=('map',))
     async def maps(self, ctx):
@@ -213,9 +62,9 @@ class MCOCMaps:
             seven = {'A': '1', 'B': '2', 'C': '3'}
             for k in seven.keys():
                 mapurl = '{}{}{}.png'.format(
-                    basepath, aq_map[maptype]['map'], k)
+                    basepath, self.settings["aq_map"][maptype]['map'], k)
                 maptitle = 'Alliance Quest {} | Variation {}'.format(
-                    aq_map[maptype]['maptitle'], seven[k])
+                    self.settings["aq_map"][maptype]['maptitle'], seven[k])
                 data = CDTEmbed.get_embed(
                     self, ctx, title=maptitle, image=mapurl)
                 data.set_author(
@@ -225,46 +74,46 @@ class MCOCMaps:
                              delete_onX=True, add_pageof=True)
             await menu.menu_start(pages=embeds)
             return
-        elif maptype in aq_map:
+        elif maptype in self.settings["aq_map"]:
             mapurl = '{}{}.png'.format(
-                basepath, aq_map[maptype]['map'])
+                basepath, self.settings["aq_map"][maptype]['map'])
             maptitle = 'Alliance Quest {}'.format(
-                aq_map[maptype]['maptitle'])
+                self.settings["aq_map"][maptype]['maptitle'])
             data = CDTEmbed.get_embed(self, ctx, title=maptitle, image=mapurl)
             data.set_author(
                 name='JJW | CollectorDevTeam', icon_url=self.jjw.avatar_url)
-            if aq_map_tips[maptype]['required'] != '':
+            if self.settings["aq_map"]_tips[maptype]['required'] != '':
                 data.add_field(name='Required',
-                               value=aq_map_tips[maptype]['required'])
-            #     em.add_field(name='Suggestions', value=aq_map_tips[maptype]['tips'])
+                               value=self.settings["aq_map_tips"][maptype]['required'])
+            #     em.add_field(name='Suggestions', value=self.settings["aq_map_tips"][maptype]['tips'])
             # em.set_image(url=mapurl)
             embeds.append(data)
-            if 'tips' in aq_map_tips[maptype]:
+            if 'tips' in self.settings["aq_map_tips"][maptype]:
                 mapurl = '{}{}.png'.format(
-                    basepath, aq_map[maptype]['map'])
+                    basepath, self.settings["aq_map"][maptype]['map'])
                 maptitle = 'Alliance Quest {}'.format(
-                    aq_map[maptype]['maptitle'])
+                    self.settings["aq_map"][maptype]['maptitle'])
                 em2 = CDTEmbed.get_embed(
                     self, ctx, title=maptitle, image=mapurl)
 
-                if aq_map_tips[maptype]['required'] != '':
+                if self.settings["aq_map_tips"][maptype]['required'] != '':
                     em2.add_field(name='Required',
-                                  value=aq_map_tips[maptype]['required'])
-                if aq_map_tips[maptype]['energy'] != '':
+                                  value=self.settings["aq_map_tips"][maptype]['required'])
+                if self.settings["aq_map_tips"][maptype]['energy'] != '':
                     em2.add_field(
-                        name='Energy', value=aq_map_tips[maptype]['energy'])
-                if aq_map_tips[maptype]['tips'] != '':
+                        name='Energy', value=self.settings["aq_map_tips"][maptype]['energy'])
+                if self.settings["aq_map_tips"][maptype]['tips'] != '':
                     em2.add_field(name='Suggestions',
-                                  value=aq_map_tips[maptype]['tips'])
+                                  value=self.settings["aq_map_tips"][maptype]['tips'])
                 embeds.append(em2)
-            if 'miniboss' in aq_map_tips[maptype]:
+            if 'miniboss' in self.settings["aq_map_tips"][maptype]:
                 mapurl = '{}{}.png'.format(
-                    basepath, aq_map[maptype]['map'])
+                    basepath, self.settings["aq_map"][maptype]['map'])
                 maptitle = 'Alliance Quest {}'.format(
-                    aq_map[maptype]['maptitle'])
+                    self.settings["aq_map"][maptype]['maptitle'])
                 em3 = CDTEmbed.get_embed(
                     self, ctx, title=maptitle, image=mapurl)
-                for miniboss in aq_map_tips[maptype]['miniboss']:
+                for miniboss in self.settings["aq_map_tips"][maptype]['miniboss']:
                     em3.add_field(name=miniboss[0], value=miniboss[1])
                 embeds.append(em3)
             menu = PagesMenu(self.bot, timeout=30,
@@ -370,17 +219,17 @@ class MCOCMaps:
         """Labyrinth of Legends Maps
             LOL maps: 0, 1, 2, 3, 4, 5, 6, 7
             /lol 5"""
-        if maptype in lolmaps:
+        if maptype in self.settings["lolmaps"]:
             pages = []
             for i in range(0, 8):
                 maptitle = 'Labyrinth of Legends: {}'.format(
-                    lolmaps[str(i)]['maptitle'])
+                    self.settings["lolmaps"][str(i)]['maptitle'])
                 data = CDTEmbed.get_embed(
                     self, ctx, title=maptitle, image='{}lolmap{}v3.png'.format(basepath, i))
-                lanes = lollanes[str(i)[0]]
+                lanes = self.settings["lolanes"][str(i)[0]]
                 # desclist = []
                 for l in lanes:
-                    enigma = enigmatics[l]
+                    enigma = self.settings["enigmatics"][l]
                     print(enigma)
                     # desclist.append('{}\n{}\n\n'.format(enigma[0], enigma[1]))
                     data.add_field(name='Enigmatic {}'.format(
@@ -392,5 +241,31 @@ class MCOCMaps:
             # await self.bot.send_message(ctx.message.channel, embed=em)
 
 
+def get_stuffs(bot):
+    settings = json.load('data/mcocTools/settings.json')
+    """Check for settings changes. If changes, dump to settings.json"""
+    changes = False
+    diag = bot.get_channel('725397961072181349')
+    if settings['diagnostics'] != daig:
+        settings.update({'diagnostics': diag})
+        changes = True
+    umcoc = bot.get_server('378035654736609280')
+    if settings['umcoc'] != umcoc
+    settings.update({'umcoc': umcoc})
+    changes = True
+    catmurdock = umcoc.get_member('373128988962586635')
+    if settings['catmurdock'] != catmurdock
+    settings.update({'catmurdock': catmurdock})
+    changes = True
+    jjw = umcoc.get_member('124984294035816448')
+    if settings['jjw'] != jjw:
+        settings.update({'jjw': jjw})
+        changes = True
+    if changes:
+        with open('data/mcocTools/settings.json', 'w') as f:
+            json.dump(settings, f)
+
+
 def setup(bot):
+    get_stuffs(bot)
     bot.add_cog(MCOCMaps(bot))
