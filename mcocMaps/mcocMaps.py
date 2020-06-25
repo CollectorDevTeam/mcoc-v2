@@ -3,6 +3,7 @@ from discord.ext import commands
 import json
 from __main__ import send_cmd_help
 from .mcocTools import (CDTEmbed, PagesMenu, DIAGNOSTICS)
+from .utils import chat_formatting as chat
 
 basepath = "https://raw.githubusercontent.com/CollectorDevTeam/assets/master/data/images/maps/"
 catcorner = "{}catmurdock/cat_corner_left.png".format(
@@ -29,6 +30,14 @@ class MCOCMaps:
             await send_cmd_help(ctx)
         msg = self.diagnostics.log(ctx)
         await self.bot.send_message(self.channel, msg)
+
+    @maps.command(passy_context=True, name='settings', hidden=True)
+    async def maps_settings(self, ctx):
+        paged = chat.pagify(self.settings)
+        boxed = []
+        boxed.append(chat.box(p) for p in paged)
+        for b in boxed:
+            await self.bot.send_message(self.channel, b)
 
     @maps.command(pass_context=True, name="aq", aliases=("alliancequest",))
     async def maps_alliancequest(self, ctx, maptype: str = None):
