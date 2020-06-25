@@ -262,6 +262,7 @@ class MCOCMaps:
             umcoc = self.bot.get_server('378035654736609280')
             self.catmurdock = umcoc.get_member("373128988962586635")
             self.jjw = umcoc.get_member("124984294035816448")
+        print('{}'.format(self.map_settings))
         return
 
 
