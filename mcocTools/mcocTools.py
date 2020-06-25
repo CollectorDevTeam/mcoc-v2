@@ -2592,14 +2592,14 @@ class DIAGNOSTICS:
         message += 'User:    [{0.message.author.id}] {0.message.author.display_name} \n'.format(
             ctx)
         if ctx.invoked_subcommand is not None:
-            # if ctx.message.content is None:
-            message += 'Subcommand Invoked: {0.invoked_subcommand}\n'.format(
-                ctx)
-            # else:
-            #     message += 'Subcommand Invoked: {0.invoked_subcommand}\n'.format(
-            #         ctx)
-            #     message += 'Conent: {0.message.conent}\n'.format(
-            #         ctx)
+            if ctx.message.content is None:
+                message += 'Subcommand Invoked: {0.invoked_subcommand}\n'.format(
+                    ctx)
+            else:
+                message += 'Subcommand Invoked: {0.invoked_subcommand}\n'.format(
+                    ctx)
+                message += 'Conent: {0.message.content}\n'.format(
+                    ctx)
         message.format(ctx)
         # elif ctx.invoked is not None:
         #     message += 'Invoked command: {0.invoked}'.format(ctx)
