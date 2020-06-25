@@ -262,7 +262,7 @@ class MCOCMaps:
             self.jjw = umcoc.get_member("124984294035816448")
         if self.settings == {}:
             with open("data/mcocTools/settings.json") as f:
-                self.settings = json.load(f)
+                settings = json.load(f)
             self.settings.update(settings)
             print(self.settings['lolmaps'].keys())
         return
