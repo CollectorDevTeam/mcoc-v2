@@ -250,13 +250,13 @@ def get_stuffs(bot):
         settings.update({'diagnostics': diag})
         changes = True
     umcoc = bot.get_server('378035654736609280')
-    if settings['umcoc'] != umcoc
-    settings.update({'umcoc': umcoc})
-    changes = True
+    if settings['umcoc'] != umcoc:
+        settings.update({'umcoc': umcoc})
+        changes = True
     catmurdock = umcoc.get_member('373128988962586635')
-    if settings['catmurdock'] != catmurdock
-    settings.update({'catmurdock': catmurdock})
-    changes = True
+    if settings['catmurdock'] != catmurdock:
+        settings.update({'catmurdock': catmurdock})
+        changes = True
     jjw = umcoc.get_member('124984294035816448')
     if settings['jjw'] != jjw:
         settings.update({'jjw': jjw})
