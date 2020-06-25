@@ -260,9 +260,9 @@ class MCOCMaps:
             umcoc = self.bot.get_server('378035654736609280')
             self.catmurdock = umcoc.get_member("373128988962586635")
             self.jjw = umcoc.get_member("124984294035816448")
-        if self.settings is None:
+        if self.settings == {}:
             with open("data/mcocTools/settings.json") as f:
-                settings = json.load(f)
+                self.settings = json.load(f)
             self.settings.update(settings)
             print(self.settings['lolmaps'].keys())
         return
