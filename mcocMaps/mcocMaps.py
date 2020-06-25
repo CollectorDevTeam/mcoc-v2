@@ -20,7 +20,7 @@ class MCOCMaps:
     def __init__(self, bot):
         self.bot = bot
         self.diagnostics = DIAGNOSTICS(self.bot)
-        self.map_settings = dataIO.loads_json('data/mcocTools/settings.json')
+        self.map_settings = dataIO.load_json('data/mcocTools/settings.json')
         self.jjw = None
         self.catmurdock = None
         self.channel = None
