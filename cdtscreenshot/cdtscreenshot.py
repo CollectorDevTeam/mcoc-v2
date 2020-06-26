@@ -6,9 +6,11 @@ from selenium.webdriver.common.keys import Keys
 import discord
 from discord.ext import commands
 
-
+# imported from redbot utils
 from .utils.dataIO import dataIO
+# imported from cdt installations
 from .cdtdiagnostics import DIAGNOSTICS
+from .cdtpagesmenu import PagesMenu
 from .cdtembed import CDTEmbed
 
 from __main__ import send_cmd_help
@@ -27,22 +29,36 @@ class ScreenShot:
             self.settings['calendar'] = {'screenshot': '', 'time': 0}
             dataIO.save_json(
                 'data/cdtscreenshot/settings.json', self.settings)
+        self.cdt = self.get_role('390253643330355200')
+        self.cst = self.get_role('390253719125622807')
 
-    @commands.group(pass_context=True, hidden=True, aliases=('ss', 'screenshots',))
-    async def screenshot(self, ctx):
-        if ctx.invoked_subcommand is None:
-            await send_cmd_help(ctx)
-        await self.diagnostics.log(ctx, self.channel)
+    @commands.group(pass_context=True, hidden=True, name='screenshot', aliases=('ss', 'screenshots',))
+    async def cdt_screenshot(self, ctx):
+        if self.cdt in ctx.message.author.roles or self.cst in ctx.message.author.roles:
+            await self.diagnostics.log(ctx, self.channel)
+            if ctx.invoked_subcommand is None:
+                await send_cmd_help(ctx)
 
-    @screenshot.command(pass_context=True, name='setexec')
-    async def ss_exec(self, ctx, *, exectuable_path: str, hidden=True):
+    @screenshot.command(pass_context=True, name='setexec', hidden=True)
+    async def ss_exec(self, ctx, exectuable_path: str):
         """Set the executable path for the Chrome Webdriver"""
         self.settings.update({"executable_path": str})
-        dataIO.save_json(
-            'data/cdtscreenshot/settings.json', self.settings)
+        if exectuable_path is None:
+            return
+        else:
+            msg = "Do you want to set your Chromium Webdriver path to:\n{}".format(
+                exectuable_path)
+            test = await PagesMenu.confirm(ctx, msg)
+            if test:
+                dataIO.save_json(
+                    'data/cdtscreenshot/settings.json', self.settings)
+            else:
+                msg = "Chromium webdriver settings unchanged:\n{}".format(
+                    self.settings["executable_path"])
+                await self.bot.send_message(ctx.message.channel, msg)
 
     @screenshot.command(pass_context=True, name='take')
-    async def ss_take(self, ctx, *, url, width=1920, height=1080):
+    async def ss_take(self, ctx, url: str, width=1920, height=1080):
         """Take URL screenshot & return embed"""
         imgurl = await self.get_screenshot(url, width, height)
         data = CDTEmbed.create(ctx, image=imgurl)
@@ -70,6 +86,12 @@ class ScreenShot:
             return message.attachments[0]['url']
         else:
             return None
+
+    def get_role(self, roleid):
+        server = self.bot.get_server('215271081517383682')
+        for role in server.roles:
+            if role.id == roleid:
+                return role
 
 
 def setup(bot):
