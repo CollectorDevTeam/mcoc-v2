@@ -29,7 +29,7 @@ class CDTEmbed:
             member = discord.utils.get(ctx.message.server.members, id=user_id)
             color = member.color
         if url is None:
-            url = PATREON
+            url = self.PATREON
         data = discord.Embed(color=color, title=title, url=url)
         if description is not None:
             if len(description) < 1500:
