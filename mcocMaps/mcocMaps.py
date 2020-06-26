@@ -2,8 +2,8 @@ import discord
 from discord.ext import commands
 # import json
 from __main__ import send_cmd_help
-from .mcocTools import (PagesMenu)
 from .cdtembed import CDTEmbed
+from .cdtpagesmenu import PagesMenu
 from .cdtdiagnostics import DIAGNOSTICS
 from .utils import chat_formatting as chat
 from .utils.dataIO import dataIO
@@ -30,13 +30,14 @@ class MCOCMaps:
 
     @commands.group(pass_context=True, aliases=("map",))
     async def maps(self, ctx):
+        """Maps for Contest of Champions"""
         if ctx.invoked_subcommand is None:
             await send_cmd_help(ctx)
-        msg = self.diagnostics.log(ctx)
-        await self.bot.send_message(self.channel, msg)
+        await self.diagnostics.log(ctx)
 
     @maps.command(pass_context=True, name='settings', hidden=True)
     async def maps_settings(self, ctx):
+        """Display settings.json in mcocMaps diagnostics channel"""
         print('{}'.format(self.map_settings))
         ms = '{}'.format(self.map_settings)
         paged = chat.pagify(ms)
