@@ -4,11 +4,11 @@ from validator_collection import validators, checkers
 
 
 class CDTEmbed:
-    COLLECTOR_ICON = 'https://raw.githubusercontent.com/CollectorDevTeam/assets/master/data/cdt_icon.png'
-    PATREON = 'https://patreon.com/collectorbot'
 
     def __init__(self, bot):
         self.bot = bot
+        COLLECTOR_ICON = 'https://raw.githubusercontent.com/CollectorDevTeam/assets/master/data/cdt_icon.png'
+        PATREON = 'https://patreon.com/collectorbot'
 
     def create(self, ctx, user_id=None, color=discord.Color.gold(), title='', description='', image=None, thumbnail=None, url=None, footer_text=None, footer_url=None):
         '''Return a color styled embed with CDT footer, and optional title or description.
