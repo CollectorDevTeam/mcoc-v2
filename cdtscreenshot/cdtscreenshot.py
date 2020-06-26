@@ -3,6 +3,9 @@ import asyncio
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.keys import Keys
+import discord
+from discord.ext import commands
+
 
 from .utils.dataIO import dataIO
 from .cdtdiagnostics import DIAGNOSTICS
