@@ -4,11 +4,13 @@ from validator_collection import validators, checkers
 
 
 class CDTEmbed:
+    COLLECTOR_ICON = 'https://raw.githubusercontent.com/CollectorDevTeam/assets/master/data/cdt_icon.png'
+    PATREON = 'https://patreon.com/collectorbot'
 
     def __init__(self, bot):
         self.bot = bot
-        COLLECTOR_ICON = 'https://raw.githubusercontent.com/CollectorDevTeam/assets/master/data/cdt_icon.png'
-        PATREON = 'https://patreon.com/collectorbot'
+        self.COLLECTOR_ICON = COLLECTOR_ICON
+        self.PATREON = PATREON
 
     def create(self, ctx, user_id=None, color=discord.Color.gold(), title='', description='', image=None, thumbnail=None, url=None, footer_text=None, footer_url=None):
         '''Return a color styled embed with CDT footer, and optional title or description.
@@ -29,13 +31,13 @@ class CDTEmbed:
             member = discord.utils.get(ctx.message.server.members, id=user_id)
             color = member.color
         if url is None:
-            url = self.PATREON
+            url = PATREON
         data = discord.Embed(color=color, title=title, url=url)
         if description is not None:
             if len(description) < 1500:
                 data.description = description
         data.set_author(name='CollectorVerse',
-                        icon_url=self.COLLECTOR_ICON)
+                        icon_url=COLLECTOR_ICON)
         if image is not None:
             validators.url(image)
             code = requests.get(image).status_code
@@ -56,8 +58,8 @@ class CDTEmbed:
             footer_text = 'CollectorDevTeam | Requested by {}'.format(
                 ctx.message.author)
         if footer_url is None:
-            footer_url = self.COLLECTOR_ICON
-        data.set_footer(text=footer_text, icon_url=self.COLLECTOR_ICON)
+            footer_url = COLLECTOR_ICON
+        data.set_footer(text=footer_text, icon_url=COLLECTOR_ICON)
         return data
 
 
