@@ -1,0 +1,12 @@
+{
+    "AUTHOR": "JJW",
+    "INSTALL_MSG": "MCOC Companion Cog",
+    "NAME": "ScreenShot",
+    "SHORT": "ScreenShot for Collector",
+    "DESCRIPTION": "Useful Tools for Contest of Champions",
+    "REQUIREMENTS": [
+        "selenium",
+        "asyncio"
+    ],
+    "HIDDEN": "True"
+}
