@@ -33,7 +33,7 @@ class MCOCMaps:
         """Maps for Contest of Champions"""
         if ctx.invoked_subcommand is None:
             await send_cmd_help(ctx)
-        await self.diagnostics.log(ctx)
+        await self.diagnostics.log(self.channel, ctx)
 
     @maps.command(pass_context=True, name='settings', hidden=True)
     async def maps_settings(self, ctx):
