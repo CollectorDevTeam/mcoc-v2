@@ -73,4 +73,4 @@ class ScreenShot:
 
 
 def setup(bot):
-    bot.add_cog(SCREENSHOT)
+    bot.add_cog(ScreenShot)
