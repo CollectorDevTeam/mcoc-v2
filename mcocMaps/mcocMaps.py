@@ -2,7 +2,9 @@ import discord
 from discord.ext import commands
 # import json
 from __main__ import send_cmd_help
-from .mcocTools import (CDTEmbed, PagesMenu, DIAGNOSTICS)
+from .mcocTools import (PagesMenu)
+from .cdtembed import CDTEmbed
+from .cdtdiagnostics import DIAGNOSTICS
 from .utils import chat_formatting as chat
 from .utils.dataIO import dataIO
 
@@ -64,7 +66,7 @@ class MCOCMaps:
                     basepath, cat_maps[maptype]["map"][i])
                 maptitle = "Alliance Quest {} :smiley_cat::sparkles:| Variation {}".format(
                     cat_maps[maptype]["maptitle"], i+1)
-                data = CDTEmbed.get_embed(
+                data = CDTEmbed.create(
                     self, ctx, image=mapurl, thumbnail=catcorner, title=maptitle)
                 data.set_author(name=self.catmurdock.display_name,
                                 icon_url=self.catmurdock.avatar_url)
@@ -82,7 +84,7 @@ class MCOCMaps:
                     basepath, self.map_settings["aq_map"][maptype]["map"], k)
                 maptitle = "Alliance Quest {} | Variation {}".format(
                     self.map_settings["aq_map"][maptype]["maptitle"], seven[k])
-                data = CDTEmbed.get_embed(
+                data = CDTEmbed.create(
                     self, ctx, title=maptitle, image=mapurl)
                 data.set_author(
                     name="JJW | CollectorDevTeam", icon_url=self.jjw.avatar_url)
@@ -96,7 +98,7 @@ class MCOCMaps:
                 basepath, self.map_settings["aq_map"][maptype]["map"])
             maptitle = "Alliance Quest {}".format(
                 self.map_settings["aq_map"][maptype]["maptitle"])
-            data = CDTEmbed.get_embed(self, ctx, title=maptitle, image=mapurl)
+            data = CDTEmbed.create(self, ctx, title=maptitle, image=mapurl)
             data.set_author(
                 name="JJW | CollectorDevTeam", icon_url=self.jjw.avatar_url)
             if self.map_settings["aq_map_tips"][maptype]["required"] != "":
@@ -110,7 +112,7 @@ class MCOCMaps:
                     basepath, self.map_settings["aq_map"][maptype]["map"])
                 maptitle = "Alliance Quest {}".format(
                     self.map_settings["aq_map"][maptype]["maptitle"])
-                em2 = CDTEmbed.get_embed(
+                em2 = CDTEmbed.create(
                     self, ctx, title=maptitle, image=mapurl)
 
                 if self.map_settings["aq_map_tips"][maptype]["required"] != "":
@@ -128,7 +130,7 @@ class MCOCMaps:
                     basepath, self.map_settings["aq_map"][maptype]["map"])
                 maptitle = "Alliance Quest {}".format(
                     self.map_settings["aq_map"][maptype]["maptitle"])
-                em3 = CDTEmbed.get_embed(
+                em3 = CDTEmbed.create(
                     self, ctx, title=maptitle, image=mapurl)
                 for miniboss in self.map_settings["aq_map_tips"][maptype]["miniboss"]:
                     em3.add_field(name=miniboss[0], value=miniboss[1])
@@ -138,7 +140,7 @@ class MCOCMaps:
             await menu.menu_start(pages=embeds)
         else:
             desc = "Currently supporting AQ maps:\nAQ 5: 5.1, 5.2, 5.3\nAQ 6: 6.1, 6.2, 6.3\nAQ 7: 7.1, 7.2, 7.3"
-            data = CDTEmbed.get_embed(
+            data = CDTEmbed.create(
                 self, ctx, title="Alliance Quest Maps", description=desc)
             await self.bot.send_message(ctx.message.channel, embed=data)
 
@@ -154,12 +156,12 @@ class MCOCMaps:
         if tier is None:
             pages = []
             for tier in ("challenger", "intermediate", "hard", "expert"):
-                data = CDTEmbed.get_embed(self, ctx,
-                                          image="{}catmurdock/AW/{}.png".format(
-                                              basepath, tier),
-                                          thumbnail=catcorner,
-                                          title="Alliane War {} Map :cat::sparkles:".format(
-                                              tier.title()))
+                data = CDTEmbed.create(self, ctx,
+                                       image="{}catmurdock/AW/{}.png".format(
+                                           basepath, tier),
+                                       thumbnail=catcorner,
+                                       title="Alliane War {} Map :cat::sparkles:".format(
+                                           tier.title()))
                 data.set_author(name=self.catmurdock.display_name,
                                 icon_url=self.catmurdock.avatar_url)
                 data.add_field(
@@ -171,12 +173,12 @@ class MCOCMaps:
         elif tier.lower() in warmaps:
             mapurl = "{}catmurdock/AW/{}.png".format(
                 basepath, tier.lower())
-            data = CDTEmbed.get_embed(self, ctx,
-                                      image="{}catmurdock/AW/{}.png".format(
-                                          basepath, tier.lower()),
-                                      thumbnail=catcorner,
-                                      title="Alliane War {} Map :cat::sparkles:".format(
-                                          tier.title()))
+            data = CDTEmbed.create(self, ctx,
+                                   image="{}catmurdock/AW/{}.png".format(
+                                       basepath, tier.lower()),
+                                   thumbnail=catcorner,
+                                   title="Alliane War {} Map :cat::sparkles:".format(
+                                       tier.title()))
             data.set_author(name=self.catmurdock.display_name,
                             icon_url=self.catmurdock.avatar_url)
             data.add_field(
@@ -184,7 +186,7 @@ class MCOCMaps:
             await self.bot.send_message(ctx.message.channel, embed=data)
         else:
             desc = "Currently supporting \nChallenger\nIntermediate\nHard\nExpert"
-            data = CDTEmbed.get_embed(self, ctx, title="Alliance War Maps :cat::sparkles:".format(
+            data = CDTEmbed.create(self, ctx, title="Alliance War Maps :cat::sparkles:".format(
                 tier.title()), thumbnail=catcorner, description=desc)
             data.set_author(name=self.catmurdock.display_name,
                             icon_url=self.catmurdock.avatar_url)
@@ -202,7 +204,7 @@ class MCOCMaps:
             for catmap in cat_maps:
                 mapurl = "{}catmurdock/SQ/sq_{}.png".format(
                     basepath, catmap)
-                data = CDTEmbed.get_embed(self, ctx, title="Act {} Map :cat::sparkles:".format(
+                data = CDTEmbed.create(self, ctx, title="Act {} Map :cat::sparkles:".format(
                     catmap), image=mapurl, thumbnail=catcorner)
                 data.set_author(name=self.catmurdock.display_name,
                                 icon_url=self.catmurdock.avatar_url)
@@ -213,7 +215,7 @@ class MCOCMaps:
                              delete_onX=True, add_pageof=True)
             await menu.menu_start(pages)
         elif level is not None and level in cat_maps:
-            data = CDTEmbed.get_embed(self, ctx, title="Act {} Map by :cat::sparkles:".format(
+            data = CDTEmbed.create(self, ctx, title="Act {} Map by :cat::sparkles:".format(
                 level), image="{}catmurdock/SQ/sq_{}.png".format(basepath, level), thumbnail=catcorner)
             data.set_author(name=self.catmurdock.display_name,
                             icon_url=self.catmurdock.avatar_url)
@@ -222,10 +224,10 @@ class MCOCMaps:
 
             await self.bot.send_message(ctx.message.channel, embed=data)
         else:
-            data = CDTEmbed.get_embed(self, ctx, title="Available Story Quest Maps :cat::sparkles:",
-                                      description="Act 6.1:\n6.1.1, 6.1.2, 6.1.3, 6.1.4, 6.1.5, 6.1.6\n"
-                                      "Act 6.4:\n6.4: 6.4.1, 6.4.1, 6.4.3, 6.4.4, 6.4.5, 6.4.6",
-                                      thumbnail=catcorner)
+            data = CDTEmbed.create(self, ctx, title="Available Story Quest Maps :cat::sparkles:",
+                                   description="Act 6.1:\n6.1.1, 6.1.2, 6.1.3, 6.1.4, 6.1.5, 6.1.6\n"
+                                   "Act 6.4:\n6.4: 6.4.1, 6.4.1, 6.4.3, 6.4.4, 6.4.5, 6.4.6",
+                                   thumbnail=catcorner)
             data.set_author(name=self.catmurdock.display_name,
                             icon_url=self.catmurdock.avatar_url)
             data.add_field(name="Want more?", value=catsupport)
@@ -241,9 +243,9 @@ class MCOCMaps:
             for i in range(0, 8):
                 maptitle = "Labyrinth of Legends: {}".format(
                     self.map_settings["lolmaps"][str(i)]["maptitle"])
-                data = CDTEmbed.get_embed(
+                data = CDTEmbed.create(
                     self, ctx, title=maptitle, image="{}lolmap{}v3.png".format(basepath, i))
-                lanes = self.map_settings["lolanes"][str(i)[0]]
+                lanes = self.map_settings["lollanes"][str(i)[0]]
                 # desclist = []
                 for l in lanes:
                     enigma = self.map_settings["enigmatics"][l]
