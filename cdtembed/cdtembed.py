@@ -10,7 +10,7 @@ class CDTEmbed:
     def __init__(self, bot):
         self.bot = bot
 
-    def create(self, ctx, user_id=None, color=discord.Color.gold(), title='', description='', image=None, thumbnail=None, url=None):
+    def create(self, ctx, user_id=None, color=discord.Color.gold(), title='', description='', image=None, thumbnail=None, url=None, footer_text=None, footer_url=None):
         '''Return a color styled embed with CDT footer, and optional title or description.
         user_id = user id string. If none provided, takes message author.
         color = manual override, otherwise takes gold for private channels, or author color for server.
@@ -52,8 +52,12 @@ class CDTEmbed:
             else:
                 print('Thumbnail URL Failure, code {}'.format(code))
                 print('Attempted URL:\n{}'.format(thumbnail))
-        data.set_footer(text='CollectorDevTeam | Requested by {}'.format(
-            ctx.message.author), icon_url=self.COLLECTOR_ICON)
+        if footer_text is None:
+            footer_text = 'CollectorDevTeam | Requested by {}'.format(
+                ctx.message.author)
+        if footer_url is None:
+            footer_url = self.COLLECTOR_ICON
+        data.set_footer(text=footer_text, icon_url=self.COLLECTOR_ICON)
         return data
 
 

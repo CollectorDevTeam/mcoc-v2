@@ -2,7 +2,9 @@ import discord
 from discord.ext import commands
 import aiohttp
 import json
-from .mcocTools import (CDTEmbed, DIAGNOSTICS)
+# from .mcocTools import (DIAGNOSTICS)
+from .cdtdiagnostics import DIAGNOSTICS
+from .cdtembed import CDTEmbed
 import random
 
 
@@ -24,19 +26,17 @@ class DadJokes:
         """Gets a random dad joke."""
         author = ctx.message.author
         joke = await self.get_joke()
-        data = CDTEmbed.get_embed(self, ctx, title='CollectorVerse Dad Jokes:sparkles:',
-                                  description=joke)
+        data = CDTEmbed.create(self, ctx, title='CollectorVerse Dad Jokes:sparkles:',
+                               description=joke)
         data.set_author
         data.set_image(url=random.choice(self.dadjoke_images))
         while self.channel is None:
             self.set_channel()
         try:
             await self.bot.send_message(ctx.message.channel, embed=data)
-            msg = self.diagnostics.log(ctx)
-            await self.bot.send_message(self.channel, msg)
+            await DIAGNOSTICS.log(self.channel)
         except:
-            msg = self.diagnostics.log(ctx, msg=joke)
-            await self.bot.send_message(self.channel, msg)
+            await DIAGNOSTICS.log(self.channel, msg=joke)
 
     async def get_joke(self):
         api = 'https://icanhazdadjoke.com/slack'

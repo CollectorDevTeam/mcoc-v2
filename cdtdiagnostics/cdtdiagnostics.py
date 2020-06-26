@@ -44,4 +44,4 @@ class DIAGNOSTICS:
 
 
 def setup(bot):
-    bot.add_cog(CDTEmbed)
+    bot.add_cog(DIAGNOSTICS)

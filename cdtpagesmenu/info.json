@@ -1,12 +1,12 @@
 {
     "AUTHOR": "JJW",
     "INSTALL_MSG": "MCOC Companion Cog",
-    "NAME": "CDTEmbed",
-    "SHORT": "CDTEMbed for Collector",
+    "NAME": "PagesMenu",
+    "SHORT": "PagesMenu for Collector",
     "DESCRIPTION": "Useful Tools for Contest of Champions",
     "REQUIREMENTS": [
-        "validator_collection",
-        "requests"
+        "collections",
+        "asyncio"
     ],
     "HIDDEN": "True"
 }
