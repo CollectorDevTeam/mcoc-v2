@@ -28,21 +28,21 @@ class ScreenShot:
             dataIO.save_json(
                 'data/cdtscreenshot/settings.json', self.settings)
 
-    @commands.group(pass_context=True, hidden=True)
+    @commands.group(pass_context=True, hidden=True, aliases=('ss', 'screenshots',))
     async def screenshot(self, ctx):
         if ctx.invoked_subcommand is None:
             await send_cmd_help(ctx)
         await self.diagnostics.log(ctx, self.channel)
 
-    @screenshot.command(pass_context=True)
-    async def setexe(self, ctx, exectuable_path: str):
+    @screenshot.command(pass_context=True, name='setexec')
+    async def ss_exec(self, ctx, *, exectuable_path: str, hidden=True):
         """Set the executable path for the Chrome Webdriver"""
         self.settings.update({"executable_path": str})
         dataIO.save_json(
             'data/cdtscreenshot/settings.json', self.settings)
 
-    @screenshot.command(pass_context=True, hidden=True)
-    async def take(self, ctx, url, width=1920, height=1080):
+    @screenshot.command(pass_context=True, name='take')
+    async def ss_take(self, ctx, *, url, width=1920, height=1080):
         """Take URL screenshot & return embed"""
         imgurl = await self.get_screenshot(url, width, height)
         data = CDTEmbed.create(ctx, image=imgurl)
