@@ -11,19 +11,19 @@ from .cdtembed import CDTEmbed
 from __main__ import send_cmd_help
 
 
-class SCREENSHOT:
+class ScreenShot:
     """Save a Screenshot from x website"""
 
     def __init__(self, bot):
         self.bot = bot
         self.diagnostics = DIAGNOSTICS(self.bot)
-        self.settings = dataIO.load_json('data/cdtscreenshots/settings.json')
+        self.settings = dataIO.load_json('data/cdtscreenshot/settings.json')
         self.channel = self.bot.get_channel(
             self.settings["diagnostics_channel"])
         if 'calendar' not in self.settings.keys():
             self.settings['calendar'] = {'screenshot': '', 'time': 0}
             dataIO.save_json(
-                'data/cdtscreenshots/settings.json', self.settings)
+                'data/cdtscreenshot/settings.json', self.settings)
 
     @commands.group(pass_context=True, hidden=True)
     async def screenshot(self, ctx):
@@ -36,7 +36,7 @@ class SCREENSHOT:
         """Set the executable path for the Chrome Webdriver"""
         self.settings.update({"executable_path": str})
         dataIO.save_json(
-            'data/cdtscreenshots/settings.json', self.settings)
+            'data/cdtscreenshot/settings.json', self.settings)
 
     @screenshot.command(pass_context=True, hidden=True)
     async def take(self, ctx, url, width=1920, height=1080):
