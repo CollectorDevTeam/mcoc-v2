@@ -2895,7 +2895,7 @@ class CDTCheck:
             if len(ctx.message.attachments) > 0:
                 imagelist = []
                 for i in ctx.message.attachments:
-                    imagelist.append(ctx.message.attachements[i]['url'])
+                    imagelist.append(ctx.message.attachments[i]['url'])
             else:
                 imagelist = [
                     'https://cdn.discordapp.com/attachments/391330316662341632/725045045794832424/collector_dadjokes.png',
