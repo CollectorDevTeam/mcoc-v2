@@ -2875,7 +2875,7 @@ class CDTCheck:
         self.roles = {}
 
     @commands.command(pass_context=True, hidden=True, name="promote", aliases=("promo",))
-    async def cdt_promote(self, ctx, *, content):
+    async def cdt_promote(self, ctx, content):
         '''title; message'''
         authorized = await self.collectordevteam(ctx)
         if authorized is not True:
@@ -2895,10 +2895,11 @@ class CDTCheck:
             thumbnail = 'https://images-ext-1.discordapp.net/external/6Q7QyBwbwH2SCmwdt_YR_ywkHWugnXkMc3rlGLUnvCQ/https/raw.githubusercontent.com/CollectorDevTeam/assets/master/data/images/featured/collector.png?width=230&height=230'
             for imgurl in imagelist:
                 data = CDTEmbed.create(self, ctx,
-                                       title=content[0], description=content[1], footer_text="{} of CollectorDevTeam".format(ctx.message.author.display_name), image=imgurl, thumbnail=thumbnail)
-                data.add_field(name="Get Collector", value="[Invite]()")
+                                       title="CollectorVerse Tips", description=content[1], footer_text="{} of CollectorDevTeam".format(ctx.message.author.display_name), image=imgurl, thumbnail=thumbnail)
                 data.add_field(
-                    name="Get Support", value="[Join CDT & Get Collector](https://discord.gg/BwhgZxk)", inline=False)
+                    name="Get Collector", value="[Invite](https://discord.com/oauth2/authorize?client_id=210480249870352385&scope=bot&permissions=8)")
+                data.add_field(
+                    name="Get Support", value="[CollectorDevTeam Server](https://discord.gg/BwhgZxk)", inline=False)
                 pages.append(data)
             menu = PagesMenu(self.bot, timeout=30, add_pageof=True)
             await menu.menu_start(pages=pages)
