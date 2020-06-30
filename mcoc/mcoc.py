@@ -720,7 +720,7 @@ class MCOC(ChampionFactory):
             'CollectorDevTeam Server: https://discord.gg/BwhgZxk\n' \
             '\nCollectorBot Patrons receive priority support on the CollectorDevTeam server.\n ' \
             'Support CollectorDevTeam: https://patreon.com/collectorbot'
-        data = CDTEmbed.create(ctx,
+        data = CDTEmbed.create(self, ctx,
                                title=':globe_with_meridians: INVITE COLLECTOR:sparkles:', description=description, url=joinlink, image='https://media.discordapp.net/attachments/391330316662341632/725036637939171378/D1F5DE64D72C52880F61DBD6B2142BC6C096520D.png?width=461&height=461')
         if whisper:
             await self.bot.whisper(embed=data)
