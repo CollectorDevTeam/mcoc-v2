@@ -2877,7 +2877,8 @@ class CDTCheck:
     @commands.command(pass_context=True, hidden=True, name="promote", aliases=("promo",))
     async def cdt_promote(self, ctx, content):
         '''title; message'''
-        if await self.collectordevteam(ctx) is not True:
+        authorized = await self.collectordevteam(ctx)
+        if authorized is not True:
             return
         else:
             title, message = content.split(";")
@@ -2921,7 +2922,7 @@ class CDTCheck:
         elevation_requests = self.bot.get_channel('720668625815732316')
         author = ctx.message.author
         member = self.cdtserver.get_member(author.id)
-        await self.bot.send_message(elevation_requests, '```CDT Authentication attempt: {3}\n{0.display_name} [{0.id}] on {1.name} [{1.id}]```'.format(author, ctx.message.server, passfail))
+        await self.bot.send_message(elevation_requests, '```CDT Authentication attempt: {2}\n{0.display_name} [{0.id}] on {1.name} [{1.id}]```'.format(passfail, author, ctx.message.server))
         return authorized
         # if member is None:
         #     await self.bot.send_message(elevation_requests, 'CDT Authentication attempt failed:\n'
