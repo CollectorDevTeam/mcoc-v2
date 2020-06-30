@@ -2875,7 +2875,7 @@ class CDTCheck:
         self.roles = {}
 
     @commands.command(pass_context=True, hidden=True, name="promote", aliases=("promo",))
-    async def cdt_promote(self, ctx, content):
+    async def cdt_promote(self, ctx, *, content):
         '''title; message'''
         authorized = await self.collectordevteam(ctx)
         if authorized is not True:
