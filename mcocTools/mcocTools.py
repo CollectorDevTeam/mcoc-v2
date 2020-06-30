@@ -2900,7 +2900,7 @@ class CDTCheck:
                     name="Get Support", value="[Join CDT & Get Collector](https://discord.gg/BwhgZxk)", inline=False)
                 pages.append(data)
             menu = PagesMenu(self.bot, timeout=30, add_pageof=True)
-            menu.menu_start(pages=pages)
+            await menu.menu_start(pages=pages)
 
     async def collectordevteam(self, ctx):
         '''Verifies if calling user has either the trusted CollectorDevTeam role, or CollectorSupportTeam'''
