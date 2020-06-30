@@ -2877,7 +2877,7 @@ class CDTCheck:
     @commands.command(pass_context=True, hidden=True, name="promote", aliases=("promo",))
     async def cdt_promote(self, ctx, content):
         '''title; message'''
-        if self.collectordevteam(ctx) is not True:
+        if await self.collectordevteam(ctx) is not True:
             return
         else:
             title, message = content.split(";")
