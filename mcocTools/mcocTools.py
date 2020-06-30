@@ -2915,46 +2915,11 @@ class CDTCheck:
                 passfail = "pass"
                 continue
 
-        # collectordevteam = self._get_role(
-        #     self.cdtserver, '390253643330355200')
-        # collectorsupportteam = self._get_role(
-            # self.cdtserver, '390253719125622807')
         elevation_requests = self.bot.get_channel('720668625815732316')
         author = ctx.message.author
         member = self.cdtserver.get_member(author.id)
-        await self.bot.send_message(elevation_requests, '```CDT Authentication attempt: {2}\n{0.display_name} [{0.id}] on {1.name} [{1.id}]```'.format(passfail, author, ctx.message.server))
+        await self.bot.send_message(elevation_requests, '```CDT Authentication attempt: {0}\n{1.display_name} [{1.id}] on {2.name} [{2.id}]```'.format(passfail, author, ctx.message.server))
         return authorized
-        # if member is None:
-        #     await self.bot.send_message(elevation_requests, 'CDT Authentication attempt failed:\n'
-        #                                 '{0.display_name} [{0.id}] on {1.name} [{1.id}]'.format(author, ctx.message.server))
-        #     return False
-        # elif collectordevteam in member.roles:
-        #     await self.bot.send_message(elevation_requests, 'ColelctorDevTeam authenticated\n'
-        #                                 '{0.display_name} [{0.id}] on {1.name} [{1.id}]'
-        #                                 'role in member.roles'.format(author, ctx.message.server))
-        # elif collectorsupportteam in member.roles:
-        #     await self.bot.send_message(elevation_requests, 'CollectorSupportTeam authenticated\n'
-        #                                 '{0.display_name} [{0.id}] on {1.name} [{1.id}]\n'
-        #                                 'role in member.roles'.format(author, ctx.message.server))
-        # else:
-        #     for role in member.roles:
-        #         if collectordevteam is role:
-        #             # print('ColelctorDevTeam authenticated: '
-        #             #       '{0.display_name} [{0.id}] on {1.display_name} [{1.id}]')
-        #             await self.bot.send_message(elevation_requests, 'ColelctorDevTeam authenticated\n'
-        #                                         '{0.display_name} [{0.id}] on {1.name} [{1.id}]'.format(author, ctx.message.server))
-        #             return True
-        #         elif collectorsupportteam is role:
-        #             # print('ColelctorSupportTeam authenticated: '
-        #             #       '{0.display_name} [{0.id}] on {1.display_name} [{1.id}]')
-        #             await self.bot.send_message(elevation_requests, 'CollectorSupportTeam authenticated\n'
-        #                                         '{0.display_name} [{0.id}] on {1.name} [{1.id}]'.format(author, ctx.message.server))
-        #             return True
-        #         else:
-        #             continue
-        #     await self.bot.send_message(elevation_requests, 'CDT Authentication attemp failed:\n'
-        #                                 '{0.display_name} [{0.id}] on {1.name} [{1.id}]'.format(author, ctx.message.server))
-        #     return False
 
     def _get_role(self, server: discord.Server, role_key: str):
         """Returns discord.Role"""
