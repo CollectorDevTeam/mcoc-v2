@@ -8,9 +8,9 @@ import json
 import logging
 import os
 import re
-from selenium import webdriver
-from selenium.webdriver.chrome.options import Options
-from selenium.webdriver.common.keys import Keys
+# from selenium import webdriver
+# from selenium.webdriver.chrome.options import Options
+# from selenium.webdriver.common.keys import Keys
 # defaultdict & partial needed for cache_gsheets
 from collections import defaultdict, ChainMap, namedtuple, OrderedDict
 from functools import partial
@@ -22,6 +22,12 @@ import aiohttp
 import discord
 import modgrammar as md
 import pygsheets
+
+from .cdtdiagnostics import DIAGNOSTICS
+from .cdtembed import CDTEmbed
+from .cdtpagesmenu import PagesMenu
+from .cdtscreenshot import ScreenShot
+
 from __main__ import send_cmd_help
 
 from cogs.utils import checks
@@ -1030,149 +1036,149 @@ class HashParser:
 #  End Grammar definitions
 ##################################################
 
-class PagesMenu:
-    EmojiReact = namedtuple('EmojiReact', 'emoji include page_inc')
+# class PagesMenu:
+#     EmojiReact = namedtuple('EmojiReact', 'emoji include page_inc')
 
-    def __init__(self, bot, *, add_pageof=True, timeout=30, choice=False,
-                 delete_onX=True):
-        self.bot = bot
-        self.timeout = timeout
-        self.add_pageof = add_pageof
-        self.choice = choice
-        self.delete_onX = delete_onX
-        self.embedded = True
+#     def __init__(self, bot, *, add_pageof=True, timeout=30, choice=False,
+#                  delete_onX=True):
+#         self.bot = bot
+#         self.timeout = timeout
+#         self.add_pageof = add_pageof
+#         self.choice = choice
+#         self.delete_onX = delete_onX
+#         self.embedded = True
 
-    async def menu_start(self, pages, page_number=0):
-        page_list = []
-        if isinstance(pages, list):
-            page_list = pages
-        else:
-            for page in pages:
-                page_list.append(page)
-        page_length = len(page_list)
-        if page_length == 1:
-            if isinstance(page_list[0], discord.Embed) == True:
-                message = await self.bot.say(embed=page_list[0])
-            else:
-                message = await self.bot.say(page_list[0])
-            return
-        self.embedded = isinstance(page_list[0], discord.Embed)
-        self.all_emojis = OrderedDict([(i.emoji, i) for i in (
-            self.EmojiReact(
-                "\N{BLACK LEFT-POINTING DOUBLE TRIANGLE}", page_length > 5, -5),
-            self.EmojiReact("\N{BLACK LEFT-POINTING TRIANGLE}", True, -1),
-            self.EmojiReact("\N{CROSS MARK}", True, None),
-            self.EmojiReact("\N{BLACK RIGHT-POINTING TRIANGLE}", True, 1),
-            self.EmojiReact(
-                "\N{BLACK RIGHT-POINTING DOUBLE TRIANGLE}", page_length > 5, 5),
-        )])
+#     async def menu_start(self, pages, page_number=0):
+#         page_list = []
+#         if isinstance(pages, list):
+#             page_list = pages
+#         else:
+#             for page in pages:
+#                 page_list.append(page)
+#         page_length = len(page_list)
+#         if page_length == 1:
+#             if isinstance(page_list[0], discord.Embed) == True:
+#                 message = await self.bot.say(embed=page_list[0])
+#             else:
+#                 message = await self.bot.say(page_list[0])
+#             return
+#         self.embedded = isinstance(page_list[0], discord.Embed)
+#         self.all_emojis = OrderedDict([(i.emoji, i) for i in (
+#             self.EmojiReact(
+#                 "\N{BLACK LEFT-POINTING DOUBLE TRIANGLE}", page_length > 5, -5),
+#             self.EmojiReact("\N{BLACK LEFT-POINTING TRIANGLE}", True, -1),
+#             self.EmojiReact("\N{CROSS MARK}", True, None),
+#             self.EmojiReact("\N{BLACK RIGHT-POINTING TRIANGLE}", True, 1),
+#             self.EmojiReact(
+#                 "\N{BLACK RIGHT-POINTING DOUBLE TRIANGLE}", page_length > 5, 5),
+#         )])
 
-        print('menu_pages is embedded: ' + str(self.embedded))
+#         print('menu_pages is embedded: ' + str(self.embedded))
 
-        if self.add_pageof:
-            for i, page in enumerate(page_list):
-                if isinstance(page, discord.Embed):
-                    ftr = page.footer
-                    page.set_footer(text='{} (Page {} of {})'.format(ftr.text,
-                                                                     i + 1, page_length), icon_url=ftr.icon_url)
-                else:
-                    page += '\n(Page {} of {})'.format(i + 1, page_length)
+#         if self.add_pageof:
+#             for i, page in enumerate(page_list):
+#                 if isinstance(page, discord.Embed):
+#                     ftr = page.footer
+#                     page.set_footer(text='{} (Page {} of {})'.format(ftr.text,
+#                                                                      i + 1, page_length), icon_url=ftr.icon_url)
+#                 else:
+#                     page += '\n(Page {} of {})'.format(i + 1, page_length)
 
-        self.page_list = page_list
-        await self.display_page(None, page_number)
+#         self.page_list = page_list
+#         await self.display_page(None, page_number)
 
-    async def display_page(self, message, page):
-        if not message:
-            if isinstance(self.page_list[page], discord.Embed) == True:
-                message = await self.bot.say(embed=self.page_list[page])
-            else:
-                message = await self.bot.say(self.page_list[page])
-            self.included_emojis = set()
-            for emoji in self.all_emojis.values():
-                if emoji.include:
-                    await self.bot.add_reaction(message, emoji.emoji)
-                    self.included_emojis.add(emoji.emoji)
-        else:
-            if self.embedded == True:
-                message = await self.bot.edit_message(message, embed=self.page_list[page])
-            else:
-                message = await self.bot.edit_message(message, self.page_list[page])
-        await asyncio.sleep(1)
+#     async def display_page(self, message, page):
+#         if not message:
+#             if isinstance(self.page_list[page], discord.Embed) == True:
+#                 message = await self.bot.say(embed=self.page_list[page])
+#             else:
+#                 message = await self.bot.say(self.page_list[page])
+#             self.included_emojis = set()
+#             for emoji in self.all_emojis.values():
+#                 if emoji.include:
+#                     await self.bot.add_reaction(message, emoji.emoji)
+#                     self.included_emojis.add(emoji.emoji)
+#         else:
+#             if self.embedded == True:
+#                 message = await self.bot.edit_message(message, embed=self.page_list[page])
+#             else:
+#                 message = await self.bot.edit_message(message, self.page_list[page])
+#         await asyncio.sleep(1)
 
-        react = await self.bot.wait_for_reaction(message=message,
-                                                 timeout=self.timeout, emoji=self.included_emojis)
-        if react is None:
-            try:
-                await self.bot.clear_reactions(message)
-            except discord.errors.NotFound:
-                logger.warn("Message has been deleted")
-                print('Message deleted')
-            except discord.Forbidden:
-                logger.warn("clear_reactions didn't work")
-                for emoji in self.included_emojis:
-                    await self.bot.remove_reaction(message, emoji, self.bot.user)
-            return None
+#         react = await self.bot.wait_for_reaction(message=message,
+#                                                  timeout=self.timeout, emoji=self.included_emojis)
+#         if react is None:
+#             try:
+#                 await self.bot.clear_reactions(message)
+#             except discord.errors.NotFound:
+#                 logger.warn("Message has been deleted")
+#                 print('Message deleted')
+#             except discord.Forbidden:
+#                 logger.warn("clear_reactions didn't work")
+#                 for emoji in self.included_emojis:
+#                     await self.bot.remove_reaction(message, emoji, self.bot.user)
+#             return None
 
-        emoji = react.reaction.emoji
-        pages_to_inc = self.all_emojis[emoji].page_inc if emoji in self.all_emojis else None
-        if pages_to_inc:
-            next_page = (page + pages_to_inc) % len(self.page_list)
-            try:
-                await self.bot.remove_reaction(message, emoji, react.user)
-                await self.display_page(message=message, page=next_page)
-            except discord.Forbidden:
-                await self.bot.delete_message(message)
-                await self.display_page(message=None, page=next_page)
-        elif emoji == '\N{CROSS MARK}':
-            try:
-                if self.delete_onX:
-                    await self.bot.delete_message(message)
-                    report = ('Message deleted by {} {} on {} {}'.format(
-                        react.user.display_name, react.user.id, message.server.name, message.server.id))
-                    print(report)
-                    channel = self.bot.get_channel('537330789332025364')
-                    await self.bot.send_message(channel, report)
-                    # await self.bot.edit_message(message, 'Menu deleted by {}'.format(react.user.display_name))
-                else:
-                    await self.bot.clear_reactions(message)
-            except discord.Forbidden:
-                await self.bot.say("Bot does not have the proper Permissions")
+#         emoji = react.reaction.emoji
+#         pages_to_inc = self.all_emojis[emoji].page_inc if emoji in self.all_emojis else None
+#         if pages_to_inc:
+#             next_page = (page + pages_to_inc) % len(self.page_list)
+#             try:
+#                 await self.bot.remove_reaction(message, emoji, react.user)
+#                 await self.display_page(message=message, page=next_page)
+#             except discord.Forbidden:
+#                 await self.bot.delete_message(message)
+#                 await self.display_page(message=None, page=next_page)
+#         elif emoji == '\N{CROSS MARK}':
+#             try:
+#                 if self.delete_onX:
+#                     await self.bot.delete_message(message)
+#                     report = ('Message deleted by {} {} on {} {}'.format(
+#                         react.user.display_name, react.user.id, message.server.name, message.server.id))
+#                     print(report)
+#                     channel = self.bot.get_channel('537330789332025364')
+#                     await self.bot.send_message(channel, report)
+#                     # await self.bot.edit_message(message, 'Menu deleted by {}'.format(react.user.display_name))
+#                 else:
+#                     await self.bot.clear_reactions(message)
+#             except discord.Forbidden:
+#                 await self.bot.say("Bot does not have the proper Permissions")
 
-    async def confirm(self, ctx, question: str):
-        """Returns Boolean"""
-        if ctx.message.channel.is_private:
-            ucolor = discord.Color.gold()
-        else:
-            ucolor = ctx.message.author.color
-        data = discord.Embed(title='Confirmation:sparkles:',
-                             description=question, color=ucolor)
-        data.set_footer(text='CollectorDevTeam Dataset',
-                        icon_url=COLLECTOR_ICON)
-        message = await self.bot.say(embed=data)
+#     async def confirm(self, ctx, question: str):
+#         """Returns Boolean"""
+#         if ctx.message.channel.is_private:
+#             ucolor = discord.Color.gold()
+#         else:
+#             ucolor = ctx.message.author.color
+#         data = discord.Embed(title='Confirmation:sparkles:',
+#                              description=question, color=ucolor)
+#         data.set_footer(text='CollectorDevTeam Dataset',
+#                         icon_url=COLLECTOR_ICON)
+#         message = await self.bot.say(embed=data)
 
-        await self.bot.add_reaction(message, '❌')
-        await self.bot.add_reaction(message, '🆗')
-        react = await self.bot.wait_for_reaction(message=message,
-                                                 user=ctx.message.author, timeout=90, emoji=['❌', '🆗'])
-        if react is not None:
-            if react.reaction.emoji == '❌':
-                data.description = '{} has canceled confirmation'.format(
-                    ctx.message.author.name)
-                # data.add_field(name='Confirmation', value='{} has canceled confirmation'.format(ctx.message.author.name))
-                await self.bot.edit_message(message, embed=data)
-                return False, message
-            elif react.reaction.emoji == '🆗':
-                data.description = '{} has confirmed.'.format(
-                    ctx.message.author.name)
-                # data.add_field(name='Confirmation', value='{} has confirmed.'.format(ctx.message.author.name))
-                await self.bot.edit_message(message, embed=data)
-                return True, message
-        else:
-            data.description = '{} has not responded'.format(
-                ctx.message.author.name)
-            # data.add_field(name='Confirmation', value='{} has not responded'.format(ctx.message.author.name))
-            await self.bot.edit_message(message, embed=data)
-            return False, message
+#         await self.bot.add_reaction(message, '❌')
+#         await self.bot.add_reaction(message, '🆗')
+#         react = await self.bot.wait_for_reaction(message=message,
+#                                                  user=ctx.message.author, timeout=90, emoji=['❌', '🆗'])
+#         if react is not None:
+#             if react.reaction.emoji == '❌':
+#                 data.description = '{} has canceled confirmation'.format(
+#                     ctx.message.author.name)
+#                 # data.add_field(name='Confirmation', value='{} has canceled confirmation'.format(ctx.message.author.name))
+#                 await self.bot.edit_message(message, embed=data)
+#                 return False, message
+#             elif react.reaction.emoji == '🆗':
+#                 data.description = '{} has confirmed.'.format(
+#                     ctx.message.author.name)
+#                 # data.add_field(name='Confirmation', value='{} has confirmed.'.format(ctx.message.author.name))
+#                 await self.bot.edit_message(message, embed=data)
+#                 return True, message
+#         else:
+#             data.description = '{} has not responded'.format(
+#                 ctx.message.author.name)
+#             # data.add_field(name='Confirmation', value='{} has not responded'.format(ctx.message.author.name))
+#             await self.bot.edit_message(message, embed=data)
+#             return False, message
 
 
 class MCOCTools:
@@ -1254,7 +1260,7 @@ class MCOCTools:
         if force:
             await gsh.cache_gsheets('calendar')
         if self.calendar_url == '' or self.mcoctools['calendar_date'] != now or force:
-            self.calendar_url = await SCREENSHOT.get_screenshot(self, url=PUBLISHED, w=1700, h=800)
+            self.calendar_url = await ScreenShot.get_screenshot(self, url=PUBLISHED, w=1700, h=800)
             self.mcoctools['calendar'] = self.calendar_url
             self.mcoctools['calendar_date'] = now
             # dataIO.save_json('data/mcocTools/mcoctools.json', self.mcoctools)
@@ -1309,7 +1315,8 @@ class MCOCTools:
                             package += 'Basic:   4☆ {0.full_name}\n\n'.format(
                                 basic)
                     except:
-                        'Basic:   4☆ {0.full_name}\n\n'.format(basic)
+                        'Basic:   4☆ {0.full_name}\n\n'.format(
+                            calendar[i]['basic'])
                     # feature = await mcoc.get_champion(calendar[i]['feature'])
 
                 # if calendar[i]['eq'] != '':
@@ -1335,7 +1342,7 @@ class MCOCTools:
         await menu.menu_start(pages=pages, page_number=2)
         # take a new ssurl after the fact
         if self.mcoctools['calendar_date'] != now:
-            self.calendar_url = await SCREENSHOT.get_screenshot(self, url=PUBLISHED, w=1700, h=400)
+            self.calendar_url = await ScreenShot.get_screenshot(self, url=PUBLISHED, w=1700, h=400)
             self.mcoctools['calendar'] = self.calendar_url
             self.mcoctools['calendar_date'] = now
             # dataIO.save_json('data/mcocTools/mcoctools.json', self.mcoctools)
@@ -1412,7 +1419,7 @@ class MCOCTools:
         if self.mcoctools['cutoffs_date'] != now:
             await gsh.cache_gsheets('cutoffs')
             await gsh.cache_gsheets('summarystats')
-            # self.mcoctools['cutoffs'] = await SCREENSHOT.get_screenshot(self, url=PUBLISHED, w=1440, h=900)
+            # self.mcoctools['cutoffs'] = await ScreenShot.get_screenshot(self, url=PUBLISHED, w=1440, h=900)
             self.mcoctools['cutoffs_date'] = now
             self.cutoffs = dataIO.load_json('data/mcocTools/cutoffs.json')
             self.summarystats = dataIO.load_json(
@@ -1505,7 +1512,7 @@ class MCOCTools:
                              delete_onX=True, add_pageof=True)
             await menu.menu_start(pages=pages)
         if self.mcoctools['cutoffs_date'] != now:
-            # self.mcoctools['cutoffs'] = await SCREENSHOT.get_screenshot(self, url=PUBLISHED, w=1440, h=900)
+            # self.mcoctools['cutoffs'] = await ScreenShot.get_screenshot(self, url=PUBLISHED, w=1440, h=900)
             # self.mcoctools['cutoffs'] = self.mcoctools['cutoffs']
             self.mcoctools['cutoffs_date'] = now
 
@@ -2488,7 +2495,7 @@ class INSPECTOR:
     @inspect.command(pass_context=True, name='server')
     async def _inspect_server(self, ctx, server_id=None):
         '''Inspect CollectorVerse server for Collector installation compliance'''
-        data = CDTEmbed.get_embed(
+        data = CDTEmbed.create(
             self, ctx, user_id=ctx.message.author.id)
         data.title = 'CollectorDevTeam Inspection:sparkles:'
         if server_id is None:
@@ -2541,7 +2548,7 @@ class INSPECTOR:
                 server = self.bot.get_server(server_id)
             except:
                 server = None
-        data = CDTEmbed.get_embed(
+        data = CDTEmbed.create(
             self, ctx, user_id=ctx.message.author.id)
         data.title = 'CollectorDevTeam Inspector: ROLES:sparkles:'
         if server is not None:
@@ -2574,73 +2581,73 @@ class INSPECTOR:
             await self.bot.send_message(ctx.message.channel, package)
 
 
-class DIAGNOSTICS:
+# class DIAGNOSTICS:
 
-    def __init__(self, bot):
-        self.bot = bot
+#     def __init__(self, bot):
+#         self.bot = bot
 
-    def log(self, ctx, msg=None):
-        message = 'CollectorDevTeam diagnostics:\n```'
-        if ctx.message.channel.is_private is True:
-            message += 'Private Channel: [{}]\n'.format(
-                ctx.message.channel.id)
-        elif ctx.message.channel.is_private is False:
-            message += 'Server:  [{0.message.server.id}] {0.message.server.name} \n'.format(
-                ctx)
-            message += 'Channel: [{0.message.channel.id}] {0.message.channel.name} \n'.format(
-                ctx)
-        message += 'User:    [{0.message.author.id}] {0.message.author.display_name} \n'.format(
-            ctx)
-        if ctx.invoked_subcommand is not None:
-            if ctx.message.content is None:
-                message += 'Subcommand Invoked: {0.invoked_subcommand}\n'.format(
-                    ctx)
-            else:
-                message += 'Subcommand Invoked: {0.invoked_subcommand}\n'.format(
-                    ctx)
-                message += 'Conent: {0.message.content}\n'.format(
-                    ctx)
-        message.format(ctx)
-        # elif ctx.invoked is not None:
-        #     message += 'Invoked command: {0.invoked}'.format(ctx)
-        if msg is not None:
-            message += 'Comment: {}\n'.format(msg)
-        message += '```'
-        return message
+#     def log(self, ctx, msg=None):
+#         message = 'CollectorDevTeam diagnostics:\n```'
+#         if ctx.message.channel.is_private is True:
+#             message += 'Private Channel: [{}]\n'.format(
+#                 ctx.message.channel.id)
+#         elif ctx.message.channel.is_private is False:
+#             message += 'Server:  [{0.message.server.id}] {0.message.server.name} \n'.format(
+#                 ctx)
+#             message += 'Channel: [{0.message.channel.id}] {0.message.channel.name} \n'.format(
+#                 ctx)
+#         message += 'User:    [{0.message.author.id}] {0.message.author.display_name} \n'.format(
+#             ctx)
+#         if ctx.invoked_subcommand is not None:
+#             if ctx.message.content is None:
+#                 message += 'Subcommand Invoked: {0.invoked_subcommand}\n'.format(
+#                     ctx)
+#             else:
+#                 message += 'Subcommand Invoked: {0.invoked_subcommand}\n'.format(
+#                     ctx)
+#                 message += 'Conent: {0.message.content}\n'.format(
+#                     ctx)
+#         message.format(ctx)
+#         # elif ctx.invoked is not None:
+#         #     message += 'Invoked command: {0.invoked}'.format(ctx)
+#         if msg is not None:
+#             message += 'Comment: {}\n'.format(msg)
+#         message += '```'
+#         return message
 
 
-class SCREENSHOT:
-    """Save a Screenshot from x website in mcocTools"""
+# class ScreenShot:
+#     """Save a Screenshot from x website in mcocTools"""
 
-    def __init__(self, bot):
-        self.bot = bot
-        self.settings = dataIO.load_json('data/mcocTools/settings.json')
-        if 'calendar' not in self.settings.keys():
-            self.settings['calendar'] = {'screenshot': '', 'time': 0}
-            dataIO.save_json('data/mcocTools/settings.json', self.settings)
+#     def __init__(self, bot):
+#         self.bot = bot
+#         self.settings = dataIO.load_json('data/mcocTools/settings.json')
+#         if 'calendar' not in self.settings.keys():
+#             self.settings['calendar'] = {'screenshot': '', 'time': 0}
+#             dataIO.save_json('data/mcocTools/settings.json', self.settings)
 
-    async def get_screenshot(self, url, w=1920, h=1080):
-        chrome_options = Options()
-        chrome_options.add_argument("--headless")
-        chrome_options.add_argument("--window-size={}, {}".format(w, h))
-        chrome_options.add_argument("allow-running-insecure-content")
-        # chrome_options.binary_location = '/Applications/Google Chrome   Canary.app/Contents/MacOS/Google Chrome Canary'
-        driver = webdriver.Chrome(
-            executable_path="C:\webdrivers\chromedriver_win32\chromedriver",   chrome_options=chrome_options)
-        channel = self.bot.get_channel('391330316662341632')
-        # DRIVER = 'chromedriver'
-        # driver = webdriver.Chrome(DRIVER)
-        driver.get(url)
+#     async def get_screenshot(self, url, w=1920, h=1080):
+#         chrome_options = Options()
+#         chrome_options.add_argument("--headless")
+#         chrome_options.add_argument("--window-size={}, {}".format(w, h))
+#         chrome_options.add_argument("allow-running-insecure-content")
+#         # chrome_options.binary_location = '/Applications/Google Chrome   Canary.app/Contents/MacOS/Google Chrome Canary'
+#         driver = webdriver.Chrome(
+#             executable_path="C:\webdrivers\chromedriver_win32\chromedriver",   chrome_options=chrome_options)
+#         channel = self.bot.get_channel('391330316662341632')
+#         # DRIVER = 'chromedriver'
+#         # driver = webdriver.Chrome(DRIVER)
+#         driver.get(url)
 
-        screenshot = driver.save_screenshot('data/mcocTools/temp.png')
-        driver.quit()
-        # await asyncio.sleep(3)
-        message = await self.bot.send_file(channel, 'data/mcocTools/temp.png')
-        await asyncio.sleep(5)
-        if len(message.attachments) > 0:
-            return message.attachments[0]['url']
-        else:
-            return None
+#         screenshot = driver.save_screenshot('data/mcocTools/temp.png')
+#         driver.quit()
+#         # await asyncio.sleep(3)
+#         message = await self.bot.send_file(channel, 'data/mcocTools/temp.png')
+#         await asyncio.sleep(5)
+#         if len(message.attachments) > 0:
+#             return message.attachments[0]['url']
+#         else:
+#             return None
 
 
 class CDTHelperFunctions:
@@ -2810,61 +2817,88 @@ class CDTReport:
         await self.bot.send_message(masterchannel, embed=embed)
 
 
-class CDTEmbed:
-    def __init__(self, bot):
-        self.bot = bot
+# class CDTEmbed:
+#     def __init__(self, bot):
+#         self.bot = bot
 
-    def get_embed(self, ctx, user_id=None, color=discord.Color.gold(), title='', description='', image=None, thumbnail=None, url=None):
-        '''Return a color styled embed with CDT footer, and optional title or description.
-        user_id = user id string. If none provided, takes message author.
-        color = manual override, otherwise takes gold for private channels, or author color for server.
-        title = String, sets title.
-        description = String, sets description.
-        image = String url.  Validator checks for valid url.
-        thumbnail = String url. Validator checks for valid url.'''
-        if user_id is None:
-            color = discord.Color.gold()
-        elif isinstance(user_id, discord.User):
-            user = user_id
-            member = ctx.message.server.get_member(user.id)
-            color = member.color
-        else:
-            # member = self.bot.get_member(user_id)
-            member = discord.utils.get(ctx.message.server.members, id=user_id)
-            color = member.color
-        if url is None:
-            url = PATREON
-        data = discord.Embed(color=color, title=title, url=url)
-        if description is not None:
-            if len(description) < 1500:
-                data.description = description
-        data.set_author(name='CollectorVerse',
-                        icon_url=COLLECTOR_ICON)
-        if image is not None:
-            validators.url(image)
-            code = requests.get(image).status_code
-            if code == 200:
-                data.set_image(url=image)
-            else:
-                print('Image URL Failure, code {}'.format(code))
-                print('Attempted URL:\n{}'.format(image))
-        if thumbnail is not None:
-            validators.url(thumbnail)
-            code = requests.get(thumbnail).status_code
-            if code == 200:
-                data.set_thumbnail(url=thumbnail)
-            else:
-                print('Thumbnail URL Failure, code {}'.format(code))
-                print('Attempted URL:\n{}'.format(thumbnail))
-        data.set_footer(text='CollectorDevTeam | Requested by {}'.format(
-            ctx.message.author), icon_url=COLLECTOR_ICON)
-        return data
+#     def get_embed(self, ctx, user_id=None, color=discord.Color.gold(), title='', description='', image=None, thumbnail=None, url=None):
+#         '''Return a color styled embed with CDT footer, and optional title or description.
+#         user_id = user id string. If none provided, takes message author.
+#         color = manual override, otherwise takes gold for private channels, or author color for server.
+#         title = String, sets title.
+#         description = String, sets description.
+#         image = String url.  Validator checks for valid url.
+#         thumbnail = String url. Validator checks for valid url.'''
+#         if user_id is None:
+#             color = discord.Color.gold()
+#         elif isinstance(user_id, discord.User):
+#             user = user_id
+#             member = ctx.message.server.get_member(user.id)
+#             color = member.color
+#         else:
+#             # member = self.bot.get_member(user_id)
+#             member = discord.utils.get(ctx.message.server.members, id=user_id)
+#             color = member.color
+#         if url is None:
+#             url = PATREON
+#         data = discord.Embed(color=color, title=title, url=url)
+#         if description is not None:
+#             if len(description) < 1500:
+#                 data.description = description
+#         data.set_author(name='CollectorVerse',
+#                         icon_url=COLLECTOR_ICON)
+#         if image is not None:
+#             validators.url(image)
+#             code = requests.get(image).status_code
+#             if code == 200:
+#                 data.set_image(url=image)
+#             else:
+#                 print('Image URL Failure, code {}'.format(code))
+#                 print('Attempted URL:\n{}'.format(image))
+#         if thumbnail is not None:
+#             validators.url(thumbnail)
+#             code = requests.get(thumbnail).status_code
+#             if code == 200:
+#                 data.set_thumbnail(url=thumbnail)
+#             else:
+#                 print('Thumbnail URL Failure, code {}'.format(code))
+#                 print('Attempted URL:\n{}'.format(thumbnail))
+#         data.set_footer(text='CollectorDevTeam | Requested by {}'.format(
+#             ctx.message.author), icon_url=COLLECTOR_ICON)
+#         return data
 
 
 class CDTCheck:
     def __init__(self, bot):
         self.bot = bot
         self.cdtserver = self.bot.get_server('215271081517383682')
+
+    @commands.command(pass_context=True, hidden=True, name="promote", aliases=("promo",))
+    async def cdt_promote(self, ctx, content):
+        '''title; message'''
+        if self.collectordevteam(ctx) is not True:
+            return
+        else:
+            title, message = content.split(";")
+            pages = []
+            imagelist = [
+                'https://cdn.discordapp.com/attachments/391330316662341632/725045045794832424/collector_dadjokes.png',
+                'https://cdn.discordapp.com/attachments/391330316662341632/725054700457689210/dadjokes2.png',
+                'https://cdn.discordapp.com/attachments/391330316662341632/725055822023098398/dadjokes3.png',
+                'https://cdn.discordapp.com/attachments/391330316662341632/725056025404637214/dadjokes4.png',
+                'https://media.discordapp.net/attachments/391330316662341632/727598814327865364/D1F5DE64D72C52880F61DBD6B2142BC6C096520D.png',
+                'https://media.discordapp.net/attachments/391330316662341632/727598813820485693/8952A192395C772767ED1135A644B3E3511950BA.jpg',
+                'https://media.discordapp.net/attachments/391330316662341632/727598813447192616/D77D9C96DC5CBFE07860B6211A2E32448B3E3374.jpg',
+                'https://media.discordapp.net/attachments/391330316662341632/727598812746612806/9C15810315010F5940556E48A54C831529A35016.jpg']
+            for imgurl in imagelist:
+                data = CDTEmbed.create(
+                    title=title, description=message, footer_text="{} of CollectorDevTeam", image=imgurl)
+                data.add_field(name="Get Collector", value="[Invite]()")
+                data.add_field(
+                    name="Get Support", value="[Join CDT & Get Collector](https://discord.gg/BwhgZxk)", inline=False)
+                pages.append(data)
+            menu = PagesMenu(self.bot, timeout=120, add_pageof=True)
+            menu.menu_start(page=pages)
 
     async def collectordevteam(self, ctx):
         collectordevteam = self._get_role(
