@@ -32,8 +32,8 @@ class ScreenShot:
         self.cdt = self.get_role('390253643330355200')
         self.cst = self.get_role('390253719125622807')
 
-    @commands.group(pass_context=True, hidden=True, name='screenshot', aliases=('ss', 'screenshots',))
-    async def cdt_screenshot(self, ctx):
+    @commands.group(pass_context=True, hidden=True)
+    async def screenshot(self, ctx):
         if self.cdt in ctx.message.author.roles or self.cst in ctx.message.author.roles:
             await self.diagnostics.log(ctx, self.channel)
             if ctx.invoked_subcommand is None:
