@@ -2876,32 +2876,43 @@ class CDTCheck:
 
     @commands.command(pass_context=True, hidden=True, name="promote", aliases=("promo",))
     async def cdt_promote(self, ctx, *, content):
-        '''title; message'''
+        """Content will fill the embed description.
+        title;content will split the message into Title and Content.
+        An image attachment added to this command will replace the image embed."""
+
         authorized = await self.collectordevteam(ctx)
         if authorized is not True:
             return
         else:
-            contents = content.split(";")
             pages = []
-            imagelist = [
-                'https://cdn.discordapp.com/attachments/391330316662341632/725045045794832424/collector_dadjokes.png',
-                'https://cdn.discordapp.com/attachments/391330316662341632/725054700457689210/dadjokes2.png',
-                'https://cdn.discordapp.com/attachments/391330316662341632/725055822023098398/dadjokes3.png',
-                'https://cdn.discordapp.com/attachments/391330316662341632/725056025404637214/dadjokes4.png',
-                'https://media.discordapp.net/attachments/391330316662341632/727598814327865364/D1F5DE64D72C52880F61DBD6B2142BC6C096520D.png',
-                'https://media.discordapp.net/attachments/391330316662341632/727598813820485693/8952A192395C772767ED1135A644B3E3511950BA.jpg',
-                'https://media.discordapp.net/attachments/391330316662341632/727598813447192616/D77D9C96DC5CBFE07860B6211A2E32448B3E3374.jpg',
-                'https://media.discordapp.net/attachments/391330316662341632/727598812746612806/9C15810315010F5940556E48A54C831529A35016.jpg']
-            thumbnail = 'https://images-ext-1.discordapp.net/external/6Q7QyBwbwH2SCmwdt_YR_ywkHWugnXkMc3rlGLUnvCQ/https/raw.githubusercontent.com/CollectorDevTeam/assets/master/data/images/featured/collector.png?width=230&height=230'
+            contents = content.split(";")
+            if len(contents) > 1:
+                title = contents[0]
+                description = contents[1]
+            else:
+                title = "CollectorVerse Tips"
+                description = content
+            if len(ctx.message.attachments) > 0:
+                imagelist = []
+                for i in ctx.message.attachments:
+                    imagelist.append(ctx.message.attachements[i]['url'])
+            else:
+                imagelist = [
+                    'https://cdn.discordapp.com/attachments/391330316662341632/725045045794832424/collector_dadjokes.png',
+                    'https://cdn.discordapp.com/attachments/391330316662341632/725054700457689210/dadjokes2.png',
+                    'https://cdn.discordapp.com/attachments/391330316662341632/725055822023098398/dadjokes3.png',
+                    'https://cdn.discordapp.com/attachments/391330316662341632/725056025404637214/dadjokes4.png',
+                    'https://media.discordapp.net/attachments/391330316662341632/727598814327865364/D1F5DE64D72C52880F61DBD6B2142BC6C096520D.png',
+                    'https://media.discordapp.net/attachments/391330316662341632/727598813820485693/8952A192395C772767ED1135A644B3E3511950BA.jpg',
+                    'https://media.discordapp.net/attachments/391330316662341632/727598813447192616/D77D9C96DC5CBFE07860B6211A2E32448B3E3374.jpg',
+                    'https://media.discordapp.net/attachments/391330316662341632/727598812746612806/9C15810315010F5940556E48A54C831529A35016.jpg']
+                thumbnail = 'https://images-ext-1.discordapp.net/external/6Q7QyBwbwH2SCmwdt_YR_ywkHWugnXkMc3rlGLUnvCQ/https/raw.githubusercontent.com/CollectorDevTeam/assets/master/data/images/featured/collector.png?width=230&height=230'
             for imgurl in imagelist:
                 data = CDTEmbed.create(self, ctx,
-                                       title="CollectorVerse Tips", author_text="{} of CollectorDevTeam".format(ctx.message.author.display_name),
+                                       title=title, description=description,
+                                       author_text="{} of CollectorDevTeam".format(
+                                           ctx.message.author.display_name),
                                        image=imgurl, thumbnail=thumbnail)
-                if len(contents) > 1:
-                    data.title = contents[0]
-                    data.description = contents[1]
-                else:
-                    data.description = content
                 data.add_field(
                     name="Get Collector", value="[Invite](https://discord.com/oauth2/authorize?client_id=210480249870352385&scope=bot&permissions=8)")
                 data.add_field(
