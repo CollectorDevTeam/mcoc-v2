@@ -2875,13 +2875,13 @@ class CDTCheck:
         self.roles = {}
 
     @commands.command(pass_context=True, hidden=True, name="promote", aliases=("promo",))
-    async def cdt_promote(self, ctx, content):
+    async def cdt_promote(self, ctx, *, content):
         '''title; message'''
         authorized = await self.collectordevteam(ctx)
         if authorized is not True:
             return
         else:
-            title, message = content.split(";")
+            content = content.split(";")
             pages = []
             imagelist = [
                 'https://cdn.discordapp.com/attachments/391330316662341632/725045045794832424/collector_dadjokes.png',
@@ -2892,9 +2892,10 @@ class CDTCheck:
                 'https://media.discordapp.net/attachments/391330316662341632/727598813820485693/8952A192395C772767ED1135A644B3E3511950BA.jpg',
                 'https://media.discordapp.net/attachments/391330316662341632/727598813447192616/D77D9C96DC5CBFE07860B6211A2E32448B3E3374.jpg',
                 'https://media.discordapp.net/attachments/391330316662341632/727598812746612806/9C15810315010F5940556E48A54C831529A35016.jpg']
+            thumbnail = 'https://images-ext-1.discordapp.net/external/6Q7QyBwbwH2SCmwdt_YR_ywkHWugnXkMc3rlGLUnvCQ/https/raw.githubusercontent.com/CollectorDevTeam/assets/master/data/images/featured/collector.png?width=230&height=230'
             for imgurl in imagelist:
                 data = CDTEmbed.create(self, ctx,
-                                       title=title, description=message, footer_text="{} of CollectorDevTeam", image=imgurl)
+                                       title=content[0], description=content[1], footer_text="{} of CollectorDevTeam".format(ctx.message.author.display_name), image=imgurl, thumbnail_url=thumbnail)
                 data.add_field(name="Get Collector", value="[Invite]()")
                 data.add_field(
                     name="Get Support", value="[Join CDT & Get Collector](https://discord.gg/BwhgZxk)", inline=False)
