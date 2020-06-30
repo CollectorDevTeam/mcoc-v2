@@ -352,21 +352,22 @@ class Alliance:
         author = ctx.message.author
         chan = ctx.message.channel
         data = self._get_embed(ctx)
-        data.title="CollectorDevTeam Alliance Template:sparkles:"
-        data.url=PATREON
-        data.description='Want to create an MCOC alliance server? \n\n' \
-                        '1. Use CDT [Alliance Template](https://discord.new/gtzuXHq2kCg4) to create a new Discord guild with necessary channels, roles, & permissions. \n' \
-                        '2. Invite [Collector :portrait_collector: ](https://discordapp.com/oauth2/authorize?client_id=210480249870352385&scope=bot&permissions=8) \n' \
-                        '3. Add announcements in #announcemets with ``/addchan`` \n' \
-                        '4. Use ``/alliance create`` to register your CollectorVerse Alliance so you can easily recruit in <#403412020155645962>.\n' \
-                        '5. Visit [CollectorDevTeam](https://discord.gg/BwhgZxk) for Support and Q&A. \n\n' \
-                        'Don\'t forget to follow <#616679045026938886> , <#616679471201648682> or the <#594209177639976976> ' 
-        data.set_footer(text='CollectorDevTeam | Alliance Template', icon_url=COLLECTOR_ICON)
+        data.title = "CollectorDevTeam Alliance Template:sparkles:"
+        data.url = PATREON
+        data.description = 'Want to create an MCOC alliance server? \n\n' \
+            '1. Use CDT [Alliance Template](https://discord.new/gtzuXHq2kCg4) to create a new Discord guild with necessary channels, roles, & permissions. \n' \
+            '2. Invite [Collector <:portrait_collector:398531581834166293> ](https://discordapp.com/oauth2/authorize?client_id=210480249870352385&scope=bot&permissions=8) \n' \
+            '3. Add announcements in #announcemets with ``/addchan`` \n' \
+            '4. Use ``/alliance create`` to register your CollectorVerse Alliance so you can easily recruit in <#403412020155645962>.\n' \
+            '5. Visit [CollectorDevTeam](https://discord.gg/BwhgZxk) for Support and Q&A. \n\n' \
+            'Don\'t forget to follow <#616679045026938886> , <#616679471201648682> or the <#594209177639976976> '
+        data.set_footer(
+            text='CollectorDevTeam | Alliance Template', icon_url=COLLECTOR_ICON)
         data.set_thumbnail(url=COLLECTOR_FEATURED)
-        data.set_author(name='{}\n[{}]'.format(author.display_name, author.id), icon_url=author.avatar_url)
+        data.set_author(name='{}\n[{}]'.format(
+            author.display_name, author.id), icon_url=author.avatar_url)
         await self.bot.send_message(chan, embed=data)
         await self.diagnostics(data)
-
 
     @alliance.command(pass_context=True, hidden=False, name='export', aliases=('awx',))
     async def _role_roster_export(self, ctx):
