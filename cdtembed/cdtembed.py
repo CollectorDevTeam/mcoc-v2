@@ -19,7 +19,7 @@ class CDTEmbed:
         PATREON = 'https://patreon.com/collectorbot'
         CDT_LOGO = 'https://raw.githubusercontent.com/CollectorDevTeam/assets/master/data/cdt_logo.png'
 
-        if not ctx.message.channel.isprivate:
+        if not ctx.message.channel.is_private:
             color = ctx.message.author.color
         if url is None:
             url = PATREON
