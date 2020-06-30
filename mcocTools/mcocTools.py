@@ -2895,7 +2895,7 @@ class CDTCheck:
             thumbnail = 'https://images-ext-1.discordapp.net/external/6Q7QyBwbwH2SCmwdt_YR_ywkHWugnXkMc3rlGLUnvCQ/https/raw.githubusercontent.com/CollectorDevTeam/assets/master/data/images/featured/collector.png?width=230&height=230'
             for imgurl in imagelist:
                 data = CDTEmbed.create(self, ctx,
-                                       title=content[0], description=content[1], footer_text="{} of CollectorDevTeam".format(ctx.message.author.display_name), image=imgurl, thumbnail_url=thumbnail)
+                                       title=content[0], description=content[1], footer_text="{} of CollectorDevTeam".format(ctx.message.author.display_name), image=imgurl, thumbnail=thumbnail)
                 data.add_field(name="Get Collector", value="[Invite]()")
                 data.add_field(
                     name="Get Support", value="[Join CDT & Get Collector](https://discord.gg/BwhgZxk)", inline=False)
