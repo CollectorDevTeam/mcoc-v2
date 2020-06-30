@@ -1,4 +1,4 @@
-from .mcocTools import (KABAM_ICON, COLLECTOR_ICON, PagesMenu, SCREENSHOT,
+from .mcocTools import (KABAM_ICON, COLLECTOR_ICON,
                         GSHandler, gapi_service_creds, GSExport, CDT_COLORS, StaticGameData)
 # import cogs.mcocTools
 # from . import hook as hook
@@ -33,6 +33,10 @@ from .utils import chat_formatting as chat
 from __main__ import send_cmd_help
 from cogs.utils import checks
 
+from .cdtpagesmenu import PagesMenu
+from .cdtembed import CDTEmbed
+from .cdtdiagnostics import DIAGNOSTICS
+from .cdtscreenshot import ScreenShot
 # experimental jjw
 # import matplotlib.pyplot as plt
 
@@ -710,17 +714,14 @@ class MCOC(ChampionFactory):
         else:
             ucolor = user.color
         joinlink = 'https://discordapp.com/oauth2/authorize?client_id=210480249870352385&scope=bot&permissions=8'
-        data = discord.Embed(
-            color=ucolor, title=':globe_with_meridians: INVITE COLLECTOR:sparkles:', description='', url=joinlink)
-        data.description = 'Click the blue text to invite Collector to your Alliance Server.\n' \
-                           'Collector requires [ **Administrator** ] permissions on your server in order to use administrative functions, moderation functions, and some Alliance management functions.\n '\
-                           '\nGuildOwners are required to register on the CollectorDevTeam server in order to receive support from the CollectorDevTeam.\n' \
-                           'CollectorDevTeam Server: https://discord.gg/BwhgZxk\n' \
-                           '\nCollectorBot Patrons receive priority support on the CollectorDevTeam server.\n ' \
-                           'Support CollectorDevTeam: https://patreon.com/collectorbot'
-        data.set_author(name='CollectorDevTeam', url=COLLECTOR_ICON)
-        data.set_thumbnail(url=COLLECTOR_ICON)
-
+        description = 'Click the blue text to invite Collector to your Alliance Server.\n' \
+            'Collector requires [ **Administrator** ] permissions on your server in order to use administrative functions, moderation functions, and some Alliance management functions.\n '\
+            '\nGuildOwners are required to register on the CollectorDevTeam server in order to receive support from the CollectorDevTeam.\n' \
+            'CollectorDevTeam Server: https://discord.gg/BwhgZxk\n' \
+            '\nCollectorBot Patrons receive priority support on the CollectorDevTeam server.\n ' \
+            'Support CollectorDevTeam: https://patreon.com/collectorbot'
+        data = CDTEmbed.create(
+            title=':globe_with_meridians: INVITE COLLECTOR:sparkles:', description=description, url=joinlink, image='https://media.discordapp.net/attachments/391330316662341632/725036637939171378/D1F5DE64D72C52880F61DBD6B2142BC6C096520D.png?width=461&height=461')
         if whisper:
             await self.bot.whisper(embed=data)
         else:
@@ -1057,62 +1058,62 @@ class MCOC(ChampionFactory):
             em.set_footer(text='MCOC Game Files', icon_url=KABAM_ICON)
             await self.bot.send_message(ctx.message.channel, embed=em)
 
-    # @champ.command(pass_context=True, name='duel')
-    # async def champ_duel(self, ctx, champ: ChampConverter):
-    #     '''Duel & Spar Targets'''
-    #     # dataset=data_files['duelist']['local']
-    #     # released = await self.check_release(ctx, champ)
-    #     released = True
-    #     author = ctx.message.author
-    #     if released:
-    #         gc = pygsheets.authorize(
-    #             service_file=gapi_service_creds, no_cache=True)
-    #         sh = gc.open_by_key('1FZdJPB8sayzrXkE3F2z3b1VzFsNDhh-_Ukl10OXRN6Q')
-    #         ws = sh.worksheet('title', 'DataExport')
-    #         data = ws.get_all_records()
-    #         if not len(data):
-    #             await self.bot.send_message(ctx.message.channel, "Data did not get retrieved")
-    #             raise IndexError
+    @champ.command(pass_context=True, name='duel', hidden=True)
+    async def champ_duel(self, ctx, champ: ChampConverter):
+        '''Duel & Spar Targets'''
+        # dataset=data_files['duelist']['local']
+        # released = await self.check_release(ctx, champ)
+        released = True
+        author = ctx.message.author
+        if released:
+            gc = pygsheets.authorize(
+                service_file=gapi_service_creds, no_cache=True)
+            sh = gc.open_by_key('1FZdJPB8sayzrXkE3F2z3b1VzFsNDhh-_Ukl10OXRN6Q')
+            ws = sh.worksheet('title', 'DataExport')
+            data = ws.get_all_records()
+            if not len(data):
+                await self.bot.send_message(ctx.message.channel, "Data did not get retrieved")
+                raise IndexError
 
-    #         DUEL_SPREADSHEET = 'https://docs.google.com/spreadsheets/d/1FZdJPB8sayzrXkE3F2z3b1VzFsNDhh-_Ukl10OXRN6Q/view#gid=61189525'
-    #         em = discord.Embed(color=champ.class_color,
-    #                            title='Duel & Spar Targets', url=DUEL_SPREADSHEET)
-    #         em.set_author(name='{0.full_name}'.format(
-    #             champ), icon_url=champ.get_avatar())
-    #         em.set_thumbnail(url=champ.get_featured())
-    #         em.set_footer(text='CollectorDevTeam + RC51\'s Duel Targets',
-    #                       icon_url=GSHEET_ICON)
+            DUEL_SPREADSHEET = 'https://docs.google.com/spreadsheets/d/1FZdJPB8sayzrXkE3F2z3b1VzFsNDhh-_Ukl10OXRN6Q/view#gid=61189525'
+            em = discord.Embed(color=champ.class_color,
+                               title='Duel & Spar Targets', url=DUEL_SPREADSHEET)
+            em.set_author(name='{0.full_name}'.format(
+                champ), icon_url=champ.get_avatar())
+            em.set_thumbnail(url=champ.get_featured())
+            em.set_footer(text='CollectorDevTeam + RC51\'s Duel Targets',
+                          icon_url=GSHEET_ICON)
 
-    #         targets = []
-    #         for duel in data:    # single iteration through the data
-    #             if duel['unique'] == '':
-    #                 continue
-    #             else:
-    #                 uniq = duel['unique']
-    #                 star, duel_champ, rank = int(
-    #                     uniq[:1]), uniq[2:-2], int(uniq[-1:])
-    #                 star, duel_champ, rank = int(
-    #                     uniq[:1]), uniq[2:-2], int(uniq[-1:])
-    #                 if duel_champ == champ.mattkraftid:
-    #                     # targets.append('{}{} {} {} : {}'.format(star, champ.star_char,
-    #                     #             duel['maxlevel'],
-    #                     #             champ.full_name,
-    #                     #             duel['username']))
-    #                     targets.append('{} : {}'.format(
-    #                         duel['champion'], duel['username']))
-    #         targets.sort()
-    #         # for star in range(3,7):
-    #         # for rank in range(1,6):
-    #         #key = '{0}-{1}-{2}'.format(star, champ.full_name, rank)
-    #         # for data in get_csv_rows(dataset, 'unique', key):#champ.unique):
-    #         #targets.append( '{}{} {} {} : {}'.format(star, champ.star_char, data['maxlevel'], champ.full_name, data['username']))
-    #         if len(targets) > 0:
-    #             em.description = '\n'.join(targets)
-    #         else:
-    #             em.description = 'Target not found!\nAdd one to the Community Spreadhseet!\n[bit.ly/DuelTargetForm](http://bit.ly/DuelTargetForm)'
-    #             em.url = 'http://bit.ly/DuelTargetForm'
-    #         em.add_field(name='Shortcode', value=champ.short, inline=False)
-    #         await self.bot.send_message(ctx.message.channel, embed=em)
+            targets = []
+            for duel in data:    # single iteration through the data
+                if duel['unique'] == '':
+                    continue
+                else:
+                    uniq = duel['unique']
+                    star, duel_champ, rank = int(
+                        uniq[:1]), uniq[2:-2], int(uniq[-1:])
+                    star, duel_champ, rank = int(
+                        uniq[:1]), uniq[2:-2], int(uniq[-1:])
+                    if duel_champ == champ.mattkraftid:
+                        # targets.append('{}{} {} {} : {}'.format(star, champ.star_char,
+                        #             duel['maxlevel'],
+                        #             champ.full_name,
+                        #             duel['username']))
+                        targets.append('{} : {}'.format(
+                            duel['champion'], duel['username']))
+            targets.sort()
+            # for star in range(3,7):
+            # for rank in range(1,6):
+            #key = '{0}-{1}-{2}'.format(star, champ.full_name, rank)
+            # for data in get_csv_rows(dataset, 'unique', key):#champ.unique):
+            #targets.append( '{}{} {} {} : {}'.format(star, champ.star_char, data['maxlevel'], champ.full_name, data['username']))
+            if len(targets) > 0:
+                em.description = '\n'.join(targets)
+            else:
+                em.description = 'Target not found!\nAdd one to the Community Spreadhseet!\n[bit.ly/DuelTargetForm](http://bit.ly/DuelTargetForm)'
+                em.url = 'http://bit.ly/DuelTargetForm'
+            em.add_field(name='Shortcode', value=champ.short, inline=False)
+            await self.bot.send_message(ctx.message.channel, embed=em)
 
     @champ.command(pass_context=True, name='about', aliases=['about_champ', ])
     async def champ_about(self, ctx, *, champ: ChampConverterRank):
@@ -1414,7 +1415,7 @@ class MCOC(ChampionFactory):
         self.auntmai.setdefault(champ.auntmai, {})
         if champ.auntmai_url not in self.auntmai[champ.auntmai]:
             messageid = await self.bot.send_message(ctx.message.channel, champ.auntmai_url)
-            sigimage_url = await SCREENSHOT.get_screenshot(self,
+            sigimage_url = await ScreenShot.get_screenshot(self,
                                                            url=champ.auntmai_url, w=600, h=1200)
             tsshot = time.time()
             self.auntmai[champ.auntmai][champ.auntmai_url] = sigimage_url
@@ -1468,7 +1469,7 @@ class MCOC(ChampionFactory):
                     sigurl = 'https://auntm.ai/championsig/'+predicate
                     tstart = time.time()
                     if sigurl not in self.auntmai[champ.auntmai]:
-                        sigimage_url = await SCREENSHOT.get_screenshot(self,
+                        sigimage_url = await ScreenShot.get_screenshot(self,
                                                                        url=sigurl, w=600, h=1200)
                         tsshot = time.time()
                         self.auntmai[champ.auntmai][sigurl] = sigimage_url

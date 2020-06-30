@@ -24,8 +24,8 @@ import re
 import asyncio
 # Monkey Patch of JSONEncoder
 from json import JSONEncoder, dump, dumps
-from cogs.mcocTools import (StaticGameData, PagesMenu,
-                            KABAM_ICON, COLLECTOR_ICON, COLLECTOR_FEATURED, CDTHelperFunctions,
+from .cdtpagesmenu import PagesMenu
+from cogs.mcocTools import (StaticGameData, KABAM_ICON, COLLECTOR_ICON, COLLECTOR_FEATURED, CDTHelperFunctions,
                             GSHandler, GSExport, CDT_COLORS)
 
 
