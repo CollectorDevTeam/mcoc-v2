@@ -2893,8 +2893,8 @@ class CDTCheck:
                 'https://media.discordapp.net/attachments/391330316662341632/727598813447192616/D77D9C96DC5CBFE07860B6211A2E32448B3E3374.jpg',
                 'https://media.discordapp.net/attachments/391330316662341632/727598812746612806/9C15810315010F5940556E48A54C831529A35016.jpg']
             for imgurl in imagelist:
-                data = CDTEmbed.create(
-                    title=title, description=message, footer_text="{} of CollectorDevTeam", image=imgurl)
+                data = CDTEmbed.create(self, ctx,
+                                       title=title, description=message, footer_text="{} of CollectorDevTeam", image=imgurl)
                 data.add_field(name="Get Collector", value="[Invite]()")
                 data.add_field(
                     name="Get Support", value="[Join CDT & Get Collector](https://discord.gg/BwhgZxk)", inline=False)
