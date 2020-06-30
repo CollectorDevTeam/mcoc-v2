@@ -2894,7 +2894,7 @@ class CDTCheck:
                 description = content
             if len(ctx.message.attachments) > 0:
                 imagelist = []
-                for i in ctx.message.attachments:
+                for i in ctx.message.attachments.keys():
                     imagelist.append(ctx.message.attachments[i]['url'])
             else:
                 imagelist = [
