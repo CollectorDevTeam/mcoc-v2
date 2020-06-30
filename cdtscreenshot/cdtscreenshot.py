@@ -23,6 +23,12 @@ class ScreenShot:
         self.bot = bot
         self.diagnostics = DIAGNOSTICS(self.bot)
         self.settings = dataIO.load_json('data/cdtscreenshot/settings.json')
+        self.cdt = None
+        self.cst = None
+        self.channel = None
+        self.get_stuffs()
+
+    def getsuffs(self):
         self.channel = self.bot.get_channel(
             self.settings["diagnostics_channel"])
         if 'calendar' not in self.settings.keys():
