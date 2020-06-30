@@ -7,7 +7,7 @@ class CDTEmbed:
     def __init__(self, bot):
         self.bot = bot
 
-    def create(self, ctx, user_id=None, color=discord.Color.gold(), title='', description='', image=None, thumbnail=None, url=None, footer_text=None, footer_url=None, author_text=None):
+    def create(self, ctx, color=discord.Color.gold(), title='', description='', image=None, thumbnail=None, url=None, footer_text=None, footer_url=None, author_text=None):
         '''Return a color styled embed with CDT footer, and optional title or description.
         user_id = user id string. If none provided, takes message author.
         color = manual override, otherwise takes gold for private channels, or author color for server.
@@ -17,28 +17,18 @@ class CDTEmbed:
         thumbnail = String url. Validator checks for valid url.'''
         COLLECTOR_ICON = 'https://raw.githubusercontent.com/CollectorDevTeam/assets/master/data/cdt_icon.png'
         PATREON = 'https://patreon.com/collectorbot'
+        CDT_LOGO = 'https://raw.githubusercontent.com/CollectorDevTeam/assets/master/data/cdt_logo.png'
 
-        if user_id is None:
-            color = discord.Color.gold()
-        elif isinstance(user_id, discord.User):
-            user = user_id
-            member = ctx.message.server.get_member(user.id)
-            color = member.color
-        else:
-            # member = self.bot.get_member(user_id)
-            member = discord.utils.get(ctx.message.server.members, id=user_id)
-            color = member.color
+        if not ctx.message.channel.isprivate:
+            color = ctx.message.author.color
         if url is None:
             url = PATREON
         data = discord.Embed(color=color, title=title, url=url)
         if description is not None:
             if len(description) < 1500:
                 data.description = description
-        if author_text is None:
-            data.set_author(name='CollectorVerse',
-                            icon_url=COLLECTOR_ICON)
-        else:
-            data.set_author(name=author_text, icon_url=COLLECTOR_ICON)
+        data.set_author(name=ctx.message.author.display_name,
+                        icon_url=ctx.message.author.avatar_url)
         if image is not None:
             validators.url(image)
             code = requests.get(image).status_code
@@ -60,7 +50,7 @@ class CDTEmbed:
                 ctx.message.author)
         if footer_url is None:
             footer_url = COLLECTOR_ICON
-        data.set_footer(text=footer_text, icon_url=COLLECTOR_ICON)
+        data.set_footer(text=footer_text, icon_url=CDT_LOGO)
         return data
 
 
