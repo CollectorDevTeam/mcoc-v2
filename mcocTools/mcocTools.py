@@ -1730,11 +1730,10 @@ class MCOCTools:
         await self.cache_sgd_gsheets()
 
     @commands.command(hidden=True, pass_context=True)
-    @check_collectordevteam(ctx)
     async def get_file(self, ctx, *, filename: str):
-        # if self.check_collectordevteam(ctx) is False:
-        #     return
-        if filename is 'mcoc_service_creds':
+        if check_collectordevteam(ctx) is False:
+            return
+        elif filename is 'mcoc_service_creds':
             return
         elif dataIO.is_valid_json('data/mcoc/{}.json'.format(filename)) is True:
             await self.bot.send_file(ctx.message.channel, 'data/mcoc/{}.json'.format(filename))
