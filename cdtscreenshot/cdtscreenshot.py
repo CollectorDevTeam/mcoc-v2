@@ -22,7 +22,8 @@ class ScreenShot:
     def __init__(self, bot):
         self.bot = bot
         self.diagnostics = DIAGNOSTICS(self.bot)
-        self.settings = dataIO.load_json('data/cdtscreenshot/settings.json')
+        self.screenshot_settings = dataIO.load_json(
+            'data/cdtscreenshot/settings.json')
         self.cdt = None
         self.cst = None
         self.channel = None
@@ -30,11 +31,12 @@ class ScreenShot:
 
     def getsuffs(self):
         self.channel = self.bot.get_channel(
-            self.settings["diagnostics_channel"])
-        if 'calendar' not in self.settings.keys():
-            self.settings['calendar'] = {'screenshot': '', 'time': 0}
+            self.screenshot_settings["diagnostics_channel"])
+        if 'calendar' not in self.screenshot_settings.keys():
+            self.screenshot_settings['calendar'] = {
+                'screenshot': '', 'time': 0}
             dataIO.save_json(
-                'data/cdtscreenshot/settings.json', self.settings)
+                'data/cdtscreenshot/settings.json', self.screenshot_settings)
         self.cdt = self.get_role('390253643330355200')
         self.cst = self.get_role('390253719125622807')
 
