@@ -27,7 +27,7 @@ class ScreenShot:
         self.diagnostics = DIAGNOSTICS(self.bot)
         self.get_stuffs()
 
-    def get_suffs(self):
+    def get_stuffs(self):
         settings = dataIO.load_json(
             'data/cdtscreenshot/settings.json')
         self.channel = self.bot.get_channel(
