@@ -1758,12 +1758,17 @@ def check_collectordevteam(ctx):
         if role.id == cdtid:
             return True
     return False
-    # if author in ('148622879817334784', '124984294035816448', '209339409655398400'):
-    #     print('{} is CollectorDevTeam'.format(author))
-    #     return True
-    # else:
-    #     print('{} is not CollectorDevTeam'.format(author))
-    #     return False
+
+
+def check_collectorsupportteam(ctx):
+    cstid = '390253719125622807'
+    cdtid = '390253643330355200'
+
+    author = ctx.message.author
+    for role in author.roles:
+        if role.id == cstid or role.id == cdtid:
+            return True
+    return False
 
 
 class MCOCEvents:
@@ -2886,7 +2891,7 @@ class CDTCheck:
         title;content will split the message into Title and Content.
         An image attachment added to this command will replace the image embed."""
 
-        authorized = await self.collectordevteam(ctx)
+        authorized = await check_collectorsupportteam(ctx)
         if authorized is not True:
             return
         else:
