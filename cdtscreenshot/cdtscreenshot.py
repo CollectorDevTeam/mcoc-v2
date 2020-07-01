@@ -22,20 +22,23 @@ class ScreenShot:
 
     def __init__(self, bot):
         self.bot = bot
-        self.screenshot_settings = dataIO.load_json(
-            'data/cdtscreenshot/settings.json')
+        self.screenshot_settings = {}
         self.channel = None
         self.diagnostics = DIAGNOSTICS(self.bot)
         self.get_stuffs()
 
     def getsuffs(self):
+        settings = dataIO.load_json(
+            'data/cdtscreenshot/settings.json')
         self.channel = self.bot.get_channel(
-            self.screenshot_settings["diagnostics_channel"])
+            screenshot_settings["diagnostics_channel"])
+        settings.update({"channel": self.channel})
         if 'calendar' not in self.screenshot_settings.keys():
-            self.screenshot_settings['calendar'] = {
+            screenshot_settings['calendar'] = {
                 'screenshot': '', 'time': 0}
             dataIO.save_json(
-                'data/cdtscreenshot/settings.json', self.screenshot_settings)
+                'data/cdtscreenshot/settings.json', screenshot_settings)
+        self.screenshot_settings.update(settings)
         return
 
     @commands.group(pass_context=True, hidden=True)
@@ -95,7 +98,7 @@ class ScreenShot:
             screenshot_settings["temp_png"])
         driver.quit()
         # await asyncio.sleep(3)
-        message = await self.bot.send_file(self.channel, screenshot_settings["temp_png"])
+        message = await self.bot.send_file(screenshot_settings["channel"], screenshot_settings["temp_png"])
         await asyncio.sleep(1)
         if len(message.attachments) > 0:
             return message.attachments[0]['url']
