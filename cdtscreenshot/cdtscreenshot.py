@@ -40,16 +40,15 @@ class ScreenShot:
 
     @commands.group(pass_context=True, hidden=True)
     async def screenshot(self, ctx):
-        if self.cdt in ctx.message.author.roles or self.cst in ctx.message.author.roles:
+        if not collectordevteam(ctx):
             await self.diagnostics.log(ctx, self.channel)
-            if ctx.invoked_subcommand is None:
-                await send_cmd_help(ctx)
+            return
+        elif ctx.invoked_subcommand is None:
+            await send_cmd_help(ctx)
 
     @screenshot.command(pass_context=True, name='setexec', hidden=True)
     async def ss_exec(self, ctx, exectuable_path: str):
         """Set the executable path for the Chrome Webdriver"""
-        if not collectordevteam(ctx):
-            return
         self.screenshot_settings.update({"executable_path": str})
         if exectuable_path is None:
             return
