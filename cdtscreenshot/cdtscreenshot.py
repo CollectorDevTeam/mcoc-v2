@@ -24,8 +24,6 @@ class ScreenShot:
         self.bot = bot
         self.screenshot_settings = dataIO.load_json(
             'data/cdtscreenshot/settings.json')
-        self.cdt = None
-        self.cst = None
         self.channel = None
         self.diagnostics = DIAGNOSTICS(self.bot)
         self.get_stuffs()
@@ -38,8 +36,6 @@ class ScreenShot:
                 'screenshot': '', 'time': 0}
             dataIO.save_json(
                 'data/cdtscreenshot/settings.json', self.screenshot_settings)
-        self.cdt = self.get_role('390253643330355200')
-        self.cst = self.get_role('390253719125622807')
         return
 
     @commands.group(pass_context=True, hidden=True)
@@ -50,6 +46,7 @@ class ScreenShot:
                 await send_cmd_help(ctx)
 
     @screenshot.command(pass_context=True, name='setexec', hidden=True)
+    @collectordevteam(ctx)
     async def ss_exec(self, ctx, exectuable_path: str):
         """Set the executable path for the Chrome Webdriver"""
         self.screenshot_settings.update({"executable_path": str})
@@ -77,7 +74,7 @@ class ScreenShot:
         data = CDTEmbed.create(ctx, image=imgurl)
         await self.bot.send_message(ctx.message.channel, embed=data)
 
-    async def get_screenshot(self, url, w=1920, h=1080):
+    async def get_screenshot(url, w=1920, h=1080):
         chrome_options = Options()
         chrome_options.add_argument("--headless")
         chrome_options.add_argument("--window-size={}, {}".format(w, h))
@@ -101,11 +98,13 @@ class ScreenShot:
         else:
             return None
 
-    def get_role(self, roleid):
-        server = self.bot.get_server('215271081517383682')
-        for role in server.roles:
-            if role.id == roleid:
-                return role
+
+def collectordevteam(ctx):
+    author = ctx.message.author
+    for role in author.roles:
+        if role.id == '390253643330355200':
+            return True
+    return False
 
 
 def setup(bot):
