@@ -39,6 +39,7 @@ class ScreenShot:
                 'data/cdtscreenshot/settings.json', self.screenshot_settings)
         self.cdt = self.get_role('390253643330355200')
         self.cst = self.get_role('390253719125622807')
+        return
 
     @commands.group(pass_context=True, hidden=True)
     async def screenshot(self, ctx):
@@ -50,7 +51,7 @@ class ScreenShot:
     @screenshot.command(pass_context=True, name='setexec', hidden=True)
     async def ss_exec(self, ctx, exectuable_path: str):
         """Set the executable path for the Chrome Webdriver"""
-        self.settings.update({"executable_path": str})
+        self.screenshot_settings.update({"executable_path": str})
         if exectuable_path is None:
             return
         else:
@@ -59,10 +60,10 @@ class ScreenShot:
             test = await PagesMenu.confirm(ctx, msg)
             if test:
                 dataIO.save_json(
-                    'data/cdtscreenshot/settings.json', self.settings)
+                    'data/cdtscreenshot/settings.json', self.screenshot_settings)
             else:
                 msg = "Chromium webdriver settings unchanged:\n{}".format(
-                    self.settings["executable_path"])
+                    self.screenshot_settings["executable_path"])
                 await self.bot.send_message(ctx.message.channel, msg)
 
     @screenshot.command(pass_context=True, name='take')
@@ -79,16 +80,17 @@ class ScreenShot:
         chrome_options.add_argument("allow-running-insecure-content")
         # chrome_options.binary_location = '/Applications/Google Chrome   Canary.app/Contents/MacOS/Google Chrome Canary'
         driver = webdriver.Chrome(
-            executable_path=self.settings["executable_path"],   chrome_options=chrome_options)
+            executable_path=self.screenshot_settings["executable_path"],   chrome_options=chrome_options)
         # channel = self.bot.get_channel('391330316662341632')
         # DRIVER = 'chromedriver'
         # driver = webdriver.Chrome(DRIVER)
         driver.get(url)
         asyncio.sleep(1)
-        screenshot = driver.save_screenshot(self.settings["temp_png"])
+        screenshot = driver.save_screenshot(
+            self.screenshot_settings["temp_png"])
         driver.quit()
         # await asyncio.sleep(3)
-        message = await self.bot.send_file(self.channel, self.settings["temp_png"])
+        message = await self.bot.send_file(self.channel, self.screenshot_settings["temp_png"])
         await asyncio.sleep(1)
         if len(message.attachments) > 0:
             return message.attachments[0]['url']
