@@ -82,6 +82,9 @@ class ScreenShot:
     async def get_screenshot(self, url, w=1920, h=1080):
         screenshot_settings = dataIO.load_json(
             'data/cdtscreenshot/settings.json')
+        channel = self.bot.get_channel(
+            screenshot_settings["diagnostics_channel"])
+
         chrome_options = Options()
         chrome_options.add_argument("--headless")
         chrome_options.add_argument("--window-size={}, {}".format(w, h))
@@ -98,7 +101,7 @@ class ScreenShot:
             screenshot_settings["temp_png"])
         driver.quit()
         # await asyncio.sleep(3)
-        message = await self.bot.send_file(screenshot_settings["channel"], screenshot_settings["temp_png"])
+        message = await self.bot.send_file(channel, screenshot_settings["temp_png"])
         await asyncio.sleep(1)
         if len(message.attachments) > 0:
             return message.attachments[0]['url']
