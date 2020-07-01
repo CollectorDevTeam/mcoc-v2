@@ -34,7 +34,7 @@ class ScreenShot:
             settings["diagnostics_channel"])
         settings.update({"channel": self.channel})
         if 'calendar' not in self.screenshot_settings.keys():
-            screenshot_settings['calendar'] = {
+            settings['calendar'] = {
                 'screenshot': '', 'time': 0}
             dataIO.save_json(
                 'data/cdtscreenshot/settings.json', screenshot_settings)
