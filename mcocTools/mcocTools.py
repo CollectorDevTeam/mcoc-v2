@@ -1753,7 +1753,7 @@ class MCOCTools:
 
 def check_collectordevteam(ctx):
     cdtid = '390253643330355200'
-    author = ctx.message.author.id
+    author = ctx.message.author
     for role in author.roles:
         if role.id == cdtid:
             return True
