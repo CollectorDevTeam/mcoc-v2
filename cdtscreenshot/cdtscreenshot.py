@@ -74,7 +74,7 @@ class ScreenShot:
         data = CDTEmbed.create(ctx, image=imgurl)
         await self.bot.send_message(ctx.message.channel, embed=data)
 
-    async def get_screenshot(url, w=1920, h=1080):
+    async def get_screenshot(self, url, w=1920, h=1080):
         chrome_options = Options()
         chrome_options.add_argument("--headless")
         chrome_options.add_argument("--window-size={}, {}".format(w, h))
