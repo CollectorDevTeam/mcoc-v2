@@ -5,6 +5,7 @@ from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.keys import Keys
 import discord
 from discord.ext import commands
+import os
 
 # imported from redbot utils
 from .utils.dataIO import dataIO
@@ -21,7 +22,7 @@ class ScreenShot:
 
     def __init__(self, bot):
         self.bot = bot
-        screenshot_settings = dataIO.load_json(
+        self.screenshot_settings = dataIO.load_json(
             'data/cdtscreenshot/settings.json')
         self.cdt = None
         self.cst = None
@@ -55,16 +56,19 @@ class ScreenShot:
         if exectuable_path is None:
             return
         else:
-            msg = "Do you want to set your Chromium Webdriver path to:\n{}".format(
-                exectuable_path)
-            test = await PagesMenu.confirm(ctx, msg)
-            if test:
-                dataIO.save_json(
-                    'data/cdtscreenshot/settings.json', self.screenshot_settings)
+            if os.path.exists(executable_path):
+                msg = "Do you want to set your Chromium Webdriver path to:\n{}".format(
+                    exectuable_path)
+                test = await PagesMenu.confirm(ctx, msg)
+                if test:
+                    dataIO.save_json(
+                        'data/cdtscreenshot/settings.json', self.screenshot_settings)
+                else:
+                    msg = "Chromium webdriver settings unchanged:\n{}".format(
+                        self.screenshot_settings["executable_path"])
             else:
-                msg = "Chromium webdriver settings unchanged:\n{}".format(
-                    self.screenshot_settings["executable_path"])
-                await self.bot.send_message(ctx.message.channel, msg)
+                msg = "Executable path not present on host."
+            await self.bot.send_message(ctx.message.channel, msg)
 
     @screenshot.command(pass_context=True, name='take')
     async def ss_take(self, ctx, url: str, width=1920, height=1080):
