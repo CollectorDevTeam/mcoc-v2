@@ -1260,7 +1260,7 @@ class MCOCTools:
         if force:
             await gsh.cache_gsheets('calendar')
         if self.calendar_url == '' or self.mcoctools['calendar_date'] != now or force:
-            self.calendar_url = await self.Screenshot.get_screenshot(url=PUBLISHED, w=1700, h=800)
+            self.calendar_url = await ScreenShot.get_screenshot(url=PUBLISHED, w=1700, h=800)
             self.mcoctools['calendar'] = self.calendar_url
             self.mcoctools['calendar_date'] = now
             # dataIO.save_json('data/mcocTools/mcoctools.json', self.mcoctools)
@@ -1730,9 +1730,10 @@ class MCOCTools:
         await self.cache_sgd_gsheets()
 
     @commands.command(hidden=True, pass_context=True)
+    @check_collectordevteam(ctx)
     async def get_file(self, ctx, *, filename: str):
-        if self.check_collectordevteam(ctx) is False:
-            return
+        # if self.check_collectordevteam(ctx) is False:
+        #     return
         elif filename is 'mcoc_service_creds':
             return
         elif dataIO.is_valid_json('data/mcoc/{}.json'.format(filename)) is True:
@@ -1750,14 +1751,20 @@ class MCOCTools:
         else:
             await self.bot.say('I could not find that file.')
 
-    async def check_collectordevteam(self, ctx):
-        author = ctx.message.author.id
-        if author in ('148622879817334784', '124984294035816448', '209339409655398400'):
-            print('{} is CollectorDevTeam'.format(author))
+
+def check_collectordevteam(ctx):
+    cdtid = '390253643330355200'
+    author = ctx.message.author.id
+    for role in author.roles:
+        if role.id == cdtid:
             return True
-        else:
-            print('{} is not CollectorDevTeam'.format(author))
-            return False
+    return False
+    # if author in ('148622879817334784', '124984294035816448', '209339409655398400'):
+    #     print('{} is CollectorDevTeam'.format(author))
+    #     return True
+    # else:
+    #     print('{} is not CollectorDevTeam'.format(author))
+    #     return False
 
 
 class MCOCEvents:
