@@ -18,14 +18,14 @@ from __main__ import send_cmd_help
 
 class ScreenShot:
     """Save a Screenshot from x website"""
-    screenshot_settings = dataIO.load_json(
-        'data/cdtscreenshot/settings.json')
-    cdt = None
-    cst = None
-    channel = None
 
     def __init__(self, bot):
         self.bot = bot
+        screenshot_settings = dataIO.load_json(
+            'data/cdtscreenshot/settings.json')
+        self.cdt = None
+        self.cst = None
+        self.channel = None
         self.diagnostics = DIAGNOSTICS(self.bot)
         self.get_stuffs()
 
