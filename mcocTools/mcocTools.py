@@ -1260,7 +1260,7 @@ class MCOCTools:
         if force:
             await gsh.cache_gsheets('calendar')
         if self.calendar_url == '' or self.mcoctools['calendar_date'] != now or force:
-            self.calendar_url = await ScreenShot.get_screenshot(url=PUBLISHED, w=1700, h=800)
+            self.calendar_url = await ScreenShot.get_screenshot(self, url=PUBLISHED, w=1700, h=800)
             self.mcoctools['calendar'] = self.calendar_url
             self.mcoctools['calendar_date'] = now
             # dataIO.save_json('data/mcocTools/mcoctools.json', self.mcoctools)

@@ -46,9 +46,10 @@ class ScreenShot:
                 await send_cmd_help(ctx)
 
     @screenshot.command(pass_context=True, name='setexec', hidden=True)
-    @collectordevteam(ctx)
     async def ss_exec(self, ctx, exectuable_path: str):
         """Set the executable path for the Chrome Webdriver"""
+        if not collectordevteam(ctx):
+            return
         self.screenshot_settings.update({"executable_path": str})
         if exectuable_path is None:
             return
