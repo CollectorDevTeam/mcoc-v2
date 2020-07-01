@@ -158,7 +158,7 @@ class MCOCMaps:
             pages = []
             for tier in ("challenger", "intermediate", "hard", "expert"):
                 data = CDTEmbed.create(self, ctx,
-                                       image="{}catmurdock/AW/{}.png".format(
+                                       image="{}catmurdock/AW/s19/{}.png".format(
                                            basepath, tier),
                                        thumbnail=catcorner,
                                        title="Alliane War {} Map :cat::sparkles:".format(
