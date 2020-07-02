@@ -49,7 +49,7 @@ class CDTEmbed:
             footer_text = 'CollectorDevTeam"
         if footer_url is None:
             footer_url = COLLECTOR_ICON
-        data.set_footer(text=footer_text, icon_url=CDT_LOGO)
+        data.set_footer(text=footer_text, url=CDT_LOGO)
         return data
 
 
