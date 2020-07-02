@@ -1733,7 +1733,7 @@ class MCOCTools:
 
     @commands.command(hidden=True, pass_context=True)
     async def get_file(self, ctx, *, filename: str):
-        if check_collectordevteam(ctx) is False:
+        if check_collectordevteam(self, ctx) is False:
             return
         elif filename is 'mcoc_service_creds':
             return
@@ -1753,7 +1753,7 @@ class MCOCTools:
             await self.bot.say('I could not find that file.')
 
 
-def check_collectordevteam(ctx):
+def check_collectordevteam(self, ctx):
     cdtid = '390253643330355200'
     cdtserver = self.bot.get_server()
     for member in cdtserver.members:
@@ -1767,7 +1767,7 @@ def check_collectordevteam(ctx):
     return False
 
 
-def check_collectorsupportteam(ctx):
+def check_collectorsupportteam(self, ctx):
     cstid = '390253719125622807'
     cdtid = '390253643330355200'
     cdtserver = self.bot.get_server()
@@ -2902,7 +2902,7 @@ class CDTCheck:
         title;content will split the message into Title and Content.
         An image attachment added to this command will replace the image embed."""
 
-        authorized = check_collectorsupportteam(ctx)
+        authorized = check_collectorsupportteam(self, ctx)
         if authorized is not True:
             return
         else:
