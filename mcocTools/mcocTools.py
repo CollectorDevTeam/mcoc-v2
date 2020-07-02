@@ -2892,7 +2892,7 @@ class CDTCheck:
         title;content will split the message into Title and Content.
         An image attachment added to this command will replace the image embed."""
 
-        authorized = await check_collectorsupportteam(ctx)
+        authorized = check_collectorsupportteam(ctx)
         if authorized is not True:
             return
         else:
