@@ -2906,9 +2906,11 @@ class CDTCheck:
                 title = "CollectorVerse Tips"
                 description = content
             if len(ctx.message.attachments) > 0:
-                imagelist = []
-                for i in ctx.message.attachments:
-                    imagelist.append(ctx.message.attachments[i]['url'])
+                image = ctx.message.attachments[0]
+                imgurl = image['url']
+                # imagelist = []
+                # for i in ctx.message.attachments.keys():
+                #     imagelist.append(ctx.message.attachments[i]['url'])
             else:
                 imagelist = [
                     'https://cdn.discordapp.com/attachments/391330316662341632/725045045794832424/collector_dadjokes.png',
@@ -2919,9 +2921,9 @@ class CDTCheck:
                     'https://media.discordapp.net/attachments/391330316662341632/727598813820485693/8952A192395C772767ED1135A644B3E3511950BA.jpg',
                     'https://media.discordapp.net/attachments/391330316662341632/727598813447192616/D77D9C96DC5CBFE07860B6211A2E32448B3E3374.jpg',
                     'https://media.discordapp.net/attachments/391330316662341632/727598812746612806/9C15810315010F5940556E48A54C831529A35016.jpg']
+                imgurl = random.choice(imagelist)
             thumbnail = 'https://images-ext-1.discordapp.net/external/6Q7QyBwbwH2SCmwdt_YR_ywkHWugnXkMc3rlGLUnvCQ/https/raw.githubusercontent.com/CollectorDevTeam/assets/master/data/images/featured/collector.png?width=230&height=230'
             # for imgurl in imagelist:
-            imgurl = random.choice(imagelist)
             data = CDTEmbed.create(self, ctx,
                                    title=title, description=description, footer_text="CollectorVerse",
                                    image=imgurl)
