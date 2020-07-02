@@ -36,9 +36,12 @@ class ScreenShot:
         if 'calendar' not in settings.keys():
             settings.update({"calendar": {
                 'screenshot': '', 'time': 0}})
-        dataIO.save_json(
-            'data/cdtscreenshot/settings.json', settings)
-        self.screenshot_settings.update(settings)
+        # dataIO.save_json(
+        #     'data/cdtscreenshot/settings.json', settings)
+        try:
+            self.screenshot_settings.update(settings)
+        except:
+            self.screenshot_settings = settings
         return
 
     @commands.group(pass_context=True, hidden=True)
