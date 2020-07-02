@@ -1755,7 +1755,7 @@ class MCOCTools:
 
 def check_collectordevteam(self, ctx):
     cdtid = '390253643330355200'
-    cdtserver = self.bot.get_server()
+    cdtserver = self.bot.get_server('215271081517383682')
     for member in cdtserver.members:
         if member.id == ctx.message.author.id:
             author = member
@@ -1770,7 +1770,7 @@ def check_collectordevteam(self, ctx):
 def check_collectorsupportteam(self, ctx):
     cstid = '390253719125622807'
     cdtid = '390253643330355200'
-    cdtserver = self.bot.get_server()
+    cdtserver = self.bot.get_server('215271081517383682')
     for member in cdtserver.members:
         if member.id == ctx.message.author.id:
             author = member
