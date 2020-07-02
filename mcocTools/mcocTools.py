@@ -2925,14 +2925,16 @@ class CDTCheck:
             thumbnail = 'https://images-ext-1.discordapp.net/external/6Q7QyBwbwH2SCmwdt_YR_ywkHWugnXkMc3rlGLUnvCQ/https/raw.githubusercontent.com/CollectorDevTeam/assets/master/data/images/featured/collector.png?width=230&height=230'
             # for imgurl in imagelist:
             data = CDTEmbed.create(self, ctx,
-                                   title=title, description=description, footer_text="CollectorVerse",
+                                   title=title, description=description,
                                    image=imgurl)
             data.set_author(name="{} of CollectorDevTeam".format(
                 ctx.message.author.display_name), icon_url=ctx.message.author.avatar_url)
+            data.add_field("Alliance Template",
+                           "[Make a Server](https://discord.new/gtzuXHq2kCg4)")
             data.add_field(
                 name="Get Collector", value="[Invite](https://discord.com/oauth2/authorize?client_id=210480249870352385&scope=bot&permissions=8)")
             data.add_field(
-                name="Get Support", value="[CollectorDevTeam Server](https://discord.gg/BwhgZxk)", inline=False)
+                name="Get Support", value="[CollectorDevTeam Server](https://discord.gg/BwhgZxk)")
             await self.bot.send_message(ctx.message.channel, embed=data)
             # pages.append(data)
             # menu = PagesMenu(self.bot, timeout=30, add_pageof=True)
