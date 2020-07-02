@@ -37,20 +37,22 @@ class CDTEmbed:
             else:
                 print('Image URL Failure, code {}'.format(code))
                 print('Attempted URL:\n{}'.format(image))
+        if thumbnail is None:
+            thumbnail = CDT_LOGO
         if thumbnail is not None:
             validators.url(thumbnail)
             code = requests.get(thumbnail).status_code
             if code == 200:
                 # data.set_thumbnail(url=thumbnail)
                 data.set_thumbnail(
-                    url='https://raw.githubusercontent.com/CollectorDevTeam/assets/master/data/cdt_logo.png')
+                    url=CDT_LOGO)
             else:
                 print('Thumbnail URL Failure, code {}'.format(code))
                 print('Attempted URL:\n{}'.format(thumbnail))
         if footer_text is None:
             footer_text = "Collector | Contest of Champions | CollectorDevTeam"
         if footer_url is None:
-            footer_url = 'https://raw.githubusercontent.com/CollectorDevTeam/assets/master/data/cdt_logo.png'
+            footer_url = CDT_LOGO
         data.set_footer(text=footer_text, icon_url=footer_url)
         return data
 
