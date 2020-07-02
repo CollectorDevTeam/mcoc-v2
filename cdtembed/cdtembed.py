@@ -42,7 +42,8 @@ class CDTEmbed:
             code = requests.get(thumbnail).status_code
             if code == 200:
                 # data.set_thumbnail(url=thumbnail)
-                data.set_thumbnail = 'https://raw.githubusercontent.com/CollectorDevTeam/assets/master/data/cdt_logo.png'
+                data.set_thumbnail(
+                    url='https://raw.githubusercontent.com/CollectorDevTeam/assets/master/data/cdt_logo.png')
             else:
                 print('Thumbnail URL Failure, code {}'.format(code))
                 print('Attempted URL:\n{}'.format(thumbnail))
