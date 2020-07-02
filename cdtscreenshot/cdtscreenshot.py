@@ -33,11 +33,11 @@ class ScreenShot:
         self.channel = self.bot.get_channel(
             settings["diagnostics_channel"])
         settings.update({"channel": self.channel})
-        if 'calendar' not in screenshot_settings.keys():
-            screenshot_settings.update({"calendar": {
+        if 'calendar' not in settings.keys():
+            settings.update({"calendar": {
                 'screenshot': '', 'time': 0}})
         dataIO.save_json(
-            'data/cdtscreenshot/settings.json', screenshot_settings)
+            'data/cdtscreenshot/settings.json', settings)
         self.screenshot_settings.update(settings)
         return
 
