@@ -17,6 +17,7 @@ from functools import partial
 from pygsheets.utils import numericise_all, numericise
 from validator_collection import validators, checkers
 import requests
+import random
 
 import aiohttp
 import discord
@@ -2918,20 +2919,22 @@ class CDTCheck:
                     'https://media.discordapp.net/attachments/391330316662341632/727598813820485693/8952A192395C772767ED1135A644B3E3511950BA.jpg',
                     'https://media.discordapp.net/attachments/391330316662341632/727598813447192616/D77D9C96DC5CBFE07860B6211A2E32448B3E3374.jpg',
                     'https://media.discordapp.net/attachments/391330316662341632/727598812746612806/9C15810315010F5940556E48A54C831529A35016.jpg']
-                thumbnail = 'https://images-ext-1.discordapp.net/external/6Q7QyBwbwH2SCmwdt_YR_ywkHWugnXkMc3rlGLUnvCQ/https/raw.githubusercontent.com/CollectorDevTeam/assets/master/data/images/featured/collector.png?width=230&height=230'
-            for imgurl in imagelist:
-                data = CDTEmbed.create(self, ctx,
-                                       title=title, description=description, footer_text="CollectorVerse",
-                                       image=imgurl)
-                data.set_author(name="{} of CollectorDevTeam".format(
-                    ctx.message.author.display_name), icon_url=ctx.message.author.avatar_url)
-                data.add_field(
-                    name="Get Collector", value="[Invite](https://discord.com/oauth2/authorize?client_id=210480249870352385&scope=bot&permissions=8)")
-                data.add_field(
-                    name="Get Support", value="[CollectorDevTeam Server](https://discord.gg/BwhgZxk)", inline=False)
-                pages.append(data)
-            menu = PagesMenu(self.bot, timeout=30, add_pageof=True)
-            await menu.menu_start(pages=pages)
+            thumbnail = 'https://images-ext-1.discordapp.net/external/6Q7QyBwbwH2SCmwdt_YR_ywkHWugnXkMc3rlGLUnvCQ/https/raw.githubusercontent.com/CollectorDevTeam/assets/master/data/images/featured/collector.png?width=230&height=230'
+            # for imgurl in imagelist:
+            imgurl = random.choice(imagelist)
+            data = CDTEmbed.create(self, ctx,
+                                   title=title, description=description, footer_text="CollectorVerse",
+                                   image=imgurl)
+            data.set_author(name="{} of CollectorDevTeam".format(
+                ctx.message.author.display_name), icon_url=ctx.message.author.avatar_url)
+            data.add_field(
+                name="Get Collector", value="[Invite](https://discord.com/oauth2/authorize?client_id=210480249870352385&scope=bot&permissions=8)")
+            data.add_field(
+                name="Get Support", value="[CollectorDevTeam Server](https://discord.gg/BwhgZxk)", inline=False)
+            await self.bot.send_message(ctx.message.channel, embed=data)
+            # pages.append(data)
+            # menu = PagesMenu(self.bot, timeout=30, add_pageof=True)
+            # await menu.menu_start(pages=pages)
 
     async def collectordevteam(self, ctx):
         '''Verifies if calling user has either the trusted CollectorDevTeam role, or CollectorSupportTeam'''
