@@ -2929,8 +2929,8 @@ class CDTCheck:
                                    image=imgurl)
             data.set_author(name="{} of CollectorDevTeam".format(
                 ctx.message.author.display_name), icon_url=ctx.message.author.avatar_url)
-            data.add_field("Alliance Template",
-                           "[Make a Server](https://discord.new/gtzuXHq2kCg4)")
+            data.add_field(name="Alliance Template",
+                           value="[Make a Server](https://discord.new/gtzuXHq2kCg4)")
             data.add_field(
                 name="Get Collector", value="[Invite](https://discord.com/oauth2/authorize?client_id=210480249870352385&scope=bot&permissions=8)")
             data.add_field(
