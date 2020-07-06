@@ -2918,11 +2918,11 @@ class CDTCheck:
             if len(ctx.message.attachments) > 0:
                 image = ctx.message.attachments[0]
                 imgurl = image['url']
-                urllib.request.urlretrieve(imgurl, 'data/mcocTools/temp.png')
-                asyncio.wait(5)
-                newfile = await self.bot.file_upload(robotworkshop, 'data/mcocTools/temp.png')
-                image = newfile.attachments[0]
-                imgurl = image['url']
+                # urllib.request.urlretrieve(imgurl, 'data/mcocTools/temp.png')
+                # asyncio.wait(5)
+                # newfile = await self.bot.file_upload(robotworkshop, 'data/mcocTools/temp.png')
+                # image = newfile.attachments[0]
+                # imgurl = image['url']
                 # imagelist = []
                 # for i in ctx.message.attachments.keys():
                 #     imagelist.append(ctx.message.attachments[i]['url'])
@@ -2951,7 +2951,7 @@ class CDTCheck:
             data.add_field(
                 name="Get Support", value="[CollectorDevTeam Server](https://discord.gg/BwhgZxk)")
             await self.bot.send_message(ctx.message.channel, embed=data)
-            await self.bot.delete_message(ctx.message)
+            # await self.bot.delete_message(ctx.message)
             # pages.append(data)
             # menu = PagesMenu(self.bot, timeout=30, add_pageof=True)
             # await menu.menu_start(pages=pages)
