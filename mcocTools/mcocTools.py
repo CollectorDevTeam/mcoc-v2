@@ -2950,7 +2950,7 @@ class CDTCheck:
                 name="Get Collector", value="[Invite](https://discord.com/oauth2/authorize?client_id=210480249870352385&scope=bot&permissions=8)")
             data.add_field(
                 name="Get Support", value="[CollectorDevTeam Server](https://discord.gg/BwhgZxk)")
-            await self.bot.send_message(ctx.message.channel, embed=data)
+            await self.bot.send_message(channel, embed=data)
             # await self.bot.delete_message(ctx.message)
             # pages.append(data)
             # menu = PagesMenu(self.bot, timeout=30, add_pageof=True)
