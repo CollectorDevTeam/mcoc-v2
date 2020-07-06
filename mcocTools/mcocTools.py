@@ -2920,8 +2920,9 @@ class CDTCheck:
                 imgurl = image['url']
                 urllib.request.urlretrieve(imgurl, 'data/mcocTools/temp.png')
                 asyncio.wait(5)
-                await self.bot.file_upload(robotworkshop, 'data/mcocTools/temp.png')
-
+                newfile = await self.bot.file_upload(robotworkshop, 'data/mcocTools/temp.png')
+                image = newfile.attachments[0]
+                imgurl = image['url']
                 # imagelist = []
                 # for i in ctx.message.attachments.keys():
                 #     imagelist.append(ctx.message.attachments[i]['url'])
