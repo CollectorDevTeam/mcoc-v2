@@ -537,7 +537,7 @@ class Hook:
         self.gsheet_handler.register_gsheet(
             name='collection',
             gkey='1JSiGo-oGbPdmlegmGTH7hcurd_HYtkpTnZGY1mN_XCE',
-            local='data/mcoc/collection',
+            local='data/mcoc/collection.json',
             sheet_name='collection',
             range_name='available_collection'
         )
