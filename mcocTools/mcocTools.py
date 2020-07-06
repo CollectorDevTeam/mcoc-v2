@@ -18,6 +18,7 @@ from pygsheets.utils import numericise_all, numericise
 from validator_collection import validators, checkers
 import requests
 import random
+import urllib
 
 import aiohttp
 import discord
@@ -2897,26 +2898,30 @@ class CDTCheck:
         self.roles = {}
 
     @commands.command(pass_context=True, hidden=True, name="promote", aliases=("promo",))
-    async def cdt_promote(self, ctx, *, content):
+    async def cdt_promote(self, ctx, channel: discord.Channel, *, content):
         """Content will fill the embed description.
         title;content will split the message into Title and Content.
         An image attachment added to this command will replace the image embed."""
-
+        robotworkshop = self.bot.get_channel('391330316662341632')
         authorized = check_collectorsupportteam(self, ctx)
         if authorized is not True:
             return
         else:
             pages = []
-            contents = content.split(";")
-            if len(contents) > 1:
-                title = contents[0]
-                description = contents[1]
-            else:
-                title = "CollectorVerse Tips"
-                description = content
+            # contents = content.split(";")
+            # if len(contents) > 1:
+            #     title = contents[0]
+            #     description = contents[1]
+            # else:
+            #     title = "CollectorVerse Tips"
+            #     description = content
             if len(ctx.message.attachments) > 0:
                 image = ctx.message.attachments[0]
                 imgurl = image['url']
+                urllib.request.urlretrieve(imgurl, 'data/mcocTools/temp.png')
+                asyncio.wait(5)
+                await self.bot.file_upload(robotworkshop, 'data/mcocTools/temp.png')
+
                 # imagelist = []
                 # for i in ctx.message.attachments.keys():
                 #     imagelist.append(ctx.message.attachments[i]['url'])
@@ -2934,7 +2939,7 @@ class CDTCheck:
             thumbnail = 'https://images-ext-1.discordapp.net/external/6Q7QyBwbwH2SCmwdt_YR_ywkHWugnXkMc3rlGLUnvCQ/https/raw.githubusercontent.com/CollectorDevTeam/assets/master/data/images/featured/collector.png?width=230&height=230'
             # for imgurl in imagelist:
             data = CDTEmbed.create(self, ctx,
-                                   title=title, description=description,
+                                   title='CollectorVerse Tips', description=content,
                                    image=imgurl)
             data.set_author(name="{} of CollectorDevTeam".format(
                 ctx.message.author.display_name), icon_url=ctx.message.author.avatar_url)
@@ -2945,6 +2950,7 @@ class CDTCheck:
             data.add_field(
                 name="Get Support", value="[CollectorDevTeam Server](https://discord.gg/BwhgZxk)")
             await self.bot.send_message(ctx.message.channel, embed=data)
+            await self.bot.delete_message(ctx.message)
             # pages.append(data)
             # menu = PagesMenu(self.bot, timeout=30, add_pageof=True)
             # await menu.menu_start(pages=pages)
