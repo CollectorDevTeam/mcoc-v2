@@ -453,6 +453,7 @@ class Alliance:
     async def _delete(self, ctx, key=None):
         """Delete CollectorVerse Alliance"""
         server = ctx.message.server
+        key = key.lower()
         if key is None:
             if server.id in self.guilds:
                 question = '{}, are you sure you want to un-register {} as your CollectorVerse Alliance?'\
@@ -480,7 +481,7 @@ class Alliance:
                 self.guilds[server.id].pop(key, None)
                 dataIO.save_json(self.alliances, self.guilds)
                 data = discord.Embed(title="Congrats!:sparkles:",
-                                     description="You have deleted your CollectorVerse Alliance.", color=get_color(ctx))
+                                     description="You have deleted ``{}`` from your CollectorVerse Alliance.".format(key), color=get_color(ctx))
                 await self.bot.delete_message(confirmation)
                 await self.pagesmenu.menu_start(pages=[data])
 
