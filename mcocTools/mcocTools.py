@@ -1549,9 +1549,11 @@ class MCOCTools:
         cdtpatrons = self._get_role(cdt, "428627905233420288")
         cdtsupport = self._get_role(cdt, "390253719125622807")
         cdtpartners = self._get_role(cdt, "390253856182894593")
+        cdtmaps = self._get_role(cdt, "553407585743536150")
         devteam = ', '.join(self._get_members(cdt, cdtdevteam))
         support = ', '.join(self._get_members(cdt, cdtsupport))
         partners = ', '.join(self._get_members(cdt, cdtpartners))
+        mappers = ', '.join(self._get_members(cdt, cdtmaps))
         if self._get_members(cdt, cdtpatrons) is not None:
             patrons = ', '.join(self._get_members(cdt, cdtpatrons))
             patrons += ', Caitibee, Fabio F., Vajda R.'
@@ -1599,22 +1601,22 @@ class MCOCTools:
         # supportteam = ('phil_wo#3733\nSpiderSebas#9910\nsuprmatt#2753\ntaoness#5565')
         embed = discord.Embed(
             colour=ucolor, title="Collector", url=collectorpatreon)
+        embed.add_field(name="Patrons", value=patrons, inline=True)
         embed.add_field(name="Instance owned by", value=str(owner))
         embed.add_field(name="Python", value=py_version)
         embed.add_field(name="discord.py", value=dpy_version)
         embed.add_field(name="About", value=about, inline=False)
         embed.add_field(name="PrestigePartners",
                         value='Kelldor#3162\nmutamatt#4704', inline=True)
-        embed.add_field(name='DuelsPartners', value='ƦƆ51#4587', inline=True)
+        # embed.add_field(name='DuelsPartners', value='ƦƆ51#4587', inline=True)
         embed.add_field(name='MapsPartners',
-                        value='jpags#5202\nBlooregarde#5848 ', inline=True)
-        embed.add_field(name='LabyrinthTeam',
-                        value='Kiryu#5755\nre-1#7595', inline=True)
+                        value=mappers, inline=True)
+        # embed.add_field(name='LabyrinthTeam',
+        #                 value='Kiryu#5755\nre-1#7595', inline=True)
         embed.add_field(name='Collector Partners', value=partners, inline=True)
         embed.add_field(name='CollectorSupportTeam',
                         value=supportteam, inline=True)
         embed.add_field(name="CollectorDevTeam", value=devteam, inline=True)
-        embed.add_field(name="Patrons", value=patrons, inline=True)
         embed.set_footer(text="Bringing joy since 02 Jan 2016 (over "
                               "{} days ago!)".format(days_since))
 
