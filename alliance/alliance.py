@@ -919,16 +919,19 @@ class Alliance:
         # test key for url
         if ctx.message.server.id not in self.guilds:
             data = _unknown_guild(ctx)
+        else:
+            data = self._get_embed(ctx)
+
         if value is None and len(ctx.message.attachments) > 0:
             image = ctx.message.attachments[0]
             print(json.dumps(image))
             value = image['url']
-
-        # verified = verify(str(value))
-        img = send_request(value)
-        if img is False:
-            data = self._get_embed(ctx)
-            data.title = 'Image Verification Failed:sparkles:'
+        elif value is not None:
+            if value.lower() == "none":
+                # delete poster
+                data = self._update_guilds(ctx, key, value)
+            elif send_request(value) is False:
+                data.title = 'Image Verification Failed:sparkles:'
         else:
             data = self._update_guilds(ctx, key, value)
             data.set_image(url=value)
