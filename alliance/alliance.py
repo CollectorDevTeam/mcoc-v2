@@ -14,7 +14,9 @@ from .utils.dataIO import dataIO
 from .utils import checks
 from .utils import chat_formatting as chat
 from cogs.mcocTools import (
-    KABAM_ICON, COLLECTOR_ICON, PagesMenu, CDT_COLORS, PATREON, COLLECTOR_FEATURED)
+    KABAM_ICON, COLLECTOR_ICON, CDT_COLORS, PATREON, COLLECTOR_FEATURED)
+from .cdtembed import CDTEmbed
+from .cdtpagesmenu import PagesMenu
 from cogs.hook import RosterUserConverter, ChampionRoster
 # import cogs.mcocTools
 
