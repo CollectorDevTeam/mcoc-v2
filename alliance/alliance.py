@@ -47,6 +47,7 @@ class Alliance:
         self.service_file = "data/mcoc/mcoc_service_creds.json"
         self.diagnostics_channel = '565254324595326996'
         self.pagesmenu = PagesMenu(self.bot)
+        self.googleaccess = self.authorize()
 
     @commands.command(pass_context=True, no_pm=True, hidden=True)
     async def lanes(self, ctx, user: discord.Member = None):
@@ -1051,13 +1052,13 @@ class Alliance:
         """Save your WarTool URL"""
         data = self._get_embed(ctx)
         if wartool_url is not None:
-            c = await self.authorize()
+            # c = await self.authorize()
             # sheet_data = await self.retrieve_data()
             sheet_id = re.findall(
                 r'/spreadsheets/d/([a-zA-Z0-9-_]+)', wartool_url)
             print(sheet_id[0])
             try:
-                wartool = await c.open_by_url(wartool_url)
+                wartool = await self.googleaccess.open_by_url(wartool_url)
                 # wartool = c.open_by_key(sheet_id[0])
                 data = self._update_guilds[ctx, 'wartool', sheet_id]
                 data.title = "WarTool Valid"
@@ -1273,14 +1274,14 @@ class Alliance:
                 await self.bot.send_message(channel, m)
         return
 
-    async def authorize(self):
+    def authorize(self):
         """pygsheets authorizes client based on credentials file"""
         try:
             return pygsheets.authorize(service_file=self.service_file, no_cache=True)
         except FileNotFoundError:
             err_msg = 'Cannot find credentials file.  Needs to be located:\n' \
                       + self.service_file
-            await self.bot.send_message(ctx.message.channel, err_msg)
+            # await self.bot.send_message(ctx.message.channel, err_msg)
             raise FileNotFoundError(err_msg)
 
 
