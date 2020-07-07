@@ -120,8 +120,8 @@ class PagesMenu:
             ucolor = ctx.message.author.color
         # data = discord.Embed(title='Confirmation:sparkles:',
         #                      description=question, color=ucolor)
-        data = CDTEmbed.create(
-            ctx, title="Convirmation:sparkles:", description=question)
+        data = CDTEmbed.create(self,
+                               ctx, title="Convirmation:sparkles:", description=question)
         message = await self.bot.say(embed=data)
 
         await self.bot.add_reaction(message, '❌')
