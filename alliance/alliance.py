@@ -62,7 +62,7 @@ class Alliance:
                     if m in self.guilds[alliance]['assignments'][user.id].keys():
                         data.add_field(name=m.upper()+' Assignment',
                                        value=self.guilds[alliance]['assignments'][user.id][m])
-                await self.bot.say(embed=data)
+                await self.bot.send_message(ctx.message.channel, embed=data)
 
     @commands.command(pass_context=True, no_pm=True, hidden=True)
     async def bglanes(self, ctx, role: discord.role):
@@ -119,7 +119,7 @@ class Alliance:
                 data.title = "Attention"
                 data.description = "This Discord guild is a registered CollectorVerse Alliance.\nThe ``alliance`` role is not set.\n\nUse the command ``/alliance set alliance <alliance role>`` to set this value.\nThe Alliance system will be disabled until this is corrected."
                 data.add_field(name="Server ID", value=ctx.message.server.id)
-                await self.bot.say(embed=data)
+                await self.bot.send_message(ctx.message.channel, embed=data)
                 await self.diagnostics(data)
         if alliances is None:
             data = self._get_embed(ctx)
@@ -136,7 +136,7 @@ class Alliance:
                     data.add_field(name='This alliance server is registered.',
                                    value='However, no roles have been registered for '
                                          '``alliance``, ``officers`` or ``bg1 | bg2 | bg3``')
-            await self.bot.say(embed=data)
+            await self.bot.send_message(ctx.message.channel, embed=data)
             return
         else:
             for alliance in alliances:
@@ -225,13 +225,14 @@ class Alliance:
             server = ctx.message.server
             if color is None:
                 color = get_color(ctx)
-
-        data = discord.Embed(color=color, title='', description='')
-        data.set_author(name='A CollectorVerse Alliance',
-                        icon_url=COLLECTOR_ICON)
+        data = CDTEmbed.create(
+            self, ctx, footer_text="A CollectorVerse Alliance")
+        # data = discord.Embed(color=color, title='', description='')
+        # data.set_author(name='A CollectorVerse Alliance',
+        #                 icon_url=COLLECTOR_ICON)
         if server is not None:
             data.set_thumbnail(url=server.icon_url)
-        data.set_footer(text='CollectorDevTeam', icon_url=COLLECTOR_ICON)
+        # data.set_footer(text='CollectorDevTeam', icon_url=COLLECTOR_ICON)
         return data
 
     async def _get_prestige(self, server: discord.Server, role: discord.Role, verbose=False,
@@ -346,7 +347,7 @@ class Alliance:
         for page in pages:
             await self.diagnostics(header)
             await self.diagnostics(chat.box(page))
-        await self.bot.say("Alliance good: {}\nAlliance bad updated: {}\nAlliance deleted: {}\nTotal guilds checked: {}".format(good_alliance, bad_alliance_role, len(kill_list), len(servers)))
+        await self.bot.send_message(ctx.message.channel, "Alliance good: {}\nAlliance bad updated: {}\nAlliance deleted: {}\nTotal guilds checked: {}".format(good_alliance, bad_alliance_role, len(kill_list), len(servers)))
 
     @alliance.command(pass_context=True, hidden=False, name='template', )
     async def _template(self, ctx):
@@ -505,7 +506,7 @@ class Alliance:
             #         junk = await self._update_role(ctx, 'assign', r)
             #         junk.title = 'Alliance Assignment:sparkles:'
             #         junk.add_field(name='Assignment policy updated to:', value='basic')
-            #         await self.bot.say(embed=junk)
+            #         await self.bot.send_message(ctx.message.channel, embed=junk)
             for key in type_keys:
                 if key in keys:
                     for role in server.roles:
@@ -515,7 +516,7 @@ class Alliance:
                 else:
                     data.add_field(name=key, value='Role is not set.\n``/alliance set {} value``'
                                    .format(key), inline=False)
-            await self.bot.say(embed=data)
+            await self.bot.send_message(ctx.message.channel, embed=data)
             # channel = self.bot.get_channel('565254324595326996')
             data.add_field(name='Requested by', value='User: {} \nID: {} \nServer {} \nID: {}'.format(
                 ctx.message.author.display_name, ctx.message.author.id, ctx.message.server.name, ctx.message.server.id))
@@ -573,7 +574,7 @@ class Alliance:
             data = self._get_embed(ctx)
             data.title = 'Access Denied:sparkles:'
             data.description = 'This tool is only available for members of this alliance.'
-            await self.bot.say(embed=data)
+            await self.bot.send_message(ctx.message.channel, embed=data)
             return
         elif alliance in self.guilds.keys():
             # server = ctx.message.server
@@ -641,7 +642,7 @@ class Alliance:
                             data = await self._get_prestige(server=server, role=alliance_role, verbose=True,
                                                             data=data, role_members=needsbg)
                             # data.add_field(name='Needs Battlegroup assignment', value=package)
-                            # await self.bot.say("Needs BG assignment\n"+package)
+                            # await self.bot.send_message(ctx.message.channel, "Needs BG assignment\n"+package)
                 pages.append(data)
             else:
                 data = self._get_embed(ctx, alliance=alliance)
@@ -698,12 +699,12 @@ class Alliance:
     #     if alliances is None:
     #         data.title = 'Access Denied:sparkles:'
     #         data.description = 'This tool is only available for members of this alliance.'
-    #         await self.bot.say(embed=data)
+    #         await self.bot.send_message(ctx.message.channel, embed=data)
     #         return
     #     elif role is None:
     #         data.title = 'Invalid Role:sparkles:'
     #         data.description = 'Include a valid role from this server.'
-    #         await self.bot.say(embed=data)
+    #         await self.bot.send_message(ctx.message.channel, embed=data)
     #         return
     #     else:
     #         role_members = _get_members(server, role)
@@ -745,7 +746,7 @@ class Alliance:
                         if role.name.lower() == key:
                             # await self._update_role(ctx, key, role)
                             data = await self._update_role(ctx, key, role)
-                            # await self.bot.say('{} role recognized and auto-registered.'.format(role.name))
+                            # await self.bot.send_message(ctx.message.channel, '{} role recognized and auto-registered.'.format(role.name))
                             data_pages.append(data)
             else:
                 data = discord.Embed(colour=get_color(ctx))
@@ -783,7 +784,7 @@ class Alliance:
             data = _unknown_guild(ctx)
         else:
             data = self._update_guilds(ctx, key, value)
-        await self.bot.say(embed=data)
+        await self.bot.send_message(ctx.message.channel, embed=data)
 
     @update.command(pass_context=True, name='assign', no_pm=True)
     async def _assign(self, ctx, value, role: EnhancedRoleConverter):
@@ -810,7 +811,7 @@ class Alliance:
                 data = self._get_embed(ctx)
                 data.title = 'Alliance Assignment Error:sparkles:'
                 data.description = 'Advanced Alliance assignment policies require a role be specified'
-            await self.bot.say(embed=data)
+            await self.bot.send_message(ctx.message.channel, embed=data)
         else:
             pass
 
@@ -844,7 +845,7 @@ class Alliance:
             bg1aq, bg1aw, bg2aq, bg2aw, bg3aq, bg3aw"""
             data = discord.Embed(color=get_color(ctx), title='CollectorVerse Alliances:sparkles:', description=message,
                                  url='https://discord.gg/umcoc')
-        await self.bot.say(embed=data)
+        await self.bot.send_message(ctx.message.channel, embed=data)
 
     @update.command(pass_context=True, name='tag')
     async def _alliance_tag(self, ctx, *, value):
@@ -852,13 +853,13 @@ class Alliance:
         key = "tag"
         # v = value.split('')
         if len(value) > 5:
-            await self.bot.say('Clan Tag must be <= 5 characters.\nDo not include the [ or ] brackets.')
+            await self.bot.send_message(ctx.message.channel, 'Clan Tag must be <= 5 characters.\nDo not include the [ or ] brackets.')
         server = ctx.message.server
         if server.id not in self.guilds:
             data = _unknown_guild(ctx)
         else:
             data = self._update_guilds(ctx, key, value)
-        await self.bot.say(embed=data)
+        await self.bot.send_message(ctx.message.channel, embed=data)
 
     @update.command(name='started', pass_context=True)
     async def _started(self, ctx, *, date: str):
@@ -873,9 +874,9 @@ class Alliance:
                 data = _unknown_guild(ctx)
             else:
                 data = self._update_guilds(ctx, key, date)
-            await self.bot.say(embed=data)
+            await self.bot.send_message(ctx.message.channel, embed=data)
         else:
-            await self.bot.say('Enter a valid date.')
+            await self.bot.send_message(ctx.message.channel, 'Enter a valid date.')
 
     @update.command(pass_context=True, name='about')
     async def _alliance_about(self, ctx, *, value):
@@ -908,7 +909,7 @@ class Alliance:
                                'I ran out of breath.'
         else:
             data = self._update_guilds(ctx, key, value)
-        await self.bot.say(embed=data)
+        await self.bot.send_message(ctx.message.channel, embed=data)
 
     @update.command(pass_context=True, name='poster')
     async def _poster(self, ctx, *, value=None):
@@ -931,7 +932,7 @@ class Alliance:
             else:
                 data = self._update_guilds(ctx, key, value)
                 data.set_image(url=value)
-        await self.bot.say(embed=data)
+        await self.bot.send_message(ctx.message.channel, embed=data)
 
     @update.command(pass_context=True, name='invite')
     async def _invite(self, ctx, *, value):
@@ -977,20 +978,20 @@ class Alliance:
     async def _officers(self, ctx, role: EnhancedRoleConverter = None):
         """Which role are your Alliance Officers?"""
         data = await self._update_role(ctx, key='officers', role=role)
-        await self.bot.say(embed=data)
+        await self.bot.send_message(ctx.message.channel, embed=data)
 
     @update.command(pass_context=True, name='bg1')
     async def _bg1(self, ctx, role: EnhancedRoleConverter = None):
         """Which role is your Battlegroup 1?"""
         print("updating bg1")
         data = await self._update_role(ctx, key='bg1', role=role)
-        await self.bot.say(embed=data)
+        await self.bot.send_message(ctx.message.channel, embed=data)
 
     @update.command(pass_context=True, name='bg1aq')
     async def _bg1aq(self, ctx, role: EnhancedRoleConverter = None):
         """Which role is your Battlegroup 1 for Alliance Quest?"""
         data = await self._update_role(ctx, key='bg1aq', role=role)
-        await self.bot.say(embed=data)
+        await self.bot.send_message(ctx.message.channel, embed=data)
 
     @update.command(pass_context=True, name='bg1aw')
     async def _bg1aw(self, ctx, role: EnhancedRoleConverter = None):
@@ -1001,70 +1002,74 @@ class Alliance:
         #     data.description = 'The ``@everyone`` role is prohibited from being set as an alliance role.'
         # else:
         data = await self._update_role(ctx, key='bg1aw', role=role)
-        await self.bot.say(embed=data)
+        await self.bot.send_message(ctx.message.channel, embed=data)
 
     @update.command(pass_context=True, name='bg2')
     async def _bg2(self, ctx, role: EnhancedRoleConverter = None):
         """Which role is your Battlegroup 2?"""
         data = await self._update_role(ctx, key='bg2', role=role)
-        await self.bot.say(embed=data)
+        await self.bot.send_message(ctx.message.channel, embed=data)
 
     @update.command(pass_context=True, name='bg2aq')
     async def _bg2aq(self, ctx, role: EnhancedRoleConverter = None):
         """Which role is your Battlegroup 2 for Alliance Quest?"""
         data = await self._update_role(ctx, key='bg2aq', role=role)
-        await self.bot.say(embed=data)
+        await self.bot.send_message(ctx.message.channel, embed=data)
 
     @update.command(pass_context=True, name='bg2aw')
     async def _bg2aw(self, ctx, role: EnhancedRoleConverter = None):
         """Which role is your Battlegroup 2 for Alliance War?"""
         data = await self._update_role(ctx, key='bg2aw', role=role)
-        await self.bot.say(embed=data)
+        await self.bot.send_message(ctx.message.channel, embed=data)
 
     @update.command(pass_context=True, name='bg3')
     async def _bg3(self, ctx, role: EnhancedRoleConverter = None):
         """Which role is your Battlegroup 3?"""
         data = await self._update_role(ctx, key='bg3', role=role)
-        await self.bot.say(embed=data)
+        await self.bot.send_message(ctx.message.channel, embed=data)
 
     @update.command(pass_context=True, name='bg3aq')
     async def _bg3aq(self, ctx, role: EnhancedRoleConverter = None):
         """Which role is your Battlegroup 3 for Alliance Quest?"""
         data = await self._update_role(ctx, key='bg3aq', role=role)
-        await self.bot.say(embed=data)
+        await self.bot.send_message(ctx.message.channel, embed=data)
 
     @update.command(pass_context=True, name='bg3aw')
     async def _bg3aw(self, ctx, role: EnhancedRoleConverter = None):
         """Which role is your Battlegroup 3 for Alliance War?"""
         data = await self._update_role(ctx, key='bg3aw', role=role)
-        await self.bot.say(embed=data)
+        await self.bot.send_message(ctx.message.channel, embed=data)
 
     @update.command(pass_context=True, name='alliance')
     async def _alliance(self, ctx, role: EnhancedRoleConverter = None):
         """Which role represents all members of your alliance (up to 30)?"""
         data = await self._update_role(ctx, key='alliance', role=role)
-        await self.bot.say(embed=data)
+        await self.bot.send_message(ctx.message.channel, embed=data)
 
     @update.command(pass_context=True, name='wartool')
     async def _wartool(self, ctx, wartool_url: str = None):
         """Save your WarTool URL"""
-        data = self._get_embed(ctx)
-        c = await self.authorize()
-        # sheet_data = await self.retrieve_data()
-        sheet_id = re.findall(r'/spreadsheets/d/([a-zA-Z0-9-_]+)', wartool_url)
-        wartool = c.open_by_key(sheet_id)
+        if wartool_url is not None:
+            data = self._get_embed(ctx)
+            c = await self.authorize()
+            # sheet_data = await self.retrieve_data()
+            sheet_id = re.findall(
+                r'/spreadsheets/d/([a-zA-Z0-9-_]+)', wartool_url)
+            wartool = c.open_by_key(sheet_id)
+            if wartool is not None:
 
-        data = self._update_guilds[ctx, 'wartool', sheet_id]
-        data.title = "WarTool URL"
-        # data.url=wartool_url
-        data.description = "Valid WarTool URL provided."
-        data.add_field(name="Wartool ID", value=sheet_id)
+                data = self._update_guilds[ctx, 'wartool', sheet_id]
+                data.title = "WarTool URL"
+                # data.url=wartool_url
+                data.description = "Valid WarTool URL provided."
+                data.add_field(name="Wartool ID", value=sheet_id)
 
+                # else:
+                #     data.title = "Get CollectorDevTeam WarTool"
+                #     data.description = "Invalid WarTool URL provided.  If you do not have a valid WarTool URL open the following Google Sheet and create a copy for your alliance.  Save the URL to your WarTool and try this command again."
+
+                await self.bot.send_message(ctx.message.channel, embed=data)
         # else:
-        #     data.title = "Get CollectorDevTeam WarTool"
-        #     data.description = "Invalid WarTool URL provided.  If you do not have a valid WarTool URL open the following Google Sheet and create a copy for your alliance.  Save the URL to your WarTool and try this command again."
-
-        await self.bot.say(embed=data)
 
     def _create_alliance(self, ctx, server):
         """Create alliance.
@@ -1226,7 +1231,7 @@ class Alliance:
     #         data.title = 'Assignment Error'
     #         data.description = 'Specify the AQ or AW map.  \n' \
     #                            'aq1, aq2, aq3, aq4, aq5, aq6, aq7, aw'
-    #         await self.bot.say(embed=data)
+    #         await self.bot.send_message(ctx.message.channel, embed=data)
     #         return
     #
     #     if 'assignments' not in self.guilds[alliance].keys():
@@ -1246,7 +1251,7 @@ class Alliance:
     #     data.title = 'Member Assignment'
     #     for m in self.guilds[alliance]['assignments'][user.id].keys():
     #         data.add_field(name=m.upper(), value=self.guilds[alliance]['assignments'][user.id][m])
-    #     await self.bot.say(embed=data)
+    #     await self.bot.send_message(ctx.message.channel, embed=data)
 
     async def diagnostics(self, message):
         """Messages accepts string, embed, or list of strings or embeds"""
@@ -1269,7 +1274,7 @@ class Alliance:
         except FileNotFoundError:
             err_msg = 'Cannot find credentials file.  Needs to be located:\n' \
                       + self.service_file
-            await self.bot.say(err_msg)
+            await self.bot.send_message(ctx.message.channel, err_msg)
             raise FileNotFoundError(err_msg)
 
 
