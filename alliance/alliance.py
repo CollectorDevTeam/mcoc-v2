@@ -450,27 +450,39 @@ class Alliance:
     @checks.admin_or_permissions(manage_server=True)
     @alliance.command(name='delete', aliases=('unregister', 'del' 'remove', 'rm',), pass_context=True,
                       invoke_without_command=True, no_pm=True)
-    async def _delete(self, ctx):
+    async def _delete(self, ctx, key=None):
         """Delete CollectorVerse Alliance"""
         server = ctx.message.server
-        if server.id in self.guilds:
-            question = '{}, are you sure you want to un-register {} as your CollectorVerse Alliance?'\
-                .format(ctx.message.author.mention, server.name)
-            answer, confirmation = await PagesMenu.confirm(self, ctx, question)
+        if key is None:
+            if server.id in self.guilds:
+                question = '{}, are you sure you want to un-register {} as your CollectorVerse Alliance?'\
+                    .format(ctx.message.author.mention, server.name)
+                answer, confirmation = await PagesMenu.confirm(self, ctx, question)
+                if answer:
+                    self.guilds.pop(server.id, None)
+                    # dropped = self.guilds.pop(server.id, None)
+                    dataIO.save_json(self.alliances, self.guilds)
+                    data = discord.Embed(title="Congrats!:sparkles:",
+                                         description="You have deleted your CollectorVerse Alliance.", color=get_color(ctx))
+                else:
+                    data = discord.Embed(title="Sorry!:sparkles:",
+                                         description="You have no CollectorVerse Alliance.",
+                                         color=get_color(ctx))
+                menu = PagesMenu(self.bot, timeout=120,
+                                 delete_onX=True, add_pageof=True)
+                await self.bot.delete_message(confirmation)
+                await menu.menu_start(pages=[data])
+        elif key in self.info_keys:
+            question = '{}, are you sure you want to delete the ``{}`` information from your CollectorVerse Alliance?'\
+                .format(ctx.message.author.mention, key)
+            answer, confirmation = await self.pagesmenu.confirm(ctx, question)
             if answer:
-                self.guilds.pop(server.id, None)
-                # dropped = self.guilds.pop(server.id, None)
+                self.guilds[server.id].pop(key, None)
                 dataIO.save_json(self.alliances, self.guilds)
                 data = discord.Embed(title="Congrats!:sparkles:",
                                      description="You have deleted your CollectorVerse Alliance.", color=get_color(ctx))
-            else:
-                data = discord.Embed(title="Sorry!:sparkles:",
-                                     description="You have no CollectorVerse Alliance.",
-                                     color=get_color(ctx))
-            menu = PagesMenu(self.bot, timeout=120,
-                             delete_onX=True, add_pageof=True)
-            await self.bot.delete_message(confirmation)
-            await menu.menu_start(pages=[data])
+                await self.bot.delete_message(confirmation)
+                await self.pagesmenu.menu_start(pages=[data])
 
     @checks.admin_or_permissions(manage_server=True)
     @alliance.command(
@@ -919,9 +931,10 @@ class Alliance:
         # test key for url
         if ctx.message.server.id not in self.guilds:
             data = _unknown_guild(ctx)
-        else:
-            data = self._get_embed(ctx)
+            await self.bot.send_message(ctx.message.channel, embed=data)
+            return
 
+        data = self._get_embed(ctx)
         if value is None and len(ctx.message.attachments) > 0:
             image = ctx.message.attachments[0]
             print(json.dumps(image))
