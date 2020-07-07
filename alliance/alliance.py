@@ -1057,20 +1057,17 @@ class Alliance:
             sheet_id = re.findall(
                 r'/spreadsheets/d/([a-zA-Z0-9-_]+)', wartool_url)
             print(sheet_id[0])
-            try:
-                wartool = await self.googleaccess.open_by_url(wartool_url)
+            # wartool = await self.googleaccess.open_by_url(wartool_url)
+            wartool = await self.googleaccess.open_as_json(sheet_id)
+            if wartool is not None:
+                print(wartool["spreadsheetId"])
                 # wartool = c.open_by_key(sheet_id[0])
                 data = self._update_guilds[ctx, 'wartool', sheet_id]
                 data.title = "WarTool Valid"
                 # data.url=wartool_url
                 data.description = "Valid WarTool URL provided."
                 data.add_field(name="Wartool ID", value=sheet_id)
-
-                # else:
-                #     data.title = "Get CollectorDevTeam WarTool"
-                #     data.description = "Invalid WarTool URL provided.  If you do not have a valid WarTool URL open the following Google Sheet and create a copy for your alliance.  Save the URL to your WarTool and try this command again."
-
-            except:
+            else:
                 data.title = "WarTool Invalid"
                 data.description = "Invalid WarTool URL provided.\nDo you need a WarTool Sheet?\n[Make a Copy now](https://docs.google.com/spreadsheets/d/111akgaclw5sb-6gsf5pVsX7EkqvxGdrpXLHdHYmLm60/copy)"
         else:
