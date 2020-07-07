@@ -1051,13 +1051,13 @@ class Alliance:
         """Save your WarTool URL"""
         data = self._get_embed(ctx)
         if wartool_url is not None:
-            c = self.authorize()
+            c = await self.authorize()
             # sheet_data = await self.retrieve_data()
             sheet_id = re.findall(
                 r'/spreadsheets/d/([a-zA-Z0-9-_]+)', wartool_url)
             print(sheet_id[0])
             try:
-                wartool = c.open_by_url(wartool_url)
+                wartool = await c.open_by_url(wartool_url)
                 # wartool = c.open_by_key(sheet_id[0])
                 data = self._update_guilds[ctx, 'wartool', sheet_id]
                 data.title = "WarTool Valid"
