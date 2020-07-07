@@ -1049,17 +1049,16 @@ class Alliance:
     @update.command(pass_context=True, name='wartool')
     async def _wartool(self, ctx, wartool_url: str = None):
         """Save your WarTool URL"""
+        data = self._get_embed(ctx)
         if wartool_url is not None:
-            data = self._get_embed(ctx)
             c = await self.authorize()
             # sheet_data = await self.retrieve_data()
             sheet_id = re.findall(
                 r'/spreadsheets/d/([a-zA-Z0-9-_]+)', wartool_url)
-            wartool = c.open_by_key(sheet_id)
-            if wartool is not None:
-
+            try:
+                wartool = c.open_by_key(sheet_id)
                 data = self._update_guilds[ctx, 'wartool', sheet_id]
-                data.title = "WarTool URL"
+                data.title = "WarTool Valid"
                 # data.url=wartool_url
                 data.description = "Valid WarTool URL provided."
                 data.add_field(name="Wartool ID", value=sheet_id)
@@ -1068,8 +1067,13 @@ class Alliance:
                 #     data.title = "Get CollectorDevTeam WarTool"
                 #     data.description = "Invalid WarTool URL provided.  If you do not have a valid WarTool URL open the following Google Sheet and create a copy for your alliance.  Save the URL to your WarTool and try this command again."
 
-                await self.bot.send_message(ctx.message.channel, embed=data)
-        # else:
+            except:
+                data.title = "WarTool Invalid"
+                data.description = "Invalid WarTool URL provided.\nDo you need a WarTool Sheet?\n[Make a Copy now](https://docs.google.com/spreadsheets/d/111akgaclw5sb-6gsf5pVsX7EkqvxGdrpXLHdHYmLm60/copy)"
+        else:
+            data.title = "WarTool URL required"
+            data.description = "Do you need a WarTool Sheet for your Alliance?\n[Make a Copy now](https://docs.google.com/spreadsheets/d/111akgaclw5sb-6gsf5pVsX7EkqvxGdrpXLHdHYmLm60/copy)"
+        await self.bot.send_message(ctx.message.channel, embed=data)
 
     def _create_alliance(self, ctx, server):
         """Create alliance.
