@@ -46,8 +46,7 @@ class Alliance:
                           'started', 'invite', 'poster', 'wartool')
         self.service_file = "data/mcoc/mcoc_service_creds.json"
         self.diagnostics_channel = '565254324595326996'
-        self.pagesmenu = PagesMenu(self, self.bot, timeout=30,
-                                   delete_onX=True, add_pageof=True)
+        self.pagesmenu = PagesMenu(self, self.bot)
 
     @commands.command(pass_context=True, no_pm=True, hidden=True)
     async def lanes(self, ctx, user: discord.Member = None):

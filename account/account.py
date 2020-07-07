@@ -10,7 +10,8 @@ from dateutil.parser import parse as dateParse
 from .utils.chat_formatting import *
 from .hook import RosterUserConverter
 import cogs.mcocTools
-from .mcocTools import (KABAM_ICON, COLLECTOR_ICON, PagesMenu)
+from .mcocTools import (KABAM_ICON, COLLECTOR_ICON)
+from .cdtpagesmenu import PagesMenu
 
 
 class Account:
