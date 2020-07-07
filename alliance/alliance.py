@@ -1057,7 +1057,7 @@ class Alliance:
                 r'/spreadsheets/d/([a-zA-Z0-9-_]+)', wartool_url)
             print(sheet_id[0])
             try:
-                wartool = c.open_by_key(sheet_id[0])
+                wartool = await c.open_by_key(sheet_id[0])
                 data = self._update_guilds[ctx, 'wartool', sheet_id]
                 data.title = "WarTool Valid"
                 # data.url=wartool_url
