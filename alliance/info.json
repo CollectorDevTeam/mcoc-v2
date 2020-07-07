@@ -1,8 +1,12 @@
 {
-    "AUTHOR" : "JJW",
-    "INSTALL_MSG" : "Thanks for installing CollectorVerse Account",
-    "NAME" : "alliance",
-    "SHORT" : "Alliance integration for Marvel Contest of Champions",
-    "DESCRIPTION" : "CollectorVerse Account. Derived from Neko-Cogs/account by NerdiTony, modified by CollectorDevTeam",
-    "HIDDEN" : true
+    "AUTHOR": "JJW",
+    "INSTALL_MSG": "Thanks for installing CollectorVerse Account",
+    "NAME": "alliance",
+    "SHORT": "Alliance integration for Marvel Contest of Champions",
+    "DESCRIPTION": "CollectorVerse Account. Derived from Neko-Cogs/account by NerdiTony, modified by CollectorDevTeam",
+    "HIDDEN": true,
+    "REQUIREMENTS": [
+        "pygsheets",
+        "google_auth_httplib2"
+    ]
 }

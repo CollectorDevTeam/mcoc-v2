@@ -917,22 +917,21 @@ class Alliance:
         """Alliance recruitment poster url or upload image"""
         key = 'poster'
         # test key for url
-        if value is None:
-            if len(ctx.message.attachments) > 0:
-                image = ctx.message.attachments[0]
-                print(json.dumps(image))
-                value = image['url']
         if ctx.message.server.id not in self.guilds:
             data = _unknown_guild(ctx)
+        if value is None and len(ctx.message.attachments) > 0:
+            image = ctx.message.attachments[0]
+            print(json.dumps(image))
+            value = image['url']
+
+        # verified = verify(str(value))
+        img = send_request(value)
+        if img is False:
+            data = self._get_embed(ctx)
+            data.title = 'Image Verification Failed:sparkles:'
         else:
-            # verified = verify(str(value))
-            img = send_request(value)
-            if img is False:
-                data = self._get_embed(ctx)
-                data.title = 'Image Verification Failed:sparkles:'
-            else:
-                data = self._update_guilds(ctx, key, value)
-                data.set_image(url=value)
+            data = self._update_guilds(ctx, key, value)
+            data.set_image(url=value)
         await self.bot.send_message(ctx.message.channel, embed=data)
 
     @update.command(pass_context=True, name='invite')
