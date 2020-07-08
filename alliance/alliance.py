@@ -940,7 +940,7 @@ class Alliance:
             image = ctx.message.attachments[0]
             print(json.dumps(image))
             value = image['url']
-        elif value is not None:
+        if value is not None:
             if value.lower() == "none":
                 # delete poster
                 data = self._update_guilds(ctx, key, value)
