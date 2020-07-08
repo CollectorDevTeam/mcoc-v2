@@ -936,19 +936,19 @@ class Alliance:
             return
 
         data = self._get_embed(ctx)
-        if value is None and len(ctx.message.attachments) > 0:
+        if len(ctx.message.attachments) > 0:
+            print('alliance poster attachment detected')
             image = ctx.message.attachments[0]
             print(json.dumps(image))
             value = image['url']
-        if value is not None:
-            if value.lower() == "none":
-                # delete poster
-                data = self._update_guilds(ctx, key, value)
-            elif send_request(value) is False:
-                data.title = 'Image Verification Failed:sparkles:'
-        else:
+            print(value)
+        if value is None or value.lower() == "none":
+            data = self._update_guilds(ctx, key, None)
+        if send_request(value) is True:
             data = self._update_guilds(ctx, key, value)
             data.set_image(url=value)
+        elif send_request(value) is False:
+            data.title = 'Image Verification Failed:sparkles:'
         await self.bot.send_message(ctx.message.channel, embed=data)
 
     @update.command(pass_context=True, name='invite')
@@ -1301,6 +1301,7 @@ class Alliance:
 def send_request(url):
     try:
         page = requests.get(url)
+        print(page.status_code)
 
     except Exception as e:
         print("error:", e)
@@ -1311,7 +1312,7 @@ def send_request(url):
         print('status code'+page.status_code)
         return False
 
-    return page
+    return True
 
 
 def _unknown_guild(ctx):
@@ -1322,7 +1323,7 @@ def _unknown_guild(ctx):
                         "You can register for a account today for free. All you have to do is:"
                         "Create a Discord server."
                         "Invite Collector"
-                        "On your Alliance server say `{} alliance signup` and you'll be all set."
+                        "On your Alliance server say `{}alliance create` and you'll be all set."
                    .format(ctx.prefix))
     data.set_footer(text='CollectorDevTeam', icon_url=COLLECTOR_ICON)
     return data
