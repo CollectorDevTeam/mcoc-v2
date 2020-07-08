@@ -453,7 +453,6 @@ class Alliance:
     async def _delete(self, ctx, key=None):
         """Delete CollectorVerse Alliance"""
         server = ctx.message.server
-        key = key.lower()
         if key is None:
             if server.id in self.guilds:
                 question = '{}, are you sure you want to un-register {} as your CollectorVerse Alliance?'\
@@ -473,7 +472,8 @@ class Alliance:
                                  delete_onX=True, add_pageof=True)
                 await self.bot.delete_message(confirmation)
                 await menu.menu_start(pages=[data])
-        elif key in self.info_keys:
+        elif key.lower() in self.info_keys:
+            key = key.lower()
             question = '{}, are you sure you want to delete the ``{}`` information from your CollectorVerse Alliance?'\
                 .format(ctx.message.author.mention, key)
             answer, confirmation = await self.pagesmenu.confirm(ctx, question)
