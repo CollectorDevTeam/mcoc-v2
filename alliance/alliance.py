@@ -974,7 +974,7 @@ class Alliance:
                                'Also, WhatsApp? That is really sad.'
         elif 'clanhq.app.link/' in value:
             data = self._get_embed(ctx)
-            data.title = 'Discord > WhatsApp:sparkles:'
+            data.title = 'Discord > ClanHQ:sparkles:'
             data.description = 'Ooh, sorry. ClanHQ links are not supported by this Alliance management system. ' \
                                'Also, Hahahahaha ha ha haa ha ha ' \
                                '...' \
