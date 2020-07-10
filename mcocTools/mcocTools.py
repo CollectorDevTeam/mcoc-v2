@@ -2521,7 +2521,7 @@ class INSPECTOR:
     async def _inspect_server(self, ctx, server_id=None):
         '''Inspect CollectorVerse server for Collector installation compliance'''
         data = CDTEmbed.create(
-            self, ctx, user_id=ctx.message.author.id)
+            self, ctx)
         data.title = 'CollectorDevTeam Inspection:sparkles:'
         if server_id is None:
             server = ctx.message.server
@@ -2574,7 +2574,7 @@ class INSPECTOR:
             except:
                 server = None
         data = CDTEmbed.create(
-            self, ctx, user_id=ctx.message.author.id)
+            self, ctx)
         data.title = 'CollectorDevTeam Inspector: ROLES:sparkles:'
         if server is not None:
             roles = sorted(
