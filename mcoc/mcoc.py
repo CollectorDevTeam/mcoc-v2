@@ -1,4 +1,4 @@
-from .mcocTools import (KABAM_ICON, COLLECTOR_ICON,
+from .mcocTools import (KABAM_ICON, COLLECTOR_ICON, COLLECTOR_CRYSTAL,
                         GSHandler, gapi_service_creds, GSExport, CDT_COLORS, StaticGameData)
 # import cogs.mcocTools
 # from . import hook as hook
@@ -1167,14 +1167,20 @@ class MCOC(ChampionFactory):
             await self.gsheet_handler.cache_gsheets(key)
         # now = datetime.datetime.now().date()
         now = datetime.now().date()
+        delay = CDTEmbed.create(self, ctx,
+                                title="Retrieving Retrieving TLDR Data",
+                                description="Please wait while I gather the CollectorDevTeam TLDR\n Did you know you can add add a TLDR for a champion yourself? [Click here to add a TLDR!](https://forms.gle/EuhWXyE5kxydzFGK8)",
+                                image=COLLECTOR_CRYSTAL)
         if os.path.exists('data/mcoc/tldr.json'):
             # filetime = datetime.datetime.fromtimestamp(os.path.getctime('data/mcoc/tldr.json'))
             filetime = datetime.fromtimestamp(
                 os.path.getctime('data/mcoc/tldr.json'))
             if filetime.date() != now:
+                pleasewait = await self.bot.send_message(ctx.message.channel, embed=delay)
                 await self.gsheet_handler.cache_gsheets(key)
                 self.tldr = dataIO.load_json('data/mcoc/tldr.json')
         else:
+            pleasewait = await self.bot.send_message(ctx.message.channel, embed=delay)
             await self.gsheet_handler.cache_gsheets(key)
             self.tldr = dataIO.load_json('data/mcoc/tldr.json')
 
@@ -1182,8 +1188,8 @@ class MCOC(ChampionFactory):
             ucolor = discord.Color.gold()
         else:
             ucolor = ctx.message.author.color
-        data = discord.Embed(
-            color=ucolor, title='Abilities are Too Long; Didn\'t Read', url=PATREON)
+        # data = discord.Embed(
+        #     color=ucolor, title='Abilities are Too Long; Didn\'t Read', url=PATREON)
         k = champ.full_name
         package = ''
         if k in self.tldr.keys():
@@ -1205,12 +1211,15 @@ class MCOC(ChampionFactory):
         else:
             package += 'Don\'t like that advice? \n\n[Click here to add a TLDR!](https://forms.gle/EuhWXyE5kxydzFGK8)'
             # data.description = 'No information.  \nAdd a TLDR here: [TLDR Form](https://forms.gle/EuhWXyE5kxydzFGK8)'
+        data = CDTEmbed.create(title="Abilities are Too Long; Didn't Read",
+                               description=package, thumbnail=champ.get_avatar())
         data.add_field(name='Shortcode', value=champ.short, inline=False)
-        data.set_footer(text='Requested by {}'.format(
-            ctx.message.author.display_name), icon_url=COLLECTOR_ICON)
-        data.set_thumbnail(url=champ.get_avatar())
-        data.description = package
-        await self.bot.send_message(ctx.message.channel, embed=data)
+        # data.set_footer(text='Requested by {}'.format(
+        #     ctx.message.author.display_name), icon_url=COLLECTOR_ICON)
+        # data.set_thumbnail(url=champ.get_avatar())
+        # data.description = package
+        # await self.bot.delete_message(pleasewait)
+        await self.bot.edit_message(pleasewait, embed=data)
 
     # @commands.has_any_role('CollectorDevTeam', 'CollectorSupportTeam', 'CollectorPartners')
     # @champ.command(pass_context=True, name='export', hidden=True)
