@@ -1209,7 +1209,8 @@ class MCOC(ChampionFactory):
                 package += 'Don\'t like that advice? \n\n[Click here to add a TLDR!](https://forms.gle/EuhWXyE5kxydzFGK8)'
                 # data.description = 'Don\'t like that advice? \n\n[Click here to add a TLDR!](https://forms.gle/EuhWXyE5kxydzFGK8)'
         else:
-            package += 'Don\'t like that advice? \n\n[Click here to add a TLDR!](https://forms.gle/EuhWXyE5kxydzFGK8)'
+            package += 'Looks like no one has added a TLDR for {} yet.\nDo you want to correct this grave injustice?\n\n[Click here to add a TLDR!](https://forms.gle/EuhWXyE5kxydzFGK8)'.format(
+                k)
             # data.description = 'No information.  \nAdd a TLDR here: [TLDR Form](https://forms.gle/EuhWXyE5kxydzFGK8)'
         data = CDTEmbed.create(self, ctx, title="Abilities are Too Long; Didn't Read",
                                description=package, thumbnail=champ.get_avatar())
