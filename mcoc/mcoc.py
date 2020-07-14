@@ -1170,7 +1170,7 @@ class MCOC(ChampionFactory):
         delay = CDTEmbed.create(self, ctx,
                                 title="Retrieving Retrieving TLDR Data",
                                 description="Please wait while I gather the CollectorDevTeam TLDR\n Did you know you can add add a TLDR for a champion yourself? [Click here to add a TLDR!](https://forms.gle/EuhWXyE5kxydzFGK8)",
-                                image=COLLECTOR_CRYSTAL)
+                                image=champ.get_featured())
         if os.path.exists('data/mcoc/tldr.json'):
             # filetime = datetime.datetime.fromtimestamp(os.path.getctime('data/mcoc/tldr.json'))
             filetime = datetime.fromtimestamp(
@@ -1184,12 +1184,6 @@ class MCOC(ChampionFactory):
             await self.gsheet_handler.cache_gsheets(key)
             self.tldr = dataIO.load_json('data/mcoc/tldr.json')
 
-        if ctx.message.channel.is_private:
-            ucolor = discord.Color.gold()
-        else:
-            ucolor = ctx.message.author.color
-        # data = discord.Embed(
-        #     color=ucolor, title='Abilities are Too Long; Didn\'t Read', url=PATREON)
         k = champ.full_name
         package = ''
         if k in self.tldr.keys():
@@ -1217,7 +1211,7 @@ class MCOC(ChampionFactory):
         data.add_field(name='Shortcode', value=champ.short, inline=False)
         # data.set_footer(text='Requested by {}'.format(
         #     ctx.message.author.display_name), icon_url=COLLECTOR_ICON)
-        # data.set_thumbnail(url=champ.get_avatar())
+        data.set_thumbnail(url=champ.get_avatar())
         # data.description = package
         # await self.bot.delete_message(pleasewait)
         await self.bot.edit_message(pleasewait, embed=data)
