@@ -49,60 +49,56 @@ class Alliance:
         self.pagesmenu = PagesMenu(self.bot)
         self.googleaccess = self.authorize()
 
-    @commands.command(pass_context=True, no_pm=True, hidden=True)
-    async def lanes(self, ctx, user: discord.Member = None):
-        server = ctx.message.server
-        alliance = server.id
-        if user is None:
-            user = ctx.message.author
-        if user is not None:
-            if alliance in self.guilds.keys() and 'assignments' in self.guilds[alliance].keys() \
-                    and user.id in self.guilds[alliance]['assignments'].keys():
-                data = self._get_embed(ctx, alliance, user.id, user.color)
-                for m in ('aq1', 'aq2', 'aq3', 'aq4', 'aq5', 'aq6', 'aq7', 'aw',):
-                    if m in self.guilds[alliance]['assignments'][user.id].keys():
-                        data.add_field(name=m.upper()+' Assignment',
-                                       value=self.guilds[alliance]['assignments'][user.id][m])
-                await self.bot.send_message(ctx.message.channel, embed=data)
+    # @commands.command(pass_context=True, no_pm=True, hidden=True)
+    # async def lanes(self, ctx, user: discord.Member = None):
+    #     server = ctx.message.server
+    #     alliance = server.id
+    #     if user is None:
+    #         user = ctx.message.author
+    #     if user is not None:
+    #         if alliance in self.guilds.keys() and 'assignments' in self.guilds[alliance].keys() \
+    #                 and user.id in self.guilds[alliance]['assignments'].keys():
+    #             data = self._get_embed(ctx, alliance, user.id, user.color)
+    #             for m in ('aq1', 'aq2', 'aq3', 'aq4', 'aq5', 'aq6', 'aq7', 'aw',):
+    #                 if m in self.guilds[alliance]['assignments'][user.id].keys():
+    #                     data.add_field(name=m.upper()+' Assignment',
+    #                                    value=self.guilds[alliance]['assignments'][user.id][m])
+    #             await self.bot.send_message(ctx.message.channel, embed=data)
 
-    @commands.command(pass_context=True, no_pm=True, hidden=True)
-    async def bglanes(self, ctx, role: discord.role):
-        server = ctx.message.server
-        alliance = server.id
-        members = _get_members(server, role)
+    # @commands.command(pass_context=True, no_pm=True, hidden=True)
+    # async def bglanes(self, ctx, role: discord.role):
+    #     server = ctx.message.server
+    #     alliance = server.id
+    #     members = _get_members(server, role)
 
-        if members is not None:
-            pages = []
-            for m in ('aq1', 'aq2', 'aq3', 'aq4', 'aq5', 'aq6', 'aq7', 'aw',):
-                data = self._get_embed(
-                    ctx, alliance=alliance, color=role.color)
-                data.title = '{} Assignments for {}'.format(
-                    role.name, m.upper())
-                cnt = 0
-                for member in members:
-                    if member.id in self.guilds[alliance]['assignments'].keys():
-                        if m in self.guilds[alliance]['assignments'][member.id].keys():
-                            data.add_field(
-                                name=member.display_name, value=self.guilds[alliance]['assignments'][member.id][m])
-                            cnt += 1
-                if cnt > 0:
-                    pages.append(data)
-            if len(pages) > 0:
-                menu = PagesMenu(self.bot, timeout=120,
-                                 delete_onX=True, add_pageof=True)
-                await menu.menu_start(pages=pages)
-            else:
-                logger.warning('No Pages to display')
+    #     if members is not None:
+    #         pages = []
+    #         for m in ('aq1', 'aq2', 'aq3', 'aq4', 'aq5', 'aq6', 'aq7', 'aw',):
+    #             data = self._get_embed(
+    #                 ctx, alliance=alliance, color=role.color)
+    #             data.title = '{} Assignments for {}'.format(
+    #                 role.name, m.upper())
+    #             cnt = 0
+    #             for member in members:
+    #                 if member.id in self.guilds[alliance]['assignments'].keys():
+    #                     if m in self.guilds[alliance]['assignments'][member.id].keys():
+    #                         data.add_field(
+    #                             name=member.display_name, value=self.guilds[alliance]['assignments'][member.id][m])
+    #                         cnt += 1
+    #             if cnt > 0:
+    #                 pages.append(data)
+    #         if len(pages) > 0:
+    #             menu = PagesMenu(self.bot, timeout=120,
+    #                              delete_onX=True, add_pageof=True)
+    #             await menu.menu_start(pages=pages)
+    #         else:
+    #             logger.warning('No Pages to display')
 
     @commands.group(aliases=('clan', 'guild'), pass_context=True, invoke_without_command=True, hidden=False, no_pm=True)
     async def alliance(self, ctx, user: discord.Member = None):
         """CollectorVerse Alliance tools
 
         """
-        # server = ctx.message.server
-        print('debug: alliance group')
-        # self._update_members(ctx, ctx.message.server)
-
         if ctx.invoked_subcommand is None:
             if user is None:
                 user = ctx.message.author
@@ -734,7 +730,7 @@ class Alliance:
         await self.register_alliance(ctx)
         return
 
-    async def register_alliance(self, ctx):
+    async def register_alliance(self, ctx, alliancerole: discord.Role):
         """Sign up to register your Alliance server!"""
         user = ctx.message.author
         server = ctx.message.server
@@ -751,7 +747,18 @@ class Alliance:
         answer, confirmation = await self.pagesmenu.confirm(ctx, question)
         data_pages = []
         if answer is True:
-            if server.id not in self.guilds:
+            if alliancerole.id not in self.guilds:
+                data = self._create_alliance(ctx, alliancerole)
+                data_pages.append(data)
+                for role in server.roles:
+                    # add default roles
+                    for key in self.alliance_keys:
+                        if role.name.lower() == key:
+                            # await self._update_role(ctx, key, role)
+                            data = await self._update_role(ctx, key, role)
+                            # await self.bot.send_message(ctx.message.channel, '{} role recognized and auto-registered.'.format(role.name))
+                            data_pages.append(data)
+            elif server.id not in self.guilds:
                 data = self._create_alliance(ctx, server)
                 data_pages.append(data)
                 for role in server.roles:

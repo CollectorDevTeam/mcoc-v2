@@ -1420,6 +1420,9 @@ class MCOCTools:
             sheet_name='stats',
             range_name='summarystats'
         )
+        delay = self.CDTEmbed.create(
+            title="Retrieving Cutoff Data", description="Please wait whilst I interrogate the ArenaResultsKnight dataset.", image=COLLECTOR_CRYSTAL)
+        pleasewait = await self.bot.send_message(ctx.message.channel, embed=delay)
         if self.mcoctools['cutoffs_date'] != now:
             await gsh.cache_gsheets('cutoffs')
             await gsh.cache_gsheets('summarystats')
@@ -1434,6 +1437,9 @@ class MCOCTools:
                                                         self.cutoffs[str(k)]["champ"], self.cutoffs[str(k)]["cutoff"], self.cutoffs[str(k)]["bracket1"]))
             # load the full dataset into a default arena description file.
             self.arena = ''.join(desc)
+        delay.title = "Formatting ArenaResultsKnight dataset"
+        delay.description = "Please wait. Dataset is being prepared."
+        pleasewait = await self.bot.edit_message(pleasewait, embed=delay)
 
         description = self.arena
         if champ is not None:
@@ -1512,6 +1518,7 @@ class MCOCTools:
             data.set_thumbnail(url=thumbnail)
             pages.append(data)
         if len(pages) > 0:
+            await self.bot.delete_message(pleasewait)
             menu = PagesMenu(self.bot, timeout=120,
                              delete_onX=True, add_pageof=True)
             await menu.menu_start(pages=pages)
