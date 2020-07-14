@@ -730,7 +730,7 @@ class Alliance:
         await self.register_alliance(ctx)
         return
 
-    async def register_alliance(self, ctx, alliancerole: discord.Role):
+    async def register_alliance(self, ctx,):  # alliancerole: discord.Role):
         """Sign up to register your Alliance server!"""
         user = ctx.message.author
         server = ctx.message.server
@@ -747,18 +747,18 @@ class Alliance:
         answer, confirmation = await self.pagesmenu.confirm(ctx, question)
         data_pages = []
         if answer is True:
-            if alliancerole.id not in self.guilds:
-                data = self._create_alliance(ctx, alliancerole)
-                data_pages.append(data)
-                for role in server.roles:
-                    # add default roles
-                    for key in self.alliance_keys:
-                        if role.name.lower() == key:
-                            # await self._update_role(ctx, key, role)
-                            data = await self._update_role(ctx, key, role)
-                            # await self.bot.send_message(ctx.message.channel, '{} role recognized and auto-registered.'.format(role.name))
-                            data_pages.append(data)
-            elif server.id not in self.guilds:
+            # if alliancerole.id not in self.guilds:
+            #     data = self._create_alliance(ctx, alliancerole)
+            #     data_pages.append(data)
+            #     for role in server.roles:
+            #         # add default roles
+            #         for key in self.alliance_keys:
+            #             if role.name.lower() == key:
+            #                 # await self._update_role(ctx, key, role)
+            #                 data = await self._update_role(ctx, key, role)
+            #                 # await self.bot.send_message(ctx.message.channel, '{} role recognized and auto-registered.'.format(role.name))
+            #                 data_pages.append(data)
+            if server.id not in self.guilds:
                 data = self._create_alliance(ctx, server)
                 data_pages.append(data)
                 for role in server.roles:

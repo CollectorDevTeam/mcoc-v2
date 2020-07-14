@@ -1420,7 +1420,7 @@ class MCOCTools:
             sheet_name='stats',
             range_name='summarystats'
         )
-        delay = self.CDTEmbed.create(
+        delay = CDTEmbed.create(
             title="Retrieving Cutoff Data", description="Please wait whilst I interrogate the ArenaResultsKnight dataset.", image=COLLECTOR_CRYSTAL)
         pleasewait = await self.bot.send_message(ctx.message.channel, embed=delay)
         if self.mcoctools['cutoffs_date'] != now:
