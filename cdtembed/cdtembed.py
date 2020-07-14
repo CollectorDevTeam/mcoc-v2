@@ -45,8 +45,9 @@ class CDTEmbed:
             if code == 200:
                 # data.set_thumbnail(url=thumbnail)
                 data.set_thumbnail(
-                    url=CDT_LOGO)
+                    url=thumbnail)
             else:
+                data.set_thumbnail(url=CDT_LOGO)
                 print('Thumbnail URL Failure, code {}'.format(code))
                 print('Attempted URL:\n{}'.format(thumbnail))
         if footer_text is None:
