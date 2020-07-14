@@ -327,9 +327,10 @@ class GSHandler:
         if key and key not in self.gsheets:
             raise KeyError("Key '{}' is not registered".format(key))
         gfiles = self.gsheets.keys() if not key else (key,)
+        diagnostics = self.bot.get_channel('731208074043588649')
 
         num_files = len(gfiles)
-        msg = await self.bot.say('Pulled Google Sheet data 0/{}'.format(num_files))
+        msg = await self.bot.send_message(diagnostics, 'Pulled Google Sheet data 0/{}'.format(num_files))
         package = {}
         for i, k in enumerate(gfiles):
             pulled = False
@@ -345,11 +346,11 @@ class GSHandler:
                         break
                     except:
                         logger.info(
-                            "Error while pulling '{}' try: {}".format(k, try_num))
+                            "`cache_gsheets key={}`\nError while pulling '{}' try: {}".format(key, k, try_num))
                         if try_num < 3:
                             # time.sleep(.3 * try_num)
                             asyncio.sleep(.3*try_num)
-                            await self.bot.say("Error while pulling '{}', try: {}".format(k, try_num))
+                            await self.bot.send_message(diagnostics, "``cache_gsheets`` key={}:  Error while pulling '{}', try: {}".format(key, k, try_num))
             msg = await self.bot.edit_message(msg,
                                               'Pulled Google Sheet data {}/{}'.format(i + 1, num_files))
             logger.info('Pulled Google Sheet data {}/{}, {}'.format(i +
