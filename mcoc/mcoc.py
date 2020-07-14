@@ -1211,7 +1211,7 @@ class MCOC(ChampionFactory):
         else:
             package += 'Don\'t like that advice? \n\n[Click here to add a TLDR!](https://forms.gle/EuhWXyE5kxydzFGK8)'
             # data.description = 'No information.  \nAdd a TLDR here: [TLDR Form](https://forms.gle/EuhWXyE5kxydzFGK8)'
-        data = CDTEmbed.create(title="Abilities are Too Long; Didn't Read",
+        data = CDTEmbed.create(self, ctx, title="Abilities are Too Long; Didn't Read",
                                description=package, thumbnail=champ.get_avatar())
         data.add_field(name='Shortcode', value=champ.short, inline=False)
         # data.set_footer(text='Requested by {}'.format(
